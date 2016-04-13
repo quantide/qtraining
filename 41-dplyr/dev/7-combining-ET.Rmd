@@ -1,0 +1,390 @@
+---
+title: "Combining data"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+require(dplyr)
+require(qData)
+data(comuni)
+data(province)
+data(regioni)
+data(ripartizioni)
+```
+
+
+# Introduction
+
+Very often you will have to deal with many tables that contribute to the analysis you are performin and you need flexible tools to combine them. Supposing that the two tables are already in a tidy form (the rows are observations and the columns are variables), `dplyr` provides three families of verbs that work with two tables at a time:
+
+* __mutating joins__, which add new variables to one table from matching rows in another;
+* __filtering joins__, which filter observations from one table based on whether or not they match an observation in the other table;
+* __set operations__, which combine the observations in the data sets as if they were set elements.
+
+All these verbs work similarly: the first two arguments are x and y, and provide the tables to combine. The output is always a new table with the same type as x.
+
+
+# Mutating joins
+
+Mutating joins allow you to combine variables from multiple tables.  
+
+In `comuni` you have some variables detected on Italian "comuni", in particular the codes of the Italian "province" and "regioni" relative to the "comuni", but not their names. Therefore, you don't know which "provincia" or "regione" each "comune" belongs to. However, tn `province` and `regioni` you have the codes of the "province" and the "regioni" together with their name.
+
+Let's keep only a few variables of these datasets in order to better understand the join results:
+
+```{r}
+comuni <- comuni %>% select(cod_comune:pop_legale, cod_provincia, cod_regione)
+province <- province %>% select(cod_provincia:sigla_auto)
+```
+
+You can use a join to add "provincia" and "regione" name to the Italian "comuni":
+
+```{r}
+comuni %>% left_join(province)
+comuni %>% left_join(regioni)
+comuni %>% left_join(province) %>% left_join(regioni)
+```
+
+As well as `x` and `y`, each mutating join takes an argument by that controls which variables are used to match observations in the two tables and there are a few ways to specify it:
+
+* `NULL`, the default. `dplyr` will use all variables that appear in both tables, a natural join. For example, the `comuni` and `province` tables match on their common variable `cod_provincia`:
+
+```{r}
+comuni %>% left_join(province)
+```
+
+* A character vector, `by = "x"`. It is like a natural join, but uses only some of the common variables. For example, when joining `comuni` and `province`, you will see that `R` will tell you that it's joining the two data frames by both `cod_provincia` and `cod_citta_metro`:
+
+```{r}
+comuni %>% left_join(province)
+```
+
+But we only want to join by `cod_provincia` and not also by `cod_citta_metro`, since only some of the "province" have a "città metropolitana" (9 of them: Torino, Milano, Venezia, Genova, Bologna, Firenze, Roma, Napoli, Bari):
+
+```{r}
+comuni %>% left_join(province, by = "cod_provincia")
+```
+
+Note that the `cod_citta_metro` columns in the output are disambiguated with a suffix.
+
+* A named character vector: `by = c("x" = "a")`. This will match variable `x` in table `x` to variable `a` in table `b`. For example, suppose the `regioni2` table is equal to `regioni` except for that its id variable is called `id_regione` and not `cod_regione` and suppose we want to use `regioni2` to associate the "regione" to each "comune":
+
+```{r}
+regioni2 <- regioni %>% rename(id_regione = cod_regione)
+```
+
+Then, in this case
+
+```{r}
+comuni %>% left_join(regioni2, c("cod_regione" = "id_regione"))
+``` 
+
+
+## A pretty example
+
+With the commands you have seen so far, with very few lines of `R` code you can for example:
+
+* calculate the population living in the Italian "province":
+
+```{r}
+province2 <-
+  province %>%
+  left_join(comuni) %>%
+  group_by(provincia) %>%
+  summarise(pop_legale = sum(pop_legale))
+province2
+```
+
+* and sort the Italian "province" by legal population living in them:
+
+```{r}
+province2 %>% arrange(desc(pop_legale))
+```
+
+* calculate the population living in the Italian "regioni":
+
+```{r}
+regioni2 <-
+  regioni %>%
+  left_join(comuni) %>%
+  group_by(regione) %>%
+  summarise(pop_legale = sum(pop_legale))
+regioni2
+```
+
+* and sort the Italian "regioni" by legal population living in them:
+
+```{r}
+regioni2 %>% arrange(desc(pop_legale))
+```
+
+* calculate the population living in the "comuni" which are administrative centers of their "province":
+
+```{r}
+comuni2 <-
+  comuni %>%
+  filter(comune_cap_prov) %>%
+  select(comune, pop_legale)
+comuni2
+```
+
+* and sort the Italian "comuni" which are administrative centers of their "province":
+
+```{r}
+comuni2 %>% arrange(desc(pop_legale))
+```
+
+
+## Types of mutating join
+
+There are four types of mutating join, which differ in their behaviour when a match is not found: 
+
+* `inner_join(x, y)`
+* `left_join(x, y)`
+* `right_join(x, y)`
+* `outer_join(x, y)`
+
+We will consider these two new data frames, obtained from the previous ones, for the following examples:
+
+```{r}
+data(comuni) # reinitialize comuni
+province2 <-
+  province %>% inner_join(comuni, by = "cod_provincia") %>%
+  select(cod_provincia, provincia, cod_regione) %>%
+  unique %>% slice(c(74,75,9,1:8,10:73,76:n()))
+province2$cod_regione[province2$cod_provincia == "007"] <- NA
+regioni3 <- regioni %>% filter(regione != "Molise") # everybody knows that Molisen't
+```
+
+* `left_join(x, y)` includes all observations in `x`, regardless of whether they match or not. This is the most commonly used join because it ensures that you don’t lose observations from your primary table:
+
+```{r}
+province2 %>% left_join(regioni3)
+```
+
+* `inner_join(x, y)` only includes observations that match in both x and y:
+
+```{r}
+province2 %>% inner_join(regioni3)
+```
+
+* `right_join(x, y)` includes all observations in `y`. It’s equivalent to `left_join(y, x)`, but the columns will be ordered differently:
+
+```{r}
+province2 %>% right_join(regioni3)
+regioni3 %>% left_join(province2)
+```
+
+* `full_join()` includes all observations from `x` and `y`:
+
+```{r}
+province2 %>% full_join(regioni3)
+```
+
+Can you tell the difference between the first `left_join()` and the `full_join()` outputs?
+
+The left, right and full joins are collectively know as outer joins. When a row doesn’t match in an outer join, the new variables are filled in with missing values.
+
+While mutating joins are primarily used to add new variables, they can also generate new observations. If a match is not unique, a join will add all possible combinations (the Cartesian product) of the matching observations:
+
+```{r}
+regioni4 <-
+  regioni %>% inner_join(comuni, by = "cod_regione") %>%
+  select(cod_regione, regione, cod_rip_geo) %>% unique
+ripartizioni2 <-
+  data.frame(cod_rip_geo = c("1","2"), rip_geo = rep("Nord",2)) %>%
+  bind_rows(ripartizioni)
+```
+
+```{r}
+regioni4 %>% left_join(ripartizioni2) %>% data.frame
+```
+
+
+# Filtering joins
+
+Filtering joins match observations in the same way as mutating joins, but affect the observations, not the variables. There are two types:
+
+* `semi_join(x, y)` keeps all observations in `x` that have a match in `y`;
+* `anti_join(x, y)` drops all observaitons in `x` that have a match in `y`.
+
+These are most useful for diagnosing join mismatches.
+
+```{r}
+province2 %>% anti_join(regioni3)
+```
+
+If you’re worried about what observations your joins will match, start with a `semi_join()` or `anti_join()`. `semi_join()` and `anti_join()` never duplicate; they only ever remove observations:
+
+Twenty rows to start with:
+
+```{r}
+nrow(regioni4)
+```
+
+And we get 28 rows after the join:
+
+```{r}
+regioni4 %>% inner_join(ripartizioni2) %>% nrow()
+```
+
+But only twenty rows actually match:
+
+```{r}
+regioni4 %>% semi_join(ripartizioni2) %>% nrow()
+```
+
+
+# Set operations
+
+Set operations expect the `x` and `y` inputs to have the same variables, and treat the observations like sets:
+
+* `intersect(x, y)`: return only observations in both `x` and `y`;
+* `union(x, y)`: return unique observations in `x` and `y`;
+* `setdiff(x, y)`: return observations in `x`, but not in `y`.
+
+Given this simple data:
+
+```{r}
+ripartizioni3 <- ripartizioni2 %>% slice(c(1,5,6))
+ripartizioni3$rip_geo[3] <- "Mezzogiorno"
+ripartizioni
+ripartizioni3
+```
+
+The four possibilities are:
+
+```{r}
+intersect(ripartizioni, ripartizioni3)
+union(ripartizioni, ripartizioni3) # Note that we get 7 rows, not 8
+setdiff(ripartizioni, ripartizioni3)
+setdiff(ripartizioni3, ripartizioni)
+```
+
+<!-- 
+Each two-table verb has a straightforward SQL equivalent.
+-->
+
+
+# Coercion rules
+
+When joining tables, `dplyr` is a little more conservative than base `R` about the types of variable that it considers equivalent. This is mostly likely to surprise you when working with factors:
+
+* Factors with different levels are coerced to character with a warning:
+
+```{r}
+# First data frame
+ripartizioni4 <- ripartizioni
+ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo)
+ripartizioni4
+ripartizioni4 %>% str
+# Second data frame
+ripartizioni5 <- ripartizioni3
+ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo)
+ripartizioni5
+ripartizioni5 %>% str
+# Join
+(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
+joined_df %>% str()
+```
+
+* Factors with the same levels in a different order are coerced to character with a warning:
+
+```{r}
+# First data frame
+ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo,
+                                levels = c("Centro","Isole","Nord-est","Nord-ovest","Sud",
+                                           "Nord","Mezzogiorno"))
+ripartizioni4
+ripartizioni4 %>% str
+# Second data frame
+ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo,
+                                levels = c("Nord","Centro","Mezzogiorno",
+                                           "Isole","Nord-est","Nord-ovest","Sud"))
+ripartizioni5
+ripartizioni5 %>% str
+# Join
+(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
+joined_df %>% str()
+```
+
+* Factors are preserved only if the levels match exactly:
+
+```{r}
+# First data frame
+ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo,
+                                levels = c("Nord","Centro","Mezzogiorno",
+                                           "Nord-est","Nord-ovest","Sud","Isole"))
+ripartizioni4
+ripartizioni4 %>% str
+# Second data frame
+ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo,
+                                levels = c("Nord","Centro","Mezzogiorno",
+                                           "Nord-est","Nord-ovest","Sud","Isole"))
+ripartizioni5
+ripartizioni5 %>% str
+# Join
+(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
+joined_df %>% str()
+``` 
+
+* A factor and a character are coerced to character with a warning:
+
+```{r}
+# First data frame
+ripartizioni
+ripartizioni %>% str
+# Second data frame
+ripartizioni4
+ripartizioni4 %>% str
+# Join
+(joined_df <- ripartizioni %>% full_join(ripartizioni4))
+joined_df %>% str()
+```
+
+* Otherwise logicals will be silently upcast to integer, and integer to numeric, but coercing to character will raise an error:
+
+```{r}
+# First data frame
+ripartizioni6 <- ripartizioni3
+ripartizioni6$cod_rip_geo <- as.numeric(ripartizioni6$cod_rip_geo)
+ripartizioni6
+ripartizioni6 %>% str
+# Second data frame
+ripartizioni7 <- ripartizioni6
+ripartizioni7$cod_rip_geo[3] <- 4.5
+ripartizioni7
+ripartizioni7 %>% str
+# Join
+(joined_df <- ripartizioni6 %>% full_join(ripartizioni7))
+joined_df %>% str()
+```
+
+```{r, error=TRUE}
+# First data frame
+ripartizioni6
+ripartizioni6 %>% str
+# Second data frame
+ripartizioni3
+ripartizioni3 %>% str
+# Join
+(joined_df <- full_join(ripartizioni6, ripartizioni3))
+```
+
+
+# Binding
+
+`bind_rows` and `bind_cols` allow to bind data frames by rows and by columns, respectively:
+
+```{r}
+ripartizioni2
+ripartizioni3
+ripartizioni2 %>% bind_rows(ripartizioni3)
+ripartizioni2 %>% slice(c(1,5,6)) %>% bind_cols(ripartizioni3)
+```
+

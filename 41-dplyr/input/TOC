@@ -1,0 +1,25 @@
+Introduction
+Introduction and Data Used            | 1-intro.Rmd
+
+Base dplyr
+Introduction to dplyr                 | 2-0-dplyr-intro.Rmd
+Select		                            | 2-1-select.Rmd
+Filter		                            | 2-2-filter.Rmd
+Arrange     		                      | 2-3-arrange.Rmd
+Mutate                                | 2-4-mutate.Rmd
+Summarise                             | 2-5-summarise.Rmd
+Grouping Data	                        | 3-group.Rmd
+Chaining Verbs                        | 4-chain.Rmd
+
+Advanced dplyr
+Each                                  | 5-each.Rmd
+Generic do                            | 6-do.Rmd
+Combining Data                        | 7-combining.Rmd
+Databases                             | 8-databases.Rmd
+Non-Standard Evaluation               | 9-nse.Rmd
+
+tidyr
+Tidy Data with tidyr                  | 10-tidyr.Rmd
+
+lubridate
+Managing dates with lubridate         | 11-lubridate.Rmd
