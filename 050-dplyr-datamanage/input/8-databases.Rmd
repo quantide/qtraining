@@ -1,0 +1,126 @@
+---
+title: "DB Interface"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+require(dplyr)
+require(ggplot2)
+require(DBI)
+require(RSQLite)
+```
+
+
+# Getting Started with Large Data 
+
+To experimement with large files you may want to use data from http://stat-computing.org/dataexpo/2009/the-data.html.
+
+The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are nearly 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12Gb when uncompressed. Only four of these files will be considered in the next example for a 29 millions records data frame.
+
+This is clearly a case for SQLite: let us load the `RSQLite` package.
+
+```{r message=FALSE}
+require(RSQLite)
+```
+
+As these files might have different encodings you may need to define a simple function that returns the encoding of the file. Nothe that this function uses unix system commands and may not work under windows based computers.
+
+```{r}
+charset <- function (file){
+  info <- system(paste("file -i" ,file ), intern = TRUE)
+  info_split <- strsplit(info, split = "charset=")[[1]][2]
+  info_split
+}
+```
+
+You then create an empty SQLite database with a little trick that ensures the database is reoved in case it already exists:
+
+```{r}
+path <- "./"
+db <- "ontime.sqlite"
+path_db <- paste(path, db, sep = "/")
+db_exists <- list.files(path, pattern = db)
+if(length(db_exists) != 0) system(paste("rm", path_db))
+con <- dbConnect(RSQLite::SQLite(), path_db)
+```
+
+Now it's time to get the list of files you want to load:
+
+```{r}
+files <- list.files("./../data", pattern = ".csv", full.names = TRUE)
+```
+
+and by using a for loop you can load all the files into the newly created data base:
+
+```{r}
+for (i in 1:length(files)){
+  head <- ifelse (i == 1, TRUE, FALSE)
+  skip <- ifelse (i == 1, 0, 1)
+  append <- ifelse (i == 1, FALSE, TRUE)
+  this_file <- files[i]
+  encoding <- charset(this_file)
+  df <- read.table(this_file, sep = ",", head = head, encoding = encoding, skip = skip, nrows = 100)
+  dbWriteTable(conn = con, name = "ontime", value = df ,append = append)
+  cat(date() , this_file, "loaded", "\n")
+  rm(df)
+}  
+```
+
+finally disconnect from the database:
+
+```{r}
+dbDisconnect(con)
+```
+
+You can now start using the data base with dplyr interface:
+
+```{r}
+con_dplyr <- src_sqlite(path_db)
+ontime <- tbl(con_dplyr, "ontime")
+class(ontime)
+dim(ontime)
+```
+
+When working with databases, `dplyr` tries to be as lazy as possible. It’s lazy in two ways:
+
+* It never pulls data back to `R` unless you explicitly ask for it;
+* It delays doing any work until the last possible minute, collecting together everything you want to do then sending that to the database in one step.
+
+For example, take the following code:
+
+```{r}
+ontime_stat <- ontime %>% group_by(Year, Month) %>% 
+   summarise(avg = mean(DepDelay), min = min(DepDelay), max = max(DepDelay)) 
+```
+
+Suprisingly, this sequence of operations never actually touches the database. It’s not until you ask for the data (e.g. by printing `ontime_stat`) that `dplyr` generates the SQL and requests the results from the database, and even then it only pulls down 10 rows:
+
+```{r}
+ontime_stat
+class(ontime_stat)
+```
+
+To pull down all the results use `collect()`, which returns a `tbl` class object:
+
+```{r}
+ontime_dep_delay <- ontime %>%
+  select(year = Year, dep_delay = DepDelay, arr_delay = ArrDelay) %>%
+  filter(dep_delay > 0) %>%
+  collect()
+```
+
+Once data are collected you can use it within `R`:
+
+```{r}
+pl <- ggplot(ontime_dep_delay , aes(dep_delay, arr_delay))
+pl <- pl + stat_binhex(bins = 30) + facet_wrap(~year, ncol = 2)
+print(pl)
+```
+
+
+
