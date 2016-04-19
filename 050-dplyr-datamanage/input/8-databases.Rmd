@@ -30,7 +30,7 @@ require(RSQLite)
 
 As these files might have different encodings you may need to define a simple function that returns the encoding of the file. Nothe that this function uses unix system commands and may not work under windows based computers.
 
-```{r}
+```{r eval=FALSE}
 charset <- function (file){
   info <- system(paste("file -i" ,file ), intern = TRUE)
   info_split <- strsplit(info, split = "charset=")[[1]][2]
@@ -40,7 +40,7 @@ charset <- function (file){
 
 You then create an empty SQLite database with a little trick that ensures the database is reoved in case it already exists:
 
-```{r}
+```{r eval=FALSE}
 path <- "./"
 db <- "ontime.sqlite"
 path_db <- paste(path, db, sep = "/")
@@ -51,13 +51,13 @@ con <- dbConnect(RSQLite::SQLite(), path_db)
 
 Now it's time to get the list of files you want to load:
 
-```{r}
+```{r eval=FALSE}
 files <- list.files("./../data", pattern = ".csv", full.names = TRUE)
 ```
 
 and by using a for loop you can load all the files into the newly created data base:
 
-```{r}
+```{r eval=FALSE}
 for (i in 1:length(files)){
   head <- ifelse (i == 1, TRUE, FALSE)
   skip <- ifelse (i == 1, 0, 1)
@@ -73,13 +73,13 @@ for (i in 1:length(files)){
 
 finally disconnect from the database:
 
-```{r}
+```{r eval=FALSE}
 dbDisconnect(con)
 ```
 
 You can now start using the data base with dplyr interface:
 
-```{r}
+```{r eval=FALSE}
 con_dplyr <- src_sqlite(path_db)
 ontime <- tbl(con_dplyr, "ontime")
 class(ontime)
@@ -93,21 +93,21 @@ When working with databases, `dplyr` tries to be as lazy as possible. It’s laz
 
 For example, take the following code:
 
-```{r}
+```{r eval=FALSE}
 ontime_stat <- ontime %>% group_by(Year, Month) %>% 
    summarise(avg = mean(DepDelay), min = min(DepDelay), max = max(DepDelay)) 
 ```
 
 Suprisingly, this sequence of operations never actually touches the database. It’s not until you ask for the data (e.g. by printing `ontime_stat`) that `dplyr` generates the SQL and requests the results from the database, and even then it only pulls down 10 rows:
 
-```{r}
+```{r eval=FALSE}
 ontime_stat
 class(ontime_stat)
 ```
 
 To pull down all the results use `collect()`, which returns a `tbl` class object:
 
-```{r}
+```{r eval=FALSE}
 ontime_dep_delay <- ontime %>%
   select(year = Year, dep_delay = DepDelay, arr_delay = ArrDelay) %>%
   filter(dep_delay > 0) %>%
@@ -116,7 +116,7 @@ ontime_dep_delay <- ontime %>%
 
 Once data are collected you can use it within `R`:
 
-```{r}
+```{r eval=FALSE}
 pl <- ggplot(ontime_dep_delay , aes(dep_delay, arr_delay))
 pl <- pl + stat_binhex(bins = 30) + facet_wrap(~year, ncol = 2)
 print(pl)

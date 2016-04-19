@@ -1,0 +1,70 @@
+## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+require(dplyr)
+require(ggplot2)
+require(DBI)
+require(RSQLite)
+
+## ----message=FALSE-------------------------------------------------------
+require(RSQLite)
+
+## ----eval=FALSE----------------------------------------------------------
+## charset <- function (file){
+##   info <- system(paste("file -i" ,file ), intern = TRUE)
+##   info_split <- strsplit(info, split = "charset=")[[1]][2]
+##   info_split
+## }
+
+## ----eval=FALSE----------------------------------------------------------
+## path <- "./"
+## db <- "ontime.sqlite"
+## path_db <- paste(path, db, sep = "/")
+## db_exists <- list.files(path, pattern = db)
+## if(length(db_exists) != 0) system(paste("rm", path_db))
+## con <- dbConnect(RSQLite::SQLite(), path_db)
+
+## ----eval=FALSE----------------------------------------------------------
+## files <- list.files("./../data", pattern = ".csv", full.names = TRUE)
+
+## ----eval=FALSE----------------------------------------------------------
+## for (i in 1:length(files)){
+##   head <- ifelse (i == 1, TRUE, FALSE)
+##   skip <- ifelse (i == 1, 0, 1)
+##   append <- ifelse (i == 1, FALSE, TRUE)
+##   this_file <- files[i]
+##   encoding <- charset(this_file)
+##   df <- read.table(this_file, sep = ",", head = head, encoding = encoding, skip = skip, nrows = 100)
+##   dbWriteTable(conn = con, name = "ontime", value = df ,append = append)
+##   cat(date() , this_file, "loaded", "\n")
+##   rm(df)
+## }
+
+## ----eval=FALSE----------------------------------------------------------
+## dbDisconnect(con)
+
+## ----eval=FALSE----------------------------------------------------------
+## con_dplyr <- src_sqlite(path_db)
+## ontime <- tbl(con_dplyr, "ontime")
+## class(ontime)
+## dim(ontime)
+
+## ----eval=FALSE----------------------------------------------------------
+## ontime_stat <- ontime %>% group_by(Year, Month) %>%
+##    summarise(avg = mean(DepDelay), min = min(DepDelay), max = max(DepDelay))
+
+## ----eval=FALSE----------------------------------------------------------
+## ontime_stat
+## class(ontime_stat)
+
+## ----eval=FALSE----------------------------------------------------------
+## ontime_dep_delay <- ontime %>%
+##   select(year = Year, dep_delay = DepDelay, arr_delay = ArrDelay) %>%
+##   filter(dep_delay > 0) %>%
+##   collect()
+
+## ----eval=FALSE----------------------------------------------------------
+## pl <- ggplot(ontime_dep_delay , aes(dep_delay, arr_delay))
+## pl <- pl + stat_binhex(bins = 30) + facet_wrap(~year, ncol = 2)
+## print(pl)
+
