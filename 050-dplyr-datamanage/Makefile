@@ -2,9 +2,9 @@ PROJECT = dplyr
 
 INPUT_DIR = input
 
-OUTPUT_DIR = html
+OUTPUT_DIR = output/html
 
-PURL_DIR = purl
+PURL_DIR = output/purl
 
 HTML_FILES := $(patsubst %.Rmd, %.html, $(wildcard $(INPUT_DIR)/*.Rmd)) \
               $(patsubst %.md, %.html, $(wildcard $(INPUT_DIR)/*.md))

@@ -2,8 +2,8 @@
 build_toc_html <- function(
   path=getwd(),
   toc_file="TOC", 
-  html_toc_template="include/html/before-body-template.html",
-  html_toc_out="include/html/before-body.html",
+  html_toc_template="../include/html/before-body-template.html",
+  html_toc_out="../include/html/before-body.html",
   h1="yaml", h2="yaml", yaml_file="input/_output.yaml",
   index_description="About this course",
   acknowledgements_description="Acknowledgements",
