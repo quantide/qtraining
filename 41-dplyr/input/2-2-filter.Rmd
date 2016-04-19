@@ -11,6 +11,7 @@ source("options.R")
 # that is required by following examples
 require(dplyr)
 require(qdata)
+require(lubridate)
 data(bank)
 ```
 
@@ -23,9 +24,8 @@ data(bank)
 
 The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.
 
-For example, you can select all calls made on 2008-05-05 to students:
+For example, you can select all calls made on 2008-05-05 to students whit balance above 20,000:
 
-<!-- AS spiegare date nell'esempio sotto -->
 
 ```{r}
 filter(bank, job == "student", balance > 20000)
@@ -33,14 +33,7 @@ filter(bank, job == "student", as.character(date) == "2008-05-05")
 filter(bank, job == "student", date == ymd("2008-05-05"))
 ```
 
-
-This is equivalent to the more verbose:
-
-<!--- AS add example with balance --> 
-
-```{r}
-bank[bank$date == ymd("2008-05-05") & bank$job == "student", ]
-```
+Note that you'll have to either convert variable `date` to character or the string "2008-05-05" to an object of class `POSIX` as `dplyr` allows comparison between same class objects only.
 
 `filter()` works similarly to `subset()` except that you can give it any number of filtering conditions which are joined together with `&` (not `&&` which is easy to do accidentally!). 
 
@@ -67,17 +60,30 @@ filter(bank, job == "admin." | job == "technician")
 # `slice()`
 To select rows by position, use `slice()`:
 
-For example, you can select, respectively, the first 10 calls or the last call of the dataset as follow:
+You can select the first 10 calls of the bank dataset as follow:
 
 ```{r}
 slice(bank, 1:5)
 ```
-<!-- AS spiegare esempio esotto -->
+
+Or the last row by:
+
 
 ```{r}
 # select last row of the dataset
 slice(bank, n()) 
 ```
+
+This function is implemented special for each data source and can only be used from within summarise, mutate and filter
+
+
+where function `n()` returns the number of element of a vector in the current group. This function is implemented special for each data source and can only be used from within `summarise()`, `mutate()` and `filter()`
+
+?n
+
+
+or the last call
+
 
 
 # `sample_n()` and `sample_frac()`

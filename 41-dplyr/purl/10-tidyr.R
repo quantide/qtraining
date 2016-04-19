@@ -42,7 +42,7 @@ df <- data.frame(
 df
 
 ## ------------------------------------------------------------------------
-separate(df, col = "gnd_cls", into = c("gnd", "cls"), sep = "-")
+separate(df, col = "gnd_cls", into = c("gender", "class"), sep = "-")
 
 ## ------------------------------------------------------------------------
 df <- data.frame(country = c("EU", "EU", "US", "US"),

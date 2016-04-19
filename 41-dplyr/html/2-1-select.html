@@ -508,7 +508,8 @@ $(document).ready(function () {
 ## ..   ...   ...          ...      ...       ...     ...     ...     ...    ...     ...   ...    ...   ...
 ## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
 ##   (fctr), y (fctr)</code></pre>
-<pre class="r"><code>select(bank, ends_with(&quot;tion&quot;), everything() ) # change the order of columns</code></pre>
+<pre class="r"><code># change the order of columns
+select(bank, ends_with(&quot;tion&quot;), everything() ) </code></pre>
 <pre><code>## Source: local data frame [45,211 x 20]
 ## 
 ##    education duration    id   age          job  marital default balance housing   loan contact   day  month
@@ -529,7 +530,8 @@ $(document).ready(function () {
 <ul>
 <li><code>matches()</code> selects all variables whose name matches the regular expression “.r”:</li>
 </ul>
-<pre class="r"><code>select(bank, matches(&quot;.r&quot;)) # match all variables containing &quot;r&quot;, but not at the first place</code></pre>
+<pre class="r"><code># match all variables containing &quot;r&quot;, but not at the first place
+select(bank, matches(&quot;.r&quot;)) </code></pre>
 <pre><code>## Source: local data frame [45,211 x 4]
 ## 
 ##     marital  year duration previous
@@ -548,39 +550,39 @@ $(document).ready(function () {
 <ul>
 <li><code>num_range</code> selects all variables starting with “x” and ending with a number:</li>
 </ul>
-<pre class="r"><code>bank2 &lt;- select(bank, x1 = year, x2 = month, x3 = day, x4 = age, x5 = job)</code></pre>
-<pre class="r"><code>select(bank2, num_range(&quot;x&quot;, 1:3)) # select x1, x2, x3</code></pre>
-<pre><code>## Source: local data frame [45,211 x 3]
+<pre class="r"><code>data(tennis)
+wimbledon</code></pre>
+<pre><code>## Source: local data frame [48 x 10]
 ## 
-##       x1     x2    x3
-##    (int) (fctr) (int)
-## 1   2008    may     5
-## 2   2008    may     5
-## 3   2008    may     5
-## 4   2008    may     5
-## 5   2008    may     5
-## 6   2008    may     5
-## 7   2008    may     5
-## 8   2008    may     5
-## 9   2008    may     5
-## 10  2008    may     5
-## ..   ...    ...   ...</code></pre>
-<pre class="r"><code>select(bank2, num_range(&quot;x&quot;, c(1,3,5))) # select x1, x3, x5</code></pre>
-<pre><code>## Source: local data frame [45,211 x 3]
+##     year champion_country      champion runner_up_country      runner_up    s1        s2    s3    s4    s5
+##    (int)            (chr)         (chr)             (chr)          (chr) (chr)     (chr) (chr) (chr) (chr)
+## 1   1968              AUS     Rod Laver               AUS     Tony Roche   6–3       6-4   6–2            
+## 2   1969              AUS     Rod Laver               AUS  John Newcombe   6–4       5–7   6–4   6–4      
+## 3   1970              AUS John Newcombe               AUS   Ken Rosewall   5–7       6–3   6–2   3–6   6–1
+## 4   1971              AUS John Newcombe               USA     Stan Smith   6–3       5–7   2–6   6–4   6–4
+## 5   1972              USA    Stan Smith               ROU   Ilie Năstase   4–6       6–3   6–3   4–6   7–5
+## 6   1973              TCH     Jan Kodeš               URS Alex Metreveli   6–1  9–8(7–5)   6–3            
+## 7   1974              USA Jimmy Connors               AUS   Ken Rosewall   6–1       6–1   6–4            
+## 8   1975              USA   Arthur Ashe               USA  Jimmy Connors   6–1       6–1   5–7   6–4      
+## 9   1976              SWE    Björn Borg               ROU   Ilie Năstase   6–4       6–2   9–7            
+## 10  1977              SWE    Björn Borg               USA  Jimmy Connors   3–6       6–2   6–1   5–7   6–4
+## ..   ...              ...           ...               ...            ...   ...       ...   ...   ...   ...</code></pre>
+<pre class="r"><code>select(wimbledon ,num_range(&quot;s&quot;, c(1:3, 5)))</code></pre>
+<pre><code>## Source: local data frame [48 x 4]
 ## 
-##       x1    x3           x5
-##    (int) (int)       (fctr)
-## 1   2008     5   management
-## 2   2008     5   technician
-## 3   2008     5 entrepreneur
-## 4   2008     5  blue-collar
-## 5   2008     5      unknown
-## 6   2008     5   management
-## 7   2008     5   management
-## 8   2008     5 entrepreneur
-## 9   2008     5      retired
-## 10  2008     5   technician
-## ..   ...   ...          ...</code></pre>
+##       s1        s2    s3    s5
+##    (chr)     (chr) (chr) (chr)
+## 1    6–3       6-4   6–2      
+## 2    6–4       5–7   6–4      
+## 3    5–7       6–3   6–2   6–1
+## 4    6–3       5–7   2–6   6–4
+## 5    4–6       6–3   6–3   7–5
+## 6    6–1  9–8(7–5)   6–3      
+## 7    6–1       6–1   6–4      
+## 8    6–1       6–1   5–7      
+## 9    6–4       6–2   9–7      
+## 10   3–6       6–2   6–1   6–4
+## ..   ...       ...   ...   ...</code></pre>
 <ul>
 <li><code>one_of</code> selects variables provided in a character vector:</li>
 </ul>
@@ -618,7 +620,7 @@ select(bank, one_of(vars))</code></pre>
 ## 10   single secondary
 ## ..      ...       ...</code></pre>
 <ul>
-<li><code>:</code> allows you to select a subset of variables from <code>dep_time</code> to <code>arr_delay</code>:</li>
+<li><code>:</code> allows you to select a subset of variables from <code>job</code> to <code>balance</code>:</li>
 </ul>
 <pre class="r"><code>select(bank, job:balance)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 5]

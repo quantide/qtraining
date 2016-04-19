@@ -87,19 +87,15 @@ select(bank, matches(".r"))
 ```
 
 
-<!--- AS: cambiare data frame di esempio -->
-
 * `num_range` selects all variables starting with "x" and ending with a number:
 
 ```{r}
-bank2 <- select(bank, x1 = year, x2 = month, x3 = day, x4 = age, x5 = job)
+data(tennis)
+wimbledon
+select(wimbledon ,num_range("s", c(1:3, 5)))
 ```
 
-```{r}
-select(bank2, num_range("x", 1:3)) # select x1, x2, x3
-select(bank2, num_range("x", c(1,3,5))) # select x1, x3, x5
-```
- 
+
 * `one_of` selects variables provided in a character vector:
 
 ```{r}

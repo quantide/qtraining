@@ -345,8 +345,47 @@ $(document).ready(function () {
 <div id="group_by" class="section level1">
 <h1><code>group_by()</code></h1>
 <p>The verb functions are useful, but they become really powerful when you combine them with the idea of “group by”, repeating the operation individually on groups of observations within the dataset. In <code>dplyr</code>, you use the <code>group_by()</code> function to describe how to break a dataset down into groups of rows. You can then use the resulting object in exactly the same functions as above; they’ll automatically work “by group” when the input is a grouped.</p>
+<!-- explain -->
+<pre class="r"><code>df &lt;- data.frame(x = 1:6, f = rep(1:2, each = 3))
+dff &lt;- df %&gt;% group_by(f)
+dff</code></pre>
+<pre><code>## Source: local data frame [6 x 2]
+## Groups: f [2]
+## 
+##       x     f
+##   (int) (int)
+## 1     1     1
+## 2     2     1
+## 3     3     1
+## 4     4     2
+## 5     5     2
+## 6     6     2</code></pre>
+<pre class="r"><code>class(dff)</code></pre>
+<pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>dffn &lt;- dff %&gt;% mutate(n = row_number())
+
+class(dffn)</code></pre>
+<pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>dffa &lt;- dff %&gt;% arrange(desc(x))
+
+class(dffa)</code></pre>
+<pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>dfg &lt;- df %&gt;% 
+  group_by(f) %&gt;%
+  summarise(x_avg = mean(x))
+
+dfg</code></pre>
+<pre><code>## Source: local data frame [2 x 2]
+## 
+##       f x_avg
+##   (int) (dbl)
+## 1     1     2
+## 2     2     5</code></pre>
+<pre class="r"><code>class(dfg)</code></pre>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <p>In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (<code>count = n()</code>) and computing the average duration call (<code>dist = mean(duration, na.rm = TRUE)</code>) and balance (<code>delay = mean(balance, na.rm = TRUE)</code>):</p>
-<pre class="r"><code>by_year &lt;- group_by(bank, year)
+<pre class="r"><code>bank &lt;- tbl_df(bank)
+by_year &lt;- group_by(bank, year)
 summarise(by_year,
           count = n(),
           mean_duration = mean(duration, na.rm = TRUE),
@@ -358,6 +397,30 @@ summarise(by_year,
 ## 1  2008 27729      252.1936     1315.211
 ## 2  2009 14862      262.9644     1362.140
 ## 3  2010  2620      294.1065     1861.092</code></pre>
+<!-- AS comment on tables --->
+<pre class="r"><code>dm &lt;- mtcars %&gt;% 
+  group_by(cyl, carb) %&gt;%
+  summarise(mpg_mean = mean(mpg))
+
+
+tapply(dm$mpg_mean, list(dm$cyl, dm$carb), FUN = I)</code></pre>
+<pre><code>##       1     2    3     4    6  8
+## 4 27.58 25.90   NA    NA   NA NA
+## 6 19.75    NA   NA 19.75 19.7 NA
+## 8    NA 17.15 16.3 13.15   NA 15</code></pre>
+<pre class="r"><code>with(dm, tapply(mpg_mean, list(cyl, carb), FUN = I))</code></pre>
+<pre><code>##       1     2    3     4    6  8
+## 4 27.58 25.90   NA    NA   NA NA
+## 6 19.75    NA   NA 19.75 19.7 NA
+## 8    NA 17.15 16.3 13.15   NA 15</code></pre>
+<pre class="r"><code>require(xtable)</code></pre>
+<pre><code>## Loading required package: xtable</code></pre>
+<pre class="r"><code>xtabs(mpg_mean~cyl+carb, data = dm)</code></pre>
+<pre><code>##    carb
+## cyl     1     2     3     4     6     8
+##   4 27.58 25.90  0.00  0.00  0.00  0.00
+##   6 19.75  0.00  0.00 19.75 19.70  0.00
+##   8  0.00 17.15 16.30 13.15  0.00 15.00</code></pre>
 <p>Then, you search for the number of days covered per year. You report also the number of phone calls per year:</p>
 <pre class="r"><code>summarise(by_year,
           days = n_distinct(date),
@@ -371,48 +434,95 @@ summarise(by_year,
 ## 3  2010   227  2620</code></pre>
 <p>When you group by multiple variables, each summary peels off one level of the grouping. That makes it easy to progressively roll up a dataset:</p>
 <pre class="r"><code>daily &lt;- group_by(bank, year, month, day)
-(per_day &lt;- summarise(daily, calls = n()))</code></pre>
-<pre><code>## Source: local data frame [561 x 4]
+groups(daily)</code></pre>
+<pre><code>## [[1]]
+## year
+## 
+## [[2]]
+## month
+## 
+## [[3]]
+## day</code></pre>
+<pre class="r"><code>per_day &lt;- summarise(daily, calls = n())
+groups(per_day)</code></pre>
+<pre><code>## [[1]]
+## year
+## 
+## [[2]]
+## month</code></pre>
+<pre class="r"><code>per_month &lt;- summarise(per_day, calls = sum(calls))
+groups(per_month)</code></pre>
+<pre><code>## [[1]]
+## year</code></pre>
+<pre class="r"><code>per_year &lt;- summarise(per_month, calls = sum(calls))
+groups(per_year)</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>df &lt;- data.frame(year = rep(c(2010, 2011, 2012), each = 3), 
+                 month = rep(1:3, each = 3), 
+                 day = rep(20:22, 3), 
+                 x = 1:9)
+
+df</code></pre>
+<pre><code>##   year month day x
+## 1 2010     1  20 1
+## 2 2010     1  21 2
+## 3 2010     1  22 3
+## 4 2011     2  20 4
+## 5 2011     2  21 5
+## 6 2011     2  22 6
+## 7 2012     3  20 7
+## 8 2012     3  21 8
+## 9 2012     3  22 9</code></pre>
+<pre class="r"><code>df1 &lt;- df %&gt;% group_by(year, month, day) 
+
+groups(df1)</code></pre>
+<pre><code>## [[1]]
+## year
+## 
+## [[2]]
+## month
+## 
+## [[3]]
+## day</code></pre>
+<pre class="r"><code>df2 &lt;-  df1 %&gt;% 
+  summarise(x_avg = mean(x), n = n())
+
+df2</code></pre>
+<pre><code>## Source: local data frame [9 x 5]
 ## Groups: year, month [?]
 ## 
-##     year  month   day calls
-##    (int) (fctr) (int) (int)
-## 1   2008    may     5   361
-## 2   2008    may     6   405
-## 3   2008    may     7   390
-## 4   2008    may     8   453
-## 5   2008    may     9   429
-## 6   2008    may    12   280
-## 7   2008    may    13   413
-## 8   2008    may    14   440
-## 9   2008    may    15   482
-## 10  2008    may    16   391
-## ..   ...    ...   ...   ...</code></pre>
-<pre class="r"><code>(per_month &lt;- summarise(per_day, calls = sum(calls)))</code></pre>
-<pre><code>## Source: local data frame [30 x 3]
+##    year month   day x_avg     n
+##   (dbl) (int) (int) (dbl) (int)
+## 1  2010     1    20     1     1
+## 2  2010     1    21     2     1
+## 3  2010     1    22     3     1
+## 4  2011     2    20     4     1
+## 5  2011     2    21     5     1
+## 6  2011     2    22     6     1
+## 7  2012     3    20     7     1
+## 8  2012     3    21     8     1
+## 9  2012     3    22     9     1</code></pre>
+<pre class="r"><code>groups(df2)</code></pre>
+<pre><code>## [[1]]
+## year
+## 
+## [[2]]
+## month</code></pre>
+<pre class="r"><code>summarise(df2, n())</code></pre>
+<pre><code>## Source: local data frame [3 x 3]
 ## Groups: year [?]
 ## 
-##     year  month calls
-##    (int) (fctr) (int)
-## 1   2008    may  7957
-## 2   2008    jun  4486
-## 3   2008    jul  6380
-## 4   2008    aug  5215
-## 5   2008    oct    80
-## 6   2008    nov  3598
-## 7   2008    dec    13
-## 8   2009    jan  1176
-## 9   2009    feb  2296
-## 10  2009    mar   258
-## ..   ...    ...   ...</code></pre>
-<pre class="r"><code>(per_year &lt;- summarise(per_month, calls = sum(calls)))</code></pre>
-<pre><code>## Source: local data frame [3 x 2]
+##    year month   n()
+##   (dbl) (int) (int)
+## 1  2010     1     3
+## 2  2011     2     3
+## 3  2012     3     3</code></pre>
+<pre class="r"><code>ungroup(df2) %&gt;% summarise(n())</code></pre>
+<pre><code>## Source: local data frame [1 x 1]
 ## 
-##    year calls
-##   (int) (int)
-## 1  2008 27729
-## 2  2009 14862
-## 3  2010  2620</code></pre>
+##     n()
+##   (int)
+## 1     9</code></pre>
 </div>
 
 

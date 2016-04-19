@@ -4,6 +4,7 @@
 require(dplyr)
 require(tidyr)
 require(qdata)
+require(broom)
 data(people)
 
 ## ------------------------------------------------------------------------

@@ -3,6 +3,8 @@
 # that is required by following examples
 require(dplyr)
 require(ggplot2)
+require(DBI)
+require(RSQLite)
 
 ## ----message=FALSE-------------------------------------------------------
 require(RSQLite)
