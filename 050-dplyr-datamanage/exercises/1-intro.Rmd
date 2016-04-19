@@ -1,0 +1,134 @@
+---
+title: Exercises with `dplyr` and `tidyr`
+author:
+- email: enrico.tonini\@quantide.com
+  name: Enrico Tonini
+date: ''
+output:
+  html_document:
+    self_contained: no
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr)
+options(width=80)
+```
+
+Introduction
+===========================================
+
+In this document you will find some exercises with R packages `dplyr` and `tidyr`. They are mainly based on the `nycflights13` data, taken from the `nycflights13` package.
+
+
+## Introduction to `nycflights13` data
+
+The `nycflights13` package contains information about all flights that departed from NYC (e.g. EWR, JFK and LGA) in 2013: 336,776 flights in total.
+
+```{r require, message=FALSE}
+require(nycflights13)
+ls(pos = "package:nycflights13")
+```
+
+To help understand what causes delays, it includes a number of useful datasets:
+
+* `flights`: information about all flights that departed from NYC
+* `weather`: hourly meterological data for each airport;
+* `planes`: construction information about each plane;
+* `airports`: airport names and locations;
+* `airlines`: translation between two letter carrier codes and names.
+
+
+### `flights`
+
+This dataset contains on-time data for all flights that departed from NYC (i.e. JFK, LGA or EWR) in 2013. The data frame has 16 variables and 336776 observations. The variables are organised as follow: 
+
+* Date of departure: `year`, `month`, `day`;
+* Departure and arrival times (local tz): `dep_time`, `arr_time`;
+* Departure and arrival delays, in minutes: `dep_delay`, `arr_delay` (negative times represent early departures/arrivals);
+* Time of departure broken in to hour and minutes: `hour`, `minute`;
+* Two letter carrier abbreviation: `carrier`;
+* Plane tail number: `tailnum`;
+* Flight number: `flight`;
+* Origin and destination: `origin`, `dest`;
+* Amount of time spent in the air: `air_time`;
+* Distance flown: `distance`.
+
+```{r flights}
+dim(flights)
+head(flights)
+str(flights)
+```
+
+
+### `airlines`
+
+This dataset contains airlines names and their respective carrier codes, it has 2 variables and 16 observations. Data structure shows that both variables involved are categorical.
+
+```{r airlines}
+dim(airlines)
+head(airlines)
+str(airlines)
+```
+
+
+### `airports`
+
+This dataset contains useful metadata about airports, that is:
+
+* FAA airport code: `faa`;
+* Usual name of the aiport: `name`;
+* Location of airport: `lat`, `lon`;
+* Altitude (in feet): `alt`;
+* Timezone offset from GMT: `tz`;
+* Daylight savings time zone: `dst` 
+    A = Standard US 
+    DST: starts on the second Sunday of March, ends on the first Sunday of November
+    U = unknown
+    N = no dst
+
+The data frame has 7 variables and 1397 observations.
+
+```{r airports}
+dim(airports)
+head(airports)
+str(airports)
+```
+
+
+### `planes`
+
+This dataset contains plane metadata for all plane tailnumbers found in the FAA aircraft registry (American Airways (AA) and Envoy Air (MQ) report fleet numbers rather than tail numbers). The data frame has 9 variables and 3322 observations. The variables are organised as follow: 
+
+* Tail number: `tailnum`;
+* Year manufactured: `year`;
+* Type of plane: `type`;
+* Manufacturer and model: `manufacturer`, `model`;
+* Number of engines and seats:  `engines`, `seats`;
+* Average cruising speed in mph: `speed`;
+* Type of engine: `engine`.
+
+```{r planes}
+dim(planes)
+head(planes)
+str(planes)
+```
+
+
+### `weather`
+
+This dataset is about hourly meterological data for LGA, JFK and EWR. The data frame has 14 variables and 8719 observations. The variables are organised as follow: 
+
+* Weather station: `origin` (named `origin` to faciliate merging with `flights` data);
+* Time of recording: `year`, `month`, `day`, `hour`;
+* Temperature and dewpoint in F: `temp`, `dewp`;
+* Relative humidity: `humid`;
+* Wind direction (in degrees), speed and gust speed (in mph): `wind_dir`, `wind_speed`, `wind_gust`;
+* Preciptation, in inches: `precip`;
+* Sea level pressure in millibars: `pressure`;
+* Visibility in miles: `visib`.
+
+```{r weather}
+dim(weather)
+head(weather)
+str(weather)
+```

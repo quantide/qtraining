@@ -1,0 +1,76 @@
+---
+title: 
+author:
+date: 
+output:
+  html_document:
+    self_contained: no
+---
+
+```{r setup, echo=FALSE, results='hide', message=FALSE}
+library(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+source("r/show-solution.R")
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+
+Do
+================================
+
+## `do`
+Note: all the exercises of this section are based on the `flights` dataset.
+
+```{r require, results='hide', message=FALSE}
+library(dplyr)
+library(nycflights13)
+```
+
+
+### Exercise 1
+Calculate quartiles (25-, 50- and 75-percentiles) of delay at arrival per origin. Put all three quartiles in a unique column.
+
+```{r ex1, echo=show_solution, eval=show_solution}
+flights %>%
+  group_by(origin) %>%
+  do(data.frame(p = (1:3)/4,
+                quantile = quantile(.$arr_delay, probs = (1:3)/4, na.rm = TRUE)))
+```
+
+
+### Exercise 2
+Redo the previous exercise putting the three quartiles in three different columns (hint: use `summarise()`).
+
+```{r ex2, echo=show_solution, eval=show_solution}
+flights %>%
+  group_by(origin) %>%
+  summarise(q25 = quantile(arr_delay, probs = .25, na.rm = TRUE),
+            q50 = median(arr_delay, na.rm = TRUE),
+            q75 = quantile(arr_delay, probs = .75, na.rm = TRUE))
+```
+
+
+### Exercise 3
+Calculate mean and standard deviation of delay at arrival per origin. Put both statistics in a unique column.
+
+```{r ex3, echo=show_solution, eval=show_solution}
+statistics <- function(x, ...)  {
+  ss <- c(mean = mean(x, ...), sd = sd(x, ...))
+  return(ss)
+}
+flights %>%
+  group_by(origin) %>%
+  do(data.frame(stats = c("mean", "sd") , value = statistics(.$arr_delay, na.rm = TRUE)))
+```
+
+
+### Exercise 4
+Redo the previous exercise putting mean and standard deviation in two different columns (hint: use `summarise()`).
+
+```{r ex4, echo=show_solution, eval=show_solution}
+flights %>%
+  group_by(origin) %>%
+  summarise(mean = mean(arr_delay, na.rm = TRUE),
+            sd = sd(arr_delay, na.rm = TRUE))
+```
+
