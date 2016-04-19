@@ -92,6 +92,7 @@ all: knitr html purl pdf
 change_dir:
 	$(MAKE) -C $(INPUT_PDF_DIR)
 	
+
 # build md files from rmd
 %.md: %.Rmd
 	Rscript -e "require(knitr); knit('$<',quiet=FALSE)"
