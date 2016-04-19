@@ -1,5 +1,5 @@
 ---
-title: Exercises with `dplyr` and `tidyr`
+title: "Exercises with `dplyr` and `tidyr`"
 author:
 - email: enrico.tonini\@quantide.com
   name: Enrico Tonini
@@ -7,6 +7,7 @@ date: ''
 output:
   html_document:
     self_contained: no
+  pdf_document: default
 ---
 
 ```{r setup, echo=FALSE, results='hide', message=FALSE}

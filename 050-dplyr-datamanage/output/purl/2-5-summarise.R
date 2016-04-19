@@ -1,27 +1,27 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
-require(dplyr)
-require(qdata)
-data(bank)
+## ----setup, echo=FALSE, results='hide', message=FALSE--------------------
+library(knitr)
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+source("r/show-solution.R")
+# ATTENZIONE: leggere nota dentro show-solution.R
 
-## ------------------------------------------------------------------------
-summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
-summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
+## ----require, results='hide', message=FALSE------------------------------
+library(dplyr)
+library(nycflights13)
 
-## ------------------------------------------------------------------------
-summarise(bank, first(job))
+## ----ex1, echo=show_solution, eval=show_solution-------------------------
+## summarise(flights,
+##           min_delay = min(arr_delay, na.rm = TRUE),
+##           max_delay = max(arr_delay, na.rm = TRUE),
+##           mean_delay = mean(arr_delay, na.rm = TRUE))
 
-## ------------------------------------------------------------------------
-summarise(bank, last(job))
+## ----ex2, echo=show_solution, eval=show_solution-------------------------
+## flights_jan <- filter(flights, month == 1)
+## summarise(flights_jan,
+##           min_delay = min(arr_delay, na.rm = TRUE),
+##           max_delay = max(arr_delay, na.rm = TRUE),
+##           mean_delay = mean(arr_delay, na.rm = TRUE))
 
-## ------------------------------------------------------------------------
-summarise(bank, nth(job,8))
-
-## ------------------------------------------------------------------------
-summarise(bank, n())
-
-## ------------------------------------------------------------------------
-summarise(bank, n_distinct(job))
-summarise(bank, n_distinct(education))
+## ----ex3, echo=show_solution, eval=show_solution-------------------------
+## summarise(flights, n = n(), n_carriers = n_distinct(carrier))
 

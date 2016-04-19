@@ -1,80 +1,36 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
-require(dplyr)
-require(qdata)
-data(bank)
+## ----setup, echo=FALSE, results='hide', message=FALSE--------------------
+library(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+source("r/show-solution.R")
+# ATTENZIONE: leggere nota dentro show-solution.R
 
-## ------------------------------------------------------------------------
-df <- data.frame(x = 1:3, y = 3:1)
+## ----require, results='hide', message=FALSE------------------------------
+library(dplyr)
+library(nycflights13)
 
-df %>% mutate(x1 = x+1)
+## ----ex1, echo=show_solution, eval=show_solution-------------------------
+## flights2 <- mutate(flights,
+##                    gained_time = dep_delay - arr_delay,
+##                    speed = distance / air_time * 60)
+## select(flights2, dep_delay, arr_delay, gained_time, distance, air_time, speed)
 
-df %>% mutate(x = x+1)
+## ----ex2, echo=show_solution, eval=show_solution-------------------------
+## transmute(flights,
+##           gained_time = dep_delay - arr_delay,
+##           speed = distance / air_time * 60)
 
+## ----ex3, echo=show_solution, eval=show_solution-------------------------
+## sorted_flights <- arrange(flights, year, month, day, hour, minute)
+## delay <- select(sorted_flights, dep_delay, arr_delay)
+## mutate(delay, delta_delay = dep_delay - lag(dep_delay))
 
-df %>% mutate(x = x+1, y = x+1)
+## ----ex4, echo=show_solution, eval=show_solution-------------------------
+## mutate(delay, delay_rank = min_rank(arr_delay))
 
-df %>% mutate(y = x+1, x = x+1)
+## ----ex5, echo=show_solution, eval=show_solution-------------------------
+## mutate(delay, delay_rank = row_number(arr_delay))
 
-
-df %>% mutate(x1 = x+1, y1 = x1+1)
-
-#df %>% mutate(y1 = x1+1, x1 = x+1)
-df %>% mutate(y1 = x+1, x1 = x+1)
-
-df %>% mutate(xx = x)
-
-
-## ------------------------------------------------------------------------
-bank <- tbl_df(bank)
-bank %>% 
-  select (year, age, balance) %>%
-  mutate(balance_by_age = balance / age, year_of_birth = year - age)
-
-## ------------------------------------------------------------------------
-mutate(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
-
-## ---- error=TRUE---------------------------------------------------------
-transform(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
-
-## ------------------------------------------------------------------------
-transmute(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
-
-## ------------------------------------------------------------------------
-time <- select(bank, duration)
-mutate(time, lead_duration = lead(duration) ,delta_duration = lead_duration - duration)
-
-## ------------------------------------------------------------------------
-mutate(time, lag_duration = lag(duration) ,delta_duration = duration - lag_duration)
-
-## ------------------------------------------------------------------------
-mutate(time, duration_rank = min_rank(duration))
-
-## ------------------------------------------------------------------------
-mutate(time, duration_rank = dense_rank(duration))
-
-## ------------------------------------------------------------------------
-mutate(time, duration_rank = percent_rank(duration))
-
-## ------------------------------------------------------------------------
-mutate(time, duration_rank = row_number(duration))
-
-## ------------------------------------------------------------------------
-mutate(time, duration_rank = ntile(duration, 10))
-
-## ------------------------------------------------------------------------
-mutate(time, duration_rank = cume_dist(duration))
-
-## ------------------------------------------------------------------------
-mutate(time, duration_rank = between(duration, 0, 90))
-
-## ------------------------------------------------------------------------
-mutate(time, long_duration = cumall(duration > 100))
-
-## ------------------------------------------------------------------------
-mutate(time, short_duration = cumany(duration < 100))
-
-## ------------------------------------------------------------------------
-mutate(time, mean_duration = cummean(duration))
+## ----ex6, echo=show_solution, eval=show_solution-------------------------
+## mutate(delay, delay_rank = between(dep_delay, -3, 3))
 
