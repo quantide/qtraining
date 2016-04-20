@@ -1,46 +1,48 @@
-#PROJECT = dplyr
+# PARAMETERS DEFINITION
 
-#INPUT_DIR = input
+PROJECT = dplyr
 
-#OUTPUT_DIR = output/html
+INPUT_DIR = input
 
-#PURL_DIR = output/purl
+OUTPUT_DIR = output/html
 
-#HTML_FILES := $(patsubst %.Rmd, %.html, $(wildcard $(INPUT_DIR)/*.Rmd)) \
-#              $(patsubst %.md, %.html, $(wildcard $(INPUT_DIR)/*.md))
+PURL_DIR = output/purl
 
-#all: toc html zip
+HTML_FILES := $(patsubst %.Rmd, %.html, $(wildcard $(INPUT_DIR)/*.Rmd)) \
+              $(patsubst %.md, %.html, $(wildcard $(INPUT_DIR)/*.md))
 
-#zip:
-#	rm -f $(OUTPUT_DIR)/$(PROJECT).zip
-#	rm -f $(PURL_DIR)/R.zip
-#	zip -9 -r $(PROJECT).zip $(OUTPUT_DIR)/
-#	mv $(PROJECT).zip $(OUTPUT_DIR)/
-#	mv $(INPUT_DIR)/*.R $(PURL_DIR)/
-#	mv $(PURL_DIR)/options.R $(INPUT_DIR)/.
-#	zip -9 -r $(PURL_DIR)/R.zip $(PURL_DIR)/
+all: toc html zip
 
-#toc:
-#	R --slave -e "source('../include/r/build-toc-html.R'); build_toc_html(path='$(INPUT_DIR)/',download_file='$(PROJECT).zip')"
+zip:
+	rm -f $(OUTPUT_DIR)/$(PROJECT).zip
+	rm -f $(PURL_DIR)/R.zip
+	zip -9 -r $(PROJECT).zip $(OUTPUT_DIR)/
+	mv $(PROJECT).zip $(OUTPUT_DIR)/
+	mv $(INPUT_DIR)/*.R $(PURL_DIR)/
+	mv $(PURL_DIR)/options.R $(INPUT_DIR)/.
+	zip -9 -r $(PURL_DIR)/R.zip $(PURL_DIR)/
 
-#html: $(HTML_FILES)
+toc:
+	R --slave -e "source('../include/r/build-toc-html.R'); build_toc_html(path='$(INPUT_DIR)/',download_file='$(PROJECT).zip')"
 
-#.PHONY: change_dir
+html: $(HTML_FILES)
 
-#change_dir:
-#	$(MAKE) -C $(INPUT_DIR)
+.PHONY: change_dir
+
+change_dir:
+	$(MAKE) -C $(INPUT_DIR)
  
-#%.html: %.Rmd
-#	R --slave -e "set.seed(100);rmarkdown::render('$<',output_dir='$(OUTPUT_DIR)/');setwd('$(INPUT_DIR)/');knitr::purl('../$<')"
+%.html: %.Rmd
+	R --slave -e "set.seed(100);rmarkdown::render('$<',output_dir='$(OUTPUT_DIR)/');setwd('$(INPUT_DIR)/');knitr::purl('../$<')"
 	
 
-#%.html: %.md
-#	R --slave -e "set.seed(100);rmarkdown::render('$<',output_dir='$(OUTPUT_DIR)/')"
+%.html: %.md
+	R --slave -e "set.seed(100);rmarkdown::render('$<',output_dir='$(OUTPUT_DIR)/')"
 
 
-#.PHONY: clean
-#clean:
-#	$(RM) -rf $(OUTPUT_DIR)/*
+.PHONY: clean
+clean:
+	$(RM) -rf $(OUTPUT_DIR)/*
 
 ##########################################################################################
     	
@@ -57,7 +59,7 @@ LIST = \
 	4-chain \
 	5-do \
 	6-combining \
-
+	9-tidyr \
 
 ### PARAMETERS
 # PANDOC PATH (RSTUDIO VERSION)
@@ -70,8 +72,9 @@ INPUT_PDF_DIR = exercises
 OUTPUT_PDF_DIR = output/pdf
 
 ### LIST OF MD FILES TO BUILD PDF
-MD = $(INPUT_PDF_DIR)/$(addsuffix .md,$(LIST))
-
+MD_PATH = $(addprefix exercises/,$(LIST))
+MD = $(addsuffix .md,$(MD_PATH))
+MD_LIST = $(addsuffix .md,$(LIST))
 
 # PANDOC PDF OPTIONS
 PANDOC_PDF_OPTIONS = \
@@ -86,34 +89,44 @@ PANDOC_PDF_OPTIONS = \
 
 ### COMPILE
 # all: by default perform all actions
-all: knitr html purl pdf
+
+all: knitr pdf
+
 #.PHONY: change_dir
 
-change_dir:
-	$(MAKE) -C $(INPUT_PDF_DIR)
+#change_dir:
+#	$(MAKE) -C $(INPUT_PDF_DIR)
 	
+
+
 # build md files from rmd
 %.md: %.Rmd
 	Rscript -e "require(knitr); knit('$<',quiet=FALSE)"
 
+
 # build html files from md and upload
-%.html: %.md
-	Rscript -e "require(rmarkdown); render('$<', html_document())" 
+#%.html: %.md
+#	Rscript -e "require(rmarkdown);  render('$<', html_document())" 
 	#sed -i -e '1,/<body>/d' -e '/^<\/body>/,$$d' $*.html
 
 # build R files from rmd and upload
-%.R: %.Rmd
-	Rscript -e "require(knitr);  purl('$<')"
+#%.R: %.Rmd
+#	Rscript -e "require(knitr);  purl('$<'); getwd()"
+
+
 
 # build pdf file from md
-$(PDF_OUT): $(MD)
-	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $(MD) --output $(OUTPUT_PDF_DIR)/$(PDF_OUT)
+$(PDF_OUT): $(MD_LIST)
+	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $(MD_LIST) --output $(OUTPUT_PDF_DIR)/$(PDF_OUT)
 
 # single actions
 knitr: $(MD)
-html: $(addsuffix .html,$(LIST))
-purl: $(addsuffix .R,$(LIST))
+#html: $(addsuffix .html,$(MD_PATH))
+#purl: $(addsuffix .R,$(MD_PATH))
 pdf: $(PDF_OUT)
 
 # clean:
 	rm -f *.md *.html *.R
+
+
+

@@ -1,29 +1,37 @@
-## ----setup, echo=FALSE, results='hide', message=FALSE--------------------
-library(knitr) 
-options(width=80)
-opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-source("r/show-solution.R")
-# ATTENZIONE: leggere nota dentro show-solution.R
+## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+require(dplyr)
+require(qdata)
+require(lubridate)
+data(bank)
 
-## ----require, results='hide', message=FALSE------------------------------
-library(dplyr)
-library(nycflights13)
+## ------------------------------------------------------------------------
+filter(bank, job == "student", balance > 20000)
+filter(bank, job == "student", as.character(date) == "2008-05-05")
+filter(bank, job == "student", date == ymd("2008-05-05"))
 
-## ----ex1, echo=show_solution, eval=show_solution-------------------------
-## filter(flights, dep_delay > 1000)
+## ------------------------------------------------------------------------
+filter(bank, age == 18 | age == 95)
 
-## ----ex2, echo=show_solution, eval=show_solution-------------------------
-## filter(flights, dep_delay > 900 | arr_delay > 900)
+## ------------------------------------------------------------------------
+filter(bank, age %in% c(18,95))
 
-## ----ex3, echo=show_solution, eval=show_solution-------------------------
-## filter(flights, month == 12 & day == 25 & origin == "EWR" & dest == "IAH")
+## ------------------------------------------------------------------------
+filter(bank, job %in% c("admin.","technician"))
+filter(bank, job == "admin." | job == "technician")
 
-## ----ex4, echo=show_solution, eval=show_solution-------------------------
-## slice(flights, 1:5)
+## ------------------------------------------------------------------------
+slice(bank, 1:5)
 
-## ----ex5, echo=show_solution, eval=show_solution-------------------------
-## slice(flights, (n()-9):n())
+## ------------------------------------------------------------------------
+# select last row of the dataset
+slice(bank, n()) 
 
-## ----ex6, echo=show_solution, eval=show_solution-------------------------
-## select(filter(flights, dep_delay > 1000), distance)
+## ------------------------------------------------------------------------
+sample_n(bank, 3)
+
+## ------------------------------------------------------------------------
+sample_frac(bank, 0.0001)
+sample_frac(bank, 1.5, replace = TRUE)
 

@@ -1,33 +1,39 @@
-## ----setup, echo=FALSE, results='hide', message=FALSE--------------------
-library(knitr)
-options(width=80)
+## ----data, message=FALSE-------------------------------------------------
+require(dplyr)
+require(tidyr)
 
-## ----require, message=FALSE----------------------------------------------
-require(nycflights13)
-ls(pos = "package:nycflights13")
+## ----bank, message=FALSE-------------------------------------------------
+require(qdata)
+data(bank)
+bank
+str(bank)
 
-## ----flights-------------------------------------------------------------
-dim(flights)
-head(flights)
-str(flights)
+## ----people, message=FALSE-----------------------------------------------
+data(people)
+people
+str(people)
 
-## ----airlines------------------------------------------------------------
-dim(airlines)
-head(airlines)
-str(airlines)
+## ----mtcars, message=FALSE-----------------------------------------------
+data(mtcars)
+mtcars
+str(mtcars)
 
-## ----airports------------------------------------------------------------
-dim(airports)
-head(airports)
-str(airports)
+## ----italia, message=FALSE-----------------------------------------------
+data(italia)
+italia
+str(italia)
 
-## ----planes--------------------------------------------------------------
-dim(planes)
-head(planes)
-str(planes)
+## ----tennis, message=FALSE-----------------------------------------------
+data(tennis)
+usopen
+str(usopen)
+wimbledon
+str(wimbledon)
 
-## ----weather-------------------------------------------------------------
-dim(weather)
-head(weather)
-str(weather)
+## ----help, eval=FALSE----------------------------------------------------
+## ?bank
+## ?people
+## ?mtcars
+## ?italia
+## ?tennis
 

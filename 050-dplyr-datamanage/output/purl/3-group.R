@@ -1,43 +1,94 @@
-## ----setup, echo=FALSE, results='hide', message=FALSE--------------------
-library(knitr) 
-options(width=80)
-opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-source("r/show-solution.R")
-# ATTENZIONE: leggere nota dentro show-solution.R
+## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+require(dplyr)
+require(qdata)
+data(bank)
 
-## ----require, results='hide', message=FALSE------------------------------
-library(dplyr)
-library(nycflights13)
+## ------------------------------------------------------------------------
+df <- data.frame(x = 1:6, f = rep(1:2, each = 3))
+dff <- df %>% group_by(f)
+dff
+class(dff)
 
-## ----ex1, echo=show_solution, eval=show_solution-------------------------
-## flights_by_month <- group_by(flights, month)
-## summarise(flights_by_month,
-##           n = n(),
-##           min_delay = min(arr_delay, na.rm = TRUE),
-##           max_delay = max(arr_delay, na.rm = TRUE),
-##           mean_delay = mean(arr_delay, na.rm = TRUE))
 
-## ----ex2, echo=show_solution, eval=show_solution-------------------------
-## flights_by_origin <- group_by(flights, origin)
-## summarise(flights_by_origin,
-##           n = n(),
-##           mean_dep_delay = mean(dep_delay, na.rm = TRUE),
-##           mean_arr_delay = mean(arr_delay, na.rm = TRUE))
+dffn <- dff %>% mutate(n = row_number())
 
-## ----ex3, echo=show_solution, eval=show_solution-------------------------
-## destinations <- group_by(flights, dest)
-## summarise(destinations,
-##           planes = n_distinct(tailnum),
-##           flights = n())
+class(dffn)
 
-## ----ex4, echo=show_solution, eval=show_solution-------------------------
-## daily <- group_by(flights, year, month, day)
-## (per_day <- summarise(daily, flights = n()))
+dffa <- dff %>% arrange(desc(x))
 
-## ----ex5, echo=show_solution, eval=show_solution-------------------------
-## (per_month <- summarise(per_day, flights = sum(flights)))
+class(dffa)
 
-## ----ex6, echo=show_solution, eval=show_solution-------------------------
-## n_days <- c(31,28,31,30,31,30,31,31,30,31,30,31)
-## mutate(per_month, n_days = n_days, daily_mean = flights / n_days)
+dfg <- df %>% 
+  group_by(f) %>%
+  summarise(x_avg = mean(x))
+
+dfg
+
+class(dfg)
+
+## ------------------------------------------------------------------------
+bank <- tbl_df(bank)
+by_year <- group_by(bank, year)
+summarise(by_year,
+          count = n(),
+          mean_duration = mean(duration, na.rm = TRUE),
+          mean_balance = mean(balance, na.rm = TRUE))
+
+## ------------------------------------------------------------------------
+dm <- mtcars %>% 
+  group_by(cyl, carb) %>%
+  summarise(mpg_mean = mean(mpg))
+
+
+tapply(dm$mpg_mean, list(dm$cyl, dm$carb), FUN = I)
+
+with(dm, tapply(mpg_mean, list(cyl, carb), FUN = I))
+
+require(xtable)
+xtabs(mpg_mean~cyl+carb, data = dm)
+
+
+## ------------------------------------------------------------------------
+summarise(by_year,
+          days = n_distinct(date),
+          count = n())
+
+## ------------------------------------------------------------------------
+daily <- group_by(bank, year, month, day)
+groups(daily)
+
+per_day <- summarise(daily, calls = n())
+groups(per_day)
+
+per_month <- summarise(per_day, calls = sum(calls))
+groups(per_month)
+
+per_year <- summarise(per_month, calls = sum(calls))
+groups(per_year)
+
+## ------------------------------------------------------------------------
+df <- data.frame(year = rep(c(2010, 2011, 2012), each = 3), 
+                 month = rep(1:3, each = 3), 
+                 day = rep(20:22, 3), 
+                 x = 1:9)
+
+df
+
+df1 <- df %>% group_by(year, month, day) 
+
+groups(df1)
+
+df2 <-  df1 %>% 
+  summarise(x_avg = mean(x), n = n())
+
+df2
+
+groups(df2)
+
+summarise(df2, n())
+
+ungroup(df2) %>% summarise(n())
+
 

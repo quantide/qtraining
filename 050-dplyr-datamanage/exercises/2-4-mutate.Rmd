@@ -7,19 +7,14 @@ output:
     self_contained: no
 ---
 
-```{r setup, echo=FALSE, results='hide', message=FALSE}
-library(knitr) 
-options(width=80)
-opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-source("r/show-solution.R")
-# ATTENZIONE: leggere nota dentro show-solution.R
-```
+
 
 ## `mutate()` and its friends
 Note: all the exercises of this section are based on the `flights` dataset.  
 Times are in minutes and distances are in miles.
 
-```{r require, results='hide', message=FALSE}
+
+```r
 library(dplyr)
 library(nycflights13)
 ```
@@ -33,53 +28,34 @@ Add the following new variables to the `flights` dataset:
 
 Show only the following variables: delay at departure, delay at arrival, distance, air time and the two new variables (gained time and speed).
 
-```{r ex1, echo=show_solution, eval=show_solution}
-flights2 <- mutate(flights,
-                   gained_time = dep_delay - arr_delay,
-                   speed = distance / air_time * 60)
-select(flights2, dep_delay, arr_delay, gained_time, distance, air_time, speed)
-```
+
 
 
 ### Exercise 2
 Redo the previous calculations keeping only the new variables.
 
-```{r ex2, echo=show_solution, eval=show_solution}
-transmute(flights,
-          gained_time = dep_delay - arr_delay,
-          speed = distance / air_time * 60)
-```
+
 
 
 ### Exercise 3
 After sorting flights in chronological order, for each flight calculate the difference between its delay at arrival and the delay at arrival of the immediately previous flight. Have R showed only the delay variables (delay at departure, delay at arrival and the new variable).
 
-```{r ex3, echo=show_solution, eval=show_solution}
-sorted_flights <- arrange(flights, year, month, day, hour, minute)
-delay <- select(sorted_flights, dep_delay, arr_delay)
-mutate(delay, delta_delay = dep_delay - lag(dep_delay))
-```
+
 
 
 ### Exercise 4
 For each flight calculate the 'min ranking' in terms of delay at arrival.
 
-```{r ex4, echo=show_solution, eval=show_solution}
-mutate(delay, delay_rank = min_rank(arr_delay))
-```
+
 
 
 ### Exercise 5
 For each flight calculate the 'first ranking' in terms of delay at arrival.
 
-```{r ex5, echo=show_solution, eval=show_solution}
-mutate(delay, delay_rank = row_number(arr_delay))
-```
+
 
 
 ### Exercise 6
 Create a variable which indicates if each flight took off more than -4 or less than 4 minutes late.
 
-```{r ex6, echo=show_solution, eval=show_solution}
-mutate(delay, delay_rank = between(dep_delay, -3, 3))
-```
+

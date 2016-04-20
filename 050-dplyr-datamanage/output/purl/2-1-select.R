@@ -1,37 +1,56 @@
-## ----setup, echo=FALSE, message=FALSE, results='hide'--------------------
-library(knitr) 
-options(width=80)
-opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-source("r/show-solution.R")
-# ATTENZIONE: leggere nota dentro show-solution.R
+## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
+require(dplyr)
+require(qdata)
+data(bank) 
+bank <-  tbl_df(bank)
 
-## ----require, echo=TRUE, message=FALSE, results='hide'-------------------
-library(dplyr)
-library(nycflights13)
+## ----bank----------------------------------------------------------------
+select(bank, year, month, day)
+select(bank, year:day)
+select(bank, -(year:day))
 
-## ----ex1, echo=show_solution, eval=show_solution-------------------------
-## select(flights, month, day, air_time, distance)
-## 
-## # Alternative solution
-## vars <- c("month", "day", "air_time", "distance")
-## select(flights, one_of(vars))
+## ------------------------------------------------------------------------
+select(bank, ID = id)
 
-## ----ex2, echo=show_solution, eval=show_solution-------------------------
-## select(flights, -hour, -minute)
-## 
-## # Alternative solution
-## vars <- c("hour", "minute")
-## select(flights, -one_of(vars))
+## ------------------------------------------------------------------------
+select(bank, contains("at"))
 
-## ----ex3, echo=show_solution, eval=show_solution-------------------------
-## select(flights, ends_with("time"))
+## ------------------------------------------------------------------------
+select(bank, ends_with("tion"))
 
-## ----ex4, echo=show_solution, eval=show_solution-------------------------
-## select(flights, contains("delay"))
+## ------------------------------------------------------------------------
+select(bank, starts_with("d"))
 
-## ----ex5, echo=show_solution, eval=show_solution-------------------------
-## select(flights, tail_num = tailnum)
+## ------------------------------------------------------------------------
+select(bank, everything())
+# change the order of columns
+select(bank, ends_with("tion"), everything() ) 
 
-## ----ex6, echo=show_solution, eval=show_solution-------------------------
-## rename(flights, tail_num = tailnum)
+## ------------------------------------------------------------------------
+# match all variables containing "r", but not at the first place
+select(bank, matches(".r")) 
+
+## ------------------------------------------------------------------------
+data(tennis)
+wimbledon
+select(wimbledon ,num_range("s", c(1:3, 5)))
+
+## ------------------------------------------------------------------------
+select(bank, one_of(c("marital","education")))
+vars <- c("marital","education")
+select(bank, one_of(vars))
+
+## ------------------------------------------------------------------------
+select(bank, job:balance)
+
+## ------------------------------------------------------------------------
+select(bank, -job)
+select(bank, -starts_with("d"))
+
+## ------------------------------------------------------------------------
+distinct(select(bank, housing))
+distinct(select(bank, housing, loan))
+
+## ------------------------------------------------------------------------
+rename(bank, ID = id)
 

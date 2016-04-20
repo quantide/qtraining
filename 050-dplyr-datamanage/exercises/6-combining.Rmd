@@ -7,13 +7,7 @@ output:
     self_contained: no
 ---
 
-```{r setup, echo=FALSE, results='hide', message=FALSE}
-library(knitr) 
-options(width=80)
-opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-source("r/show-solution.R")
-# ATTENZIONE: leggere nota dentro show-solution.R
-```
+
 
 Combining data
 ================================
@@ -21,7 +15,8 @@ Combining data
 ## Joins: `inner_join()`, `left_join()`, `right_join()`, etc.
 Note: all the exercises of this section are based on `flights`, `airlines`, `airports` or `planes` datasets.
 
-```{r require, results='hide', message=FALSE}
+
+```r
 library(dplyr)
 library(nycflights13)
 ```
@@ -30,73 +25,38 @@ library(nycflights13)
 ### Exercise 1
 Keep only the following variables of the `flights` dataset: month, day, hour, origin, destination and carrier. Save this dataset in a data frame and call it `flights_red`. Through a proper join command, add the carrier name to `flights_red` (this piece of information is available in `airlines`).
 
-```{r ex1, echo=show_solution, eval=show_solution}
-flights_red <- flights %>% select(year:day, hour, origin, dest, tailnum, carrier)
-flights_red %>% left_join(y = airlines, by = "carrier")
 
-# Alternative solution
-# (since carrier name is the only variable which is present in both datasets)
-flights_red %>% left_join(y = airlines)
-```
 
-```{r ex1_bis, echo=show_solution, eval=FALSE}
-# If you want to avoid the warning, first be sure that both carrier variables
-# are character. In this case, before joining execute:
-airlines$carrier <- as.character(airlines$carrier)
-```
+
 
 
 ### Exercise 2
 Through a proper join command, add name, latitude, longitude and altitude of the origin airport to `flights_red` (these pieces of information are available in `airlines`). Do the same also for the destination airport. (If you are able to, try to keep variables about both origin and destination airports in the same final dataset).
 
-```{r ex2, echo=show_solution, eval=show_solution}
-airports_red <-
-  airports %>%
-  select(faa, name, lat, lon, alt)
 
-# Two different datasets
-flights_red %>% left_join(y = airports_red, by = c("origin" = "faa"))
-flights_red %>% left_join(y = airports_red, by = c("dest" = "faa"))
-
-# All in one dataset
-flights_red %>%
-  left_join(y = airports_red, by = c("origin" = "faa")) %>%
-  left_join(y = airports_red, by = c("dest" = "faa"))
-```
 
 
 ### Exercise 3
 Through the `inner_join()` function, redo the same for the destination airport but keep only the flights whose information is available in both datasets (`flights` and `airports`).
 
-```{r ex3, echo=show_solution, eval=show_solution}
-flights_red %>% inner_join(y = airports_red, by = c("dest" = "faa"))
-```
+
 
 
 ### Exercise 4
 Redo the exercise 3 by using `full_join()` instead of `inner_join()`. What is the difference in the result?
 
-```{r ex4, echo=show_solution, eval=show_solution}
-flights_red %>% full_join(y = airports_red, by = c("dest" = "faa"))
-```
+
 
 
 ### Exercise 5
 Through the `anti_join()` function, extract all the flights from `flights` whose information about destination airport is not available in `airports`.
 
-```{r ex5, echo=show_solution, eval=show_solution}
-flights_red %>% anti_join(y = airports_red, by = c("dest" = "faa"))
-```
+
 
 
 ### Exercise 6
 Sort the `planes` dataset by increasing year. Then create two datasets: the first will deal with planes older than 2000; the second will deal with planes of 2000 or newer. Finally create a unique dataset where the first rows will deal with the newest planes, whereas the last rows will deal with the oldest planes.
 
-```{r ex6, echo=show_solution, eval=show_solution}
-planes_sorted <- planes %>% arrange(year)
-(old_planes <- planes_sorted %>% filter(year < 2000))
-(new_planes <- planes_sorted %>% setdiff(old_planes))
-new_planes %>% bind_rows(old_planes)
-```
+
 
 
