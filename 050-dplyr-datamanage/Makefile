@@ -1,16 +1,23 @@
-# PARAMETERS DEFINITION
+# This makefile builds courses material and exercise book in pdf format
+# The first part builds courses materal, the second the exercise book. 
+# If you want to build only one of the two parts, you must comment the other one.
 
+########################## COURSES MATERIAL ##########################  
+### PARAMETERS DEFINITION
+
+# Project name
 PROJECT = dplyr
 
+# Input, Output and purl paths
 INPUT_DIR = input
-
 OUTPUT_DIR = output/html
-
 PURL_DIR = output/purl
+
 
 HTML_FILES := $(patsubst %.Rmd, %.html, $(wildcard $(INPUT_DIR)/*.Rmd)) \
               $(patsubst %.md, %.html, $(wildcard $(INPUT_DIR)/*.md))
 
+### COMPILE
 all: toc html zip
 
 zip:
@@ -44,9 +51,13 @@ change_dir:
 clean:
 	$(RM) -rf $(OUTPUT_DIR)/*
 
-##########################################################################################
+###################################################################
+
+########################## EXERCISE BOOK ##########################
+
+### PARAMETERS DEFINITION
     	
-### LIST OF SOURCE FILES (without extension: it will be used for .Rmd, .html and .R)
+### List of source files (without extension: it will be used for .Rmd, .html and .R)
 LIST = \
   1-intro \
 	2-0-verbs \
@@ -61,22 +72,23 @@ LIST = \
 	6-combining \
 	9-tidyr \
 
-### PARAMETERS
-# PANDOC PATH (RSTUDIO VERSION)
+# Pandoc Path (RSTUDIO VERSION)
 PANDOC_PATH = /usr/lib/rstudio/bin/pandoc/pandoc
 
-# PDF PARAMETERS
-PDF_OUT = dplyr-exercises-questions.pdf
-#PDF_OUT = dplyr-exercises-solutions.pdf
+# Input and output paths
 INPUT_PDF_DIR = exercises
 OUTPUT_PDF_DIR = output/pdf
 
-### LIST OF MD FILES TO BUILD PDF
+# Output file name
+PDF_OUT = dplyr-exercises-questions.pdf
+#PDF_OUT = dplyr-exercises-solutions.pdf
+
+# List of md files to build pdf 
 MD_PATH = $(addprefix exercises/,$(LIST))
 MD = $(addsuffix .md,$(MD_PATH))
 MD_LIST = $(addsuffix .md,$(LIST))
 
-# PANDOC PDF OPTIONS
+# Pandoc pdf options
 PANDOC_PDF_OPTIONS = \
   --latex-engine xelatex  \
   --template='./../include/tex/manual-with-written-cover.tex' \
@@ -128,5 +140,5 @@ pdf: $(PDF_OUT)
 # clean:
 	rm -f *.md *.html *.R
 
-
+###################################################################
 

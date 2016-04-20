@@ -1,3 +1,8 @@
+# This makefile builds courses material and exercise book in pdf format
+# The first part builds courses materal, the second the exercise book. 
+# If you want to build only one of the two parts, you must comment the other one.
+
+########################## COURSES MATERIAL ##########################  
 # PARAMETERS DEFINITION
 
 PROJECT = dplyr
@@ -11,7 +16,8 @@ PURL_DIR = output/purl
 HTML_FILES := $(patsubst %.Rmd, %.html, $(wildcard $(INPUT_DIR)/*.Rmd)) \
               $(patsubst %.md, %.html, $(wildcard $(INPUT_DIR)/*.md))
 
-all: toc html zip knitr pdf
+### COMPILE
+all: toc html zip
 
 zip:
 	rm -f $(OUTPUT_DIR)/$(PROJECT).zip
@@ -44,7 +50,9 @@ change_dir:
 clean:
 	$(RM) -rf $(OUTPUT_DIR)/*
 
-##########################################################################################
+###################################################################
+
+########################## EXERCISE BOOK ##########################
     	
 ### LIST OF SOURCE FILES (without extension: it will be used for .Rmd, .html and .R)
 LIST = \
@@ -90,7 +98,7 @@ PANDOC_PDF_OPTIONS = \
 ### COMPILE
 # all: by default perform all actions
 
-#all: knitr pdf
+all: knitr pdf
 
 #.PHONY: change_dir
 
@@ -128,5 +136,5 @@ pdf: $(PDF_OUT)
 # clean:
 	rm -f *.md *.html *.R
 
-
+###################################################################
 
