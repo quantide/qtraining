@@ -97,7 +97,8 @@ write.table(df, file = "dfWrite.txt")
 
 ## Microsoft Excel
 
-`XLConnect` is a package which connects R and Excel.  
+`XLConnect` permits to create a formatted spreadsheet usable as a dynamic report of the R analisys. 
+Reading and writing named ranges enables to process complex inputs and outputs in an efficient way. 
 
 ```{r use.text, comment=FALSE}
 require("XLConnect")
@@ -107,13 +108,13 @@ require("XLConnect")
 To create a new empty file xlsx with one empty sheet named 'Input' the syntax is:
 
 ```{r outDir_set_up, eval=FALSE}
-# Set up output directory   
+# Set up output directory and output file name  
 outDir <- "/home/marco/Desktop/xlsx" 
+fileXls <- paste(outDir,"newFile.xlsx",sep='/')
+unlink(fileXls, recursive = FALSE, force = FALSE)
 ```
 
 ```{r new.xlsx, comment=FALSE}
-fileXls <- paste(outDir,"newFile.xlsx",sep='/')
-unlink(fileXls, recursive = FALSE, force = FALSE)
 exc <- loadWorkbook(fileXls, create = TRUE)
 createSheet(exc,'Input')
 saveWorkbook(exc)
