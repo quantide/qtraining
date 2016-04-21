@@ -1,0 +1,192 @@
+
+# A first look to R
+
+## The first R session
+
+Start the R system, the cursor is waiting for you to type in some R commands. For example, use R as a simple calculator:
+
+```{r, calculator}
+6 + 3
+5 - 9
+4 * 6
+8 / 3
+5 ^ 2
+(1 + 0.05)^8
+exp(3)
+log(14)
+23.76 * log(8)/(23 + atan(9))
+```
+
+
+
+<!--
+
+## Introducing R Functions
+
+Functions are one of the most important objects in R.
+
+A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.
+
+The function `ls()` doesn't require any input and returns an output.
+
+```{r, argument1}
+ls()
+```
+
+The function `rm()` requires an input and doesn't return an output.
+
+```{r, argument2}
+foo = 3
+rm(foo)
+```
+
+Usually, functions require an input and returns an output.
+
+```{r, argument3}
+sum(1:10)
+```
+
+The several elements of the input of a function are the arguments of the function. When a function is called the arguments can be declared explicitely or implicitely. The arguments can be explicitely with their name.
+
+```{r, argument4}
+sum(c(1, 2, NA), na.rm = T)
+```
+In the above example, the `na.rm` argument of the `sum()` function is called explicitely.
+
+When arguments are called implicitely, the order of the arguments is fundamental. The third example of the code below returns a wrong result.
+
+```{r, argument5}
+rdata = c(rnorm(100), NA)
+quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = T)
+quantile(rdata, c(0.25, 0.50, 0.75), T)
+quantile(rdata, T, c(0.25, 0.50, 0.75))
+quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))
+```
+
+
+It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:
+  
+```{r, help3, eval=F}
+help(read.table)
+```
+
+or
+
+```{r, help4, eval=F}
+?read.table
+```
+
+-->
+
+## Assignment
+
+Results of calculations can be stored in objects using the assignment operators:
+  
+ - an arrow (`<-`) formed by a smaller than character and a hyphen without a space;
+ - the equal character (`=`).
+
+These objects can then be used in other calculations. To print the object just enter the
+name of the object. There are some restrictions when giving an object a name:
+  
+ - Object names cannot contain "strange" symbols like `!`, `+`, `-`, `#`.
+ - A dot (`.`) and an underscore (`_`) are allowed, also a name starting with a dot.
+ - Object names can contain a number but cannot start with a number.
+ - R is case sensitive: `X` and `x` are two different objects, as well as `temp` and `temP`.
+
+```{r, assignment}
+x = log(14)
+y = 23.76 * log(8)/(23 + atan(9))
+z = x + y
+x
+y
+z
+```
+
+## The R Workspace
+
+Objects created during an R session are hold in memory. The collection of objects currently avalaible is called the workspace.
+To list the objects in the current R session, the function `ls()` or the function `objects()` may be used.
+
+```{r, workspace}
+ls()
+objects()
+```
+
+So to run the function `ls` the name followed by an opening and a closing bracket must be entered. Entering only `ls` will just print the object, i.e. the underlying R code of the function.
+
+Most functions in R accept certain arguments. For example, one of the arguments of the function `ls()` is pattern. To list all objects starting with the letter `x`:
+  
+```{r, ls}
+x2 = log(9)
+ls(pattern = "x")
+```
+
+
+If a value to an object that already exists is assigned then the contents of the object will be overwritten with the new value (without a warning!). The function `rm()` ought be used to remove one or more objects from your session.
+
+```{r, rm}
+rm(x2)
+ls()
+```
+
+
+## The working directory
+
+If you want to read files from a specific location or write files to a specific location you will need to set working directory in R. The following example shows how to set the working directory in R to the folder "Data" within the folder "Documents and Settings" on the C drive.
+
+```{r, setwd, eval=FALSE}
+setwd("C:/Documents and Settings/Data")
+```
+
+To get the path of the current working directory, the `getwd()` function should be used.
+
+```{r, getwd, eval=FALSE}
+getwd()
+```
+
+
+```
+## [1] "C:/Documents and Settings/Data"
+```
+
+Remember that you must use the forward slash / or double backslash \\\\ in R! The Windows format of single backslash will not work.
+
+
+## R help
+
+Within R, the following functions provide help about R itself:
+
+ - The HTML version of R's online documentation can be printed on-screen by typing `help.start()`;
+ - Online documentation for most of the functions and variables in R can be printed on-screen by typing `help(name)` (or `?name`), where _name_ is the name of the topic help is sought for;
+ - Online documentation for finding help pages on a vague topic can be printed on-screen by typing `help.search('topic')`;
+ - A list of function containing _topic_ in the name can be printed on-screen by typing `apropos('topic')`;
+ - A research in the website can be performed by typing `RSiteSearch('query')`, where _query_ is the search query.
+
+To get help about the `mean()` function, the `help()` function can be used.
+
+```{r, help1, eval=FALSE}
+help(mean)
+```
+
+The `help()` function can be called using the `?`.
+```{r, help2, eval=FALSE}
+?mean
+```
+To get a list of functions concerning the mean, the `help.search()` function can be used.
+
+```{r, help.search1, eval=FALSE}
+help.search("mean")
+```
+
+To get a list of function containing "mean" in the name, the `apropos()` function can be used.
+
+```{r, help.search2, eval=FALSE}
+apropos("mean")
+```
+
+<!--
+
+## Summary
+> In this chapter, we took a look to R. We used R for the first time, as a calculator. We familiarized with R help. We saved the results of calculation in R objects, through assigment. The concept of workspace were introduced. In the next chapter, we'll look at the types of data R can handle.
+
+-->

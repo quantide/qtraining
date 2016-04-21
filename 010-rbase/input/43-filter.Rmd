@@ -1,0 +1,110 @@
+---
+title: "Filter Data"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+require(dplyr)
+require(qdata)
+require(lubridate)
+data(bank)
+```
+
+
+# `filter()`
+
+`filter()` allows you to select a subset of the rows of a data frame.
+
+![](images/fil.png) 
+
+The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.
+
+For example, you can select all calls made on 2008-05-05 to students whit balance above 20,000:
+
+
+```{r}
+filter(bank, job == "student", balance > 20000)
+filter(bank, job == "student", as.character(date) == "2008-05-05")
+filter(bank, job == "student", date == ymd("2008-05-05"))
+```
+
+Note that you'll have to either convert variable `date` to character or the string "2008-05-05" to an object of class `POSIX` as `dplyr` allows comparison between same class objects only.
+
+`filter()` works similarly to `subset()` except that you can give it any number of filtering conditions which are joined together with `&` (not `&&` which is easy to do accidentally!). 
+
+You can use other boolean operators explicitly:
+
+```{r}
+filter(bank, age == 18 | age == 95)
+```
+
+`filter()` can be used also with `%in%` to establish conditions under which filter: 
+
+```{r}
+filter(bank, age %in% c(18,95))
+```
+
+An other example is:
+
+```{r}
+filter(bank, job %in% c("admin.","technician"))
+filter(bank, job == "admin." | job == "technician")
+```
+
+
+# `slice()`
+To select rows by position, use `slice()`:
+
+You can select the first 10 calls of the bank dataset as follow:
+
+```{r}
+slice(bank, 1:5)
+```
+
+or the last row by:
+
+```{r}
+slice(bank, n()) 
+```
+
+where function `n()` returns the number of element of a vector in the current group. This function can only be used from within `summarise()`, `mutate()` and `filter()`.
+
+
+# `sample_n()` and `sample_frac()`
+
+You can use `sample_n()` and `sample_frac()` to take a random sample of rows.
+
+Function `sample_n()` samples a subset of size `n`.
+
+```{r}
+sample_n(bank, 3)
+```
+
+while function `sample_frac()` samples a given fraction of the existing number of rows:
+
+```{r}
+sample_frac(bank, 0.0001)
+```
+
+df <- data.frame(x = 1:3)
+
+Both functions `sample_n()` and `sample_frac()`, with the option `replace = T`, perform sampling operation with replacenement:
+
+```{r}
+nrow(mtcars)
+nrow(sample_frac(mtcars, size = 2, replace = TRUE))
+nrow(sample_n(mtcars, size = 40, replace = TRUE))
+```
+
+Finally, you can perform weighted sampling by using the `weight` argument. Weights are automatically standardised to sum to 1.
+
+```{r}
+sample_n(mtcars, 5, weight = mpg)
+```
+
+

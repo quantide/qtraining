@@ -1,33 +1,38 @@
-R Online Resources		| 01.introduction.Rmd 
-R, RStudio and R packages installation and administration		| 02.setup.Rmd
+Introduction to R
+About R									| 11-intro.Rmd
+R, RStudio and R packages set up					| 12-setup.Rmd
+A first look to R session						| 13-firstlook.Rmd
 
-Basic R data object	| 03.firstLook.Rmd
-			| 04.dataObjects.Rmd
+R objects
+R objects								| 21-robjects.Rmd
 
-Import data into R	| 05.dataImport.Rmd
-Import data from excel	| 05.1.excel.Rmd
+Data Import
+Import data into R							| 31-dataimport.Rmd
+Import data from excel							| 32-dataimport-excel.Rmd
 
-Basic data manipulation with dplyr
+Data manipulation with dplyr
+Introduction to dplyr                 					| 41-dplyr-intro.Rmd
+Select		                            				| 42-select.Rmd
+Filter		                            				| 43-filter.Rmd
+Mutate                                					| 44-mutate.Rmd
+Summarise                             					| 45-summarise.Rmd
+Grouping Data	                        				| 46-group.Rmd
+Chaining Verbs                        					| 47-chain.Rmd
 
-Introduction to dplyr                 | 2-0-dplyr-intro.Rmd
-Select		                            | 2-1-select.Rmd
-Filter		                            | 2-2-filter.Rmd
-Mutate                                | 2-4-mutate.Rmd
-Summarise                             | 2-5-summarise.Rmd
-Grouping Data	                        | 3-group.Rmd
-Chaining Verbs                        | 4-chain.Rmd
+Data visualization with ggplot 
+Introduction to Graphics 						| 51-ggplot-intro.Rmd
+Creating a Scatter Plot  						| 52-scatterplot.Rmd
+Creating a Line Graph    						| 53-linegraph.Rmd
+Creating a Bar Graph     						| 54-bargraph.Rmd
+Creating a Histogram     						| 55-histogram.Rmd
+Creating a Box Plot      						| 56-boxplot.Rmd
+Presenting Plots         						| 57-presenting.Rmd
 
-Basic data visualization with ggplot 
+R functions
+Introduction to writing R functions					| 61.functions.Rmd
 
-Introduction to Graphics | 1-intro.Rmd
-Creating a Scatter Plot  | 2-scatterplot.Rmd
-Creating a Line Graph    | 3-linegraph.Rmd
-Creating a Bar Graph     | 4-bargraph.Rmd
-Creating a Histogram     | 5-histogram.Rmd
-Creating a Box Plot      | 6-boxplot.Rmd
-Presenting Plots         | 7-presenting.Rmd
+Models
+Introduction to statistical models with R				| 71.statmodels.Rmd
 
-Introduction to statistical models with R	| 08.statmodels.Rmd
 
-Introduction to writing R functions	| 06.functions.Rmd
 
