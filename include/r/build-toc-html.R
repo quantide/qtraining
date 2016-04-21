@@ -37,14 +37,14 @@ build_toc_html <- function(
   toc_ol <- c(toc_ol, sprintf("<ul class='nav nav-list well sidebar-nav'>"))
   toc_ol <- c(toc_ol, sprintf("  <li><a href='index.html'>%s</a></li>", index_description))
   toc_ol <- c(toc_ol, sprintf("</ul>"))
-  
-  
+
+
   # Get file with link to acknowledgements section
   toc_ol <- c(toc_ol, sprintf("<ul class='nav nav-list well sidebar-nav'>"))
   toc_ol <- c(toc_ol, sprintf("  <li><a href='acknowledgements.html'>%s</a></li>", acknowledgements_description))
   toc_ol <- c(toc_ol, sprintf("</ul>"))
-  
-  
+
+
   # Get links to chapters
   toc_ol <- c(toc_ol, sprintf("<ul class='nav nav-list well sidebar-nav'>"))
   for(i_toc in 1:nrow(toc)) {
@@ -55,13 +55,13 @@ build_toc_html <- function(
     }
   }
   toc_ol <- c(toc_ol, sprintf("</ul>"))
-  
-  
+
+
   # Get link to zip file
   #toc_ol <- c(toc_ol, sprintf("<ul class='nav nav-list well sidebar-nav'>"))
   #toc_ol <- c(toc_ol, sprintf("  <li><a href='%s'>%s</a></li>", download_file, download_description))
   #toc_ol <- c(toc_ol, sprintf("</ul>"))
-  
+
   # Write sidebar menu with table of contents
   text <- sub("TOC", paste0(toc_ol, collapse="\n"), paste0(readLines(html_toc_template), collapse="\n"))
   
