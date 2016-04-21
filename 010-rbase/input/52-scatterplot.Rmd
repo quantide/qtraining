@@ -1,4 +1,4 @@
----
+ ---
 title: "Creating a Scatter Plot"
 output: html_document
 ---

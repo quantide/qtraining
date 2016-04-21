@@ -1,34 +1,51 @@
+---
+title: "Data Import and Export"
+---
+```{r date-requirePackages, echo=FALSE}
+# Install required packages
+if(! "XLConnect" %in% installed.packages()) {install.packages("XLConnect")}
+if(! "RSQLite" %in% installed.packages()) {install.packages("RSQLite")}
+###################################################################
+```
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 require(knitr)
-opts_knit$set(root.dir = "../data")
+opts_knit$set(root.dir = "./dati")
 ```
 
-# Data Import and Export
 
-Before all, it is strongly suggested to set the working directory to the directory containing the data. This can be done using the `setwd()` function
-`> setwd(path\_to\_directory\_containing\_data\_folder)`
-where `path\_to\_directory\_containing\_data\_folder` is a string containing the path to directory containing the `data` folder, e.g. `"C:/Users/UserName/Documents"`, under Windows.
+## Text Files
 
-
-
-## Importing and Exporting Text Files
+### Import data
 
 The `read.table()` function imports a text file (ASCII) with a table structure where each row represents a case.
 
-```{r, read.table}
-df = read.table("/home/veronica/dev/qtraining/010-rbase/data/noR/tennis.txt", header = TRUE, sep = "", dec = ".")
-head(df)
+A full path can be provided, but it must be modified by each user, otherwise it fails:
+```{r read.table, error=TRUE}
+df = read.table("C:/Users/UserName/Documents/dati/tennis.txt", header = TRUE, sep = "", dec = ".")
 ```
-setwd("")
 
 The path uses the slash ("`/`") as delimiting character, in the UNIX-like style. Under Windows, can be used both a slash character or a doubled backslash character ("`\\`").
 
-```{r, read.table2, eval=FALSE}
-df = read.table("noR/tennis.txt", head = TRUE)
-df = read.table("noR\\tennis.txt", head = TRUE)
+Relative paths starts from the current working directory. The current working directory can be viewed with `getwd()`.
+
+```{r, getwd}
+getwd() 
 ```
 
+It is strongly suggested to set the working directory to the directory containing the data. This can be done using the `setwd()` function
+`> setwd(path)` where `path` is a string containing the path to directory containing the `data` folder, e.g. `"C:/Users/UserName/Documents"`, under Windows.
+```{r, setwd, eval=FALSE}
+setwd("C:/Users/UserName/Documents") 
+```
+
+```{r, read.table2}
+df = read.table("tennis.txt", header = TRUE)
+```
+
+```{r, head}
+head(df)
+```
 
 The `header = TRUE` option tells R that the first row of the file contains column headings and is used to assign the name of variables. If the first row contains the first case the `header = FALSE` ought to be used and the names of the variables are automatically assigned. R assumes a default value for the `header` parameter according to the file format, which is why specifying the correct option is advisable.  Alternatively, the names of the columns can be specified using the `col.names` parameter. This parameter requires a character vector with the same length as the number of the data frame columns.
 
@@ -39,34 +56,36 @@ The `dec` argument specifies the decimal separator. The argument usually assumes
 The `nrows` argument specifies the maximum number of rows to read in.
 
 ```{r, nrows1}
-read.table("noR/tennis.txt", header = TRUE, sep = "", dec = ".", nrows = 3)
+read.table("tennis.txt", header = TRUE, sep = "", dec = ".", nrows = 3)
 ```
 
 The `skip` argument specifies the number of lines of the data file to skip before beginning to read data. If the first line contains the header and it is ignored, than `header = FALSE` should be set.
 
 ```{r, nrows2}
-read.table("noR/tennis.txt", header = FALSE, sep = "", dec = ".", skip = 2)
+read.table("tennis.txt", header = FALSE, sep = "", dec = ".", skip = 2)
 ```
 
 The `nrows` and `skip` arguments can be mixed. The following example read the second and the third rows of the data frame.
 
 ```{r, nrows3}
-read.table("noR/tennis.txt", header = FALSE, sep = "", dec = ".", nrows = 2, skip = 2)
+read.table("tennis.txt", header = FALSE, sep = "", dec = ".", nrows = 2, skip = 2)
 ```
 
 Variables containing text are set as character variables with the `stringsAsFactors = FALSE` option, whereas by default they are set as factors. This setting can be modified with the "global" option for it to be applied until the end of the work session. This can be done with the `options(stringsAsFactors = FALSE)` instruction.
 
 ```{r, stringsAsFactors}
-df = read.table("noR/tennis.txt", header = TRUE, sep = "", dec = ".", stringsAsFactors = FALSE)
+df = read.table("tennis.txt", header = TRUE, sep = "", dec = ".", stringsAsFactors = FALSE)
 head(df)
 ```
 
 When there are missing values the `na.strings` can be used to indicate which string is referred to them. The `na.string` argument can be a character vector. R indicates missing values with the `NA` (Not Available) symbol.
 
 ```{r, na.strings}
-df = read.table("noR/tennis.NA.txt", header = TRUE, sep = "", dec = ".", na.strings = c("MC", "ND"), stringsAsFactors = FALSE)
+df = read.table("tennis.NA.txt", header = TRUE, sep = "", dec = ".", na.strings = c("MC", "ND"), stringsAsFactors = FALSE)
 head(df)
 ```
+
+### Export data
 
 To save a data frame in a text file in R use the `write.table()` function.
 
@@ -76,34 +95,248 @@ df = data.frame(a1 = rnorm(10), a2 = rnorm(10), a3 = rnorm(10))
 write.table(df, file = "dfWrite.txt")
 ```
 
+## Microsoft Excel
+
+`XLConnect` is a package which connects R and Excel.  
+
+```{r use.text, comment=FALSE}
+require("XLConnect")
+```
+
+### Create a new file xlsx 
+To create a new empty file xlsx with one empty sheet named 'Input' the syntax is:
+
+```{r outDir_set_up, eval=FALSE}
+# Set up output directory   
+outDir <- "/home/marco/Desktop/xlsx" 
+```
+
+```{r new.xlsx, comment=FALSE}
+fileXls <- paste(outDir,"newFile.xlsx",sep='/')
+unlink(fileXls, recursive = FALSE, force = FALSE)
+exc <- loadWorkbook(fileXls, create = TRUE)
+createSheet(exc,'Input')
+saveWorkbook(exc)
+```
+
+`loadWorkbook` function creates an R object workbook, the function `createSheet` creates the worksheet 'Input' and `saveWorkbook` function fisically save the R object in a file xlsx.
+
+
+```{r g1, echo=FALSE, fig.width=6}
+include_graphics("images/excel-emptySheet.png")
+```
+
+
+### Populate a sheet
+
+To add something to an empty sheet use `writeWorkbook` function:
+
+```{r add.input, comment=FALSE}
+input <- data.frame('inputType'=c('Day','Month'),'inputValue'=c(1,3))
+writeWorksheet(exc, input, sheet = "input", startRow = 1, startCol = 2)
+saveWorkbook(exc)
+```
+
+A data.frame input with 2 rows and 2 column is created and `writeWorkbook` function write the content of this data.frame in the sheet *input* starting from the cell (1,2).
+
+```{r g2, echo=FALSE, fig.width=3}
+include_graphics("images/excel-inputSheet.png")
+```
+
+### Create multiple sheets
+
+To add other sheets use `createSheet` function:
+
+```{r add.airquality, comment=FALSE}
+createSheet(exc,'Airquality')
+# Add an empty column to airquality dataset
+airquality$isCurrent<-NA
+createName(exc, name='Airquality',formula='Airquality!$A$1')
+writeNamedRegion(exc, airquality, name = 'Airquality', header = TRUE)
+saveWorkbook(exc)
+```
+
+In particular, `createName` function creates a named region 'Airquality' starting from the cell $A$1 of sheet Airquality and `writeNamedRegion` function writes airquality data.frame with headers in the named region 'Airquality'. 
+
+<!--
+We use `airquality` dataset available in `datasets` packages.
+-->
+
+```{r g3, echo=FALSE, fig.width=3}
+include_graphics("images/excel-airqualitySheet.png")
+```
+
+### Add a formula
+Use `setCellFormula` function to set cell formulas for specific cells in a workbook.  
+The empty column *isCurrent* could be populate with a formula that lies Input sheet with Airquality sheet.
+
+```{r add.formula, comment=FALSE}
+colIndex <- which(names(airquality) == 'isCurrent')
+letterDay <- idx2col(which(names(airquality) == 'Day'))
+letterMonth <- idx2col(which(names(airquality) == 'Month'))
+formulaXls <- paste('IF(AND(',
+                    letterMonth,
+                    2:(nrow(airquality)+1),
+                    '=Input!C3,',
+                    letterDay,
+                    2:(nrow(airquality)+1),
+                    '=Input!C2)',
+                    ',1,0)',sep='')
+setCellFormula(exc, sheet='Airquality',2:(nrow(airquality)+1),colIndex,formulaXls)
+saveWorkbook(exc)
+```
+
+The function `idx2col` returns the correspondig excel letter for the index column. With the syntax
+
+```{r idx2col1 ,results='markup'}
+letterDay <- idx2col(which(names(airquality) == 'Day'))
+```
+
+the variable `letterDay` contains the excel letter for the column 'Day'
+
+```{r idx2col2, echo=FALSE,results='markup'}
+cat('letterDay=',letterDay)
+```
+
+```{r g4, echo=FALSE, fig.width=4}
+include_graphics("images/excel-addFormula.png")
+```
+
+
+### Read and modify existing xlsx
+
+To read an existing excel file, the syntax is the same that for the creation.
+
+```{r load.xlsx, comment=FALSE}
+exc2 <- loadWorkbook(fileXls, create = FALSE)
+dtAir <- readWorksheet(exc2,'Airquality')
+createSheet(exc2, name = "OzonePlot")
+createName(exc2, name='OzonePlot',formula='OzonePlot!$A$1')
+saveWorkbook(exc2)
+```
+
+In this case
+
+ - `exc2` is a new XLC object created from and existing file excel (the old fileXls)
+ - the new sheet *OzonePlot* is added to exc2 object
+ - the new named region *OzonePlot* is creating starting from *OzonePlot!$A$1* cell
+ 
+
+### Adding a plot (image)
+
+After creating a new sheet it is possible to put in this sheet a picture of a graph created in R wit the function `addImage`:
+
+```{r add.plot, comment=FALSE,warning=FALSE}
+require(ggplot2)
+fileGraph <- paste(outDir,'graph.png',sep='/')
+png(filename = fileGraph, width = 800, height = 600)
+ozone.plot <- ggplot(dtAir, aes(x=Day, y=Ozone)) + 
+geom_point() + 
+geom_smooth()+
+facet_wrap(~Month, nrow=1)
+print(ozone.plot)
+invisible(dev.off())
+addImage(exc2,fileGraph, 'OzonePlot',TRUE)
+saveWorkbook(exc2)
+```
+
+```{r g5, echo=FALSE, fig.width=6}
+include_graphics("images/excel-ozonePlot.png")
+```
+
+<!--
+
+`read_excel()` function allows to import tabular data out of excel. It belongs to `readxl` package. 
+```{r excel1}
+library(readxl)
+```
+
+It has lots of advantages, like: supporting both the legacy .xls format and the modern xml-based .xlsx format, having no external dependencies so it’s easy to use on all platforms, loading datetimes into POSIXct columns, automatically dropping blank columns  and returning output with class c("tbl_df", "tbl", "data.frame").
+```{r excel2}
+df <- read_excel("datasets.xlsx")
+head(df)
+```
+
+`sheet` option allows to specify the sheet to read. It is possible to specify a string(the name of a sheet), or an integer (the position of the sheet). Defaults to the first sheet.
+
+```{r excel3}
+head(read_excel("datasets.xlsx", 2))
+head(read_excel("datasets.xlsx", "mtcars"))
+```
+
+-->
+
+## SQLlite 
+
+`RSQLite` package embeds the SQLite database engine in R, providing a DBI-compliant interface. SQLite is a public-domain, single-user, very light-weight database engine that implements a decent subset of the SQL 92 standard, including the core table creation, updating, insertion, and selection operations, plus transaction management.  
+
+```{r, message=FALSE}
+require(RSQLite)
+```
+
+The function `dbConnect` connect to a SQLite database, or creates it if it doesn't exist, as in this case:
+
+```{r}
+con <- dbConnect(RSQLite::SQLite(), "mtcars.sqlite")
+```
+
+To write a local data frame to the database, `dbWriteTable` is required:
+
+```{r}
+dbWriteTable(con, "mtcars", mtcars)
+```
+
+`dbDisconnect` disconnects from the database:
+
+```{r}
+dbDisconnect(con)
+```
+
+Now "mtcars.sqlite" exists and `dbConnect` connects us to it:
+
+```{r}
+con <- dbConnect(RSQLite::SQLite(), "mtcars.sqlite")
+```
+
+To see a list of available SQLite tables:
+
+```{r}
+dbListTables(con)
+```
+
+or a list of fields in specified table:
+
+```{r}
+dbListFields(con, "mtcars")
+```
+
+The next function mimic their R/S-Plus counterpart get, assign, exists, remove, and objects,
+except that they generate code that gets remotely executed in a database engine:
+
+```{r}
+dbReadTable(con, "mtcars")
+```
+
+The function `dbGetQuery` send query, retrieve results and then clear result set:
+
+```{r}
+dbGetQuery(con, "SELECT * FROM mtcars WHERE cyl = 4")
+```
+
+
+And finally disconnect from the database:
+
+```{r}
+dbDisconnect(con)
+```
+
+```{r, echo=FALSE, purl=FALSE, message=FALSE, results='hide'}
+file.remove("mtcars.sqlite")
+```
 
 ## ODBC
 
 Open Database Connectivity (ODBC) is a standard programming language interface for accessing database management systems (DBMS). ODBC is independent from database systems and operating systems. An application can use ODBC to query data from a DBMS, regardless of the operating system or DBMS it uses. ODBC accomplishes DBMS independence by using an ODBC driver as a translation layer between the application and the DBMS.
-
-With the `ROBDC` package R enables the use of ODBC for importing data from Microsoft Excel. The ODBC driver for Microsoft Excel is available in a Windows environment only and requires a 32-bit R. The driver does not seem to be working with the 64-bit R.
-
-The use of ODBC requires a connection to the Excel file to be established with the `odbcConnectExcel()` function. The file worksheets can be then visualized using the `sqlTables()` function. In the following example only the names of the Excel file worksheets are visualized. Other details are visible when `\$TABLE\_NAME` is omitted. The content of the worksheet is then imported using the `sqlFetch()` function whose inputs are the object containing the connection to Excel and the worksheet to be imported in R. When data has been loaded, it is advisable to close the connection to the Excel file using the `close()` function.
-
-```{r, RODBCsqlFetch, eval=FALSE}
-# RODBC driver ought be configured to work properly
-library("RODBC")
-conn = odbcConnectExcel("dataManual/dat/weight.xls")
-sqlTables(conn)$TABLE_NAME
-df = sqlFetch(conn, "Sheet1")
-head(df)
-close(conn)
-```
-
-```
-##   id height weight age
-## 1  1    190     88  39
-## 2  2    170     73  32
-## 3  3    188     67  42
-## 4  4    174     67  36
-## 5  5    170     74  55
-## 6  6    182     76  39
-```
 
 With the `RODBC` package R enables the use of ODBC for interacting with databases. This solution is particularly useful when data occupies much space, is frequently updated or shared by two or more users. In this case, data is kept in the database. With R it is possible to make a query in the database, load data in the R workspace and carry out analyses.
 
@@ -175,6 +408,8 @@ source("script.R")
 ``` 
 
 
-
+<!--
 ## Summary
-> In this chapter, we showed how to import data from and export data into R. This includes data from text files, spreadsheets, and databases. In addition, the content of the whole workspace can be saved in a specific R format.  Now that you can import your data into R, it's time to analyze it. In the next chapter, we'll introduce statistical features of R.
+> In this chapter, we showed how to import data from and export data into R. This includes data from text files and databases. In addition, the content of the whole workspace can be saved in a specific R format.  Now that you can import your data into R, it's time to analyze it. In the next chapter, we'll introduce R functions.
+
+-->

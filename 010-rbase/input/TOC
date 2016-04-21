@@ -1,6 +1,6 @@
 Introduction to R
 About R									| 11-intro.Rmd
-R, RStudio and R packages set up					| 12-setup.Rmd
+R, RStudio set up							| 12-setup.Rmd
 A first look to R session						| 13-firstlook.Rmd
 
 R objects
@@ -8,7 +8,6 @@ R objects								| 21-robjects.Rmd
 
 Data Import
 Import data into R							| 31-dataimport.Rmd
-Import data from excel							| 32-dataimport-excel.Rmd
 
 Data manipulation with dplyr
 Introduction to dplyr                 					| 41-dplyr-intro.Rmd
