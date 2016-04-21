@@ -11,6 +11,7 @@ source("options.R")
 # that is required by following examples
 require(dplyr)
 require(qdata)
+require(lubridate)
 data(bank)
 ```
 

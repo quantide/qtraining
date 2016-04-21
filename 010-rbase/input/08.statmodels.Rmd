@@ -267,7 +267,7 @@ Despite a small departure from normality on the rigth side of the residuals dist
 In an attempt to resolve a domestic dispute about which of two pans was the quicker pan for cooking, the following data were obtained:
 
 ```{r, boiling}
-load("boiling.Rda")
+load("../data/boiling.Rda")
 str(boiling)
 ```
 
