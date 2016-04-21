@@ -1,25 +1,33 @@
-Introduction
-Introduction and Data Used            | 1-intro.Rmd
+R Online Resources		| 01.introduction.Rmd 
+R, RStudio and R packages installation and administration		| 02.setup.Rmd
 
-Base dplyr
+Basic R data object	| 03.firstLook.Rmd
+			| 04.dataObjects.Rmd
+
+Import data into R	| 05.dataImport.Rmd
+Import data from excel	| 05.1.excel.Rmd
+
+Basic data manipulation with dplyr
+
 Introduction to dplyr                 | 2-0-dplyr-intro.Rmd
 Select		                            | 2-1-select.Rmd
 Filter		                            | 2-2-filter.Rmd
-Arrange     		                      | 2-3-arrange.Rmd
 Mutate                                | 2-4-mutate.Rmd
 Summarise                             | 2-5-summarise.Rmd
 Grouping Data	                        | 3-group.Rmd
 Chaining Verbs                        | 4-chain.Rmd
 
-Advanced dplyr
-Each                                  | 5-each.Rmd
-Generic do                            | 6-do.Rmd
-Combining Data                        | 7-combining.Rmd
-Databases                             | 8-databases.Rmd
-Non-Standard Evaluation               | 9-nse.Rmd
+Basic data visualization with ggplot 
 
-tidyr
-Tidy Data with tidyr                  | 10-tidyr.Rmd
+Introduction to Graphics | 1-intro.Rmd
+Creating a Scatter Plot  | 2-scatterplot.Rmd
+Creating a Line Graph    | 3-linegraph.Rmd
+Creating a Bar Graph     | 4-bargraph.Rmd
+Creating a Histogram     | 5-histogram.Rmd
+Creating a Box Plot      | 6-boxplot.Rmd
+Presenting Plots         | 7-presenting.Rmd
 
-lubridate
-Managing dates with lubridate         | 11-lubridate.Rmd
+Introduction to statistical models with R	| 08.statmodels.Rmd
+
+Introduction to writing R functions	| 06.functions.Rmd
+
