@@ -9,7 +9,7 @@ html_document:
   mathjax: null
   lib_dir: include/libs
   includes:
-    in_header: ../include/html/in-header.html
-    before_body: ../include/html/before-body.html
-    after_body: ../include/html/after-body.html
+    in_header: ../../include/html/in-header.html
+    before_body: ../../include/html/before-body.html
+    after_body: ../../include/html/after-body.html
 

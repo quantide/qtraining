@@ -16,7 +16,7 @@ zip:
 	rm $(OUTPUT_DIR)/*.R
 
 toc:
-	R --slave -e "source('include/r/build-toc-html.R'); build_toc_html(path='$(INPUT_DIR)/',download_file='$(PROJECT).zip')"
+	R --slave -e "source('../../include/r/build-toc-html.R'); build_toc_html(path='$(INPUT_DIR)/',download_file='$(PROJECT).zip')"
 
 html: $(HTML_FILES)
 

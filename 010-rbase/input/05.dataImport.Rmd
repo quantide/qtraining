@@ -1,7 +1,7 @@
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 require(knitr)
-opts_knit$set(root.dir = "../../../../data/manual")
+opts_knit$set(root.dir = "../data")
 ```
 
 # Data Import and Export
@@ -17,14 +17,14 @@ where `path\_to\_directory\_containing\_data\_folder` is a string containing the
 The `read.table()` function imports a text file (ASCII) with a table structure where each row represents a case.
 
 ```{r, read.table}
-df = read.table("/home/nicola/Dropbox (Quantide)/quantide/int/corsi/corsiR/01.rBase/data/manual/noR/tennis.txt", header = TRUE, sep = "", dec = ".")
+df = read.table("/home/veronica/dev/qtraining/010-rbase/data/noR/tennis.txt", header = TRUE, sep = "", dec = ".")
 head(df)
 ```
 setwd("")
 
 The path uses the slash ("`/`") as delimiting character, in the UNIX-like style. Under Windows, can be used both a slash character or a doubled backslash character ("`\\`").
 
-```{r, read.table2}
+```{r, read.table2, eval=FALSE}
 df = read.table("noR/tennis.txt", head = TRUE)
 df = read.table("noR\\tennis.txt", head = TRUE)
 ```
