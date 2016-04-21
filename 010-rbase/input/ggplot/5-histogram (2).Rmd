@@ -1,0 +1,145 @@
+---
+title: "Creating a Histogram"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+require(dplyr)
+
+require(ggplot2)
+
+require(qdata)
+data(bands)
+```
+
+Histograms are used to summarize a continuous variable into classes, called _bins_. The area (and not the height) of each bin is proportional to the frequency of cases in the bin. The vertical axis is not frequency but density. When bins are equal size, a rectangle is erected over the bin with height proportional to the frequency. As the adjacent bins leave no gaps, the rectangles of a histogram touch each other to indicate that the original variable is continuous.
+
+```{r histograms, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE}
+ggp <- ggplot(data=bands, aes(x=ink_pct)) + 
+  xlab("Continuous variable\n(x)") +
+  theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+
+ggp1 <- ggp + geom_histogram(fill="#2B4C6F") + ylab("Frequency\n(y)")
+
+ggp2 <- ggp + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins = 8) + ylab("Density\n(y)")
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
+```
+
+This chapter presents how to build histograms and introduces a basic concepts of `ggplot2` graphics: faceting. 
+
+
+# The first histogram
+
+As a quality engineer, you are interested to the distribution of ink percentage in `bands` data.
+
+```{r histogram_first, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram()
+```
+
+As usual,  aesthetics can be set to modify the appearance of plot.
+
+```{r histogram_aes, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0")
+```
+
+By default, the data is grouped into 30 bins. You can modify the number of bins:
+
+ - setting the number of bins:
+    ```{r histogram_bins, message=FALSE, warning=FALSE}
+    ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins=6)
+    ```
+    
+ - setting the width of each bin:
+    ```{r histogram_binwidth, message=FALSE, warning=FALSE}
+    ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0", binwidth=7)
+    ```  
+    
+# Mapping variables to histograms and faceting
+
+May be interesting analysing the distribution of ink percentage for each level of `proof_on_ctd_ink`. 
+
+```{r histogram_mapping, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(mapping=aes(fill=proof_on_ctd_ink))
+```
+
+Mapping the grouping variable to `fill`, two overlapped distributions are shown. In some cases, as shown above, this solution may work. In other cases, the result may be very difficult to be understood.
+
+```{r histogram_mapping_hide, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(mapping=aes(fill=press_type))
+```
+
+In this cases, four different histograms may produce a more readable result.
+
+```{r histogram_facetgrid_col, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") +
+  facet_grid(. ~ press_type)
+```
+
+`facet_grid()` produces a different panel for each level of `press_type`. It requires a formula style: `rows ~ columns`. The dot in the formula is used to indicate there should be no faceting on this dimension (either row or column). The following example shows faceting on rows.
+
+```{r histogram_facetgrid_row, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") +
+  facet_grid(type_on_cylinder ~ .)
+```
+
+Faceting on both dimensions:
+
+```{r histogram_facetgrid_row_col, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") +
+  facet_grid(type_on_cylinder ~ press_type)
+```
+
+When you have a categorical variable with many levels, it does not make sense to try and display them all in one row (or one column) and you may want to wrap it. `facet_wrap(~ variable)` wraps a sequence of panels into rows and columns, to better fit screen.
+
+```{r histogram_facetwrap, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") +
+  facet_wrap(~ press_type)
+```
+
+Mapping `fill` to the faceting variable (`press_type`) returns a different coloured histogram for each panel.
+
+```{r histogram_facetwrap_fill, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(mapping=aes(fill=press_type)) +
+  guides(fill=FALSE) +
+  facet_wrap(~ press_type)
+```
+
+
+# Making a density histogram
+
+To show densities instead than count (frequencies) on the y axis, the special word `..density..` must be used.
+
+```{r histogram_density, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
+  geom_histogram(fill="#74a9cf")
+```
+
+A density curve can be added.
+
+```{r histogram_geomdensity, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
+  geom_histogram(fill="#74a9cf") + geom_density(colour="#034e7b")
+```
+
+The `geom_density()` function draws a closed polygon. If you do not like the lines along the side and bottom, you can draw a density curve using `geom_line` with `stat="density"`.
+
+```{r histogram_geomline_density, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
+  geom_histogram(fill="#74a9cf") + geom_line(stat="density", colour="#034e7b")
+```
+

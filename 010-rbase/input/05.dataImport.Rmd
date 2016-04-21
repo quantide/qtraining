@@ -1,0 +1,180 @@
+
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
+require(knitr)
+opts_knit$set(root.dir = "../../../../data/manual")
+```
+
+# Data Import and Export
+
+Before all, it is strongly suggested to set the working directory to the directory containing the data. This can be done using the `setwd()` function
+`> setwd(path\_to\_directory\_containing\_data\_folder)`
+where `path\_to\_directory\_containing\_data\_folder` is a string containing the path to directory containing the `data` folder, e.g. `"C:/Users/UserName/Documents"`, under Windows.
+
+
+
+## Importing and Exporting Text Files
+
+The `read.table()` function imports a text file (ASCII) with a table structure where each row represents a case.
+
+```{r, read.table}
+df = read.table("/home/nicola/Dropbox (Quantide)/quantide/int/corsi/corsiR/01.rBase/data/manual/noR/tennis.txt", header = TRUE, sep = "", dec = ".")
+head(df)
+```
+setwd("")
+
+The path uses the slash ("`/`") as delimiting character, in the UNIX-like style. Under Windows, can be used both a slash character or a doubled backslash character ("`\\`").
+
+```{r, read.table2}
+df = read.table("noR/tennis.txt", head = TRUE)
+df = read.table("noR\\tennis.txt", head = TRUE)
+```
+
+
+The `header = TRUE` option tells R that the first row of the file contains column headings and is used to assign the name of variables. If the first row contains the first case the `header = FALSE` ought to be used and the names of the variables are automatically assigned. R assumes a default value for the `header` parameter according to the file format, which is why specifying the correct option is advisable.  Alternatively, the names of the columns can be specified using the `col.names` parameter. This parameter requires a character vector with the same length as the number of the data frame columns.
+
+The `sep` argument specifies the separator between different cases. The default value for the `read.table()` function is `sep = ""` which takes into consideration the fields delimited by a white space, be it one or more spaces or tabulations.
+
+The `dec` argument specifies the decimal separator. The argument usually assumes the `dec = "."`  (default) or `dec = ","` values.
+
+The `nrows` argument specifies the maximum number of rows to read in.
+
+```{r, nrows1}
+read.table("noR/tennis.txt", header = TRUE, sep = "", dec = ".", nrows = 3)
+```
+
+The `skip` argument specifies the number of lines of the data file to skip before beginning to read data. If the first line contains the header and it is ignored, than `header = FALSE` should be set.
+
+```{r, nrows2}
+read.table("noR/tennis.txt", header = FALSE, sep = "", dec = ".", skip = 2)
+```
+
+The `nrows` and `skip` arguments can be mixed. The following example read the second and the third rows of the data frame.
+
+```{r, nrows3}
+read.table("noR/tennis.txt", header = FALSE, sep = "", dec = ".", nrows = 2, skip = 2)
+```
+
+Variables containing text are set as character variables with the `stringsAsFactors = FALSE` option, whereas by default they are set as factors. This setting can be modified with the "global" option for it to be applied until the end of the work session. This can be done with the `options(stringsAsFactors = FALSE)` instruction.
+
+```{r, stringsAsFactors}
+df = read.table("noR/tennis.txt", header = TRUE, sep = "", dec = ".", stringsAsFactors = FALSE)
+head(df)
+```
+
+When there are missing values the `na.strings` can be used to indicate which string is referred to them. The `na.string` argument can be a character vector. R indicates missing values with the `NA` (Not Available) symbol.
+
+```{r, na.strings}
+df = read.table("noR/tennis.NA.txt", header = TRUE, sep = "", dec = ".", na.strings = c("MC", "ND"), stringsAsFactors = FALSE)
+head(df)
+```
+
+To save a data frame in a text file in R use the `write.table()` function.
+
+```{r, write.table, eval = FALSE}
+# It creates a dfWrite.txt file in the current directory
+df = data.frame(a1 = rnorm(10), a2 = rnorm(10), a3 = rnorm(10))
+write.table(df, file = "dfWrite.txt")
+```
+
+
+## ODBC
+
+Open Database Connectivity (ODBC) is a standard programming language interface for accessing database management systems (DBMS). ODBC is independent from database systems and operating systems. An application can use ODBC to query data from a DBMS, regardless of the operating system or DBMS it uses. ODBC accomplishes DBMS independence by using an ODBC driver as a translation layer between the application and the DBMS.
+
+With the `ROBDC` package R enables the use of ODBC for importing data from Microsoft Excel. The ODBC driver for Microsoft Excel is available in a Windows environment only and requires a 32-bit R. The driver does not seem to be working with the 64-bit R.
+
+The use of ODBC requires a connection to the Excel file to be established with the `odbcConnectExcel()` function. The file worksheets can be then visualized using the `sqlTables()` function. In the following example only the names of the Excel file worksheets are visualized. Other details are visible when `\$TABLE\_NAME` is omitted. The content of the worksheet is then imported using the `sqlFetch()` function whose inputs are the object containing the connection to Excel and the worksheet to be imported in R. When data has been loaded, it is advisable to close the connection to the Excel file using the `close()` function.
+
+```{r, RODBCsqlFetch, eval=FALSE}
+# RODBC driver ought be configured to work properly
+library("RODBC")
+conn = odbcConnectExcel("dataManual/dat/weight.xls")
+sqlTables(conn)$TABLE_NAME
+df = sqlFetch(conn, "Sheet1")
+head(df)
+close(conn)
+```
+
+```
+##   id height weight age
+## 1  1    190     88  39
+## 2  2    170     73  32
+## 3  3    188     67  42
+## 4  4    174     67  36
+## 5  5    170     74  55
+## 6  6    182     76  39
+```
+
+With the `RODBC` package R enables the use of ODBC for interacting with databases. This solution is particularly useful when data occupies much space, is frequently updated or shared by two or more users. In this case, data is kept in the database. With R it is possible to make a query in the database, load data in the R workspace and carry out analyses.
+
+The following code shows some examples of how to use ODBC in a MySQL database. For the following examples to work, it is necessary to modify the following functions with the parameters related to the available MySQL database.
+
+The `odbcConnect()` function establishes the connection to the MySQL database. Its main arguments are: `dsn`, a string containing the name of the data source, `uid` and `pwd`, i.e. the user name and the password for the login.\
+
+The `sqlQuery()` function performs queries to the MySQL database. The use of single and double quotation marks require attention. In the following example the query is contained in a string and is delimited by double quotation marks. The strings belonging to the query are delimited by single quotation marks.
+
+Finally, the `odbcClose()` function closes the connection to the database.
+
+```{r, RODBCsqlQuery, eval=FALSE}
+# RODBC driver ought be configured to work properly
+library(RODBC)
+conn = odbcConnect(dsn = "test", uid = "user", pwd = "pass")
+sqlQuery(conn, "select * from tbl where gender = 'F'") 
+odbcClose(conn)
+```
+
+
+## Saving and Loading R Files
+
+Statistical packages often provide the opportunity to save the working environment with all the objects it contains in their own formats. Even if rarely used, this function is available in R as well. The format used by R is called `Rdata` (or `Rda`).
+
+In this way, different objects can be saved in a single file. Moreover, all the features of a data frame which cannot be saved in a text file, such as the levels of a factor, can be kept in the file. 
+
+To save an object of the R workspace in a file use the `save()` function. The first argument of the function is the object to be saved, whereas the file name is defined in the `file` argument. If the position is not specified, R saves the file in the current directory.
+
+```{r, save1, eval=FALSE}
+# It creates a mtcars.Rda file in the current directory
+save(mtcars, file = "mtcars.Rda")
+```
+
+To save more than one object list their names.
+
+```{r, save2, eval=FALSE}
+# It creates a datasets.Rda file in the current directory
+save(mtcars, iris, file = "datasets.Rda")
+```
+
+An alternative method to save more than one object is provided by the `list` argument. The names of the objects to be saved in a vector can be inserted with the `list` argument. This method is advisable when the list of the files to be saved is contained in a vector.
+
+```{r, save3, eval=FALSE}
+# It creates a datasets.Rda file in the current directory
+datalist = c("mtcars", "iris")
+save(list = datalist, file = "datasets.Rda")
+```
+
+To upload `Rda` files in R use the `load()` function.
+
+```{r, load, eval=FALSE}
+# It reads the datasets.Rda file previously created in the current directory
+load("datasets.Rda")
+```
+
+R has two functions which save and load the history of the arguments which have been used: `savehistory()` and `loadhistory()`, respectively. In both cases, the only argument of the function is the name of the file to be created or loaded.
+
+```{r, history, eval=FALSE}
+# It saves and loads command history files
+savehistory("hist.Rhistory")
+loadhistory("hist.Rhistory")
+```
+
+An R code contained in an external file can be recalled from the console or an R script. This can be done with the `source()` function.
+
+```{r, source, eval=FALSE}
+# It reads the script.R file in the current directory
+source("script.R")
+``` 
+
+
+
+## Summary
+> In this chapter, we showed how to import data from and export data into R. This includes data from text files, spreadsheets, and databases. In addition, the content of the whole workspace can be saved in a specific R format.  Now that you can import your data into R, it's time to analyze it. In the next chapter, we'll introduce statistical features of R.
