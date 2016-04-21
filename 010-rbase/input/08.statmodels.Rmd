@@ -1,7 +1,7 @@
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 require(knitr)
-opts_knit$set(root.dir = "../../../../data/manual")
+#opts_knit$set(root.dir = "../../../../data/manual")
 ```
 
 
@@ -95,7 +95,7 @@ After fitting any statistical model, common R functions for inference are:
 In an experiment to investigate the effect of a depressant drug, the reaction times of ten males rats to a certain stimulus were measured after a specified dose of the drug had been administer to each rat. The results were as follows:
 
 ```{r, drug}
-load("drug.Rda")
+load("../data/drug.Rda")
 str(drug)
 ```
 
@@ -203,7 +203,7 @@ As a result, an experiments involving 75 samples of material from the same batch
 Comparison of operators average measurements and within operators variations are the key points of the analysis.
 
 ```{r, carseat}
-load("carseat.Rda")
+load("../data/carseat.Rda")
 str(carseat)
 ```
 

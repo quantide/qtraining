@@ -5,7 +5,7 @@ output:
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 require(knitr)
-opts_knit$set(root.dir = "../../../../data/manual")
+#opts_knit$set(root.dir = "../../../../data/manual")
 ```
 
 # Using R functions
@@ -155,7 +155,7 @@ Some functions are particularly useful when character vectors are manipulated. S
 Consider the vector with the names of some cars of the F1 championship.
 
 ```{r, carnames}
-load("charmanip.Rda")
+load("../data/charmanip.Rda")
 carnames
 ```
 
