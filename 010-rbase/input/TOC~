@@ -1,6 +1,6 @@
 Introduction to R
 About R									| 11-intro.Rmd
-R, RStudio and R packages					| 12-setup.Rmd
+R, RStudio set up							| 12-setup.Rmd
 A first look to R session						| 13-firstlook.Rmd
 
 R objects

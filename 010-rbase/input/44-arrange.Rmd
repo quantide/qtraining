@@ -1,0 +1,67 @@
+---
+title: "Arrange Data"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+require(dplyr)
+require(qdata)
+data(bank) 
+bank <- tbl_df(bank)
+```
+
+
+# `arrange()`
+
+Function `arrange()` reorders a data frame by one or more variables. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns:
+
+![](images/arr.png)
+
+You may want to order the `bank` data frame by the balance of the account in ascending order:
+
+```{r}
+arrange(bank, balance)
+```
+
+or in descending order by using function `desc()` within `arrange()`: 
+
+```{r}
+arrange(bank, desc(balance))
+```
+
+You can order a data frame by one or more than one variables.
+
+Ordering data frame bank by `age` first and descending `ballance` afterward requires:
+
+
+```{r}
+arrange(bank, age , desc(balance))
+```
+
+
+<!--
+
+As any `dplyr` verb, `arrange()` can be mingled with any other verb in order to efficiently manipulate your data. 
+
+If you want to know the top three `balance` by age you may write:
+
+```{r}
+arrange(bank, age , desc(balance)) %>% 
+  group_by(age) %>%
+  filter(row_number() <= 3) %>%
+  select(id, age, balance)
+```
+
+-->
+
+
+
+
+
+
+

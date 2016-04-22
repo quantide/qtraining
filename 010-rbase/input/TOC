@@ -13,10 +13,11 @@ Data manipulation with dplyr
 Introduction to dplyr                 					| 41-dplyr-intro.Rmd
 Select		                            				| 42-select.Rmd
 Filter		                            				| 43-filter.Rmd
-Mutate                                					| 44-mutate.Rmd
-Summarise                             					| 45-summarise.Rmd
-Grouping Data	                        				| 46-group.Rmd
-Chaining Verbs                        					| 47-chain.Rmd
+Arrange									| 44-arrange.Rmd	
+Mutate                                					| 45-mutate.Rmd
+Summarise                             					| 46-summarise.Rmd
+Grouping Data	                        				| 47-group.Rmd
+Chaining Verbs                        					| 48-chain.Rmd
 
 Data visualization with ggplot 
 Introduction to Graphics 						| 51-ggplot-intro.Rmd

@@ -24,24 +24,37 @@ data(bank)
 
 The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.
 
-For example, you can select all calls made on 2008-05-05 to students whit balance above 20,000:
+For example, you can select all calls made to students whit balance above 20,000:
 
 
 ```{r}
 filter(bank, job == "student", balance > 20000)
+```
+
+You can select all calls made  on 2008-05-05 to students:
+
+```{r}
 filter(bank, job == "student", as.character(date) == "2008-05-05")
 filter(bank, job == "student", date == ymd("2008-05-05"))
 ```
 
 Note that you'll have to either convert variable `date` to character or the string "2008-05-05" to an object of class `POSIX` as `dplyr` allows comparison between same class objects only.
 
+<!--
 `filter()` works similarly to `subset()` except that you can give it any number of filtering conditions which are joined together with `&` (not `&&` which is easy to do accidentally!). 
+-->
+
+`filter()` allows you to give it any number of filtering conditions which are joined together with `&` operator.  
+
+```{r}
+filter(bank, age == 18 & job == "student")
+```
 
 You can use other boolean operators explicitly:
-
 ```{r}
 filter(bank, age == 18 | age == 95)
 ```
+
 
 `filter()` can be used also with `%in%` to establish conditions under which filter: 
 
@@ -74,6 +87,7 @@ slice(bank, n())
 
 where function `n()` returns the number of element of a vector in the current group. This function can only be used from within `summarise()`, `mutate()` and `filter()`.
 
+<!--
 
 # `sample_n()` and `sample_frac()`
 
@@ -107,4 +121,4 @@ Finally, you can perform weighted sampling by using the `weight` argument. Weigh
 sample_n(mtcars, 5, weight = mpg)
 ```
 
-
+-->

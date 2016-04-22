@@ -30,7 +30,11 @@ select(bank, year:day)
 select(bank, -(year:day))
 ```
 
+<!--
+
 This function works similarly to the select argument to the `base::subset()`. It has its own function in `dplyr`, because the `dplyr` philosophy is to have small functions that each do one thing well.
+
+-->
 
 You can rename variables with `select()` by using named arguments:
 
@@ -38,7 +42,7 @@ You can rename variables with `select()` by using named arguments:
 select(bank, ID = id)
 ```
 
-
+<!--
 ## Helper Functions for `select()`
 
 `select()` offer a wide set of helper functions:
@@ -117,6 +121,7 @@ select(bank, -job)
 select(bank, -starts_with("d"))
 ```
 
+-->
 
 # `distinct()`
 
@@ -127,8 +132,10 @@ distinct(select(bank, housing))
 distinct(select(bank, housing, loan))
 ```
 
-This is very similar to `base::unique()` but should be much faster.
 
+<!--
+This is very similar to `base::unique()` but should be much faster.
+-->
 
 # `rename()`
 
