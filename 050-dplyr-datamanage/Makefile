@@ -47,9 +47,9 @@ change_dir:
 	R --slave -e "set.seed(100);rmarkdown::render('$<',output_dir='$(OUTPUT_DIR)/')"
 
 
-.PHONY: clean
-clean:
-	$(RM) -rf $(OUTPUT_DIR)/*
+#.PHONY: clean
+#clean:
+#	$(RM) -rf $(OUTPUT_DIR)/*
 
 ###################################################################
 
@@ -86,7 +86,7 @@ PDF_OUT = dplyr-exercises-questions.pdf
 # List of md files to build pdf 
 MD_PATH = $(addprefix exercises/,$(LIST))
 MD = $(addsuffix .md,$(MD_PATH))
-MD_LIST = $(addsuffix .md,$(LIST))
+MD_LIST = $(addsuffix .md,$(MD_PATH))
 
 # Pandoc pdf options
 PANDOC_PDF_OPTIONS = \
@@ -102,7 +102,7 @@ PANDOC_PDF_OPTIONS = \
 ### COMPILE
 # all: by default perform all actions
 
-all: knitr pdf
+all: knitr purl pdf
 
 #.PHONY: change_dir
 
@@ -113,7 +113,7 @@ all: knitr pdf
 
 # build md files from rmd
 %.md: %.Rmd
-	Rscript -e "require(knitr); knit('$<',quiet=FALSE)"
+	Rscript -e "require(knitr); knit('$<', output= '$@', quiet=FALSE)"
 
 
 # build html files from md and upload
@@ -122,8 +122,8 @@ all: knitr pdf
 	#sed -i -e '1,/<body>/d' -e '/^<\/body>/,$$d' $*.html
 
 # build R files from rmd and upload
-#%.R: %.Rmd
-#	Rscript -e "require(knitr);  purl('$<'); getwd()"
+%.R: %.Rmd
+	Rscript -e "require(knitr);  purl('$<'); getwd()"
 
 
 
@@ -134,11 +134,15 @@ $(PDF_OUT): $(MD_LIST)
 # single actions
 knitr: $(MD)
 #html: $(addsuffix .html,$(MD_PATH))
-#purl: $(addsuffix .R,$(MD_PATH))
+purl: $(addsuffix .R,$(MD_PATH))
 pdf: $(PDF_OUT)
 
-# clean:
-	rm -f *.md *.html *.R
 
+.PHONY: clean
+clean: 
+	rm -f *.md 	
+#	mv 	*.R $(PURL_DIR)/
+
+#	rm -f *.md *.html *.R	
 ###################################################################
 

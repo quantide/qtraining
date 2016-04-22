@@ -43,7 +43,7 @@ df %>% mutate(xx = x)
 
 ```
 
-
+<!--
 
 ```{r}
 bank <- tbl_df(bank)
@@ -54,15 +54,22 @@ bank %>%
 
 `dplyr::mutate()` works similarly to `base::transform()`. The key difference between `mutate()` and `transform()` is that `mutate()` allows you to refer to columns that you just created:
 
+-->
+
+`mutate()` allows you to refer to columns that you just created:
+
 ```{r}
 mutate(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 ```
 
+<!--
 while `transform()` returns an error:
 
 ```{r, error=TRUE}
 transform(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 ```
+
+-->
 
 
 # `transmute()`
@@ -75,6 +82,7 @@ If you only want to keep the new variables, use `transmute()`:
 transmute(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 ```
 
+<!--
 
 ## Helper Functions for `mutate()`/`transmute()`
 
@@ -91,8 +99,6 @@ mutate(time, lead_duration = lead(duration) ,delta_duration = lead_duration - du
 mutate(time, lag_duration = lag(duration) ,delta_duration = duration - lag_duration)
 ```
 
-
-<!--- exlpain ties in details --->
 
 These functions represents six variations on ranking functions, mimizing the ranking functions described in SQL2003. They are currently implemented using the built in rank function, and are provided mainly as a convenience when converting between `R` and SQL. All ranking functions map smallest inputs to smallest outputs. Use `desc` to reverse the direction.
 
@@ -155,4 +161,6 @@ mutate(time, short_duration = cumany(duration < 100))
 ```{r}
 mutate(time, mean_duration = cummean(duration))
 ```
+
+-->
 

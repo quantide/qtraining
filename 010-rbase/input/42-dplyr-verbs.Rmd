@@ -1,0 +1,496 @@
+---
+title: "dplyr verbs"
+---
+
+
+```{r options, include=FALSE, purl=FALSE}
+#source("options.R")
+```
+
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+require(dplyr)
+require(lubridate)
+require(qdata)
+data(bank) 
+bank <-  tbl_df(bank)
+```
+
+
+# `select()`
+
+Often you work with large datasets with many columns where only a few are actually of interest to you. 
+
+`select()` allows you to rapidly zoom in on a useful subset of columns by using a set of useful helper functions.
+
+![](images/sel.png) 
+
+```{r bank}
+select(bank, year, month, day)
+select(bank, year:day)
+select(bank, -(year:day))
+```
+
+<!--
+
+This function works similarly to the select argument to the `base::subset()`. It has its own function in `dplyr`, because the `dplyr` philosophy is to have small functions that each do one thing well.
+
+-->
+
+You can rename variables with `select()` by using named arguments:
+
+```{r}
+select(bank, ID = id)
+```
+
+<!--
+## Helper Functions for `select()`
+
+`select()` offer a wide set of helper functions:
+
+* `contains(x)`: selects all variables whose name contains `x`
+* `ends_with(x)` selects all variables whose name ends in `x`
+* `starts_with(x)` selects all variables whose name starts with `x`
+* `everything()` selects all variables:
+* `matches`: selects all variables whose name matches the regular expression `.x`:
+* `num_range(x)` selects all variables starting with `x` and ending with a number:
+* `one_of(x)` selects variables provided in a character vector `x`:
+* `x:y` allows you to select a subset of adiacent variables from `x` to `y`:
+* `-x` allows you to exclude variable `x` from the dataset
+
+* `contains` selects all variables whose name contains "at":
+
+```{r}
+select(bank, contains("at"))
+```
+ 
+* `ends_with` selects all variables whose name ends in "tion":
+
+```{r}
+select(bank, ends_with("tion"))
+```
+
+* `starts_with` selects all variables whose name starts with "arr":
+
+```{r}
+select(bank, starts_with("d"))
+```
+
+* `everything()` selects all variables:
+
+```{r}
+select(bank, everything())
+# change the order of columns
+select(bank, ends_with("tion"), everything() ) 
+```
+
+* `matches()` selects all variables whose name matches the regular expression ".r":
+
+```{r}
+# match all variables containing "r", but not at the first place
+select(bank, matches(".r")) 
+```
+
+
+* `num_range` selects all variables starting with "x" and ending with a number:
+
+```{r}
+data(tennis)
+wimbledon
+select(wimbledon ,num_range("s", c(1:3, 5)))
+```
+
+
+* `one_of` selects variables provided in a character vector:
+
+```{r}
+select(bank, one_of(c("marital","education")))
+vars <- c("marital","education")
+select(bank, one_of(vars))
+```
+
+* `:` allows you to select a subset of variables from `job` to `balance`:
+
+```{r}
+select(bank, job:balance)
+```
+
+* `-` allows you to specify which variables exclude from the dataset:
+
+```{r}
+select(bank, -job)
+select(bank, -starts_with("d"))
+```
+
+-->
+
+# `distinct()`
+
+A common use of `select()` is to find out which values a set of variables takes. This is particularly useful in conjunction with the `distinct()` verb which only returns the unique values in a table.
+
+```{r}
+distinct(select(bank, housing))
+distinct(select(bank, housing, loan))
+```
+
+
+<!--
+This is very similar to `base::unique()` but should be much faster.
+-->
+
+# `rename()`
+
+As seen previously, you can rename the variables using `select()`, however it drops all the variables not explicitly mentioned so it’s not that useful. 
+Instead, use `rename()`:
+
+```{r}
+rename(bank, ID = id)
+```
+
+# `filter()`
+
+`filter()` allows you to select a subset of the rows of a data frame.
+
+![](images/fil.png) 
+
+The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.
+
+For example, you can select all calls made to students whit balance above 20,000:
+
+
+```{r}
+filter(bank, job == "student", balance > 20000)
+```
+
+You can select all calls made  on 2008-05-05 to students:
+
+```{r}
+filter(bank, job == "student", as.character(date) == "2008-05-05")
+filter(bank, job == "student", date == ymd("2008-05-05"))
+```
+
+Note that you'll have to either convert variable `date` to character or the string "2008-05-05" to an object of class `POSIX` as `dplyr` allows comparison between same class objects only.
+
+<!--
+`filter()` works similarly to `subset()` except that you can give it any number of filtering conditions which are joined together with `&` (not `&&` which is easy to do accidentally!). 
+-->
+
+`filter()` allows you to give it any number of filtering conditions which are joined together with `&` operator.  
+
+```{r}
+filter(bank, age == 18 & job == "student")
+```
+
+You can use other boolean operators explicitly:
+```{r}
+filter(bank, age == 18 | age == 95)
+```
+
+
+`filter()` can be used also with `%in%` to establish conditions under which filter: 
+
+```{r}
+filter(bank, age %in% c(18,95))
+```
+
+An other example is:
+
+```{r}
+filter(bank, job %in% c("admin.","technician"))
+filter(bank, job == "admin." | job == "technician")
+```
+
+
+# `slice()`
+To select rows by position, use `slice()`:
+
+You can select the first 10 calls of the bank dataset as follow:
+
+```{r}
+slice(bank, 1:5)
+```
+
+or the last row by:
+
+```{r}
+slice(bank, n()) 
+```
+
+where function `n()` returns the number of element of a vector in the current group. This function can only be used from within `summarise()`, `mutate()` and `filter()`.
+
+<!--
+
+# `sample_n()` and `sample_frac()`
+
+You can use `sample_n()` and `sample_frac()` to take a random sample of rows.
+
+Function `sample_n()` samples a subset of size `n`.
+
+```{r}
+sample_n(bank, 3)
+```
+
+while function `sample_frac()` samples a given fraction of the existing number of rows:
+
+```{r}
+sample_frac(bank, 0.0001)
+```
+
+df <- data.frame(x = 1:3)
+
+Both functions `sample_n()` and `sample_frac()`, with the option `replace = T`, perform sampling operation with replacenement:
+
+```{r}
+nrow(mtcars)
+nrow(sample_frac(mtcars, size = 2, replace = TRUE))
+nrow(sample_n(mtcars, size = 40, replace = TRUE))
+```
+
+Finally, you can perform weighted sampling by using the `weight` argument. Weights are automatically standardised to sum to 1.
+
+```{r}
+sample_n(mtcars, 5, weight = mpg)
+```
+
+-->
+
+
+# `arrange()`
+
+Function `arrange()` reorders a data frame by one or more variables. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns:
+
+![](images/arr.png)
+
+You may want to order the `bank` data frame by the balance of the account in ascending order:
+
+```{r}
+arrange(bank, balance)
+```
+
+or in descending order by using function `desc()` within `arrange()`: 
+
+```{r}
+arrange(bank, desc(balance))
+```
+
+You can order a data frame by one or more than one variables.
+
+Ordering data frame bank by `age` first and descending `ballance` afterward requires:
+
+
+```{r}
+arrange(bank, age , desc(balance))
+```
+
+
+<!--
+
+As any `dplyr` verb, `arrange()` can be mingled with any other verb in order to efficiently manipulate your data. 
+
+If you want to know the top three `balance` by age you may write:
+
+```{r}
+arrange(bank, age , desc(balance)) %>% 
+  group_by(age) %>%
+  filter(row_number() <= 3) %>%
+  select(id, age, balance)
+```
+
+-->
+
+# `mutate()`
+
+As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing columns. This is the job of `mutate()`:
+
+![](images/mut.png) 
+
+<!--- AS explain example add or replace columns -->
+
+```{r}
+df <- data.frame(x = 1:3, y = 3:1)
+
+df %>% mutate(x1 = x+1)
+
+df %>% mutate(x = x+1)
+
+
+df %>% mutate(x = x+1, y = x+1)
+
+
+df %>% mutate(x1 = x+1, y1 = x1+1)
+
+df %>% mutate(y1 = x+1, x1 = x+1)
+
+
+df %>% mutate(xx = x)
+
+```
+
+<!--
+
+```{r}
+bank <- tbl_df(bank)
+bank %>% 
+  select (year, age, balance) %>%
+  mutate(balance_by_age = balance / age, year_of_birth = year - age)
+```
+
+`dplyr::mutate()` works similarly to `base::transform()`. The key difference between `mutate()` and `transform()` is that `mutate()` allows you to refer to columns that you just created:
+
+-->
+
+`mutate()` allows you to refer to columns that you just created:
+
+```{r}
+mutate(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
+```
+
+<!--
+while `transform()` returns an error:
+
+```{r, error=TRUE}
+transform(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
+```
+
+-->
+
+
+# `transmute()`
+
+![](images/tra.png) 
+
+If you only want to keep the new variables, use `transmute()`:
+
+```{r} 
+transmute(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
+```
+
+<!--
+
+## Helper Functions for `mutate()`/`transmute()`
+
+* `lead` copies a vector with values shifted by 1:
+
+```{r}
+time <- select(bank, duration)
+mutate(time, lead_duration = lead(duration) ,delta_duration = lead_duration - duration)
+```
+
+* `lag` copies a vector with values lagged by 1:
+
+```{r}
+mutate(time, lag_duration = lag(duration) ,delta_duration = duration - lag_duration)
+```
+
+
+These functions represents six variations on ranking functions, mimizing the ranking functions described in SQL2003. They are currently implemented using the built in rank function, and are provided mainly as a convenience when converting between `R` and SQL. All ranking functions map smallest inputs to smallest outputs. Use `desc` to reverse the direction.
+
+* `min_rank` is equivalent to `rank(ties.method = "min")` and returns the min rank of each observation:
+
+```{r}
+mutate(time, duration_rank = min_rank(duration))
+```
+
+* `dense_rank` is like `min_rank`, but with no gaps between ranks:
+
+```{r}
+mutate(time, duration_rank = dense_rank(duration))
+```
+
+* `percent_rank` returns a number between 0 and 1 computed by rescaling `min_rank` to [0, 1]:
+
+```{r}
+mutate(time, duration_rank = percent_rank(duration))
+```
+
+* `row_number` is equivalent to `rank(ties.method = "first")`, which results in a permutation with increasing values at each index set of ties:
+
+```{r}
+mutate(time, duration_rank = row_number(duration))
+```
+
+* `ntile()` divides the data up into n evenly sized buckets. It’s a coarse ranking, and it can be used in with `mutate()` to divide the data into buckets for further `summary`:
+
+```{r}
+mutate(time, duration_rank = ntile(duration, 10))
+```
+
+* `cume_dist` is a cumulative distribution function. It creates a proportion of all values less than or equal to the current rank:
+
+```{r}
+mutate(time, duration_rank = cume_dist(duration))
+```
+
+* `between` is a shortcut for x >= left & x <= right, implemented efficiently in C++ for local values, and translated to the appropriate SQL for remote tables:
+
+```{r}
+mutate(time, duration_rank = between(duration, 0, 90))
+```
+
+`dplyr` adds `cumall`, `cumany`, and `cummean` to complete `R`'s set of cumulate functions to match the aggregation functions available in most databases.
+
+* `cumany()` and `cumall()` are useful for selecting all rows up to, or all rows after, a condition is true for the first (or last) time:
+
+```{r}
+mutate(time, long_duration = cumall(duration > 100))
+```
+
+```{r}
+mutate(time, short_duration = cumany(duration < 100))
+```
+
+* `cummean` returns a cumulative mean of a vector:
+
+```{r}
+mutate(time, mean_duration = cummean(duration))
+```
+
+-->
+
+# `summarise()`
+
+The last verb is `summarise()`, which collapses a data frame to a single row:
+
+```{r}
+summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
+summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
+```
+
+<!--
+## Helper Functions for `summarise()`
+
+* `first` returns the first value of a vector:
+
+```{r}
+summarise(bank, first(job))
+```
+
+* `last` returns the last value of a vector:
+
+```{r}
+summarise(bank, last(job))
+```
+
+* `nth` returns the nth value of a vector:
+
+```{r}
+summarise(bank, nth(job,8))
+```
+
+* `n()` returns the number of values in a vector:
+
+```{r}
+summarise(bank, n())
+```
+
+* `n_distinct` returns the number of distinct values in a vector:
+
+```{r}
+summarise(bank, n_distinct(job))
+summarise(bank, n_distinct(education))
+```
+
+-->
+
+
+
