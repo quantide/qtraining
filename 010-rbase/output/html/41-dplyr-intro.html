@@ -312,20 +312,11 @@ $(document).ready(function () {
   <li><a href="31-dataimport.html">Import data into R</a></li>
   <li class="nav-header">Data manipulation with dplyr</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
-  <li><a href="42-select.html">Select</a></li>
-  <li><a href="43-filter.html">Filter</a></li>
-  <li><a href="44-mutate.html">Mutate</a></li>
-  <li><a href="45-summarise.html">Summarise</a></li>
-  <li><a href="46-group.html">Grouping Data</a></li>
-  <li><a href="47-chain.html">Chaining Verbs</a></li>
+  <li><a href="42-dplyr-verbs.html">Verb functions</a></li>
+  <li><a href="43-group-chain.html">Group Data and Chain Verbs</a></li>
   <li class="nav-header">Data visualization with ggplot</li>
-  <li><a href="51-ggplot-intro.html">Introduction to Graphics</a></li>
-  <li><a href="52-scatterplot.html">Creating a Scatter Plot</a></li>
-  <li><a href="53-linegraph.html">Creating a Line Graph</a></li>
-  <li><a href="54-bargraph.html">Creating a Bar Graph</a></li>
-  <li><a href="55-histogram.html">Creating a Histogram</a></li>
-  <li><a href="56-boxplot.html">Creating a Box Plot</a></li>
-  <li><a href="57-presenting.html">Presenting Plots</a></li>
+  <li><a href="ggplot2-intro.html">Introduction to ggplot2</a></li>
+  <li><a href="ggplot.html">graphs</a></li>
   <li class="nav-header">R functions</li>
   <li><a href="61.functions.html">Introduction to writing R functions</a></li>
   <li class="nav-header">Models</li>
@@ -347,7 +338,6 @@ $(document).ready(function () {
 <ul>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#tbl_df-the-dplyr-data-frame-class"><code>tbl_df</code>: the <code>dplyr</code> Data Frame Class</a></li>
-<li><a href="#verb-functions">Verb functions</a></li>
 </ul>
 </div>
 
@@ -359,7 +349,8 @@ $(document).ready(function () {
 <li>it provides simple “verbs”, functions that correspond to the most common data manipulation tasks;</li>
 <li>it uses efficient data storage backends, so you spend less time waiting for the computer.</li>
 </ul>
-<p>Let’s start by having a look at how data frames are saved and visualized and at the main verb functions of <code>dplyr</code>.</p>
+<pre class="r"><code>require(dplyr)</code></pre>
+<p>Let’s start by having a look at how data frames are saved and visualized.</p>
 </div>
 <div id="tbl_df-the-dplyr-data-frame-class" class="section level1">
 <h1><code>tbl_df</code>: the <code>dplyr</code> Data Frame Class</h1>
@@ -15426,26 +15417,6 @@ class(dfd)</code></pre>
 ## ..        ...        ...        ...       ...       ...       ...
 ## Variables not shown: g (dbl), h (dbl), i (dbl), j (dbl), k (dbl), l (dbl),
 ##   m (dbl), n (dbl), o (dbl), p (dbl), q (dbl), r (dbl), s (dbl), t (dbl)</code></pre>
-</div>
-<div id="verb-functions" class="section level1">
-<h1>Verb functions</h1>
-<p><code>dplyr</code> aims to provide a function for each basic verb of data manipulating.</p>
-<p>All these functions are very similar:</p>
-<ul>
-<li>the first argument is a data frame;</li>
-<li>the subsequent arguments describe what to do with it, and you can refer to columns in the data frame directly without using $;</li>
-<li>the result is a new data frame.</li>
-</ul>
-<p>Together these properties make it easy to chain together multiple simple steps to achieve a complex result.</p>
-<p>These five functions provide the basis of a language of data manipulation. At the most basic level, you can only alter a tidy data frame in five useful ways:</p>
-<ol style="list-style-type: decimal">
-<li>select variables of interest: <code>select()</code>;</li>
-<li>filter records of interest: <code>filter()</code>;</li>
-<li>reorder the rows: <code>arrange()</code>;</li>
-<li>add new variables that are functions of existing variables: <code>mutate()</code>;</li>
-<li>collapse many values to a summary: <code>summarise()</code>.</li>
-</ol>
-<p>The remainder of the language comes from applying these five functions to different types of data, like grouped data, which will be described after.</p>
 </div>
 
 

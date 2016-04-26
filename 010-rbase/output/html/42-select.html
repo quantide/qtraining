@@ -312,20 +312,11 @@ $(document).ready(function () {
   <li><a href="31-dataimport.html">Import data into R</a></li>
   <li class="nav-header">Data manipulation with dplyr</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
-  <li><a href="42-select.html">Select</a></li>
-  <li><a href="43-filter.html">Filter</a></li>
-  <li><a href="44-mutate.html">Mutate</a></li>
-  <li><a href="45-summarise.html">Summarise</a></li>
-  <li><a href="46-group.html">Grouping Data</a></li>
-  <li><a href="47-chain.html">Chaining Verbs</a></li>
+  <li><a href="42-dplyr-verbs.html">Verb functions</a></li>
+  <li><a href="43-group-chain.html">Group Data and Chain Verbs</a></li>
   <li class="nav-header">Data visualization with ggplot</li>
-  <li><a href="51-ggplot-intro.html">Introduction to Graphics</a></li>
-  <li><a href="52-scatterplot.html">Creating a Scatter Plot</a></li>
-  <li><a href="53-linegraph.html">Creating a Line Graph</a></li>
-  <li><a href="54-bargraph.html">Creating a Bar Graph</a></li>
-  <li><a href="55-histogram.html">Creating a Histogram</a></li>
-  <li><a href="56-boxplot.html">Creating a Box Plot</a></li>
-  <li><a href="57-presenting.html">Presenting Plots</a></li>
+  <li><a href="ggplot2-intro.html">Introduction to ggplot2</a></li>
+  <li><a href="ggplot.html">graphs</a></li>
   <li class="nav-header">R functions</li>
   <li><a href="61.functions.html">Introduction to writing R functions</a></li>
   <li class="nav-header">Models</li>
@@ -345,9 +336,7 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#select"><code>select()</code></a><ul>
-<li><a href="#helper-functions-for-select">Helper Functions for <code>select()</code></a></li>
-</ul></li>
+<li><a href="#select"><code>select()</code></a></li>
 <li><a href="#distinct"><code>distinct()</code></a></li>
 <li><a href="#rename"><code>rename()</code></a></li>
 </ul>
@@ -409,7 +398,11 @@ $(document).ready(function () {
 ## Variables not shown: loan (fctr), contact (fctr), date (time), duration
 ##   (int), campaign (int), pdays (int), previous (int), poutcome (fctr), y
 ##   (fctr)</code></pre>
-<p>This function works similarly to the select argument to the <code>base::subset()</code>. It has its own function in <code>dplyr</code>, because the <code>dplyr</code> philosophy is to have small functions that each do one thing well.</p>
+<!--
+
+This function works similarly to the select argument to the `base::subset()`. It has its own function in `dplyr`, because the `dplyr` philosophy is to have small functions that each do one thing well.
+
+-->
 <p>You can rename variables with <code>select()</code> by using named arguments:</p>
 <pre class="r"><code>select(bank, ID = id)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 1]
@@ -427,23 +420,30 @@ $(document).ready(function () {
 ## 9      9
 ## 10    10
 ## ..   ...</code></pre>
-<div id="helper-functions-for-select" class="section level2">
-<h2>Helper Functions for <code>select()</code></h2>
-<p><code>select()</code> offer a wide set of helper functions:</p>
-<ul>
-<li><code>contains(x)</code>: selects all variables whose name contains <code>x</code></li>
-<li><code>ends_with(x)</code> selects all variables whose name ends in <code>x</code></li>
-<li><code>starts_with(x)</code> selects all variables whose name starts with <code>x</code></li>
-<li><code>everything()</code> selects all variables:</li>
-<li><code>matches</code>: selects all variables whose name matches the regular expression <code>.x</code>:</li>
-<li><code>num_range(x)</code> selects all variables starting with <code>x</code> and ending with a number:</li>
-<li><code>one_of(x)</code> selects variables provided in a character vector <code>x</code>:</li>
-<li><code>x:y</code> allows you to select a subset of adiacent variables from <code>x</code> to <code>y</code>:</li>
-<li><p><code>-x</code> allows you to exclude variable <code>x</code> from the dataset</p></li>
-<li><p><code>contains</code> selects all variables whose name contains “at”:</p></li>
-</ul>
-<pre class="r"><code>select(bank, contains(&quot;at&quot;))</code></pre>
-<pre><code>## Source: local data frame [45,211 x 3]
+<!--
+## Helper Functions for `select()`
+
+`select()` offer a wide set of helper functions:
+
+* `contains(x)`: selects all variables whose name contains `x`
+* `ends_with(x)` selects all variables whose name ends in `x`
+* `starts_with(x)` selects all variables whose name starts with `x`
+* `everything()` selects all variables:
+* `matches`: selects all variables whose name matches the regular expression `.x`:
+* `num_range(x)` selects all variables starting with `x` and ending with a number:
+* `one_of(x)` selects variables provided in a character vector `x`:
+* `x:y` allows you to select a subset of adiacent variables from `x` to `y`:
+* `-x` allows you to exclude variable `x` from the dataset
+
+* `contains` selects all variables whose name contains "at":
+
+
+```r
+select(bank, contains("at"))
+```
+
+```
+## Source: local data frame [45,211 x 3]
 ## 
 ##    education       date duration
 ##       (fctr)     (time)    (int)
@@ -457,12 +457,18 @@ $(document).ready(function () {
 ## 8   tertiary 2008-05-05      380
 ## 9    primary 2008-05-05       50
 ## 10 secondary 2008-05-05       55
-## ..       ...        ...      ...</code></pre>
-<ul>
-<li><code>ends_with</code> selects all variables whose name ends in “tion”:</li>
-</ul>
-<pre class="r"><code>select(bank, ends_with(&quot;tion&quot;))</code></pre>
-<pre><code>## Source: local data frame [45,211 x 2]
+## ..       ...        ...      ...
+```
+ 
+* `ends_with` selects all variables whose name ends in "tion":
+
+
+```r
+select(bank, ends_with("tion"))
+```
+
+```
+## Source: local data frame [45,211 x 2]
 ## 
 ##    education duration
 ##       (fctr)    (int)
@@ -476,12 +482,18 @@ $(document).ready(function () {
 ## 8   tertiary      380
 ## 9    primary       50
 ## 10 secondary       55
-## ..       ...      ...</code></pre>
-<ul>
-<li><code>starts_with</code> selects all variables whose name starts with “arr”:</li>
-</ul>
-<pre class="r"><code>select(bank, starts_with(&quot;d&quot;))</code></pre>
-<pre><code>## Source: local data frame [45,211 x 4]
+## ..       ...      ...
+```
+
+* `starts_with` selects all variables whose name starts with "arr":
+
+
+```r
+select(bank, starts_with("d"))
+```
+
+```
+## Source: local data frame [45,211 x 4]
 ## 
 ##    default   day       date duration
 ##     (fctr) (int)     (time)    (int)
@@ -495,12 +507,18 @@ $(document).ready(function () {
 ## 8      yes     5 2008-05-05      380
 ## 9       no     5 2008-05-05       50
 ## 10      no     5 2008-05-05       55
-## ..     ...   ...        ...      ...</code></pre>
-<ul>
-<li><code>everything()</code> selects all variables:</li>
-</ul>
-<pre class="r"><code>select(bank, everything())</code></pre>
-<pre><code>## Source: local data frame [45,211 x 20]
+## ..     ...   ...        ...      ...
+```
+
+* `everything()` selects all variables:
+
+
+```r
+select(bank, everything())
+```
+
+```
+## Source: local data frame [45,211 x 20]
 ## 
 ##       id   age          job  marital education default balance housing
 ##    (int) (int)       (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr)
@@ -517,10 +535,16 @@ $(document).ready(function () {
 ## ..   ...   ...          ...      ...       ...     ...     ...     ...
 ## Variables not shown: loan (fctr), contact (fctr), day (int), month (fctr),
 ##   year (int), date (time), duration (int), campaign (int), pdays (int),
-##   previous (int), poutcome (fctr), y (fctr)</code></pre>
-<pre class="r"><code># change the order of columns
-select(bank, ends_with(&quot;tion&quot;), everything() ) </code></pre>
-<pre><code>## Source: local data frame [45,211 x 20]
+##   previous (int), poutcome (fctr), y (fctr)
+```
+
+```r
+# change the order of columns
+select(bank, ends_with("tion"), everything() ) 
+```
+
+```
+## Source: local data frame [45,211 x 20]
 ## 
 ##    education duration    id   age          job  marital default balance
 ##       (fctr)    (int) (int) (int)       (fctr)   (fctr)  (fctr)   (int)
@@ -537,13 +561,19 @@ select(bank, ends_with(&quot;tion&quot;), everything() ) </code></pre>
 ## ..       ...      ...   ...   ...          ...      ...     ...     ...
 ## Variables not shown: housing (fctr), loan (fctr), contact (fctr), day
 ##   (int), month (fctr), year (int), date (time), campaign (int), pdays
-##   (int), previous (int), poutcome (fctr), y (fctr)</code></pre>
-<ul>
-<li><code>matches()</code> selects all variables whose name matches the regular expression “.r”:</li>
-</ul>
-<pre class="r"><code># match all variables containing &quot;r&quot;, but not at the first place
-select(bank, matches(&quot;.r&quot;)) </code></pre>
-<pre><code>## Source: local data frame [45,211 x 4]
+##   (int), previous (int), poutcome (fctr), y (fctr)
+```
+
+* `matches()` selects all variables whose name matches the regular expression ".r":
+
+
+```r
+# match all variables containing "r", but not at the first place
+select(bank, matches(".r")) 
+```
+
+```
+## Source: local data frame [45,211 x 4]
 ## 
 ##     marital  year duration previous
 ##      (fctr) (int)    (int)    (int)
@@ -557,13 +587,20 @@ select(bank, matches(&quot;.r&quot;)) </code></pre>
 ## 8  divorced  2008      380        0
 ## 9   married  2008       50        0
 ## 10   single  2008       55        0
-## ..      ...   ...      ...      ...</code></pre>
-<ul>
-<li><code>num_range</code> selects all variables starting with “x” and ending with a number:</li>
-</ul>
-<pre class="r"><code>data(tennis)
-wimbledon</code></pre>
-<pre><code>## Source: local data frame [48 x 10]
+## ..      ...   ...      ...      ...
+```
+
+
+* `num_range` selects all variables starting with "x" and ending with a number:
+
+
+```r
+data(tennis)
+wimbledon
+```
+
+```
+## Source: local data frame [48 x 10]
 ## 
 ##     year champion_country      champion runner_up_country      runner_up
 ##    (int)            (chr)         (chr)             (chr)          (chr)
@@ -578,9 +615,15 @@ wimbledon</code></pre>
 ## 9   1976              SWE    Björn Borg               ROU   Ilie Năstase
 ## 10  1977              SWE    Björn Borg               USA  Jimmy Connors
 ## ..   ...              ...           ...               ...            ...
-## Variables not shown: s1 (chr), s2 (chr), s3 (chr), s4 (chr), s5 (chr)</code></pre>
-<pre class="r"><code>select(wimbledon ,num_range(&quot;s&quot;, c(1:3, 5)))</code></pre>
-<pre><code>## Source: local data frame [48 x 4]
+## Variables not shown: s1 (chr), s2 (chr), s3 (chr), s4 (chr), s5 (chr)
+```
+
+```r
+select(wimbledon ,num_range("s", c(1:3, 5)))
+```
+
+```
+## Source: local data frame [48 x 4]
 ## 
 ##       s1        s2    s3    s5
 ##    (chr)     (chr) (chr) (chr)
@@ -594,12 +637,19 @@ wimbledon</code></pre>
 ## 8    6–1       6–1   5–7      
 ## 9    6–4       6–2   9–7      
 ## 10   3–6       6–2   6–1   6–4
-## ..   ...       ...   ...   ...</code></pre>
-<ul>
-<li><code>one_of</code> selects variables provided in a character vector:</li>
-</ul>
-<pre class="r"><code>select(bank, one_of(c(&quot;marital&quot;,&quot;education&quot;)))</code></pre>
-<pre><code>## Source: local data frame [45,211 x 2]
+## ..   ...       ...   ...   ...
+```
+
+
+* `one_of` selects variables provided in a character vector:
+
+
+```r
+select(bank, one_of(c("marital","education")))
+```
+
+```
+## Source: local data frame [45,211 x 2]
 ## 
 ##     marital education
 ##      (fctr)    (fctr)
@@ -613,10 +663,16 @@ wimbledon</code></pre>
 ## 8  divorced  tertiary
 ## 9   married   primary
 ## 10   single secondary
-## ..      ...       ...</code></pre>
-<pre class="r"><code>vars &lt;- c(&quot;marital&quot;,&quot;education&quot;)
-select(bank, one_of(vars))</code></pre>
-<pre><code>## Source: local data frame [45,211 x 2]
+## ..      ...       ...
+```
+
+```r
+vars <- c("marital","education")
+select(bank, one_of(vars))
+```
+
+```
+## Source: local data frame [45,211 x 2]
 ## 
 ##     marital education
 ##      (fctr)    (fctr)
@@ -630,12 +686,18 @@ select(bank, one_of(vars))</code></pre>
 ## 8  divorced  tertiary
 ## 9   married   primary
 ## 10   single secondary
-## ..      ...       ...</code></pre>
-<ul>
-<li><code>:</code> allows you to select a subset of variables from <code>job</code> to <code>balance</code>:</li>
-</ul>
-<pre class="r"><code>select(bank, job:balance)</code></pre>
-<pre><code>## Source: local data frame [45,211 x 5]
+## ..      ...       ...
+```
+
+* `:` allows you to select a subset of variables from `job` to `balance`:
+
+
+```r
+select(bank, job:balance)
+```
+
+```
+## Source: local data frame [45,211 x 5]
 ## 
 ##             job  marital education default balance
 ##          (fctr)   (fctr)    (fctr)  (fctr)   (int)
@@ -649,12 +711,18 @@ select(bank, one_of(vars))</code></pre>
 ## 8  entrepreneur divorced  tertiary     yes       2
 ## 9       retired  married   primary      no     121
 ## 10   technician   single secondary      no     593
-## ..          ...      ...       ...     ...     ...</code></pre>
-<ul>
-<li><code>-</code> allows you to specify which variables exclude from the dataset:</li>
-</ul>
-<pre class="r"><code>select(bank, -job)</code></pre>
-<pre><code>## Source: local data frame [45,211 x 19]
+## ..          ...      ...       ...     ...     ...
+```
+
+* `-` allows you to specify which variables exclude from the dataset:
+
+
+```r
+select(bank, -job)
+```
+
+```
+## Source: local data frame [45,211 x 19]
 ## 
 ##       id   age  marital education default balance housing   loan contact
 ##    (int) (int)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)  (fctr)
@@ -671,9 +739,15 @@ select(bank, one_of(vars))</code></pre>
 ## ..   ...   ...      ...       ...     ...     ...     ...    ...     ...
 ## Variables not shown: day (int), month (fctr), year (int), date (time),
 ##   duration (int), campaign (int), pdays (int), previous (int), poutcome
-##   (fctr), y (fctr)</code></pre>
-<pre class="r"><code>select(bank, -starts_with(&quot;d&quot;))</code></pre>
-<pre><code>## Source: local data frame [45,211 x 16]
+##   (fctr), y (fctr)
+```
+
+```r
+select(bank, -starts_with("d"))
+```
+
+```
+## Source: local data frame [45,211 x 16]
 ## 
 ##       id   age          job  marital education balance housing   loan
 ##    (int) (int)       (fctr)   (fctr)    (fctr)   (int)  (fctr) (fctr)
@@ -689,8 +763,10 @@ select(bank, one_of(vars))</code></pre>
 ## 10    10    43   technician   single secondary     593     yes     no
 ## ..   ...   ...          ...      ...       ...     ...     ...    ...
 ## Variables not shown: contact (fctr), month (fctr), year (int), campaign
-##   (int), pdays (int), previous (int), poutcome (fctr), y (fctr)</code></pre>
-</div>
+##   (int), pdays (int), previous (int), poutcome (fctr), y (fctr)
+```
+
+-->
 </div>
 <div id="distinct" class="section level1">
 <h1><code>distinct()</code></h1>
@@ -711,7 +787,9 @@ select(bank, one_of(vars))</code></pre>
 ## 2     yes    yes
 ## 3      no     no
 ## 4      no    yes</code></pre>
-<p>This is very similar to <code>base::unique()</code> but should be much faster.</p>
+<!--
+This is very similar to `base::unique()` but should be much faster.
+-->
 </div>
 <div id="rename" class="section level1">
 <h1><code>rename()</code></h1>

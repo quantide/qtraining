@@ -312,20 +312,11 @@ $(document).ready(function () {
   <li><a href="31-dataimport.html">Import data into R</a></li>
   <li class="nav-header">Data manipulation with dplyr</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
-  <li><a href="42-select.html">Select</a></li>
-  <li><a href="43-filter.html">Filter</a></li>
-  <li><a href="44-mutate.html">Mutate</a></li>
-  <li><a href="45-summarise.html">Summarise</a></li>
-  <li><a href="46-group.html">Grouping Data</a></li>
-  <li><a href="47-chain.html">Chaining Verbs</a></li>
+  <li><a href="42-dplyr-verbs.html">Verb functions</a></li>
+  <li><a href="43-group-chain.html">Group Data and Chain Verbs</a></li>
   <li class="nav-header">Data visualization with ggplot</li>
-  <li><a href="51-ggplot-intro.html">Introduction to Graphics</a></li>
-  <li><a href="52-scatterplot.html">Creating a Scatter Plot</a></li>
-  <li><a href="53-linegraph.html">Creating a Line Graph</a></li>
-  <li><a href="54-bargraph.html">Creating a Bar Graph</a></li>
-  <li><a href="55-histogram.html">Creating a Histogram</a></li>
-  <li><a href="56-boxplot.html">Creating a Box Plot</a></li>
-  <li><a href="57-presenting.html">Presenting Plots</a></li>
+  <li><a href="ggplot2-intro.html">Introduction to ggplot2</a></li>
+  <li><a href="ggplot.html">graphs</a></li>
   <li class="nav-header">R functions</li>
   <li><a href="61.functions.html">Introduction to writing R functions</a></li>
   <li class="nav-header">Models</li>
@@ -347,7 +338,6 @@ $(document).ready(function () {
 <ul>
 <li><a href="#filter"><code>filter()</code></a></li>
 <li><a href="#slice"><code>slice()</code></a></li>
-<li><a href="#sample_n-and-sample_frac"><code>sample_n()</code> and <code>sample_frac()</code></a></li>
 </ul>
 </div>
 
@@ -356,7 +346,7 @@ $(document).ready(function () {
 <p><code>filter()</code> allows you to select a subset of the rows of a data frame.</p>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAdMAAAEkCAYAAAB0adsMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA9hAAAPYQGoP6dpAAAAB3RJTUUH4AEaCDAsO9kkwQAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAACAASURBVHja7d17dFTlvf/xz2Qm9ysJuRHuiZAIQpGLWEABpcApFBFQ1Ao9kV+r1FqFuqyHRbXLo11oRdFaerRUekBFpecg2ipHRFnhIASMoCC3kBDIkMskGUImyUwmM/P7I6fRcFEUsveEeb/W4o/sGbK/eZ79zGeevfczYwkEAgEBAIDvLIwmAACAMAUAgDAFAIAwBQCAMAUAAIQpAACEKQAAhCkAAIQpAAAgTAEAIEwBACBMAQAgTAEAAGEKAABhCgAAYQoAAGEKAAAIUwAACFMAAAhTAAAIUwAAQJgCAECYAgBAmAIAQJgCAADCFAAAwhQAAMIUAADCFAAAEKYAABCmAAAQpgAAEKYAAIAwBQCAMAUAgDAFAIAwBQAAhCkAAIQpAACEKQAAhCkAACBMAQAgTAEAIEwBACBMAQAgTAEAAGEKAABhCgAAYQoAAGEKAAAIUwAACFMAAAhTAAAIUwAAQJgCAECYAgBAmAIAQJgCAADCFJ1n2rRpev7557/2OX6/X6dOnVJpaalqa2tpNACXNRtNENo2bNigmpqa8z7+r//6r7JarR22uVwueTye8/6fkpISzZ8/X926dVNlZaXmzZune++995zPbWxsVEFBgaZMmUJnAGBmiq5r06ZNKigoOGv7o48+Krfbfdb2d999V/fdd995f1///v1VUFCgjRs3at68eV+7b6fTqWeffZZOAMDMFF3XTTfdpOLiYiUlJWnBggUdHnvllVfkdrsVGxsrSTpy5Ej7jDQjI0Pdu3c3vF6Hw6Fdu3aprq5OQ4cO1eDBg2WxWNoft9vtcjqdkqQrrrhCkZGR2rdvn/bu3ashQ4boqquuotMBMDNF53vmmWckSbfcckuHU7xr1qzRs88+q4ULF2r16tUXvZ+ioiJNnz5dH3/8sUaPHt3+b+HChed8/qpVqzR58mT97//+rxwOh5YuXapZs2bJ5XK1P+f999/Xs88+qx/+8If64osv9OMf/1gPP/ywDh06pBkzZmjPnj10MIBLzhIIBAI0Q2j7/e9/rwMHDmjChAntP39d6KxevVo1NTX61a9+9Y2/+w9/+IMknfeaaXl5uRYsWKD33nvva3/Pzp07tXjxYm3atKl9pixJv/vd7+RwOLR8+fKzZtxHjx7VE088oenTp0uS3G63oqKi6HAAlxyneSGp7aaif96IFIzvr/7yl7/orrvuUkVFRYft06ZN0/Tp088KU0n67W9/2x6kkghSAIQpOtekSZPar5k2NDQEXX3Hjh1TWVmZNm3adNZj48ePP+f/ufLKK+lYAIQpzLF06VLD9hUREaFTp0594/NycnI0ZswY3X777XQQgKDDDUgwVWJioqqrqzsswXE4HGddQ/3FL36hxx9/XKWlpR22OxwOPfbYY3I4HDQmANNwA1KI+8lPfqItW7bIZrMpLS1Nt99++znXkG7dulUPPfRQe4B5vV716NFDkvTYY49p0qRJ53xuZWWlpLalNJK0bNkyXX/99R1+98qVK/Uf//EfGjJkiE6cOKGamhrl5+frgQce6PC8LVu2aPHixUpPT1dmZqb27dsnScrPz9f8+fMVExOjhQsXqqioSIcOHVLv3r0VHR193v0CAGGKy0pDQ4OKi4vVu3dvpaSknPd5gUBAFRUVcjgcGjhwIDcVASBMAQC4HHDNFAAAwhQAAMIUAADCFAAAwhQAABCmAAAQpgAAEKYAABCmAACAMAUAgDAFAIAwBQCAMAUAAIQpAACEKQAAhCkAAIQpAAAgTAEAIEwBACBMAQAgTAEAAGEKAABhegl4PB56GufV1NREIzBmwJi5KJZAIBAIhT/07bffNr2G6dOnU0eQ1gHGDHUwZpiZAgBAmAaHQCCg4uJi2e12GgNgzAAXzEYTfMnv92vRokUaPHiwnnjiia997v79+7Vr1y7V19ervr5e1157rSZNmkQjgjHDmAFhigu1c+dObdu2TQkJCSotLdUVV1xBowCMGRCmsFqt2rhx4wU9Nz8/X/n5+ZKkW265hcYDY4YxA8I0tLndbr366qvtP2dmZmrq1Knnfe6HH36o48ePKzU1VRMmTOi0uj799FN9+umn7T+PGzdOklRQUNC+bfz48erfv3+nts/f//53VVVVSZJiY2N16623SpK2bdumw4cPt7+ozp8/35D+Kisr0wcffHDOx4YPH66hQ4dyUDNmGDOMGcLUaK2trdq7d68kqbKyUtnZ2ed8YbDb7XrkkUfkcDiUmpqq2tparVu3rtPW5FVWVmrHjh2qrKxUZGSkBg8eLEl677335Ha71bNnT33ve9/r9PY5cuSICgsL5XK5NHTo0PYXhhMnTugf//iHfD5fp784fVVFRYU2bNignj17Kjw8vL2W1tZWZWVl8cLAmGHMMGYMx928kuLi4rRixQqtWLFCgwYNOudzAoGAnnnmGXm9Xj333HP685//rLVr1+qKK65QZy3VnTp1qlauXKkJEyaopaVFTqdTtbW18ng8mjVrll544QVdffXVnd4+999/v+677z5J0g9+8IP27WPHjlVra6tmzpypp59+2vB+W7p0qVasWKEpU6aotbVVkydP7lAfGDOMGcYMYRpkamtrdfjwYc2ZM0d9+vRpP31z9913d+p+rVar7r//fk2ZMkUvvPCCVq5cqVtuuUXz5s2TxWIx7O+/5pprNGDAAL366qvy+XwKBAJatWqVEhMTNWfOHEP7Ii8vT4899piSk5P14YcfauXKlRo3bpzuueceQ9sEjBnGDAjTb8npdEqSkpOTO2xPTU3t9H1bLBalpaW1/5yYmGj4ALBYLLrzzjtlt9v14Ycf6pNPPlFRUZHmzZun6OhoQ2tJTEzU0KFDVVRUpBUrVmjkyJFatGiRwsI4nBkzjBnGjDm4ZnqBevfuLZvNpsLCQn3/+99v375z585O3/fGjRv117/+VbfddptcLpdefPFFeb1ezZw509A2GDp0qIYOHarXXntNERERysnJ0cSJE03pj6KiIj355JMaNGiQHnroIVmtVt1111360Y9+pBkzZnDAMmYYM4wZwtRoJSUlOn78uKS2U1Ner1cfffRR+wtC//79FRkZqblz52rt2rUKCwvTyJEjdfz4ca1fv16SdOzYMe3YsUOjR4++ZHXt2bNH+/bt0xtvvKEBAwZo1qxZ8ng82rNnj15++WU5nU5dffXVhtxQ8U933nmnfvWrX0mSli1bZsopooMHD+qJJ56QzWbT2LFjtX37dklSXV2d3G43BzRjhjHDmCFMzVBQUKC//e1vHbYtX75ckjRr1qz2u+5mz56t8PBwvf7669q8ebOsVqt+8IMfaPPmzfr4449VWlp6SV8Y3njjDe3bt0+SdPjwYTU2NsrpdOrEiROSpA0bNqi4uNjQF4bMzExFRUVp5MiRysvLM6W/9u7dq5aWFknSypUrOYAZM4wZxozp+NaY7yAQCMjhcCg+Pv5bXfu4HL55YuXKlfrggw+0cuXKi772xTdgMGYYM4wZZqah/A7kjJsbLnfr169v/5Sb+vp6hYWF6cEHH9Tq1as5GMCYYcyAMMWFONepKW6nBxgzIEzxLQwaNOi8C/MBMGbAOlMAAAhTAADMFjJ38wIA0FlC5prpixpheg0/1W7qCNI6cLYRL5pfw+6fUkew1oGOOM0LAAAz087nOOpRk9OnPiNiDN+3x+VX06nWcz6WmBGuMJvxt9v7fQHZP2tW3fEWed0BXTUtUZGx5rwvC6Za0KaltkxN5XsUnthDsX1GSCYsCfGeOqlAwN9x5hARLVtsinHHpsel1qZT53wsPDFDljBbyLUJYRqCAgGpZLtL7y+vUtUhj/JujDclTLevrtG2l2qU0i+yw/biApeWfJKnlL4RhtZT8nGjXrm7THGpNvW/Nk7WcIsGT00wpY+CqRZIAb9P5W8uUsPhrYofOEEtNSXyuRuUvfAtWaPiDa3l0FPjFJXZca1nXPYYZUx92LAaaravVs22lxSZ0q/DdldxgfKWfKKIlL4h1yaEaQg6XenV1j85NO03PdTg8Orzd+pNq+X6e1J13d2pHWarT449qOQ+xgap80SLXp5fqp9vzFFGbpSp/RNMteD/xswXm9RYulN5S3a3z7qq3n9aJzcsUa+5zxlaS0RyL+Xc+47pbZJ6/T1Kve7uDrPVg0+OVURyH8NrCZY2IUxDTGJmuPLXtL2jPLDZa1odw2d3k844S7ZnwykNmZ5k+Nmz/37YrplPZAVFeAVTLfi/WU7/a9VvwWsdTl+mjL5Th5dPDMn26DZ8ts4cvKf2bFDSkOmmnPpG5+LiUpBLyAhXQnp4h20719Zq1G3JhtbR2hLQoY8aNHRGklw1rXLVtJrWJsFUC75kjemmyO4dT2l66ytljU4ypZ7mk/tVt/MV1e97Vz73acP3H56QofCE9A7baneuVfKo20zrI7PbhJkpgkZ9hVcNjlZlXmnsjMz+WbNS+kRq9U+OqeKAW+GRFsWm2JS/tp9ikqwhWwvOL+D36cSbi5Q+aZHh+3ZXH1HF248qLmesmsr3qvyNB9Q3f41i+440rT289RVqbXAoKvNKU/YfjG1CmMI0u9bVaficbobv11XbqpKPXZq0OFvDbm6bafzPU1V6a4ldt73QO2Rrwbn5vW6VrrpDCbkTlTTsZsP3P+iRfbLGfDlOug2fo7I1C3Tl0r2mtUndrnXqNnyOafsPxja5nHCat4spfKVOI+cmG77fpB7hGjghvj28JGniL9P0+T/qQ7qWy5lVPmXJrng1fKv/53OfVvHz/6LI7v2UMcWcO0W/GhqS2mZffp9aG6rNC9PCV5Q8cq55/RmEbcLMFKao+MIta4TF8OUwkpSWE6m64y0KBL68dyLMKp2xbC3karmcBAIB1dbWym63y263a56qVKdkFWqUGnRhS1taG6p15PkfKnnU7Uq/4X7JYlFd4atKHnW7+bPl1hZZbJGm7Ntd8YUs1gjDl8MEc5sQpjCNGTce/VN4dJhyb0jQ9r/UaMxd3SVJu9Y5NXBCfEjX0tU1NTWpsrJSdrtdZWVlstlsysrKUm5urh4vv0EeXfgLbUvtMRX/8Sb1mPaIkobNbN9etXm5oWHqa66XLBZZo75cc1y3a52iMnJljU40pZ3NvvEoGNuEMA0RjqMerbqjVJLUXO9Tk9Onkh2NkqRJi9MNv24Z8LcFxkPbB5rWJjN/l6VVPy7VJ286ZY2wqLnep5+tzw75WroSr9er6upq2e12lZeXq7GxUZmZmcrKytKwYcMUFxfX/lzPt/zd9reWyltfocpNy1S5admXL+Tn+RSgztJ8cp9OvH6/wiKiFZnSV57aMoXZItQ3f61JU36/nLvWaeBD203r96BrE8I0dKRmR+rXO3KDph5LmPR4yWBTa4jpZtW97+So9phHfl9bG5m1XC6Yaglmfr9fdXV1Ki8vl91ul8PhUGpqqrKysnTdddepe/ful2xf/fLXBMXfHJc9RnkPF8rbUC2vs1wR3fvJFpts6uAd/HgJbUKYAl95XbBI3ftFUksQO336dPt1z/LyciUkJKhnz5763ve+p4yMDFmt1pA4UMMT0s9a5xnqg5c2IUwBnMf5rnv2799f48aNU2QkbzgAwhRAB9/muicAwhSAjL3uCYAwBS4bXPcEuhZLIBAI0AyAuc533fOf/7juCRCmQWHEi+bXsPun1BGsdRjt66579urVKyiue3KMUEcwjZlgx2lewABc9wQIUwDfAdc9AcIU/6eltkxN5XsUnthDsX1GyIyP2fGeOqnAGZ/iHhYRLVtsinEzK49Lref5WLjwxAxZwmwh1yZnYr3nGW8mDmxWeHyaonsOCck6gm3M/JPHcVS+Jqdi+ozgBZ4w7XwBv0/lby5Sw+Gtih84QS01JfK5G5S98C1Zo4z9QPVDT41TVGZeh21x2WOUMdW4r7eq2b5aNdteUmRKvw7bXcUFylvyieHfhhEMbcJ6z/NzVxxQ6UtzlTrhXlPD1Mw6gmrMBAJylWxX1fvL5ak6pPi8GwlTwtSgd7NfbFJj6U7lLdnd/g6y6v2ndXLDEvWa+5yhtUQk91LOve+Y3iap19+j1Ovu7vDO++CTYxWR3MfwWsxoE657XvgL94k3Fyl98oPytzSHdB3BMma8pyvl2Pon9Zj2G3kbHKr//B2OU8LUGHH9r1W/Ba91OBWTMvpOHV4+MSTbo9vw2ZI6nuI+tWeDkoZM1+X8CfNc9/z2nEXrFZWRq+jMQWos2x2ydQTTmAlPzGz/IgLvgc0cpISpcawx3c76ZnpvfaWs0Umm1NN8cr+aT+yRNTZZcTljOnwvoSGDMSHjrG21O9eq15zlpvVRZ7QJ1z0vcvbuaVTlpmUa8MAHch0pCOk6gnHMgDA1XcDvaztlNGmR4ft2Vx9RxduPKi5nrJrK96r8jQfUN3+NYvuONK09vPUVam1wKCrzSlP2f6naJFxe2e1c97xUKt59XGnjf276F04HSx3BNGZAmJr/btvrVumqO5SQO1FJw242fP+DHtnXYZbcbfgcla1ZoCuX7jWtTep2rVO34XNM2//FtkmeDihXB5Wken3+eYaysrI0fvx4JSfzHY9fFSuX/ApTs2K+8bme6iNyHSlQ1ox/N7XmYKkj2MYMCFNT+dyndfSPNymm99XKmPKwKTWcebo5tu9Iye9Ta0O1bPFp5rwwFL6i7J+tN61fLrZNTitBOzRaVUpX4ZQwDvQzZ/5ut0ZrjwbqsLbqOh1T32/8P/YNS5Q0bKZcR7dLkpor9qul7rhcxdsUlzPWsNqDpY5gGzMgTE3T2lCtI8//UMmjblf6DfdLFovqCl9V8qjbzZ8tt7bIYjPn+p274gtZrBGGL4e5lG1iVxYH+LmO+dZW7du3T5999pnC1U9varaaLmBWKrUtTfLUlqql7njbDNFRotaGajmL1hsaYsFSR1cYMyBMO11L7TEV//Em9Zj2iJKGzWzfXrV5uaFh6muulyyWDjfX1O1ap6iMXNOuB9XuXKvkUbeZd7YgCNukq/P7/Tp06JCKioqUnp6uGTNm6LnXv11bpt3wyw4/13/2jhrLdqvH9EcN/VuCpY5gGjMgTE1jf2upvPUVqty0TJWbln35Qn6eTzTpLM0n9+nE6/crLCJakSl95aktU5gtQn3z15rTMAG/nLvWaeBD203rm6Brky6upKREu3btUlxcnCZPnnzR62WrtzynusJX5Wtyyudp1On97yn31zsM/7uCpY5gGDMex1GVrrqj/c2or8mpxpK2tkiftJhruYRp5/nnmiyzxWWPUd7DhfI2VMvrLFdE936yxZp4k4wlTIMfL6FNLoc3jHa7du7cqbCwMI0bN049evS4NDPDifcpbeJ9pv99wVJHMIyZyNRsc95IEKYIKhaLwhPSFZ6QTlvQJhc/Y6uuVmFhoZqamjRixAj179+fRgEIUwAX4tSpU9q9e7eqq6s1bNgwDRw4UGFh3MkMEKYAvlFjY6OKiop07NgxXXXVVRo/frxsNoY+QJgC+EYej0d79+7VwYMHlZubq1tvvVURERE0DECYAvgmX10r2q9fP82ePVsxMTE0DNCJLIFAIEAzAF3fmWtFR44cqcTE77butt4tJUbRpji36kYpLZZ2CMkwfVHmfxHuT7WbOoK0jq7uq2tFr7nmGr5bFTAYp3mBLqyz1ooCIEyByx5rRQHCtMsIBKTqw25VHHAr66popWab98XQtWUtKt/TpMQe4eozIlYWizl1VB1yq/KQW32GxyopKzwo+unA5tOKTwtXzyHRl/0xyVpRgDDtUmpKPfrPu8oUn2ZTj0HR2vJctfJuTNDUf8swtA6/L6A3F5Xr8NYGDZwQr5qSFrkbfFr4Vrai4q2G1vJfv7arZLtL/UbH6u1HKjT+56kau8Dca3MVB9x6aW6pJtybelmHKWtFAcK0S4pPDdePX+yjtJy22ejUf8vQEyMP6tqfpCiph3Ezsi82nVbpzkYt2Z2nMFvbdPT9p6u0YclJzX2ul2F1HClw6cSnTVq8daAsFsnr9uv31x/WgPHx7W1kxpmDNxed0OQH09XS7L8sj0PWigJdA+eHziMyLqxDSIRZLereL0KnylsMraP/tXFa8Fq/9iCVpNF3pujQlgZD6zj8UYOG3ZzUfno5PCpM4/5fd+16rc60Pipa71RGbpQyB11+M9LW1lbt2bNHr7/+ujwej2bPnq1Ro0YRpAAz066tbHeTKr5ou3ZqpJhuVsV063g6t77Sq+gkY0/xRiVY1eT0ddgW192mwx81mNIfnka/Ni2r1AMfDNCRAtdlc5yd63tFv+taUQCEadBwN/j01NhDsn/erIVv5Sg82tzJfNs11BOatMjYb0u5+uYkPTPpiK65I1ndekWo9liL3lp6UomZ5tyE9O7jFRr/8zRFJ1ovm2PtUn+vKADCNGhExlm1aMsAVR3x6G8Plis2xars78eZUovX7deqO0qVOzFBw25OMnTf3XpF6LY/9NIfphfL5w0oOtGqa+5IVsUXbsPbofqIR0cKXJrx71mXxTHGWlGAML3sWSxSbIpN/VNsmvVUT33wTJUpYeo+7dMfbzqq3lfHaMrDGaa0Rd6NCVq650r5WwMKs1n0Xw/Zlf194z9TbMMSu4bNTNLR7W2ndyv2N6vueIuKt7mUMzauyxxbrBUFCNOQFNfdJrfL+LtGG6pb9fwPj2jU7cm64f50WSxS4at1GnV7sintEGazyOPy67O3T2nxRwMN33/2mDjVlnpUd7ztZjBHiUcN1a0qWu/sEmHKWlGAMA0Zpyu9iogNa1/LGQhIW1c6dNW/GHszSO2xFv3xpmJNe6SHhs388tTu5uVVpoWp+7RPL88/pnE/S1V8mvGH0A2/TOvw82fv1Ktsd6OmPxrcp0dZKwoQpiHnxJ5mvf3oScUm25TSN0Lle5vVZ0SMrr8n1dA63lpqV32FV5uWVWrTssr27U2nfIbWUfBSjY4VNspZ3qKT+92a8lCGrl+YamofbXmuWoWv1qnJ6ZOn0af9753Wr3fkBt2xxFpRgDANWYOmJOjKyQmqr/CqvsKr1OxIxSQZf+do/pp+QdEeA66LU+9hMYqKD1NqTqTCrBbTa5p4X5om3pcWtMcQ3ysKEKZQ281HST3CDf3Eo2CVPpAvt7xQrBUFCFMAF4G1ogBhCuA7Yq0oQJgC+I5YKwpAkiyBQCBAMwDfDmtFAYRkmP5oXavpNWyca6OOIK3jQp25VnTw4MGsFQUQOqd5T562UQd1fGesFQVAmALfEWtFARCml9DpA5sVHp+m6J5DQrIOv8el1qZT53wsPDFDljBzDiWP46h8TU7F9Blxaf9e1ooCIEwvLXfFAZW+NFepE+41NUzNrKNm+2rVbHtJkSkdP5HJVVygvCWfKCKlr3HFBAJylWxX1fvL5ak6pPi8Gy9pmLJWFABh2gkv3CfeXKT0yQ/K39Ic0nWkXn+PUq+7u8Ns9eCTYxWR3MfQOrynK+XY+if1mPYbeRscqv/8nUvye1krCoAw7STOovWKyshVdOYgNZbtDtk6ug2fLanj5/Ge2rNBSUOmt33uooHCEzPVL39NW7Ae2HzRv4+1ogAI007k9zSqctMyDXjgA7mOFIR0HeEJZ38hee3Oteo1Z3mX7d8kndII7dbmzawVBUCYdpqKdx9X2vifyxqdSB1n8NZXqLXBoajMK7tk347ULuXqoPZqqG69dYKsVisHPADC9FLzVB+R60iBsmb8O3WcQ92udeo2fE6X7d9j6qu9GqoWRYgcBXCxOKd1HvYNS5Q0bKZcR7fLVbxNzRX71VJ3XK7ibSFZx1lhWviKkkfO7bL961CqWsSHLgBgZtqp4rLHyFNbqpa6420zREeJWhuq5Sxar7icsSFXx1e5K76QxRph7HIYACBMu560G37Z4ef6z95RY9lu9Zj+aEjW8VW1O9cqedRtHCQAQJhemOotz6mu8FX5mpzyeRp1ev97yv31jpCtQwG/nLvWaeBD203rE4/jqEpX3SFJ8jXXy9fkVGNJW1ukT1rcpa/lAuiaQuZbY0a8aH4Nu39KHcFaBwBcDG5AAgCAMAUAgDAFAIAwBQCAMAUAAN9ZyNzNCwBAZwmZdaYvaoTpNfxUu6kjSOsAgIvBaV4AAAhTAADMxccJfo1TJ70K+DteUo6IDlNsijnN5vcFZP+sWXXHW+R1B3TVtERFxhr/fshx1KMmp099RsSY2j9et1+HP3JJkgZOiJct0sJBC4AwDTZPjTukzLyoDtuyx8Rp6sMZhtdS8nGjXrm7THGpNvW/Nk7WcIsGT00wbP+BgFSy3aX3l1ep6pBHeTfGmxqmHpdfz9x4WHmTEqSA9PajJ/XABwNMeXMBAITp10juFaF738kxvQ7niRa9PL9UP9+Yo4zcKFNqOF3p1dY/OTTtNz3U4PDq83fqTW2Tt5baNXpeisYvTJUkJWTYtHHpSc1Z3pMDF4DheBvfBfz3w3bNfCLLtCCVpMTMcOWv6aeeQ6NNb49AQPr87/Uak5/Svm3sXd31+d/rOVgAEKbB6OT+Zu18pU773q2X+7TP8P23tgR06KMGDZ2RJFdNq1w1rSHfJ421rYqICVN41JeHb3h0mGyRFjXW0T4AjMdp3q9RfcSttx+tUM7YOJXvbdIbD5Qrf01f9R0Za1gN9s+aldInUqt/ckwVB9wKj7QoNsWm/LX9FJNkDcl+aXL6FJt89qEbm2JTY925HwMAwtQkj+wbpJhuXwbW8DndtGZBmZbuvdKwGly1rSr52KVJi7M17OYkSdL/PFWlt5bYddsLvUOzYyxtp3rPFPAHFMa5FgAm4KXna3w1SCWp78hY+X1SQ7VxpxKTeoRr4IT49iCVpIm/TNPn/wjd64NxKTa5HGf3QUN1q2nLlgAQpvgWWlv8hq5nTMuJVN3xlg4zsTCrFPCH9pucgD8gd8OX17Ddp32yhEnRiVYOUgCEabBorveddcPRrnV1ysiNM/G6bwAAAllJREFUMvQFOzw6TLk3JGj7X2q+UodTAyfEh3T/jLg1WVtWVLf//P7TVRo+pxsHLgBTcE7sPE7ua9br959QRHSYUvpGqrbMI1tEmPLX9jW8lpm/y9KqH5fqkzedskZY1Fzv08/WZxtag+OoR6vuKG1/o9Hk9KlkR6MkadLidMODbOq/ZeiF6cV6ef4xBfwBNVS3BsWaYACEKb4ie0ycHi7MU0O1V85yr7r3izDtLtGYblbd+06Oao955PdJqdmRshj8yXmp2ZH69Y7coOkfa7hFv3j3ClUedEuSMnKjDG8TACBML4DFIiWkhyshPTwoauneL5JOOaNNzvy4RwAwA9dMAQAgTAEAIEwBACBMAQAIZZZA4FwfzHZ58ei0IpVAb+OcmlSjGHWnIQAQpgAAmIXTvAAAEKYAABCmAAAQpgAAEKYAAIAwBQCAMAUAgDAFAIAwBQAAhCkAAIQpAACEKQAAhCkAACBMAQAgTAEAIEwBACBMAQAAYQoAAGEKAABhCgAAYQoAAAhTAAAIUwAACFMAAAhTAABAmAIAQJgCAECYAgBAmAIAAMIUAADCFAAAwhQAAMIUAAAQpgAAEKYAABCmAAAQpgAAgDAFAIAwBQCAMAUAgDAFAACEKQAAhCkAAIQpAACEKQAAhCkAACBMAQAgTAEAIEwBACBMAQAAYQoAAGEKAABhCgAAYQoAAAhTAAAIUwAACFMAAAhTAABAmAIAQJgCAECYAgBAmAIAAMIUAADCFAAAwhQAAMIUAAAQpgAAEKYAABCmAAAQpgAAgDAFAIAwBQAgOP1/a5DyTbfRP6IAAAAASUVORK5CYII=" alt /></p>
 <p>The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.</p>
-<p>For example, you can select all calls made on 2008-05-05 to students whit balance above 20,000:</p>
+<p>For example, you can select all calls made to students whit balance above 20,000:</p>
 <pre class="r"><code>filter(bank, job == &quot;student&quot;, balance &gt; 20000)</code></pre>
 <pre><code>##      id age     job marital education default balance housing loan  contact day month year       date
 ## 1 31125  24 student  single secondary      no   23878      no   no cellular  18   feb 2009 2009-02-18
@@ -366,6 +356,7 @@ $(document).ready(function () {
 ## 1      185        1    -1        0  unknown yes
 ## 2      133        1    97        1  success yes
 ## 3       99        1    -1        0  unknown  no</code></pre>
+<p>You can select all calls made on 2008-05-05 to students:</p>
 <pre class="r"><code>filter(bank, job == &quot;student&quot;, as.character(date) == &quot;2008-05-05&quot;)</code></pre>
 <pre><code>##    id age     job marital education default balance housing loan contact day month year       date duration
 ## 1 152  26 student  single secondary      no       0     yes   no unknown   5   may 2008 2008-05-05      610
@@ -385,7 +376,37 @@ $(document).ready(function () {
 ## [11] day       month     year      date      duration  campaign  pdays     previous  poutcome  y        
 ## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
 <p>Note that you’ll have to either convert variable <code>date</code> to character or the string “2008-05-05” to an object of class <code>POSIX</code> as <code>dplyr</code> allows comparison between same class objects only.</p>
-<p><code>filter()</code> works similarly to <code>subset()</code> except that you can give it any number of filtering conditions which are joined together with <code>&amp;</code> (not <code>&amp;&amp;</code> which is easy to do accidentally!).</p>
+<!--
+`filter()` works similarly to `subset()` except that you can give it any number of filtering conditions which are joined together with `&` (not `&&` which is easy to do accidentally!). 
+-->
+<p><code>filter()</code> allows you to give it any number of filtering conditions which are joined together with <code>&amp;</code> operator.</p>
+<pre class="r"><code>filter(bank, age == 18 &amp; job == &quot;student&quot;)</code></pre>
+<pre><code>##       id age     job marital education default balance housing loan   contact day month year       date
+## 1  40737  18 student  single   primary      no    1944      no   no telephone  10   aug 2009 2009-08-10
+## 2  40745  18 student  single   unknown      no     108      no   no  cellular  10   aug 2009 2009-08-10
+## 3  40888  18 student  single   primary      no     608      no   no  cellular  12   aug 2009 2009-08-12
+## 4  41223  18 student  single   unknown      no      35      no   no telephone  21   aug 2009 2009-08-21
+## 5  41253  18 student  single secondary      no       5      no   no  cellular  24   aug 2009 2009-08-24
+## 6  41274  18 student  single   unknown      no       3      no   no  cellular  25   aug 2009 2009-08-25
+## 7  41488  18 student  single   unknown      no     108      no   no  cellular   8   sep 2009 2009-09-08
+## 8  42147  18 student  single secondary      no     156      no   no  cellular   4   nov 2009 2009-11-04
+## 9  42275  18 student  single   primary      no     608      no   no  cellular  13   nov 2009 2009-11-13
+## 10 42955  18 student  single   unknown      no     108      no   no  cellular   9   feb 2010 2010-02-09
+## 11 43638  18 student  single   unknown      no     348      no   no  cellular   5   may 2010 2010-05-05
+## 12 44645  18 student  single   unknown      no     438      no   no  cellular   1   sep 2010 2010-09-01
+##    duration campaign pdays previous poutcome   y
+## 1       122        3    -1        0  unknown  no
+## 2       167        1    -1        0  unknown yes
+## 3       267        1    -1        0  unknown yes
+## 4       104        2    -1        0  unknown  no
+## 5       143        2    -1        0  unknown  no
+## 6       130        2    -1        0  unknown yes
+## 7       169        1    -1        0  unknown yes
+## 8       298        2    82        4    other  no
+## 9       210        1    93        1  success yes
+## 10       92        1   183        1  success yes
+## 11      443        4    -1        0  unknown yes
+## 12      425        1    -1        0  unknown  no</code></pre>
 <p>You can use other boolean operators explicitly:</p>
 <pre class="r"><code>filter(bank, age == 18 | age == 95)</code></pre>
 <pre><code>##       id age     job  marital education default balance housing loan   contact day month year       date
@@ -20480,23 +20501,39 @@ $(document).ready(function () {
 ##   duration campaign pdays previous poutcome  y
 ## 1      361        2   188       11    other no</code></pre>
 <p>where function <code>n()</code> returns the number of element of a vector in the current group. This function can only be used from within <code>summarise()</code>, <code>mutate()</code> and <code>filter()</code>.</p>
-</div>
-<div id="sample_n-and-sample_frac" class="section level1">
-<h1><code>sample_n()</code> and <code>sample_frac()</code></h1>
-<p>You can use <code>sample_n()</code> and <code>sample_frac()</code> to take a random sample of rows.</p>
-<p>Function <code>sample_n()</code> samples a subset of size <code>n</code>.</p>
-<pre class="r"><code>sample_n(bank, 3)</code></pre>
-<pre><code>##          id age           job  marital education default balance housing loan  contact day month year
+<!--
+
+# `sample_n()` and `sample_frac()`
+
+You can use `sample_n()` and `sample_frac()` to take a random sample of rows.
+
+Function `sample_n()` samples a subset of size `n`.
+
+
+```r
+sample_n(bank, 3)
+```
+
+```
+##          id age           job  marital education default balance housing loan  contact day month year
 ## 11650 11650  50    unemployed  married secondary      no      17      no   no  unknown  20   jun 2008
 ## 24971 24971  39 self-employed  married  tertiary      no     585     yes   no cellular  18   nov 2008
 ## 2550   2550  51        admin. divorced secondary      no    2195     yes   no  unknown  13   may 2008
 ##             date duration campaign pdays previous poutcome  y
 ## 11650 2008-06-20      189        2    -1        0  unknown no
 ## 24971 2008-11-18       48        1   181        3  failure no
-## 2550  2008-05-13       59        1    -1        0  unknown no</code></pre>
-<p>while function <code>sample_frac()</code> samples a given fraction of the existing number of rows:</p>
-<pre class="r"><code>sample_frac(bank, 0.0001)</code></pre>
-<pre><code>##          id age        job  marital education default balance housing loan  contact day month year
+## 2550  2008-05-13       59        1    -1        0  unknown no
+```
+
+while function `sample_frac()` samples a given fraction of the existing number of rows:
+
+
+```r
+sample_frac(bank, 0.0001)
+```
+
+```
+##          id age        job  marital education default balance housing loan  contact day month year
 ## 21184 21184  48   services  married secondary      no     125      no   no cellular  14   aug 2008
 ## 21872 21872  34 technician  married  tertiary      no    2069      no   no cellular  20   aug 2008
 ## 36728 36728  32     admin. divorced secondary      no    1288     yes   no cellular  12   may 2009
@@ -20507,23 +20544,55 @@ $(document).ready(function () {
 ## 21872 2008-08-20      328        2    -1        0  unknown no
 ## 36728 2009-05-12      286        1    -1        0  unknown no
 ## 16742 2008-07-24       51        2    -1        0  unknown no
-## 24709 2008-11-17      150        1    -1        0  unknown no</code></pre>
-<p>df &lt;- data.frame(x = 1:3)</p>
-<p>Both functions <code>sample_n()</code> and <code>sample_frac()</code>, with the option <code>replace = T</code>, perform sampling operation with replacenement:</p>
-<pre class="r"><code>nrow(mtcars)</code></pre>
-<pre><code>## [1] 32</code></pre>
-<pre class="r"><code>nrow(sample_frac(mtcars, size = 2, replace = TRUE))</code></pre>
-<pre><code>## [1] 64</code></pre>
-<pre class="r"><code>nrow(sample_n(mtcars, size = 40, replace = TRUE))</code></pre>
-<pre><code>## [1] 40</code></pre>
-<p>Finally, you can perform weighted sampling by using the <code>weight</code> argument. Weights are automatically standardised to sum to 1.</p>
-<pre class="r"><code>sample_n(mtcars, 5, weight = mpg)</code></pre>
-<pre><code>##                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## 24709 2008-11-17      150        1    -1        0  unknown no
+```
+
+df <- data.frame(x = 1:3)
+
+Both functions `sample_n()` and `sample_frac()`, with the option `replace = T`, perform sampling operation with replacenement:
+
+
+```r
+nrow(mtcars)
+```
+
+```
+## [1] 32
+```
+
+```r
+nrow(sample_frac(mtcars, size = 2, replace = TRUE))
+```
+
+```
+## [1] 64
+```
+
+```r
+nrow(sample_n(mtcars, size = 40, replace = TRUE))
+```
+
+```
+## [1] 40
+```
+
+Finally, you can perform weighted sampling by using the `weight` argument. Weights are automatically standardised to sum to 1.
+
+
+```r
+sample_n(mtcars, 5, weight = mpg)
+```
+
+```
+##                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
 ## Fiat X1-9         27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
 ## Camaro Z28        13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
 ## Toyota Corolla    33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
 ## Chrysler Imperial 14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
-## Merc 280C         17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4</code></pre>
+## Merc 280C         17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+```
+
+-->
 </div>
 
 

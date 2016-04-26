@@ -1,5 +1,5 @@
 ---
-title: "dplyr verbs"
+title: "Verb functions"
 ---
 
 
@@ -17,13 +17,34 @@ bank <-  tbl_df(bank)
 ```
 
 
+`dplyr` aims to provide a function for each basic verb of data manipulating.
+
+All these functions are very similar:
+
+* the first argument is a data frame;
+* the subsequent arguments describe what to do with it, and you can refer to columns in the data frame directly without using $;
+* the result is a new data frame.
+
+Together these properties make it easy to chain together multiple simple steps to achieve a complex result.
+
+These five functions provide the basis of a language of data manipulation. At the most basic level, you can only alter a tidy data frame in five useful ways: 
+
+1. select variables of interest: `select()`;
+2. filter records of interest: `filter()`;
+3. reorder the rows: `arrange()`;
+4. add new variables that are functions of existing variables: `mutate()`;
+5. collapse many values to a summary: `summarise()`. 
+
 # `select()`
 
 Often you work with large datasets with many columns where only a few are actually of interest to you. 
 
-`select()` allows you to rapidly zoom in on a useful subset of columns by using a set of useful helper functions.
+`select()` allows you to rapidly zoom in on a useful subset of columns.  
+
 
 ![](images/sel.png) 
+
+The first argument is the name of the data frame, and the second and subsequent are the name of column/s of that data frame you want to select:
 
 ```{r bank}
 select(bank, year, month, day)
@@ -36,6 +57,7 @@ select(bank, -(year:day))
 This function works similarly to the select argument to the `base::subset()`. It has its own function in `dplyr`, because the `dplyr` philosophy is to have small functions that each do one thing well.
 
 -->
+
 
 You can rename variables with `select()` by using named arguments:
 
@@ -124,6 +146,7 @@ select(bank, -starts_with("d"))
 
 -->
 
+<!--
 # `distinct()`
 
 A common use of `select()` is to find out which values a set of variables takes. This is particularly useful in conjunction with the `distinct()` verb which only returns the unique values in a table.
@@ -133,10 +156,13 @@ distinct(select(bank, housing))
 distinct(select(bank, housing, loan))
 ```
 
+-->
 
 <!--
 This is very similar to `base::unique()` but should be much faster.
 -->
+
+<!--
 
 # `rename()`
 
@@ -146,6 +172,8 @@ Instead, use `rename()`:
 ```{r}
 rename(bank, ID = id)
 ```
+
+-->
 
 # `filter()`
 
@@ -162,6 +190,7 @@ For example, you can select all calls made to students whit balance above 20,000
 filter(bank, job == "student", balance > 20000)
 ```
 
+<!--
 You can select all calls made  on 2008-05-05 to students:
 
 ```{r}
@@ -169,23 +198,24 @@ filter(bank, job == "student", as.character(date) == "2008-05-05")
 filter(bank, job == "student", date == ymd("2008-05-05"))
 ```
 
+
 Note that you'll have to either convert variable `date` to character or the string "2008-05-05" to an object of class `POSIX` as `dplyr` allows comparison between same class objects only.
+
+-->
 
 <!--
 `filter()` works similarly to `subset()` except that you can give it any number of filtering conditions which are joined together with `&` (not `&&` which is easy to do accidentally!). 
 -->
 
-`filter()` allows you to give it any number of filtering conditions which are joined together with `&` operator.  
+`filter()` allows you to give it any number of filtering conditions which are joined together with `&` and/or the other operators.  
 
 ```{r}
 filter(bank, age == 18 & job == "student")
 ```
 
-You can use other boolean operators explicitly:
 ```{r}
 filter(bank, age == 18 | age == 95)
 ```
-
 
 `filter()` can be used also with `%in%` to establish conditions under which filter: 
 
@@ -200,7 +230,7 @@ filter(bank, job %in% c("admin.","technician"))
 filter(bank, job == "admin." | job == "technician")
 ```
 
-
+<!--
 # `slice()`
 To select rows by position, use `slice()`:
 
@@ -217,6 +247,8 @@ slice(bank, n())
 ```
 
 where function `n()` returns the number of element of a vector in the current group. This function can only be used from within `summarise()`, `mutate()` and `filter()`.
+
+-->
 
 <!--
 
@@ -261,6 +293,7 @@ Function `arrange()` reorders a data frame by one or more variables. If you prov
 
 ![](images/arr.png)
 
+The first argument is the name of the data frame, and the second and subsequent are the name of columns of that data frame you want to order by.  
 You may want to order the `bank` data frame by the balance of the account in ascending order:
 
 ```{r}
@@ -304,26 +337,25 @@ As well as selecting from the set of existing columns, it’s often useful to ad
 
 ![](images/mut.png) 
 
+
+The first argument is the name of the data frame, and the second and subsequent are expressions to create new columns to that data frame or to modify the existing ones: 
+
 <!--- AS explain example add or replace columns -->
 
 ```{r}
 df <- data.frame(x = 1:3, y = 3:1)
 
-df %>% mutate(x1 = x+1)
+mutate(df, x1 = x+1)
 
-df %>% mutate(x = x+1)
+mutate(df, x = x+1)
 
+mutate(df, x = x+1, y = x+1)
 
-df %>% mutate(x = x+1, y = x+1)
+mutate(df, x1 = x+1, y1 = x1+1)
 
+mutate(df, y1 = x+1, x1 = x+1)
 
-df %>% mutate(x1 = x+1, y1 = x1+1)
-
-df %>% mutate(y1 = x+1, x1 = x+1)
-
-
-df %>% mutate(xx = x)
-
+mutate(df, xx = x)
 ```
 
 <!--
@@ -354,7 +386,7 @@ transform(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_b
 
 -->
 
-
+<!--
 # `transmute()`
 
 ![](images/tra.png) 
@@ -364,6 +396,8 @@ If you only want to keep the new variables, use `transmute()`:
 ```{r} 
 transmute(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 ```
+
+-->
 
 <!--
 
@@ -449,7 +483,9 @@ mutate(time, mean_duration = cummean(duration))
 
 # `summarise()`
 
-The last verb is `summarise()`, which collapses a data frame to a single row:
+The last verb is `summarise()`, which collapses a data frame to a single row.
+
+The first argument is the name of the data frame, and the second and subsequent are summarising expressions.
 
 ```{r}
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))

@@ -1,0 +1,73 @@
+---
+title: "An overview of ggplot2 package"
+---
+
+`ggplot2` is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, `ggplot2` is an implementation of Leland Wilkinson's Grammar of Graphics, a general scheme for data visualization which breaks up graphs into semantic independent components, such as scales and layers, that can be composed in many different ways. This makes `ggplot2` very powerful, because there are no limitations due to a set of pre-specified graphics, so it is possible to create new graphics that are precisely tailored for the problem in analysis. 
+
+<!--
+
+`ggplot2` can serve as a replacement for the base graphics in R and contains a number of defaults for web and print display of common scales. It combines the advantages of both `base` and `lattice` graphics: conditioning and shared axes are handled automatically, and it is possible to build up a plot step by step from multiple data sources. It also implements a sophisticated multidimensional conditioning system and a consistent interface to map data to aesthetic attributes.
+
+## A bit of History
+
+* Since 2005, `ggplot2` has grown in use to become one of the most popular R packages.
+* On 2 March 2012, ggplot2 version 0.9.0 was released with numerous changes to internal organization, scale construction and layers. 
+* On 9 May 2012 an update dealing primarily with bug fixes was released, incrementing the version to 0.9.1
+* On 25 February 2014, Hadley Wickham formally announced that "ggplot2 is shifting to maintenance mode. This means that we are no longer adding new features, but we will continue to fix major bugs, and consider new features submitted as pull requests. In recognition this significant milestone, the next version of ggplot2 will be 1.0.0".
+
+-->
+
+## Installation
+
+To install `ggplot2` package from CRAN: 
+```{r, eval=FALSE}
+install.packages("ggplot2")
+```
+
+```{r, eval=FALSE}
+require(ggplot2)
+```
+
+<!--
+
+## ggplot2 basic concepts
+
+### ggplot()
+
+To build a graph with ggplot2 you have to start from `ggplot()` function.   
+
+`ggplot()` function initializes a ggplot object. It can be used to:
+
+* declare the input data frame to be used (`data` argument) 
+* specify the set of plot aesthetics intended to be common throughout all subsequent layers unless specifically overridden (`mapping` argument).  
+
+Suppose you are interested in the relationship between the `humidity` and the `viscosity` variables in the `bands` dataset. 
+The sintax to be used is the following:  
+
+```{r ggplot, warning=FALSE}
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity))
+```
+
+In this case, the function `ggplot()` initializes the plot with the following parameters: the _data_ is in the `bands` data frame and you _map_ the data to _aesthetics_ (visual properties) of plot passing as `aes()` function values, like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `viscosity` variable. 
+
+The `ggplot()` function does not return anything so this plot object cannot be displayed until a layer will be added.
+
+#### Layers
+
+Layers are responsible for creating the objects perceived on the plot.  
+A layer is composed of four parts:
+
+* data and aesthetic mapping of the layer itself; 
+* a geometric object (`geom`), which controls the type of plot to create;
+* a statistical transformation (`stat`) of the original dataset;
+* a position adjustment of elements within a layer.
+
+`layer(geom, geom_params, stat, stat_params, data, mapping, position)`
+
+For example, let us add a `geom_point()` layer, which draw a scatterplot: 
+
+```{r scatterplot_first, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
+```
+
+-->
