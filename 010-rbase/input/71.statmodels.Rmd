@@ -19,8 +19,6 @@ Formally, a relationship between $x$ and $y$ usually means that the expected val
 Regression model can be expressed in matrix form as:
 
 
-$\vec{a}$
-
 $\vec{\mu}$ = $E(\vec{y})$ = $\mathbf{X}$ $\vec{\beta}$ + $\vec{\varepsilon}$
 
 

@@ -7,8 +7,8 @@ R objects
 R objects								| 21-robjects.Rmd
 Introduction to R functions						| functions.Rmd
 
-Data Import 
-Import and Export data into R							| 31-dataimport.Rmd
+Data Import and Export
+Import and Export data 							| 31-dataimport.Rmd
 
 Data manipulation with dplyr
 Introduction to dplyr                 					| 41-dplyr-intro.Rmd
