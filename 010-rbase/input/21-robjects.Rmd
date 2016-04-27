@@ -499,6 +499,8 @@ log(0)
 
 In the above example, R calculates the limit of the function $log(x)$ as $x$ approaches zero.
 
+<!--
+
 ## Functions
 
 Functions are one of the most important objects in R.
@@ -541,7 +543,7 @@ quantile(rdata, T, c(0.25, 0.50, 0.75))
 quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))
 ```
 
-<!--
+
 
 It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:
   

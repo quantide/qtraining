@@ -1,12 +1,14 @@
+---
+output: html_document
+---
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 require(knitr)
-#opts_knit$set(root.dir = "../../../../data/manual")
+opts_knit$set(root.dir = "../data")
 ```
 
 
 # Statistical Models with R
-
 
 ## Regression Analysis
 
@@ -16,14 +18,17 @@ Formally, a relationship between $x$ and $y$ usually means that the expected val
 
 Regression model can be expressed in matrix form as:
 
-$\vec{\mu} = E(\vec{y}) = \matrix{X} \vec{\beta} + \vec{\varepsilon}$
+
+$\vec{a}$
+
+$\vec{\mu}$ = $E(\vec{y})$ = $\mathbf{X}$ $\vec{\beta}$ + $\vec{\varepsilon}$
+
 
 where:
 
- - $\matrix{X}$ is a $n \text{ x } (p+1)$ matrix, with all ones in the first columns, 
+ - $\mathbf{X}$ is a $n \text{ x } (p+1)$ matrix, with all ones in the first columns, 
  - $\vec{\beta}$ is the vector of $\beta_0, \beta_1, \dots, \beta_p$,
  - $\vec{\varepsilon}$ is a **random** or **noise** component.
-
 
 
 Models where response variable is a linear function of parameters are linear models.
@@ -45,65 +50,56 @@ Model formula general expression is $y \sim x_1 \pm x_2 \pm, \dots, \pm , x_k$.
 
 Extensions to the above formula can be summarized as:
 
- \begin{center}
-    %\begin{footnotesize}
-      \begin{tabular}{ll}
-        \hline
-        Expression & Description \\
-        \hline
-        \texttt{y }$\sim$\texttt{ x}                         & Simple regression \\
-        \texttt{y }$\sim$\texttt{ 1 + x}                     & Explicit intercept \\
-        \texttt{y }$\sim$\texttt{ -1 + x}                    & Through the origin \\
-        \texttt{y }$\sim$\texttt{ x + x\^{ }2}               & Quadratic regression \\
-        \texttt{y }$\sim$\texttt{ x1 + x2 + x3}              & Multiple regression \\
-        \texttt{y }$\sim$\texttt{ G + x1 + x2}               & Parallel regressions \\
-        \texttt{y }$\sim$\texttt{ G / (x1 + x2)}             & Separate regressions \\
-        \texttt{sqrt(y) }$\sim$\texttt{ x + x\^{ }2}         & Transformed \\
-        \texttt{y }$\sim$\texttt{ G}                         & Single classification \\
-        \texttt{y }$\sim$\texttt{ A + B}                     & Randomized block \\
-        \texttt{y }$\sim$\texttt{ B + N * P}                 & Factorial in blocks \\
-        \texttt{y }$\sim$\texttt{ x + B + N * P}             & with covariate \\
-        \texttt{y }$\sim$\texttt{ . -x1}                     & All variables except \texttt{x1} \\
-        \texttt{y }$\sim$\texttt{ . + A:B}                   & Add interaction (\texttt{update}) \\
-        \texttt{Nitrogen }$\sim$\texttt{ Times*(River/Site)} & More complex design \\ 
-        \hline
-      \end{tabular}   
-    %\end{footnotesize}
-  \end{center}
 
+Expression                    | Description
+----------------------------- | -------------
+`y ~ x`                         | Simple regression
+`y ~ 1 + x`                     | Explicit intercept
+`y ~ -1 + x`                    | Through the origin
+`y ~ x + x^2`                   | Quadratic regression
+`y ~ x1 + x2 + x3`              | Multiple regression
+`y ~ G + x1 + x2`               | Parallel regressions
+`y ~ G / (x1 + x2)`             | Separate regressions
+`sqrt(y) ~ x + x^2`             | Transformed
+`y ~ G`                         | Single classification
+`y ~ A + B`                     | Randomized block
+`y ~ B + N * P`                 | Factorial in blocks
+`y ~ x + B + N * P`             | with covariate 
+`y ~  . -x1`                    | All variables except x1
+`y ~  . + A:B`                  | Add interaction (update)
+`Nitrogen ~ Times * (River/Site)` | More complex design
+
+ 
 After fitting any statistical model, common R functions for inference are:
 
-  \begin{center}
-    \begin{tabular}{ll}
-      \hline
-      Expression & Description \\
-      \hline
-      \texttt{coef(obj)} & regression coefficients \\
-      \texttt{resid(obj)} & residuals \\
-      \texttt{fitted(obj)} & fitted values \\
-      \texttt{summary(obj)} & analysis summary \\
-      \texttt{predict(obj, newdata = ndat)} & predict for newdata \\
-      \texttt{deviance(obj)} & residual sum of squares\\
-      \hline
-    \end{tabular} 
-  \end{center}
-
-
+Expression                    | Description
+----------------------------- | -------------
+`coef(obj)`                    | regression coefficients
+`resid(obj)`                   | residuals
+`fitted(obj)`                  | fitted values
+`summary(obj)`                 | analysis summary
+`predict(obj, newdata = ndat)` | predict for newdata
+`deviance(obj)`                | residual sum of squares
 
 ### Drug Dosage and Reaction Time
 
 In an experiment to investigate the effect of a depressant drug, the reaction times of ten males rats to a certain stimulus were measured after a specified dose of the drug had been administer to each rat. The results were as follows:
 
 ```{r, drug}
-load("../data/drug.Rda")
+load("drug.Rda")
 str(drug)
 ```
 
 Basic graphical data exploration may be achieved with: 
 ```{r, drugplot, fig = TRUE}
-plot(time ~ dose, data = drug,
-     xlab = "Dose (mg)",
-     ylab =  "Reaction Time (secs)")
+require(ggplot2)
+
+pl <- ggplot(data = drug, mapping = aes(x = dose, y=time)) + 
+  geom_point() +
+  xlab(label = "Dose (mg)") +
+  ylab(label = "Reaction Time (secs)")
+
+pl
 ```
 
 A simple model for these data might be a straight line:
@@ -119,11 +115,7 @@ fm = lm(time ~ dose, data = drug)
 The resulting regression line can be easy superposed to the data scatterplot by:
 
 ```{r, reg, fig = T}
-plot(time ~ dose, data = drug,
-     xlab = "Dose (mg)",
-     ylab =  "Reaction Time (secs)")
-
-abline(reg = fm)
+pl + geom_smooth(method="lm",se=FALSE) 
 ```
 
 Regression results can be investigated by generic function `summary()`.
@@ -267,7 +259,7 @@ Despite a small departure from normality on the rigth side of the residuals dist
 In an attempt to resolve a domestic dispute about which of two pans was the quicker pan for cooking, the following data were obtained:
 
 ```{r, boiling}
-load("../data/boiling.Rda")
+load("boiling.Rda")
 str(boiling)
 ```
 
@@ -338,8 +330,8 @@ fm3$aic
 
 Gamma model appears to be slightly better.
 
+<!--
 
 ## Summary
 > In this chapter, we introduced statistical modelling with R. Through some examples on real data, we saw the `lm()` function to build a linear regression model, the `glm()` function to build a generalised linear model and `anova()` and `aov()` functions to build an ANOVA model. The `summary()` function is useful to investigate regression and ANOVA results. We used the `plot()` function both to draw the regression line in the scatter plot and to perform a residual analysis. P value were used to choose between two nested models, while AIC statistics were introduced to compare two not-nested models.
-
-
+-->

@@ -21,11 +21,11 @@ title: "An overview of ggplot2 package"
 
 To install `ggplot2` package from CRAN: 
 ```{r, eval=FALSE}
-install.packages("ggplot2")
+#install.packages("ggplot2")
 ```
 
 ```{r, eval=FALSE}
-require(ggplot2)
+#require(ggplot2)
 ```
 
 <!--
@@ -45,7 +45,7 @@ Suppose you are interested in the relationship between the `humidity` and the `v
 The sintax to be used is the following:  
 
 ```{r ggplot, warning=FALSE}
-ggplot(data = bands, mapping = aes(x = humidity, y = viscosity))
+#ggplot(data = bands, mapping = aes(x = humidity, y = viscosity))
 ```
 
 In this case, the function `ggplot()` initializes the plot with the following parameters: the _data_ is in the `bands` data frame and you _map_ the data to _aesthetics_ (visual properties) of plot passing as `aes()` function values, like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `viscosity` variable. 
@@ -67,7 +67,7 @@ A layer is composed of four parts:
 For example, let us add a `geom_point()` layer, which draw a scatterplot: 
 
 ```{r scatterplot_first, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
+#ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
 ```
 
 -->

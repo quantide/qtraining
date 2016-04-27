@@ -5,6 +5,9 @@ require(dplyr)
 require(qdata)
 data(bank)
 
+## ----eval=FALSE----------------------------------------------------------
+## require(dplyr)
+
 ## ----tbl_df_bank---------------------------------------------------------
 data(bank)
 class(bank)

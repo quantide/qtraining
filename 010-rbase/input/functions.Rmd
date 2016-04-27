@@ -1,0 +1,204 @@
+---
+title: "R functions"
+output: html_document
+---
+
+## Functions
+
+Functions are one of the most important objects in R.
+
+A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.
+
+The function `ls()` doesn't require any input and returns an output.
+
+```{r, argument1}
+ls()
+```
+
+The function `rm()` requires an input and doesn't return an output.
+
+```{r, argument2}
+foo = 3
+rm(foo)
+```
+
+Usually, functions require an input and returns an output.
+
+```{r, argument3}
+sum(1:10)
+```
+
+The several elements of the input of a function are the arguments of the function. When a function is called the arguments can be declared explicitely or implicitely. The arguments can be explicitely with their name.
+
+```{r, argument4}
+sum(c(1, 2, NA), na.rm = T)
+```
+In the above example, the `na.rm` argument of the `sum()` function is called explicitely.
+
+When arguments are called implicitely, the order of the arguments is fundamental. The third example of the code below returns a wrong result.
+
+```{r, argument5}
+rdata = c(rnorm(100), NA)
+quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = T)
+quantile(rdata, c(0.25, 0.50, 0.75), T)
+quantile(rdata, T, c(0.25, 0.50, 0.75))
+quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))
+```
+
+
+It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:
+  
+```{r, help3, eval=F}
+help(read.table)
+```
+
+or
+
+```{r, help4, eval=F}
+?read.table
+```
+
+## Mathematical Functions
+
+The names of the basic functions and mathematical operators in R follow the standards of programming languages. In this paragraph the functions and operators enabling basic mathematical operations to be performed will be dealt with. R can also be used to perform more complex calculations, such as matrix operations or calculations with complex numbers.
+
+Functions are usually applied to one or more vectors. In this case, operations are performed on each element of each vector. Vectors have to be the same length.
+
+```{r, operations}
+x = 1:10
+y = 11:20
+z = -4:5
+x + y + z
+exp(x)
+log(z)
+abs(z)
+sqrt(x)
+```
+
+The `sum()` function calculates the sum of all the elements of a vector.
+
+```{r, sum}
+sum(x)
+```
+
+The `floor`, `ceiling`, `trunc` and `round` functions can be used to round a number. `floor()` returns a numeric vector containing the largest integers not greater than the corresponding input elements. `ceiling()` returns a numeric vector containing the smallest integers not less than the corresponding input elements. `trunc()` returns a numeric vector containing the integers formed by truncating the input values toward 0. `round()` rounds the values in its first argument to the specified number of decimal places (default 0).
+
+```{r, round}
+floor(3.14)
+floor(3.67)
+ceiling(3.14)
+ceiling(3.67)
+trunc(3.14)
+trunc(3.67)
+round(3.14, digits = 1)
+round(3.19, digits = 1)
+```
+
+
+## Probabilistic Functions
+
+Probabilistic functions in R fall into four categories:
+
+ 1. `r*` functions for generating random numbers,
+ 2. `d*` functions for calculating the value of the density function in a point,
+ 3. `p*` functions for calculating the cumulative distribution function,
+ 4. `q*` functions for calculating quantiles.
+
+The asterisk indicates the distribution which is used: `norm` for normal distribution, `t` for Student's t-distribution, `binom` for binomial distribution, `gamma` distribution, `beta` distribution, `weibull` distribution, etc. R integrates numerous statistical distributions. The list of all the probability distributions included in the base R can be obtained by typing `help(Distributions)`. Other probability distributions become available when loading additional packages.
+
+The following functions:
+```{r, random}
+rnorm(n = 10)
+rnorm(n = 20, mean = 3, sd = 5)
+rbinom(n = 50, size = 20, prob = 0.8)
+rweibull(n = 30, shape = 5, scale = 3)
+```
+generate, respectively:
+
+ - 10 pseudorandom values from a normal distribution with parameters (0, 1);
+ - 20 pseudorandom values from a normal distribution with parameters (3, 5);
+ - 50 pseudorandom values from a binomial distribution with $n = 20$ and $\pi = 0.8$;
+ - 50 pseudorandom values from a Weibull distribution with parameters (5, 3).
+
+The following functions:
+```{r, density}
+dbinom(x = 20, size = 20, prob = 0.8)
+dnorm(x = -5:5, mean = 0, sd = 1)
+```
+calculate, respectively:
+
+ - the probability that `x` is equal to 20, if `x` is distributed as a binomial distribution with $n = 20$ and $\pi = 0.8$;
+ - thee values of the density function of a standard normal for integer values comprised between -5 and 5. As expected, the highest value is obtained with 0. 
+
+The following functions:
+```{r, cdf}
+pnorm(q = 0, mean = 0, sd = 1)
+pbinom(q = 20, size = 20, prob = 0.8)
+```
+calculate, respectively:
+
+ - the value of the cumulative distribution function of a standard normal distribution at zero; as expected the result is 0.5.
+ - the value of a cumulative distribution function of a binomial distribution with parameters $n = 20$ and $\pi = 0.8$ at 20; as expected, the result is 1.
+
+The following functions:
+```{r, quantiles}
+qnorm(p = 0.5, mean = 0, sd = 1)
+qbinom(p = 0.5, size = 20, prob = 0.8)
+```
+calculate, respectively:
+
+ - the quantile with which a 0.5 probability on the left is obtained in a standard normal distribution;
+ - The quantile with which a 0.5 probability on the left is obtained in a binomial distribution with parameters $n = 20$ and $\pi = 0.8$.
+
+
+## Statistical Functions
+
+Any kind of statistical analysis can be performed in R thanks to the built-in functions of the base version or the numerous additional packages. The functions enabling the calculation of the main descriptive statistical analyses are explained below.
+ 
+The `mean()`, `median()`, `sd()` and `var()` functions are used to calculate the mean, the median, the sample standard deviation and the sample variance of a numeric vector. 
+
+```{r, stats}
+x = mtcars$mpg
+mean(x)
+median(x)
+sd(x)  
+var(x)
+```
+
+The `quantile()` function calculates one or more quantiles.
+
+```{r, quantile}
+quantile(x, .9) 
+quantile(x, c(.3, .84))
+quantile(x, c(.25, .50, .75))
+```
+
+The `min()` and `max()` functions return the minimum and maximum  value respectively.
+
+```{r, minmax}
+min(x)
+max(x)
+```
+
+The `summary()` generic function applied to a numeric vector returns minimum, maximum, quartiles and arithmetic mean.
+
+```{r, summary}
+summary(x)
+```
+
+Correlation and covariance can be calculated with the `cor()` and `cov()` functions, respectively.
+
+```{r, corcov}
+data = mtcars[, c(1, 3, 4, 5, 6)]
+cor(data)
+cov(data)
+```
+
+
+<!--
+
+## Summary
+> In this chapter, we showed the most common object types within R. We introduced the main features of each object type and how get a subset of data. Vector is the "basic" object. You can have a numeric, character or logical vector. Matrices are generalisation of vectors. Lists are more complex data type: they collect in a single object several other objects. A factor is a vector-like object used to specify a discrete classification (grouping) of the components of other vectors of the same length. Data frame is a very well-know structure in statistics. It looks like a matrix, but each column can contain different types of data. Its different kinds of information are organised in columns, whereas rows represent different types of observational units. Now that you know the several object types of R, it's time to get your data into the mix. 
+In the next chapter, we'll look how to import data into and export data from R from text files, other programs, and database management systems.
+
+-->
