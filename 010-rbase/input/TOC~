@@ -5,7 +5,7 @@ A first look to R session						| 13-firstlook.Rmd
 
 R objects
 R objects								| 21-robjects.Rmd
-Introduction to R functions						| functions.Rmd
+
 
 Data Import and Export
 Import and Export data 							| 31-dataimport.Rmd
@@ -18,13 +18,9 @@ Group Data and Chain Verbs                       			| 43-group-chain.Rmd
 Data visualization with ggplot 
 Graphs in R with ggplot  						| 52-scatterplot.Rmd
 
-R functions
-Functions Structure							| 51-rfstructure.Rmd
-Writing R functions							| writefun.Rmd
-
 Data Analysis
 Introduction to statistical models with R				| 71.statmodels.Rmd
 
-Other Resources
+R Development
+Writing R functions							| functions.Rmd
 R Markdown								| 73-rmarkdown.Rmd
-

@@ -6,7 +6,6 @@ A first look to R session						| 13-firstlook.Rmd
 R objects
 R objects								| 21-robjects.Rmd
 
-
 Data Import and Export
 Import and Export data 							| 31-dataimport.Rmd
 
@@ -22,7 +21,5 @@ Data Analysis
 Introduction to statistical models with R				| 71.statmodels.Rmd
 
 R Development
-Introduction to R functions						| functions.Rmd
-Functions Structure							| 51-rfstructure.Rmd
-Writing R functions							| writefun.Rmd
+Writing R functions							| functions.Rmd
 R Markdown								| 73-rmarkdown.Rmd
