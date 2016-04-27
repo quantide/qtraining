@@ -1,0 +1,240 @@
+---
+output: html_document
+---
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
+# Install XLConnect if not installed
+if (!require(XLConnect)){install.packages("XLConnect", repos = "http://cran.us.r-project.org")}
+# Chunks global options
+require(knitr)
+opts_chunk$set(comment=NA, message=FALSE)
+# Output directory
+outDir <- "images"
+```
+
+# How to connect R and Excel
+
+Excel is the basis tool for any type of analysis. 
+When using R often there is the need to communicate with Excel.
+There are many packages that performe a communication between R and excel. 
+
+R user can have different needs:
+
+ - read an excel file with one sheet
+ - write and excel file with one sheet
+ - read an excel file with multiple sheets
+ - write an excel file with multiple sheets
+ - read formulas
+ - write formulas
+ - ...
+ 
+from R! 
+
+**XLConnect** is a packages which performs this type of operations. Let us analyze its functionalities more deeply.  
+
+
+## XLConnect
+
+XLConnect permits to create a formatted spreadsheet usable as a dynamic report of the R analisys. 
+Reading and writing named ranges enables to process complex inputs and outputs in an efficient way.
+
+### Main features
+
+Main features offered by XLConnect are:
+
+ - Reading and writing of Excel worksheets (via data.frames)
+ - Reading and writing of named ranges (via data.frames)
+ - Creating, removing, renaming and cloning worksheets
+ - Adding graphics
+ - Specifying cellstyles: data formats, borders, background and foreground fill color, fill pattern, text
+wrapping
+ - Controlling sheet visibility
+ - Defining column width and row height
+ - Merging/unmerging cells
+ - Setting/getting cell formulas
+ - Defining formula recalculation behavior (when workbooks are opened)
+ - Setting auto-filters
+ - Style actions: controlling application of cell styles when writing (e.g. when using templates)
+ - Defining behavior when there are error cells
+
+### Software Requirements
+
+XLConnect is cross-platform and as such runs under Windows, Unix/Linux and Mac (32-bit and 64-bit). 
+
+It does not require an installation of Microsoft Excel, or any special drivers.
+
+Needs for the installation:
+
+ - R, version 2.10.0 or higher
+ - Java Runtime Environment (JRE), version 6.0 or higher
+
+### Package Installation
+
+To installate the package:
+
+```{r inst.text, eval=FALSE}
+install.packages("XLConnect")
+```
+
+To use the package:
+
+```{r use.text, comment=FALSE}
+require("XLConnect")
+```
+
+### Examples
+
+<br>
+
+#### Example 1: Create a new file xlsx 
+To create a new empty file xlsx with one empty sheet named 'Input' the syntax is
+
+```{r outDir_set_up, eval=FALSE}
+# Set up output directory   
+outDir <- "/home/marco/Desktop/xlsx" 
+```
+
+```{r new.xlsx, comment=FALSE}
+fileXls <- paste(outDir,"newFile.xlsx",sep='/')
+unlink(fileXls, recursive = FALSE, force = FALSE)
+exc <- loadWorkbook(fileXls, create = TRUE)
+createSheet(exc,'Input')
+saveWorkbook(exc)
+```
+Command *loadWorkbook* creates an R object workbook.
+
+Command *saveWorkbook* fisically save the R object in a file xlsx.
+
+The result is represented in next figure
+
+```{r g1, echo=FALSE, fig.width=6}
+include_graphics("images/excel-emptySheet.png")
+```
+
+<br>
+
+#### Example 2: Populate a sheet
+To add something to the empty sheet *input*
+
+```{r add.input, comment=FALSE}
+input <- data.frame('inputType'=c('Day','Month'),'inputValue'=c(1,3))
+writeWorksheet(exc, input, sheet = "input", startRow = 1, startCol = 2)
+saveWorkbook(exc)
+```
+
+A data.frame input with 2 rows and 2 column is created and the command *writeWorkbook* write the content of this data.frame in the sheet *input* starting from the cell (1,2).
+
+```{r g2, echo=FALSE, fig.width=3}
+include_graphics("images/excel-inputSheet.png")
+```
+
+<br>
+
+#### Example 3: Create multiple sheets
+At this point a second sheet could be created
+
+```{r chiedere, echo=FALSE}
+if (!require(reshape)){install.packages("reshape", repos = "http://cran.us.r-project.org")}
+```
+
+```{r add.airquality, comment=FALSE}
+createSheet(exc,'Airquality')
+airquality$isCurrent<-NA
+createName(exc, name='Airquality',formula='Airquality!$A$1')
+writeNamedRegion(exc, airquality, name = 'Airquality', header = TRUE)
+saveWorkbook(exc)
+```
+
+Command *createName* create a named region 'Airquality' starting from the cell $A$1 of sheet Airquality.
+Command *writeNamedRegion* writes airquality data.frame with headers in the named region 'Airquality'. 
+We use `airquality` dataset available in `datasets` packages.
+
+```{r g3, echo=FALSE, fig.width=3}
+include_graphics("images/excel-airqualitySheet.png")
+```
+
+<br>
+
+#### Example 4: Add a formula
+The empty column *isCurrent* could be populate with a formula that lies Input sheet with Airquality sheet.
+
+```{r add.formula, comment=FALSE}
+colIndex <- which(names(airquality) == 'isCurrent')
+letterDay <- idx2col(which(names(airquality) == 'Day'))
+letterMonth <- idx2col(which(names(airquality) == 'Month'))
+formulaXls <- paste('IF(AND(',
+                    letterMonth,
+                    2:(nrow(airquality)+1),
+                    '=Input!C3,',
+                    letterDay,
+                    2:(nrow(airquality)+1),
+                    '=Input!C2)',
+                    ',1,0)',sep='')
+setCellFormula(exc, sheet='Airquality',2:(nrow(airquality)+1),colIndex,formulaXls)
+saveWorkbook(exc)
+```
+
+The function idx2col returns the correspondig excel letter for the index column. With the syntax
+
+```{r idx2col1 ,results='markup'}
+letterDay <- idx2col(which(names(airquality) == 'Day'))
+```
+
+the variable letterDay contains the excel letter for the column 'Day'
+
+```{r idx2col2, echo=FALSE,results='markup'}
+cat('letterDay=',letterDay)
+```
+
+```{r g4, echo=FALSE, fig.width=4}
+include_graphics("images/excel-addFormula.png")
+```
+
+<br>
+
+
+### Read and modify existing xlsx
+
+If the scope is to read an existing excel file, the syntax is the same that for the creation.
+
+```{r load.xlsx, comment=FALSE}
+exc2 <- loadWorkbook(fileXls, create = FALSE)
+dtAir <- readWorksheet(exc2,'Airquality')
+createSheet(exc2, name = "OzonePlot")
+createName(exc2, name='OzonePlot',formula='OzonePlot!$A$1')
+saveWorkbook(exc2)
+```
+
+In this case
+
+ - exc2 is a new XLC object created from and existing file excel (the old fileXls)
+ - the new sheet *OzonePlot* is added to exc2 object
+ - the new named region *OzonePlot* is creating starting from *OzonePlot!$A$1* cell
+ 
+
+### Adding a plot (image)
+
+After creating a new sheet it is possible to put in this sheet a picture of a graph created in R.
+
+```{r add.plot, comment=FALSE,warning=FALSE}
+require(ggplot2)
+fileGraph <- paste(outDir,'graph.png',sep='/')
+png(filename = fileGraph, width = 800, height = 600)
+ozone.plot <- ggplot(dtAir, aes(x=Day, y=Ozone)) + 
+geom_point() + 
+geom_smooth()+
+facet_wrap(~Month, nrow=1)
+print(ozone.plot)
+invisible(dev.off())
+addImage(exc2,fileGraph, 'OzonePlot',TRUE)
+saveWorkbook(exc2)
+```
+
+The result is represented in next figure
+
+```{r g5, echo=FALSE, fig.width=6}
+include_graphics("images/excel-ozonePlot.png")
+```
+
+
+## Summary
+> In this chapter, we introduced communication between R and Excel. In particular we focused on XLConnect package and its main functionalities as read and write excel files, manage formulas and use an excel worksheet as report for our R analisys.

@@ -48,7 +48,7 @@ a:hover {
 }
 
 li.nav-header{
-  margin-top: 20px;
+  margin-top: 7px;
 }
 
 li.nav-header:first-child{
@@ -308,22 +308,19 @@ $(document).ready(function () {
   <li><a href="13-firstlook.html">A first look to R session</a></li>
   <li class="nav-header">R objects</li>
   <li><a href="21-robjects.html">R objects</a></li>
-  <li><a href="functions.html">Introduction to R functions</a></li>
   <li class="nav-header">Data Import</li>
-  <li><a href="31-dataimport.html">Import data into R</a></li>
+  <li><a href="31-dataimport.html">Import and Export data</a></li>
   <li class="nav-header">Data manipulation with dplyr</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
   <li><a href="42-dplyr-verbs.html">Verb functions</a></li>
   <li><a href="43-group-chain.html">Group Data and Chain Verbs</a></li>
-  <li class="nav-header">Data visualization with ggplot</li>
-  <li><a href="52-scatterplot.html">Graphs in R with ggplot</a></li>
-  <li class="nav-header">R functions</li>
-  <li><a href="51-rfstructure.html">Functions Structure</a></li>
-  <li><a href="writefun.html">Writing R functions</a></li>
+  <li class="nav-header">Data visualization with ggplot2</li>
+  <li><a href="51-ggplot.html">Graphs with ggplot2</a></li>
   <li class="nav-header">Data Analysis</li>
-  <li><a href="71.statmodels.html">Introduction to statistical models with R</a></li>
-  <li class="nav-header">Other Resources</li>
-  <li><a href="73-rmarkdown.html">R Markdown</a></li>
+  <li><a href="61-statmodels.html">Statistical models with R</a></li>
+  <li class="nav-header">R Development</li>
+  <li><a href="71-functions.html">Writing R functions</a></li>
+  <li><a href="72-rmarkdown.html">R Markdown</a></li>
 </ul>
     </div>  
   </div>
@@ -345,7 +342,6 @@ $(document).ready(function () {
 <li><a href="#factors">Factors</a></li>
 <li><a href="#data-frames">Data Frames</a></li>
 <li><a href="#missing-values-null-objects-and-infinite">Missing Values, Null Objects and Infinite</a></li>
-<li><a href="#functions">Functions</a></li>
 </ul></li>
 </ul>
 </div>
@@ -919,48 +915,109 @@ x</code></pre>
 <pre class="r"><code>log(0)</code></pre>
 <pre><code>## [1] -Inf</code></pre>
 <p>In the above example, R calculates the limit of the function <span class="math inline"><em>l</em><em>o</em><em>g</em>(<em>x</em>)</span> as <span class="math inline"><em>x</em></span> approaches zero.</p>
-</div>
-<div id="functions" class="section level2">
-<h2>Functions</h2>
-<p>Functions are one of the most important objects in R.</p>
-<p>A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.</p>
-<p>The function <code>ls()</code> doesn’t require any input and returns an output.</p>
-<pre class="r"><code>ls()</code></pre>
-<pre><code>##  [1] &quot;back&quot;      &quot;char&quot;      &quot;cmat&quot;      &quot;comb&quot;      &quot;df&quot;       
-##  [6] &quot;gender&quot;    &quot;go&quot;        &quot;grade&quot;     &quot;height&quot;    &quot;logic1&quot;   
-## [11] &quot;logic2&quot;    &quot;mark&quot;      &quot;mark1&quot;     &quot;mark2&quot;     &quot;mixed&quot;    
-## [16] &quot;ml1&quot;       &quot;ml2&quot;       &quot;mydata&quot;    &quot;myList&quot;    &quot;myrep&quot;    
-## [21] &quot;name&quot;      &quot;num&quot;       &quot;out&quot;       &quot;rmat&quot;      &quot;seqby&quot;    
-## [26] &quot;seqlength&quot; &quot;size&quot;      &quot;vec1&quot;      &quot;vec2&quot;      &quot;vec3&quot;     
-## [31] &quot;x&quot;         &quot;y&quot;</code></pre>
-<p>The function <code>rm()</code> requires an input and doesn’t return an output.</p>
-<pre class="r"><code>foo = 3
-rm(foo)</code></pre>
-<p>Usually, functions require an input and returns an output.</p>
-<pre class="r"><code>sum(1:10)</code></pre>
-<pre><code>## [1] 55</code></pre>
-<p>The several elements of the input of a function are the arguments of the function. When a function is called the arguments can be declared explicitely or implicitely. The arguments can be explicitely with their name.</p>
-<pre class="r"><code>sum(c(1, 2, NA), na.rm = T)</code></pre>
-<pre><code>## [1] 3</code></pre>
-<p>In the above example, the <code>na.rm</code> argument of the <code>sum()</code> function is called explicitely.</p>
-<p>When arguments are called implicitely, the order of the arguments is fundamental. The third example of the code below returns a wrong result.</p>
-<pre class="r"><code>rdata = c(rnorm(100), NA)
-quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = T)</code></pre>
-<pre><code>##         25%         50%         75% 
-## -0.69576699 -0.08051525  0.71081937</code></pre>
-<pre class="r"><code>quantile(rdata, c(0.25, 0.50, 0.75), T)</code></pre>
-<pre><code>##         25%         50%         75% 
-## -0.69576699 -0.08051525  0.71081937</code></pre>
-<pre class="r"><code>quantile(rdata, T, c(0.25, 0.50, 0.75))</code></pre>
-<pre><code>## Warning in if (na.rm) x &lt;- x[!is.na(x)] else if (anyNA(x)) stop(&quot;missing
-## values and NaN's not allowed if 'na.rm' is FALSE&quot;): the condition has
-## length &gt; 1 and only the first element will be used</code></pre>
-<pre><code>##     100% 
-## 2.581959</code></pre>
-<pre class="r"><code>quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))</code></pre>
-<pre><code>##         25%         50%         75% 
-## -0.69576699 -0.08051525  0.71081937</code></pre>
 <!--
+
+## Functions
+
+Functions are one of the most important objects in R.
+
+A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.
+
+The function `ls()` doesn't require any input and returns an output.
+
+
+```r
+ls()
+```
+
+```
+##  [1] "back"      "char"      "cmat"      "comb"      "df"       
+##  [6] "gender"    "go"        "grade"     "height"    "logic1"   
+## [11] "logic2"    "mark"      "mark1"     "mark2"     "mixed"    
+## [16] "ml1"       "ml2"       "mydata"    "myList"    "myrep"    
+## [21] "name"      "num"       "out"       "rmat"      "seqby"    
+## [26] "seqlength" "size"      "vec1"      "vec2"      "vec3"     
+## [31] "x"         "y"
+```
+
+The function `rm()` requires an input and doesn't return an output.
+
+
+```r
+foo = 3
+rm(foo)
+```
+
+Usually, functions require an input and returns an output.
+
+
+```r
+sum(1:10)
+```
+
+```
+## [1] 55
+```
+
+The several elements of the input of a function are the arguments of the function. When a function is called the arguments can be declared explicitely or implicitely. The arguments can be explicitely with their name.
+
+
+```r
+sum(c(1, 2, NA), na.rm = T)
+```
+
+```
+## [1] 3
+```
+In the above example, the `na.rm` argument of the `sum()` function is called explicitely.
+
+When arguments are called implicitely, the order of the arguments is fundamental. The third example of the code below returns a wrong result.
+
+
+```r
+rdata = c(rnorm(100), NA)
+quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = T)
+```
+
+```
+##         25%         50%         75% 
+## -0.69576699 -0.08051525  0.71081937
+```
+
+```r
+quantile(rdata, c(0.25, 0.50, 0.75), T)
+```
+
+```
+##         25%         50%         75% 
+## -0.69576699 -0.08051525  0.71081937
+```
+
+```r
+quantile(rdata, T, c(0.25, 0.50, 0.75))
+```
+
+```
+## Warning in if (na.rm) x <- x[!is.na(x)] else if (anyNA(x)) stop("missing
+## values and NaN's not allowed if 'na.rm' is FALSE"): the condition has
+## length > 1 and only the first element will be used
+```
+
+```
+##     100% 
+## 2.581959
+```
+
+```r
+quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))
+```
+
+```
+##         25%         50%         75% 
+## -0.69576699 -0.08051525  0.71081937
+```
+
+
 
 It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:
   

@@ -1,0 +1,38 @@
+---
+title: "Writing R Functions"
+---
+
+## Writing a function
+
+A function in R can be defined with the `function()` function. Its use can be summed up as follows:
+  
+```{r functions-writing2}
+myFunction =  function(a, b, c) {...}
+```
+
+* `myFunction` is the name of the customised function 
+* `a`, `b` and `c` are the arguments of `myFunction()` 
+* the part in curly brackets contains the definition of the function
+
+As an example, write a function which calculates taxable income and taxes, given the total and the VAT percentage.
+
+```{r functions-writing-example, tidy=FALSE}
+vat = function(amount, rate = 0.21) {
+  taxable = amount / (1 + rate)
+  tax = amount - taxable
+  return(list(tax = tax, taxable = taxable))
+}
+vat(121)
+vat(104, rate = 0.04)
+```
+
+The value assigned to the `rate` argument is the default value assumed by the argument itself.
+
+It is good practice to end the function specifying its output with the `return()` or `invisible()` functions. The function output ought to be made of a single object. If there are multiple objects, they can be inserted in a list. 
+
+
+
+
+
+
+

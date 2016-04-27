@@ -48,7 +48,7 @@ a:hover {
 }
 
 li.nav-header{
-  margin-top: 20px;
+  margin-top: 7px;
 }
 
 li.nav-header:first-child{
@@ -308,22 +308,19 @@ $(document).ready(function () {
   <li><a href="13-firstlook.html">A first look to R session</a></li>
   <li class="nav-header">R objects</li>
   <li><a href="21-robjects.html">R objects</a></li>
-  <li><a href="functions.html">Introduction to R functions</a></li>
   <li class="nav-header">Data Import</li>
-  <li><a href="31-dataimport.html">Import data into R</a></li>
+  <li><a href="31-dataimport.html">Import and Export data</a></li>
   <li class="nav-header">Data manipulation with dplyr</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
   <li><a href="42-dplyr-verbs.html">Verb functions</a></li>
   <li><a href="43-group-chain.html">Group Data and Chain Verbs</a></li>
-  <li class="nav-header">Data visualization with ggplot</li>
-  <li><a href="52-scatterplot.html">Graphs in R with ggplot</a></li>
-  <li class="nav-header">R functions</li>
-  <li><a href="51-rfstructure.html">Functions Structure</a></li>
-  <li><a href="writefun.html">Writing R functions</a></li>
+  <li class="nav-header">Data visualization with ggplot2</li>
+  <li><a href="51-ggplot.html">Graphs with ggplot2</a></li>
   <li class="nav-header">Data Analysis</li>
-  <li><a href="71.statmodels.html">Introduction to statistical models with R</a></li>
-  <li class="nav-header">Other Resources</li>
-  <li><a href="73-rmarkdown.html">R Markdown</a></li>
+  <li><a href="61-statmodels.html">Statistical models with R</a></li>
+  <li class="nav-header">R Development</li>
+  <li><a href="71-functions.html">Writing R functions</a></li>
+  <li><a href="72-rmarkdown.html">R Markdown</a></li>
 </ul>
     </div>  
   </div>
@@ -358,11 +355,31 @@ $(document).ready(function () {
 <div id="tbl_df-the-dplyr-data-frame-class" class="section level1">
 <h1><code>tbl_df</code>: the <code>dplyr</code> Data Frame Class</h1>
 <p><code>dplyr</code> can work with data frames as is but it is worthwhile to convert them to a <code>tbl_df</code>: this is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.</p>
-<pre class="r"><code>data(bank)
-class(bank)</code></pre>
-<pre><code>## [1] &quot;data.frame&quot;</code></pre>
-<pre class="r"><code>bank</code></pre>
-<pre><code>##          id age           job  marital education default balance housing
+<!--
+
+```r
+data(bank)
+class(bank)
+```
+
+```
+## [1] "data.frame"
+```
+
+```r
+dim(bank)
+```
+
+```
+## [1] 45211    20
+```
+
+```r
+bank
+```
+
+```
+##          id age           job  marital education default balance housing
 ## 1         1  58    management  married  tertiary      no    2143     yes
 ## 2         2  44    technician   single secondary      no      29     yes
 ## 3         3  33  entrepreneur  married secondary      no       2     yes
@@ -15362,62 +15379,68 @@ class(bank)</code></pre>
 ## 4997         0  unknown  no
 ## 4998         0  unknown  no
 ## 4999         0  unknown  no
-##  [ reached getOption(&quot;max.print&quot;) -- omitted 40212 rows ]</code></pre>
+##  [ reached getOption("max.print") -- omitted 40212 rows ]
+```
+-->
 <p>When the class of data object is not tbl, <code>tbl_df()</code> function should be used:</p>
 <pre class="r"><code># Example of data frame
-df &lt;- setNames(object = data.frame(matrix(data = runif(2000), nrow = 100, ncol = 20)),
-               nm = letters[1:20])
+df &lt;- data.frame(matrix(data = runif(20000), nrow = 1000, ncol = 20))
+names(df) &lt;- letters[1:20]
+
 class(df)</code></pre>
 <pre><code>## [1] &quot;data.frame&quot;</code></pre>
 <pre class="r"><code>head(df)</code></pre>
-<pre><code>##            a          b         c         d         e         f         g
-## 1 0.25767250 0.38947869 0.9563228 0.6532260 0.2777107 0.7431595 0.5797055
-## 2 0.55232243 0.04105275 0.9135767 0.9508858 0.3606569 0.3059573 0.1542048
-## 3 0.05638315 0.36139663 0.8233363 0.6172230 0.4375279 0.4022088 0.1252705
-## 4 0.46854928 0.57097808 0.3194822 0.4928406 0.8030667 0.3935714 0.1479858
-## 5 0.48377074 0.68488024 0.8777003 0.9760066 0.5206097 0.4407565 0.9133426
-## 6 0.81240262 0.97111675 0.8003510 0.4903452 0.6961521 0.7728051 0.2574304
-##           h          i            j         k         l         m
-## 1 0.6945936 0.22993408 0.2910003348 0.1118664 0.8073436 0.7717425
-## 2 0.9028108 0.44362621 0.0004488295 0.6239440 0.7024703 0.4949800
-## 3 0.0294742 0.51570490 0.6454668748 0.6710818 0.7994766 0.3926061
-## 4 0.4718077 0.92489425 0.8269246418 0.3658942 0.5308012 0.1053059
-## 5 0.4088902 0.04445684 0.7549124290 0.1831814 0.4601550 0.3560706
-## 6 0.3369403 0.14915658 0.5148178525 0.0267197 0.1527191 0.7807699
-##            n         o         p         q           r         s
-## 1 0.60821168 0.2022793 0.4044626 0.2294918 0.826253708 0.4786617
-## 2 0.04605777 0.5222016 0.3549295 0.9693079 0.971815727 0.3072272
-## 3 0.56928747 0.8133963 0.2244061 0.1315974 0.003214312 0.8855426
-## 4 0.30627200 0.9161582 0.6823570 0.6090285 0.758520066 0.5418244
-## 5 0.84120096 0.9463884 0.3391498 0.2840458 0.496161843 0.4221332
-## 6 0.09852506 0.8134322 0.4753990 0.2635943 0.246452654 0.1191685
-##            t
-## 1 0.45232278
-## 2 0.28517984
-## 3 0.62280540
-## 4 0.06516503
-## 5 0.55112740
-## 6 0.88244969</code></pre>
-<pre class="r"><code># dplyr version of the same data frame
+<pre><code>##            a         b         c         d          e          f
+## 1 0.25767250 0.1118664 0.7676133 0.1170775 0.35158951 0.66171208
+## 2 0.55232243 0.6239440 0.8812059 0.6787337 0.40914566 0.01577281
+## 3 0.05638315 0.6710818 0.2239725 0.3834419 0.86737784 0.60597997
+## 4 0.46854928 0.3658942 0.7215696 0.7669785 0.04159364 0.79440034
+## 5 0.48377074 0.1831814 0.6924851 0.4386487 0.12125736 0.55695631
+## 6 0.81240262 0.0267197 0.8590750 0.6593235 0.26522834 0.95091123
+##            g         h         i          j          k          l
+## 1 0.03935602 0.4684182 0.4721064 0.17214663 0.01752519 0.08527665
+## 2 0.17179829 0.4245865 0.3922577 0.74877560 0.40850147 0.92642148
+## 3 0.98925684 0.9993015 0.2440127 0.75351527 0.41558885 0.25532846
+## 4 0.50014993 0.8955581 0.2998423 0.37961656 0.65689109 0.27837478
+## 5 0.76406526 0.3546597 0.1346075 0.09222743 0.86523683 0.95947507
+## 6 0.06363486 0.7948927 0.4486062 0.01391753 0.29118660 0.78499236
+##             m         n         o         p           q         r
+## 1 0.003809129 0.1707736 0.4111454 0.5389931 0.001633953 0.1602748
+## 2 0.510454702 0.6061971 0.7545478 0.6449477 0.570888575 0.8631379
+## 3 0.002020749 0.2788119 0.9944292 0.3114471 0.925291609 0.9696821
+## 4 0.319519366 0.9310807 0.2437309 0.4981469 0.243010984 0.4991799
+## 5 0.765982446 0.1618510 0.1234505 0.6805088 0.058334100 0.1911170
+## 6 0.126505172 0.9241436 0.2573466 0.7753829 0.767354009 0.4620198
+##            s         t
+## 1 0.69589323 0.3688499
+## 2 0.01658627 0.9060913
+## 3 0.87176178 0.6263387
+## 4 0.80128591 0.4025811
+## 5 0.04543302 0.8882989
+## 6 0.81462126 0.4950814</code></pre>
+<pre class="r"><code># If we do not convert it as a tbl_df, all df rows and columns will be printed when calling df 
+dim(df)</code></pre>
+<pre><code>## [1] 1000   20</code></pre>
+<pre class="r"><code># dplyr version of the same data frame (tbl_df conversion)
 dfd &lt;- tbl_df(df)
 class(dfd)</code></pre>
 <pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <pre class="r"><code>dfd</code></pre>
-<pre><code>## Source: local data frame [100 x 20]
+<pre><code>## Source: local data frame [1,000 x 20]
 ## 
-##             a          b          c         d         e         f
-##         (dbl)      (dbl)      (dbl)     (dbl)     (dbl)     (dbl)
-## 1  0.25767250 0.38947869 0.95632284 0.6532260 0.2777107 0.7431595
-## 2  0.55232243 0.04105275 0.91357666 0.9508858 0.3606569 0.3059573
-## 3  0.05638315 0.36139663 0.82333634 0.6172230 0.4375279 0.4022088
-## 4  0.46854928 0.57097808 0.31948216 0.4928406 0.8030667 0.3935714
-## 5  0.48377074 0.68488024 0.87770033 0.9760066 0.5206097 0.4407565
-## 6  0.81240262 0.97111675 0.80035100 0.4903452 0.6961521 0.7728051
-## 7  0.37032054 0.70195881 0.61135664 0.6551723 0.8478369 0.2095690
-## 8  0.54655860 0.01154550 0.07242114 0.5988018 0.8457093 0.7481227
-## 9  0.17026205 0.53553213 0.42158771 0.9475690 0.3918757 0.5853552
-## 10 0.62499648 0.83657146 0.34446560 0.3680115 0.1535138 0.3244472
-## ..        ...        ...        ...       ...       ...       ...
+##             a         b         c          d          e          f
+##         (dbl)     (dbl)     (dbl)      (dbl)      (dbl)      (dbl)
+## 1  0.25767250 0.1118664 0.7676133 0.11707752 0.35158951 0.66171208
+## 2  0.55232243 0.6239440 0.8812059 0.67873370 0.40914566 0.01577281
+## 3  0.05638315 0.6710818 0.2239725 0.38344190 0.86737784 0.60597997
+## 4  0.46854928 0.3658942 0.7215696 0.76697851 0.04159364 0.79440034
+## 5  0.48377074 0.1831814 0.6924851 0.43864873 0.12125736 0.55695631
+## 6  0.81240262 0.0267197 0.8590750 0.65932347 0.26522834 0.95091123
+## 7  0.37032054 0.4904525 0.2329190 0.84976526 0.76626934 0.73205171
+## 8  0.54655860 0.5959280 0.8721583 0.07198752 0.40496829 0.28017902
+## 9  0.17026205 0.9561435 0.4129935 0.99658454 0.29048837 0.29085258
+## 10 0.62499648 0.3583891 0.7764602 0.49245722 0.09051715 0.21935016
+## ..        ...       ...       ...        ...        ...        ...
 ## Variables not shown: g (dbl), h (dbl), i (dbl), j (dbl), k (dbl), l (dbl),
 ##   m (dbl), n (dbl), o (dbl), p (dbl), q (dbl), r (dbl), s (dbl), t (dbl)</code></pre>
 </div>
