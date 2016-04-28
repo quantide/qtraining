@@ -112,6 +112,22 @@ Let us see how `XLConnect` works.
 require(XLConnect)
 ```
 
+<!--
+### Read existing xlsx
+
+To read an existing excel file, the syntax is:
+
+
+```{r load.xlsx1, comment=FALSE}
+exc2 <- loadWorkbook("newFile.xlsx")
+dt_air <- readWorksheet(exc2, 'Airquality')
+head(dt_air)
+```
+
+`loadWorkbook()` function loads a Microsoft Excel workbook, in this case "newFile.xlsx", into R creating a R workbook object, `exc2`.  
+`readWorksheet()` function reads data from `exc2` object. 
+-->
+
 ### Create a new file xlsx 
 To create a new empty file xlsx with one empty sheet named *Input* the syntax is:
 
@@ -132,15 +148,14 @@ createSheet(object = exc, name = 'Input')
 saveWorkbook(exc)
 ```
 
-`loadWorkbook` function creates an R workbook object in the path and with the name specified by  `filename` argument. It creates it ex-novo, as `create` argument is set as `TRUE`.  
+`loadWorkbook()` function creates an R workbook object in the path and with the name specified by  `filename` argument. It creates it ex-novo, as `create` argument is set as `TRUE`. An R workbook object represents a Microsoft Excel workbook. 
 
-The function `createSheet` creates the worksheet *Input* in R object and `saveWorkbook` function fisically save the R object in a file xlsx. Remember to call this function every time you modified the R object in order to save the changes also in xlsx file. 
+The function `createSheet()` creates the worksheet *Input* in R object and `saveWorkbook()` function fisically save the R object in a file xlsx. Remember to call this function every time you modified the R object in order to save the changes also in xlsx file. 
 
 
 ```{r g1, echo=FALSE, fig.width=6}
 include_graphics("images/excel-emptySheet.png")
 ```
-
 
 ### Populate a sheet
 
@@ -152,7 +167,7 @@ writeWorksheet(object = exc, data = df, sheet = "Input", startRow = 1, startCol 
 saveWorkbook(exc)
 ```
 
-The `df` data frame with 2 rows and 2 column is created and `writeWorkbook` function write the content of this data frame in the sheet *Input* starting from the cell (1,2).
+The `df` data frame with 2 rows and 2 column is created and `writeWorkbook()` function write the content of this data frame in the sheet *Input* starting from the cell (1,2).
 
 ```{r g2, echo=FALSE, fig.width=3}
 include_graphics("images/excel-inputSheet.png")
@@ -160,7 +175,7 @@ include_graphics("images/excel-inputSheet.png")
 
 ### Create multiple sheets
 
-To add other sheets to an R object workbook, use `createSheet` function:
+To add other sheets to an R object workbook, use `createSheet()` function:
 
 ```{r add.airquality, comment=FALSE}
 # Add a sheet named Airquality to exc object
@@ -180,15 +195,15 @@ writeNamedRegion(exc, airquality, name = 'Airquality', header = TRUE)
 saveWorkbook(exc)
 ```
 
-In particular, `createName` function creates a named region 'Airquality' starting from the cell $A$1 of sheet *Airquality*. In Excel, a named region/range represents cells, a range of cells, a constant value, or a formula with a defined name which make easier to work. It is useful for navigation, to quickly select the named range, for reusing it when referencing it in such things as charts and formulas, ...   
-`writeNamedRegion` function writes `airquality` data frame with headers `(header=TRUE)` in the named region *Airquality*. 
+In particular, `createName()` function creates a named region 'Airquality' starting from the cell $A$1 of sheet *Airquality*. In Excel, a named region/range represents cells, a range of cells, a constant value, or a formula with a defined name which make easier to work. It is useful for navigation, to quickly select the named range, for reusing it when referencing it in such things as charts and formulas, ...   
+`writeNamedRegion()` function writes `airquality` data frame with headers `(header=TRUE)` in the named region *Airquality*. 
 
 ```{r g3, echo=FALSE, fig.width=3}
 include_graphics("images/excel-airqualitySheet.png")
 ```
 
 ### Add a formula
-Use `setCellFormula` function to set cell formulas for specific cells in a workbook.  
+Use `setCellFormula()` function to set cell formulas for specific cells in a workbook.  
 The empty column *isCurrent* in *Airquality* sheet could be populate with a formula that lies *Input* sheet with *Airquality* sheet.
 
 ```{r add.formula, comment=FALSE}
@@ -199,7 +214,7 @@ letter_day <- idx2col(which(names(airquality) == 'Day'))
 letter_month <- idx2col(which(names(airquality) == 'Month'))
 ```
 
-The function `idx2col` returns the correspondig excel letter for the index column. With the syntax:
+The function `idx2col()` returns the correspondig excel letter for the index column. With the syntax:
 
 ```{r idx2col1 ,results='markup'}
 letter_day <- idx2col(which(names(airquality) == 'Day'))
@@ -226,7 +241,7 @@ setCellFormula(exc, sheet='Airquality', row = 2:(nrow(airquality)+1), col = col_
 saveWorkbook(exc)
 ```
 
-The function `setCellFormula` apply the formula specified by the argument `formula` to the rows specified by the `row` argument of the column specified by the `col` argument of the sheet of the R object specified by the `sheet` argument.
+The function `setCellFormula()` apply the formula specified by the argument `formula` to the rows specified by the `row` argument of the column specified by the `col` argument of the sheet of the R object specified by the `sheet` argument.
 
 
 ```{r g4, echo=FALSE, fig.width=4}
@@ -234,21 +249,26 @@ include_graphics("images/excel-addFormula.png")
 ```
 
 
-### Read and modify existing xlsx
+### Read an existing xlsx file
 
-To read an existing excel file, the syntax is the similar that for the creation:
+To read an existing excel file, the syntax is:
 
-<!--
-exc2 <- loadWorkbook(file_xls, create=TRUE)
--->
-
-```{r load.xlsx, comment=FALSE}
-exc2 <- loadWorkbook(file_xls)
-dt_air <- readWorksheet(exc2, 'Airquality')
+```{r excel_file_name, eval=FALSE}
+# Excel file (with path) to be loaded into R
+file_xls <- "/home/marco/Desktop/xlsx/newFile.xlsx"
 ```
 
-`exc2` is a new R workbook object created from and existing file excel (the old `file_xls`), and `readWorksheet` function reads data from `exc2` object. 
- 
+```{r load.xlsx}
+exc2 <- loadWorkbook(file_xls)
+dt_air <- readWorksheet(exc2, sheet = 'Airquality')
+head(dt_air)
+```
+
+`loadWorkbook()` function loads a Microsoft Excel workbook, in this case "newFile.xlsx", into R creating a R workbook object, `exc2`.  
+`readWorksheet()` function reads data from *Airquality* sheet of `exc2` object (the workbook that has been previously loaded). 
+
+### Modify an existing xlsx file
+
 Suppose we want to create another sheet named *OzonePlot*, with a named region *OzonePlot*:
 
 ```{r} 
@@ -257,14 +277,14 @@ createName(exc2, name='OzonePlot',formula='OzonePlot!$A$1')
 saveWorkbook(exc2)
 ```
 
-The new sheet *OzonePlot* is added to `exc2` object and the new named region *OzonePlot* is creating starting from *OzonePlot!$A$1* cell.
- 
+`createSheet()` function adds the new sheet *OzonePlot* to `exc2` object and `createName()` function creates a new named region *OzonePlot* starting from *OzonePlot!$A$1* cell. `saveWorkbook()` function fisically save the change done to R object also in the corresponding xlsx file, in this case "newFile.xlsx".
+
 
 ### Adding a plot (image)
 
-After creating a new sheet it is possible to put in this sheet a picture of a graph created in R with the function `addImage`:
+After creating a new sheet it is possible to put in this sheet a picture of a graph created in R with the function `addImage()`:
 
-```{r add.plot, comment=FALSE,warning=FALSE}
+```{r add.plot, comment=FALSE,warning=FALSE, message=FALSE}
 require(ggplot2)
 # Generate a graph and save it in png format
 fileGraph <- paste(outDir,'graph.png',sep='/')
@@ -373,8 +393,8 @@ And finally disconnect from the database:
 dbDisconnect(con)
 ```
 
-```{r rm_mtcars_sqlite, echo=FALSE, purl=FALSE, message=FALSE, results='hide'}
-file.remove("mtcars_sqlite")
+```{r rm_mtcars.sqlite, echo=FALSE, purl=FALSE, message=FALSE, results='hide'}
+file.remove("mtcars.sqlite")
 ```
 
 

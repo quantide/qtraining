@@ -3,10 +3,6 @@ title: "Data visualization with ggplot2"
 output: html_document
 ---
 
-```{r options, include=FALSE, purl=FALSE}
-source("options.R")
-```
-
 ```{r first, include=FALSE, purl=TRUE}
 # This code chunk contains R code already described in the previous chapters
 # that is required by following examples
@@ -58,7 +54,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
 
 The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: the _data_ is in the `bands` data frame and you _map_ the data to _aesthetics_ (visual properties) of plot like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `viscosity` variable. Note that the variable names must be unquoted.
 
-The `ggplot()` function does not return anything. You have to add to `ggplot()`, which geometric object (_geom_) you want to add. A scatter plot is made by points, and so you will use the `geom_point()` function, without any function. 
+The `ggplot()` function does not return anything. You have to add to `ggplot()`, which geometric object (_geom_) you want to add. A scatter plot is made by points, and so you will use the `geom_point()` function, without any argument. 
 
 Alternatively, the plot can be initialized with `ggplot()` without any argument and the same arguments have to be passed to `geom_point()`, but these arguments are valid only for this geom.
 

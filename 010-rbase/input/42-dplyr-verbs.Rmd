@@ -12,8 +12,6 @@ title: "Verb functions"
 require(dplyr)
 require(lubridate)
 require(qdata)
-data(bank) 
-bank <-  tbl_df(bank)
 ```
 
 
@@ -22,7 +20,7 @@ bank <-  tbl_df(bank)
 All these functions are very similar:
 
 * the first argument is a data frame;
-* the subsequent arguments describe what to do with it, and you can refer to columns in the data frame directly without using $;
+* the subsequent arguments describe what to do with it, and you can refer to columns in the data frame directly without using $. Note that the column names must be unquoted;
 * the result is a new data frame.
 
 Together these properties make it easy to chain together multiple simple steps to achieve a complex result.
@@ -34,6 +32,14 @@ These five functions provide the basis of a language of data manipulation. At th
 3. reorder the rows: `arrange()`;
 4. add new variables that are functions of existing variables: `mutate()`;
 5. collapse many values to a summary: `summarise()`. 
+
+
+In the following examples we will refer to `bank` data set which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls. 
+
+```{r bank_tbl_df}
+data(bank) 
+bank <- tbl_df(bank)
+```
 
 # `select()`
 
@@ -47,8 +53,11 @@ Often you work with large datasets with many columns where only a few are actual
 The first argument is the name of the data frame, and the second and subsequent are the name of column/s of that data frame you want to select:
 
 ```{r bank}
+# Select columns: year, month and day of bank data frame
 select(bank, year, month, day)
+# Select columns: year, month and day of bank data frame
 select(bank, year:day)
+# Select all columns of bank data frame apart from: year, month and day
 select(bank, -(year:day))
 ```
 
@@ -62,6 +71,7 @@ This function works similarly to the select argument to the `base::subset()`. It
 You can rename variables with `select()` by using named arguments:
 
 ```{r}
+# Rename id variable as ID
 select(bank, ID = id)
 ```
 
@@ -210,23 +220,28 @@ Note that you'll have to either convert variable `date` to character or the stri
 `filter()` allows you to give it any number of filtering conditions which are joined together with `&` and/or the other operators.  
 
 ```{r}
+# Select all calls made to student of 18 years 
 filter(bank, age == 18 & job == "student")
 ```
 
 ```{r}
+# Select all calls made to people of 18 or years
 filter(bank, age == 18 | age == 95)
 ```
 
 `filter()` can be used also with `%in%` to establish conditions under which filter: 
 
 ```{r}
+# Select all calls made to people of 18 or years
 filter(bank, age %in% c(18,95))
 ```
 
 An other example is:
 
 ```{r}
+# Select all calls made to people whose jos is admin. or technician 
 filter(bank, job %in% c("admin.","technician"))
+# Select all calls made to people whose jos is admin. or technician 
 filter(bank, job == "admin." | job == "technician")
 ```
 
@@ -338,7 +353,7 @@ As well as selecting from the set of existing columns, it’s often useful to ad
 ![](images/mut.png) 
 
 
-The first argument is the name of the data frame, and the second and subsequent are expressions to create new columns to that data frame or to modify the existing ones: 
+The first argument is the name of the data frame, and the second and subsequent are expressions for creating new columns to add to that data frame or for modifying the existing ones: 
 
 <!--- AS explain example add or replace columns -->
 
@@ -488,7 +503,9 @@ The last verb is `summarise()`, which collapses a data frame to a single row.
 The first argument is the name of the data frame, and the second and subsequent are summarising expressions.
 
 ```{r}
+# Compute the mean of balance
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
+# Compute the minimum and the maximum value of balance
 summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
 ```
 
