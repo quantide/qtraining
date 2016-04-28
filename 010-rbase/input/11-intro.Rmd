@@ -1,8 +1,7 @@
 ---
+title: "About R"
 output: html_document
 ---
-
-# About R
 
 
 ## R history
@@ -20,12 +19,12 @@ S is a statistical programming language developed by John Chambers and others in
 
 A bit of history:
 
- - 1976: the first version of S was developed  as an internal statistical analysis environment. It was originally implemented as Fortran libraries.
- - 1980: the first version of S distributed outside of Bell Laboratories. In 1981, source version were made available.
+ - 1976: the first version of S is developed  as an internal statistical analysis environment. It is originally implemented as Fortran libraries.
+ - 1980: the first version of S is distributed outside of Bell Laboratories. In 1981, source version is made available.
  - 1984: Richard A. Becker and John M. Chambers, "S. An Interactive Environment for Data Analysis and Graphics". (Brown Book). Historical interest only.
- - 1988: Richard A. Becker, John M. Chambers and Allan R. Wilks, "The New S Language". London: Chapman & Hall. (Blue Book). It introduced what is now known as S version 2. The system was rewritten in C and began to resemble the system that we have today.
- - 1992: John M. Chambers and Trevor J. Hastie, "Statistical Models in S". (White Book). It introduced S version 3, often abbreviated S3, which added structures to facilitate statistical modeling in S.
- - 1998: John M. Chambers, "Programming with Data". (Green Book). It introduced S version 4, often abbreviated S4, which provided advanced object-oriented features. S4 classes differ markedly from S3 classes.
+ - 1988: Richard A. Becker, John M. Chambers and Allan R. Wilks, "The New S Language". London: Chapman & Hall. (Blue Book). It introduces what is now known as S version 2. The system is rewritten in C and begins to resemble the system that we have today.
+ - 1992: John M. Chambers and Trevor J. Hastie, "Statistical Models in S". (White Book). It introduces S version 3, often abbreviated S3, which adds structures to facilitate statistical modeling in S.
+ - 1998: John M. Chambers, "Programming with Data". (Green Book). It introduces S version 4, often abbreviated S4, which provides advanced object-oriented features. S4 classes differ markedly from S3 classes.
 
 The S language itself has not changed dramatically since 1998.
 
@@ -49,7 +48,7 @@ A bit of history:
  - 1993: First announcement of R to the public.
  - 1995: Martin Maechler convinces Ross Ihaka and Robert Gentleman to use the GNU General Public License to make R free software.
  - 1997: The R Development Core Team is formed. The team controls the source code for R.
- - 2000: R version 1.0.0 released. Developers considered R stable enough for production use.
+ - 2000: R version 1.0.0 released. Developers consider R stable enough for production use.
  - 2004: R version 2.0.0 released. Introduced lazy loading, which enables fast loading of data with minimal expense of system memory.
  - 2013: R version 3.0.0 released. Introduced long vectors.
 
@@ -78,12 +77,12 @@ RStudio, Inc. [(www.rstudio.com)](http://www.rstudio.com/) is a company that dev
 
 RStudio has a mission to provide the most widely used open source and enterprise-ready professional software for the R statistical computing environment. These tools will further the cause of expanding the use of R and the field of data science. It also offers open source and enterprise ready tools for the R computing environment. The flagship product of the RStudio team is an Integrated Development Environment (IDE) which makes it easy for analysts, scientists, data scientists and quants to perform their analyses. It also offer Shiny: a platform that allows you to take those analyses and share them with your team/organization by creating interactive web applications. 
 
-
+<!--
 #### Revolution R
 Revolution Analytics [(www.revolutionanalytics.com)](http://www.revolutionanalytics.com/) was founded in 2007 to provide commercial support for Revolution R. Revolution R is the distribution of R developed by Revolution Analytics which also includes components developed by the company.
 
 Revolution R Enterprise includes all of R's advanced data analysis and graphics capabilities, plus additional components. Major additional components include: ParallelR (for parallel computing), the R Productivity Environment IDE, RevoScaleR (for big data analysis), RevoDeployR (web services framework and the ability for reading and writing data in the SAS file format).
-
+-->
 
 ### What R does?
 
@@ -139,8 +138,8 @@ The R-project website  [(www.r-project.org)](http://www.r-project.org/) is the s
 The website contains:
 
  - the software and packages;
- - the search engine interface (the same queries can be submitted with the RSiteSearch('query') function within R);
- - the on-line documentation both in HTML and in PDF format. The HTML version can be accessed with the help.start() function within R;
+ - the search engine interface (the same queries can be submitted with the RSiteSearch ('query') function within R);
+ - the on-line documentation both in HTML and in PDF format. The HTML version can be accessed with the `help.start()` function within R;
  - the R Journal. The R Journal is the open access, refereed journal of the R project. It features short to medium length articles covering topics that might be of interest to users or developers of R;
  - the interface to the mailing list;
  - the wiki, suggested books and many others.
@@ -148,7 +147,7 @@ The website contains:
 The on-line documentation includes the following manuals. These manuals have been written by the R Development Core Team itself and contain precious information.
 
  - _An Introduction to R_ gives an introduction to the language and how to use R for doing statistical analysis and graphics.
- - *Writing R Extensions covers* how to create your own packages, write R help files, and the foreign language (C, C++, Fortran, ...) interfaces.
+ - *Writing R Extensions* covers how to create your own packages, write R help files, and the foreign language (C, C++, Fortran, ...) interfaces.
  - *R Data Import/Export* describes the import and export facilities available either in R itself or via packages which are available from CRAN.
  - *R Installation and Administration*.
 

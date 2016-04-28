@@ -1,5 +1,7 @@
+---
+title: "R and RStudio set up"
+---
 
-# R Setup
 
 ## Installing and updating R
 
@@ -51,7 +53,7 @@ The Figure [Screenshot of a first try with R](#fig:ssFirsttry) shows a first try
 
 </div>
 
-#### Updating R
+### Updating R
 
 In Windows and Mac, there is not an automatic way to update R. Two or more versions of R can coexist in the same machine, so a newer release of R can be installed beside the old release. Unfortunately, packages must be re-installed in the "new" R version. A copy-and-paste of package files from the directory containing the packages of the "old" R version to the directory containing the packages of the "new" R version may be useful when many packages are installed. Within R, the `.Library` variable shows the directory containing the packages. After the copy-and-paste, packages of the "new" R version should be updated.
 
@@ -66,7 +68,7 @@ In Linux, usually one R version at time can be installed. R can be updated follo
 R is provided with a Command Line Interface (CLI), which is the preferred user interface for power users because it allows direct control on calculations and it is flexible. However, good knowledge of the language is required. CLI is thus intimidating for beginners. 
 The learning curve is typically longer than with a Graphical User Interface (GUI), although it is recognised that the effort is profitable and leads to better practice (finer understanding of the analysis, command easily saved and replayed).
 
-R is available for many different operative systems so it does not provide the same graphical interface. When you use the R program interactively, it issues a prompt when it expects input commands. The default prompt is '>'. In Windows, RGui is the default GUI. Inside RGui there is the RConsole window.In Macintosh, RConsole is the default GUI. In Linux, R does not provide any graphical interface by default and it can be used through CLI.
+R is available for many different operative systems so it does not provide the same graphical interface. When you use the R program interactively, it issues a prompt when it expects input commands. The default prompt is '>'. In Windows, RGui is the default GUI. Inside RGui there is the RConsole window. In Macintosh, RConsole is the default GUI. In Linux, R does not provide any graphical interface by default and it can be used through CLI.
 
 ![](images/ssDefaultGui.png)
 
@@ -75,7 +77,7 @@ R is available for many different operative systems so it does not provide the s
 
 Several projects develop or offer the opportunity to develop alternate user interfaces. They are presented at [www.sciviews.org/\_rgui](http://www.sciviews.org/_rgui/).
 
-RStudio [(www.rstudio.org)](http://www.rstudio.org/) is a free and open source multi-platform integrated development environment (IDE) for R. It provides syntax highlighting, code completion and smart indentation. Moreover, it executes R code directly from the source editor and it manages easily multiple working directories using projects. It provides:
+**RStudio** [(www.rstudio.org)](http://www.rstudio.org/) is a free and open source multi-platform integrated development environment (IDE) for R. It provides syntax highlighting, code completion and smart indentation. Moreover, it executes R code directly from the source editor and it manages easily multiple working directories using projects. It provides:
 
  - workspace browser and data viewer;
  - plot history, zooming, and flexible image and PDF export;
@@ -85,15 +87,17 @@ RStudio [(www.rstudio.org)](http://www.rstudio.org/) is a free and open source m
 
 ![](images/ssGuiRstudio.png)
 
-Similarly to RStudio, JGR [(rforge.net/JGR)](http://rforge.net/JGR/) and Rkward [(rkward.sourceforge.net)](http://rkward.sourceforge.net/) are multi-platform IDE. JGR is an R console replacement, it provides also a very decent R code editor with syntax highlighting, calltips, completion and submission of code to R.  Rkward has interesting features too to edit R script files and submit code to R.
+RStudio is available for Windows, Mac Os and Linux and you can install it from its website ([(www.rstudio.org)](http://www.rstudio.org/)), clicking on _Download RStudio_. Next, click _Download RStudio Desktop_. At this stage, click the link to the version of RStudio appropriate for your system in _Installers for Supported Platforms_ section. Clicking this link downloads RStudio to your computer. Run the installation file and RStudio will be installed on your system. 
+
+Similarly to RStudio, **JGR** [(rforge.net/JGR)](http://rforge.net/JGR/) and Rkward [(rkward.sourceforge.net)](http://rkward.sourceforge.net/) are multi-platform IDE. JGR is an R console replacement, it provides also a very decent R code editor with syntax highlighting, calltips, completion and submission of code to R.  Rkward has interesting features too to edit R script files and submit code to R.
 
 ![](images/ssGuiJgr.png)
 
-Tinn-R [(www.sciviews.org/Tinn-R)](http://www.sciviews.org/Tinn-R/) is one of the most used R editor by Windows users. It includes R syntax highlighting, help on R functions syntax while you type them, direct submission of R code and many other tools to control R from within the editor.
+**Tinn-R** [(www.sciviews.org/Tinn-R)](http://www.sciviews.org/Tinn-R/) is one of the most used R editor by Windows users. It includes R syntax highlighting, help on R functions syntax while you type them, direct submission of R code and many other tools to control R from within the editor.
 
 ![](images/ssGuiTinnr.jpg)
 
-Emacs, VIM, Eclipse and Komodo are powerful multiplatform editors well known by software developers. They support also R, directly or through plugins.
+**Emacs**, **VIM**, **Eclipse** and **Komodo** are powerful multiplatform editors well known by software developers. They support also R, directly or through plugins.
 
 ![](images/ssGuiEmacs.png)
 
@@ -102,11 +106,11 @@ Emacs, VIM, Eclipse and Komodo are powerful multiplatform editors well known by 
 
 GUIs and IDEs are designed to facilitate programming. Several projects try to provide a graphical interface to R, with menu and buttons:
 
- - Deducer [(www.deducer.org)](http://www.deducer.org/) is designed to be a free easy to use alternative to proprietary data analysis software. It has a menu system to do common data manipulation and analysis tasks, and an excel-like spreadsheet in which to view and edit data frames. It provides an intuitive graphical user interface (GUI) for R, encouraging non-technical users to learn and perform analyses without programming getting in their way. Deducer is designed to be used with the Java based R console JGR.
- - R-Commander [(socserv.mcmaster.ca/jfox/Misc/Rcmdr)](http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/), or Rcmdr,  provides also access to the most frequently used statistical tools through the mouse.
- - Red-R [(www.red-r.org)](http://www.red-r.org/) is a dataflow programming interface for R designed to bring the power of the R statistical environment to the general researcher or user.
+ - **Deducer** [(www.deducer.org)](http://www.deducer.org/) is designed to be a free easy to use alternative to proprietary data analysis software. It has a menu system to do common data manipulation and analysis tasks, and an excel-like spreadsheet in which to view and edit data frames. It provides an intuitive graphical user interface (GUI) for R, encouraging non-technical users to learn and perform analyses without programming getting in their way. Deducer is designed to be used with the Java based R console JGR.
+ - **R-Commander** [(socserv.mcmaster.ca/jfox/Misc/Rcmdr)](http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/), or Rcmdr,  provides also access to the most frequently used statistical tools through the mouse.
+ - **Red-R** [(www.red-r.org)](http://www.red-r.org/) is a dataflow programming interface for R designed to bring the power of the R statistical environment to the general researcher or user.
 
-
+<!--
 ### Revolution R
 
 Revolution R Enterprise features a visual development environment that enables faster, more accurate R programming for developers, leaving the command-line far behind!
@@ -114,14 +118,14 @@ Revolution R Enterprise features a visual development environment that enables f
 The Revolution R Productivity Environment features:
 
  - Experience a modern development environment for the R language with a syntax-aware Script Editor with highlighting, indentation, and more.
- - Improve R programming proficiency with hover-over help, word completion and customizable ``code snippets'' to automate common R programming tasks.
+ - Improve R programming proficiency with hover-over help, word completion and customizable "code snippets" to automate common R programming tasks.
  - Streamline interactions with the R language with a fully-featured command-line editor and object browser.
  - Create quality R code, faster with a full-featured visual debugger with one-click breakpoints and step-processing.
  - Manage complex development projects with a Solution Explorer to organize data files, scripts and outputs. Save, load and switch projects with ease.
  - Help Teams Collaborate and Control Changes with open source Subversion version control software.
 
 ![](images/ssGuiRevolution.jpg)
-
+-->
 
 ## R packages
 
@@ -131,7 +135,7 @@ R functions are collected in packages. Packages that are not contained in the "b
 
 The simple way to install an R package is through the `install.packages()` function, directly from R. In Linux, R must be executed as administrator to install a package. Installation must be executed before the first use of a library.
 
-When a function of a package that is not contained in the "base" R systems is required than the package must be loaded. The `library(pkg)` function load the _pkg_ package. 
+When a function of a package that is not contained in the "base" R systems is required than the package must be loaded. The `require(pkg)` function load the _pkg_ package. 
 
 ### Updating R packages
 

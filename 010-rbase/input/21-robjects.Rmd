@@ -1,7 +1,18 @@
+---
+title: "R Objects"
+output: html_document
+---
 
-# R Data Objects
+# R Objects
 
-There are different types of objects in R. The most used are: vectors, matrices, lists, factors, data frames.
+There are different types of objects in R.  
+The most used are: 
+
+* vectors 
+* matrices 
+* lists 
+* factors
+* data frames
 
 
 ## Vectors
@@ -17,43 +28,47 @@ A vector can be defined according to the data type it contains. Therefore, there
 The most common method to define a vector is the `c()` function.
 
 ```{r, numeric}
-num = c(1, 2, 5.3, 6, -2, 4)
+# Numeric vector
+num <- c(1, 2, 5.3, 6, -2, 4)
 num
 ```
 
 ```{r, character}
-char = c("one", "two", "three")
+# Character vector
+char <- c("one", "two", "three")
 char
 ```
 
 Logical vectors are often defined as the result of control actions on numerical or character vectors. 
 
 ```{r, logical1}
-logic1 = num > 3
+# Logical vector
+logic1 <- num > 3
 logic1
 ```
 
 Of course, a logical vector can be created using the `c()` function.
 
 ```{r, logical2}
-logic2 = c(TRUE, FALSE, TRUE)
+# Logical vector
+logic2 <- c(TRUE, FALSE, TRUE)
 logic2
 ```
 
 If a vector mixes different data types, R will store it as a character vector.
 
 ```{r, mixed}
-mixed = c("foo", 1, TRUE)
+mixed <- c("foo", 1, TRUE)
 mixed
 ```
 
 The `c()` function can be used to create a vector combining several vectors.
 
 ```{r, concatenate}
-vec1 = c(11, 12, 13)
-vec2 = c(21, 22, 23)
-vec3 = c(31, 32, 33)
-comb = c(vec1, vec2, vec3)
+vec1 <- c(11, 12, 13)
+vec2 <- c(21, 22, 23)
+vec3 <- c(31, 32, 33)
+comb <- c(vec1, vec2, vec3)
 comb
 ```
 
@@ -61,22 +76,22 @@ comb
 A vector can be created using sequences. The easiest method is using the operator `:`. The inputs of the operator `:` are the first number on the left and the last number on the right. The vector will be composed of numbers comprised between the first and the last number (by one unit).
 
 ```{r, sequence1}
-go = 1:20
+go <- 1:20
 go
-back = 20:1
+back <- 20:1
 back
 ```
 
-Other sequences can be created using the `seq()` function.
+Other sequences can be created using the `seq()` function. The parameters `from` and `to` of the `seq()` function refer to the starting and end values of the sequence, respectively. The parameter `by` indicates the number by which the sequence has to be incremented. Alternatively, the `length.out` parameter refers to the desired length of the sequence.
 
 ```{r, sequence2}
-seqby = seq(from = 1, to = 5, by = 0.5)
+seqby <- seq(from = 1, to = 5, by = 0.5)
 seqby
-seqlength = seq(from = 1, to = 5, length = 13) 
+seqlength <- seq(from = 1, to = 5, length.out = 13) 
 seqlength
 ```
 
-Finally, vectors can be created with the `rep()` function which repeats the elements of a vector. The first parameter of the `rep()` function is the value or vector to be repeated and the second parameter, `times`, represents the number of repetitions to be made. Alternatively, the `each` parameter enables the repetition of each element of the vector as many times as indicated by the number. 
+Finally, vectors can be created with the `rep()` function which repeats the elements of a vector. The first parameter of the `rep()` function, `x`, is the value or vector to be repeated and the second parameter, `times`, represents the number of repetitions to be made. Alternatively, the `each` parameter enables the repetition of each element of the vector as many times as indicated by the number. 
 
 ```{r, rep}
 rep(x = 1 , times = 10)
@@ -100,8 +115,8 @@ A subset of the vector `x` can be extracted with `x[subscripts]`. The selection 
  1. A vector of positive integers indicating the elements of the vector to be extracted.
 
 ```{r, subsetting1}
-x = c(1, 4, 2, 5, 6, 8, 6, 9, 10)
-y <- x[3]
+x <- c(1, 4, 2, 5, 6, 8, 6, 9, 10)
+x[3]
 x[1:3]
 x[c(2,4)]
 ```
@@ -109,7 +124,7 @@ x[c(2,4)]
  2. A vector of negative integers indicating the elements which must not be extracted. 
 
 ```{r, subsetting2}
-x = c(1, 4, 2, 5, 6, 8, 6, 9, 10)
+x <- c(1, 4, 2, 5, 6, 8, 6, 9, 10)
 x[-2]
 x[-c(2, 5, 7)]
 ```
@@ -117,9 +132,9 @@ x[-c(2, 5, 7)]
  3. A Boolean vector indicating the elements to be extracted (`TRUE`) or to be left (`FALSE`).
 
 ```{r, subsetting3}
-x = c(1, 4, 2, 5, 6)
+x <- c(1, 4, 2, 5, 6)
 x[c(TRUE, TRUE, FALSE, FALSE, TRUE)]
-y = c(TRUE, TRUE, FALSE, FALSE, TRUE)
+y <- c(TRUE, TRUE, FALSE, FALSE, TRUE)
 x[y]
 x[!y]
 ```
@@ -130,8 +145,8 @@ x[!y]
 
 
 ```{r, subsetting4}
-x = c(1, 4, 2, 5, 6, 8, 6, 9, 10)
-y = x > 5
+x <- c(1, 4, 2, 5, 6, 8, 6, 9, 10)
+y <- x > 5
 x[y]
 ```
 
@@ -141,7 +156,7 @@ x[y]
 x[x > 5]
 ```
 
-  The `&` symbol identifies the "and" logical operator. The "and" logical operator compare two (or more) logical expression and return TRUE if both are TRUE. The following example returns the `x` values greater than 2 but less than 8.
+  The `&` symbol identifies the "and" logical operator. The "and" logical operator compare two (or more) logical expression and return TRUE if both are TRUE. The following example returns the `x` values greater or equal than 2 but less or equal than 8.
   
 ```{r, subsetting6}  
 x[x >= 2 & x <= 8]
@@ -152,13 +167,15 @@ x[x >= 2 & x <= 8]
 ```{r, subsetting7}
 x[x < 2 | x > 8]
 ```
-x[!(x >= 2 & x <= 8)]
 
+<!--
+x[!(x >= 2 & x <= 8)]
+-->
 
 Extracting unique values contained in a vector can sometimes be useful. This can be done with the `unique()` function. 
 
 ```{r, unique}
-x = c(1, 2, 1, 1, 2, 3, 3, 2, 1, 2, 2, 3)
+x <- c(1, 2, 1, 1, 2, 3, 3, 2, 1, 2, 2, 3)
 unique(x)
 ```
 
@@ -173,27 +190,27 @@ A matrix can be created using the `matrix()` function.
 matrix(1:8, nrow = 2, ncol = 4)
 ```
 
-By default, a matrix is filled by columns. The `byrow = T` argument of the `matrix()` function fills the matrix by rows. 
+By default, a matrix is filled by columns. The `byrow = TRUE` argument of the `matrix()` function fills the matrix by rows. 
 
 ```{r, byrow}
-matrix(1:8, nrow = 2, ncol = 4, byrow = T)
+matrix(1:8, nrow = 2, ncol = 4, byrow = TRUE)
 ```
 
 Alternatively, a matrix can be created by applying the `dim()` function to a vector. 
 
 ```{r, dim}
-x = 1:8
+x <- 1:8
 x
-dim(x) = c(2, 4)
+dim(x) <- c(2, 4)
 x
 ```
 
 Finally, a matrix can be created by joining two or more vectors, both as column vectors (`cbind()` function) and row vectors (`rbind()` function).
 
 ```{r, bind1}
-cmat = cbind(1:3, 4:6, 7:9)
+cmat <- cbind(1:3, 4:6, 7:9)
 cmat
-rmat = rbind(1:3, 4:6, 7:9)
+rmat <- rbind(1:3, 4:6, 7:9)
 rmat
 ```
 
@@ -210,7 +227,7 @@ Like vectors, a subset of the matrix `x` can be extracted with `x[subscripts]`. 
  2. A number, a vector of numbers or a logical condition. In this case, the matrix is treated as if it were a single vector created by stacked matrix columns.
 
 ```{r, matrix subsetting}
-x = matrix(1:24, nrow = 4, ncol = 6, byrow = T)
+x <- matrix(1:24, nrow = 4, ncol = 6, byrow = TRUE)
 x[1:2, ]
 x[, c(1, 3, 5)]
 x[c(1,3), c(1, 4)]
@@ -228,9 +245,9 @@ Lists are not usually created by users but are the result of statistical procedu
 For example, in its simplest form, the `lsfit()` function estimates a least-squares regression.
 
 ```{r, list}
-x = 1:5
-y = c(-0.0921, 0.4543, -0.1473, -0.0235, -0.3923)
-out = lsfit(x, y)
+x <- 1:5
+y <- c(-0.0921, 0.4543, -0.1473, -0.0235, -0.3923)
+out <- lsfit(x, y)
 out
 ```
 
@@ -239,9 +256,9 @@ The output of the function is a list made of four objects called "coefficients",
 Even if rarely used, `list()` is the basic function to create a list. Its arguments are the elements of the list.
 
 ```{r, list create}
-myList = list(vec = 1:7, mat = matrix(1:12, ncol = 3),
+my_list = list(vec = 1:7, mat = matrix(1:12, ncol = 3),
   lis = list(a = 1, b = letters[1:4]))
-myList
+my_list
 ```
 
 The elements of a list can be extracted in three different ways:
@@ -253,37 +270,39 @@ The elements of a list can be extracted in three different ways:
 In the first case, square brackets can be used to extract a list made of one or more objects. As for vectors, the position of the elements to be included or excluded ought to be specified. 
 
 ```{r, list subsetting1}
-myList[1:2]
-myList[-3]
-ml1 = myList[1]
+my_list[1:2]
+my_list[-3]
+ml1 <- my_list[1]
+ml1
 ```
 
 In the second case, double square brackets can be used to extract one object (only) from the list. 
 
 ```{r, list subsetting2}
-ml2 = myList[[1]]
-myList[[2]]
-myList[[3]]
+ml2 <- my_list[[1]]
+ml2
+my_list[[2]]
+my_list[[3]]
 ```
 
-Please note the difference between `myList[1]` and `myList[[1]]`. The first argument extracts a list with only the first object contained in `myList`; in our case a vector. On the other hand, the second argument extracts the vector, which is the content of the first object of the list.
+Please note the difference between `my_list[1]` and `my_list[[1]]`. The first argument extracts a list with only the first object contained in `my_list`; in our case a vector. On the other hand, the second argument extracts the vector, which is the content of the first object of the list.
 
 The third way enables the extraction of the content of an object in the list. The use of the object position in the list, as for double square brackets, is replaced by the use of the object name preceded by the symbol $.
 
 ```{r, list subsetting3}
-myList$vec
-myList$mat
-myList$lis
+my_list$vec
+my_list$mat
+my_list$lis
 ```
 
 Indices for the selection can be combined to extract elements in an object of the list using the above-mentioned methods. 
 
 ```{r, list subsetting4}
-myList[[1]][1:3]
-myList$mat[3:4, c(1, 3)]
-myList$lis[1]
-myList$lis[[1]]
-myList$lis$a
+my_list[[1]][1:3]
+my_list$mat[3:4, c(1, 3)]
+my_list$lis[1]
+my_list$lis[[1]]
+my_list$lis$a
 ```
 
 
@@ -298,35 +317,30 @@ Vectors, matrices and lists contain numerical data, characters or logics and are
 To create a factor variable the `factor()` function is used. The only required argument is a vector of values which can be either string or numeric. Optional arguments include the `levels` argument, which determines the categories of the factor variable, and the default is the sorted list of all the distinct values of the data vector. The `labels` argument is another optional argument which is a vector of values that will be the labels of the categories in the `levels` argument. The `exclude` argument is also optional; it defines which levels will be classified as NA in any output using the factor variable.
 
 ```{r, factors}
-grade = c(3, 4, 2, 2, 4, 1, 1, 4, 2, 2)
-grade = c(grade, 3)
+grade <- c(3, 4, 2, 2, 4, 1, 1, 4, 2, 2)
+grade <- c(grade, 3)
 factor(grade)  
-gender = c(rep("male", 3), rep("female", 4))
-gender = factor(gender, levels=c("male", "female", "trans"))
+gender <- c(rep("male", 3), rep("female", 4))
+gender <- factor(gender, levels=c("male", "female", "trans"))
 gender
-size = factor(c(2, 3, 1, 1, 1, 2, 3, 3), levels = c(1, 2, 3, 4),
-  labels = c("small", "small", "large", "large"))
-size
-
-
 ```
 
 Once a vector has been defined, it is always possible to modify the labels of the vector's levels. This can be done with the `levels()` function.
 
 ```{r, factor labels}
-size = factor(c(2, 3, 1, 1, 1, 2, 3, 3), levels = c(1, 2, 3),
+size <- factor(c(2, 3, 1, 1, 1, 2, 3, 3), levels = c(1, 2, 3),
   labels = c("small", "medium", "large"))
 levels(size)
-levels(size) = c("S", "M", "L")
+levels(size) <- c("S", "M", "L")
 size
 ```
 
 The `order` parameter of the `factor()` function creates a factor with ordered levels. 
 
 ```{r, ordered factor}
-mark = sample(c("D", "C", "B", "A"), 12, replace = T)
-mark1 = factor(mark)
-mark2 = factor(mark, levels = c("D", "C", "B", "A"), order = T)
+mark <- sample(c("D", "C", "B", "A"), 12, replace = T)
+mark1 <- factor(mark)
+mark2 <- factor(mark, levels = c("D", "C", "B", "A"), order = T)
 mark1
 mark2
 ```
@@ -340,7 +354,7 @@ as.character(size)
 The elements of a factor can be extracted in the same way as the elements of a vector. The logic conditions on the elements of a factor are referred to the factor's levels which can be obtained with the`levels()` function.
 
 ```{r, levels}
-size = factor(c(2, 3, 1, 1, 1, 2, 3, 3), levels = c(1, 2, 3),
+size <- factor(c(2, 3, 1, 1, 1, 2, 3, 3), levels = c(1, 2, 3),
   labels = c("small", "medium", "large"))
 size
 size[1:5]
@@ -370,17 +384,17 @@ To sum up, unless there are have specific needs, data frames in R are the ideal 
 Data frames are usually imported from external sources but the creation of a data frame object in R might sometimes be needed. The most widespread method to define a data frame is the `data.frame()` function. Its inputs are a series of vectors or factors of the same length. The generated object is made of as many columns as input elements. 
 
 ```{r, data frame1}
-name = c("James", "Stevie", "Otis", "Bob", "Levon", "Patti", "Karen")
-height = c(180, 170, 175, 190, 168, 160, 165)
-gender = factor(c("M", "M", "M", "M", "M", "F", "F"))
-df = data.frame(name, height, gender, stringsAsFactors = F)
+name <- c("James", "Stevie", "Otis", "Bob", "Levon", "Patti", "Karen")
+height <- c(180, 170, 175, 190, 168, 160, 165)
+gender <- factor(c("M", "M", "M", "M", "M", "F", "F"))
+df <- data.frame(name, height, gender, stringsAsFactors = FALSE)
 df
 ```
 
 Alternatively, the vectors composing the data frame can be defined inside the `data.frame()` function itself.
 
 ```{r, data frame2}
-df = data.frame(
+df <- data.frame(
   height = c(180, 170, 175, 190, 168, 160, 165),
   name = c("James", "Stevie", "Otis", "Bob", "Levon", "Patti", "Karen"),
   gender = factor(c("M", "M", "M", "M", "M", "F", "F"))
@@ -409,7 +423,7 @@ The following code chunk shows how to extract the first, the third and the seven
 df[c(1, 3, 7), ]
 ```
 
-The code below shows how to extract the firts and the second column from the `df` dataframe.
+The code below shows how to extract the first and the second column from the `df` dataframe.
 
 ```{r, dfsubsetting2}
 df[, c(1, 2)]
@@ -457,8 +471,8 @@ head(iris)
 In R missing values are represented by the symbol `NA` (Not Available).
 
 ```{r, na}
-x = c(4, 1, "a")
-y = as.integer(x)
+x <- c(4, 1, "a")
+y <- as.integer(x)
 y
 ```
 
@@ -477,7 +491,7 @@ The `NaN` symbol (Not a Number) represents a missing value obtained as a result 
 ```{r, nan}
 log(-1)
 sqrt(-4)
-x = log(c(-1, 1, 2))
+x <- log(c(-1, 1, 2))
 x
 is.nan(x)
 ```
@@ -485,7 +499,7 @@ is.nan(x)
 The `NULL` symbol represents the null object in R. `NULL` is often returned by expressions and functions whose value is undefined. The `is.null()` function returns `TRUE` if its argument is `NULL` and FALSE otherwise.
 
 ```{r, null}
-x = c()
+x <- c()
 x
 is.null(x)
 

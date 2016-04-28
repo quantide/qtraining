@@ -1,5 +1,7 @@
-
-# A first look to R
+---
+title: "A first look to R session"
+output: html_document
+---
 
 ## The first R session
 
@@ -85,8 +87,9 @@ Results of calculations can be stored in objects using the assignment operators:
  - an arrow (`<-`) formed by a smaller than character and a hyphen without a space;
  - the equal character (`=`).
 
-These objects can then be used in other calculations. To print the object just enter the
-name of the object. There are some restrictions when giving an object a name:
+These objects can then be used in other calculations. 
+
+There are some restrictions when giving an object a name:
   
  - Object names cannot contain "strange" symbols like `!`, `+`, `-`, `#`.
  - A dot (`.`) and an underscore (`_`) are allowed, also a name starting with a dot.
@@ -94,14 +97,17 @@ name of the object. There are some restrictions when giving an object a name:
  - R is case sensitive: `X` and `x` are two different objects, as well as `temp` and `temP`.
 
 ```{r, assignment}
-x = log(14)
-y = 23.76 * log(8)/(23 + atan(9))
-z = x + y
+x <- log(14)
+y <- 23.76 * log(8)/(23 + atan(9))
+z <- x + y
+```
+To print the object just enter the name of the object or use `print()` function. 
+
+```{r, print_obj}
 x
 y
-z
+print(z)
 ```
-
 ## The R Workspace
 
 Objects created during an R session are hold in memory. The collection of objects currently avalaible is called the workspace.
@@ -117,7 +123,7 @@ So to run the function `ls` the name followed by an opening and a closing bracke
 Most functions in R accept certain arguments. For example, one of the arguments of the function `ls()` is pattern. To list all objects starting with the letter `x`:
   
 ```{r, ls}
-x2 = log(9)
+x2 <- log(9)
 ls(pattern = "x")
 ```
 

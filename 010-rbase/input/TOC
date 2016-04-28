@@ -7,7 +7,7 @@ R objects
 R objects								| 21-robjects.Rmd
 
 Data Import 
-Import and Export data 							| 31-dataimport.Rmd
+Data Import and Export  						| 31-dataimport.Rmd
 
 Data manipulation with dplyr 
 Introduction to dplyr                 					| 41-dplyr-intro.Rmd
