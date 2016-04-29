@@ -8,6 +8,9 @@ This web book is the result of several years of introductory R courses. It conta
  - Enrico Pegoraro, who wrote chapters about statistical modeling,
  - Veronica Giro and Nicola Sturaro, which reviewed and reassembled all these materials.
 
+![](images/EF5C8766.jpg)
+
+
 However, it would not have been possible without the sharing of knowledge, information, ideas, doubts and even criticisms of many individuals on the internet. I would like to extend my sincere thanks to all of them.
 
 I am grateful to Bill Venables and John Chambers for their publications on R that provided solid foundations to my knowledge on this subject. Moreover [Quick R](http://www.statmethods.net/) often provides some useful ready-to-cook recipe.

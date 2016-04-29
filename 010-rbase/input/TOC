@@ -4,7 +4,9 @@ R, RStudio Set Up							| 12-setup.Rmd
 A First Look to R Session						| 13-firstlook.Rmd
 
 R Objects
-R Objects								| 21-robjects.Rmd
+Introduction								| 21-introduction.Rmd
+Data Objects								| 22-data-obj.Rmd
+Function Object								| 23-functions-obj.Rmd
 
 Data Import 
 Data Import and Export  						| 31-dataimport.Rmd

@@ -1,5 +1,5 @@
 ---
-title: "Statistical Models with R"
+title: "Models with R"
 output: html_document
 ---
 
@@ -12,17 +12,37 @@ if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
 require(dplyr)
 ```
 
-## Regression Analysis
+In R data can be analysed by regression models. In particular, regression models is an analysis that attempts to determine the strength of the relationship between one dependent variable, $y$, and a series of other changing variables, $x$. 
 
-Regression is the study of the change of the distribution of one variable, $y$, according to the value of another variable, $x$. Both continuous and discrete variables can be included in regression problems.
+There are lots of different types of regression models in statistics but R mantains a coherent syntax for the estimation of all of them. Indeed, the common interface to fit a model in R is made of a call to the corresponding function with arguments `formula` and `data`.
+
+The `lm` and `aov` functions are used in R to fit respectively linear regression and analysis of variance models and their syntax is:
+
+```{r model, eval=FALSE}
+linear_model <- lm(formula, data)
+anova_model <- aov(formula, data)
+```
+
+* `formula` argument is a symbolic description of the model to be fitted (i.e. `dep_var ~ indep_var1 + indep_var2`)
+* `data` refers to a data frame containing the variable in the model
+
+The resulting object (`linear_model` or `anova_model`) is a list of elements containing information about regression results. This information can be investigated by the following functions:
+
+Expression                    | Description
+----------------------------- | -------------
+`coef(obj)`                    | regression coefficients
+`resid(obj)`                   | residuals
+`fitted(obj)`                  | fitted values
+`summary(obj)`                 | analysis summary
+`predict(obj, newdata = ndat)` | predict for newdata
+`deviance(obj)`                | residual sum of squares
+
+Let us see some examples of regression analisys.
+<!-- 
+Both continuous and discrete variables can be included in regression problems.
 
 Formally, a relationship between $x$ and $y$ usually means that the expected value of $y$ is different for different values of $x$.
-
 Regression model can be expressed in matrix form as:
-
-<!--
-<u>$\mu$</u> $=$ $E($<u>$y$</u>$) =$ $\mathbf{X}$ <u>$\beta$</u> $+$ <u>$\varepsilon$</u>
--->
 
 $\vec{\mu} = E(\vec{y}) = \matrix{X} \vec{\beta} + \vec{\varepsilon}$
 
@@ -32,10 +52,6 @@ where:
  - $\vec{\beta}$ is the vector of $\beta_0, \beta_1, \dots, \beta_p$,
  - $\vec{\varepsilon}$ is a **random** or **noise** component.
 
-<!--
- - <u>$\beta$</u> is the vector of $\beta_0, \beta_1, \dots, \beta_p$,
- - <u>$\varepsilon$</u> is a **random** or **noise** component.
--->
 
 Models where response variable is a linear function of parameters are linear models.
 
@@ -47,10 +63,9 @@ The main assumption of linear model is that the model is linear in the parameter
  - $\varepsilon_i \sim\; N(0,\,\sigma^2_\varepsilon)$ \hspace{1cm} ($i = 1, \dots, n$)
  - $Corr(\varepsilon_{i},\,\varepsilon_{i-j}) = 0$ \hspace{0.4cm} ($i = 1, \dots, n; 0 < j < i$)
 
+-->
 
-The `lm` and `aov` functions are used in R to fit respectively linear regression and analysis of variance models.
-
-The common interface to fit a statistical model in R is made of a call to the corresponding function with arguments `formula` and `data`.
+<!--
 
 Model formula general expression is $y \sim x_1 \pm x_2 \pm, \dots, \pm , x_k$.
 
@@ -75,17 +90,8 @@ Expression                    | Description
 `y ~  . + A:B`                  | Add interaction (update)
 `Nitrogen ~ Times * (River/Site)` | More complex design
 
- 
-After fitting any statistical model, common R functions for inference are:
+-->
 
-Expression                    | Description
------------------------------ | -------------
-`coef(obj)`                    | regression coefficients
-`resid(obj)`                   | residuals
-`fitted(obj)`                  | fitted values
-`summary(obj)`                 | analysis summary
-`predict(obj, newdata = ndat)` | predict for newdata
-`deviance(obj)`                | residual sum of squares
 
 ### Drug Dosage and Reaction Time
 
@@ -111,10 +117,13 @@ pl_1 <- ggplot(data = drug, mapping = aes(x = dose, y=time)) +
 pl_1
 ```
 
-A simple model for these data might be a straight line:
+A simple model for these data might be a straight line, which can be easy superposed to the data scatterplot by:  
+
+<!--
 $E(y_i|x_i) = \beta_0 + \beta_1 x_i \text{ for } i = 1, \dots, n$
 
 The resulting regression line can be easy superposed to the data scatterplot by:
+-->
 
 ```{r, reg, fig = T}
 pl_1 + geom_smooth(method="lm", se=FALSE) 
@@ -123,10 +132,10 @@ pl_1 + geom_smooth(method="lm", se=FALSE)
 The R command to fit a simple linear model is:
 
 ```{r, lm}
-fm <- lm(time ~ dose, data = drug)
+fm <- lm(formula = time ~ dose, data = drug)
 ```
 
-`fm` object is a list of elements containing information about regression results.   
+As we said, `fm` object is a list of elements containing information about regression results.   
 
 Regression results can be investigated by generic function `summary()`, which includes the most important elements for model interpretation.
 
@@ -136,7 +145,11 @@ summary(fm)
 
 Small p-values for t-test on coefficients lead to consider both coefficients as significant. Adjust R-squared equal to 0.78 shows an acceptable portion of total variation explained by the regression model.
 
-Small p-value for F-statistic confirm fitted model significance when compared with null model: $E(y_i|x_i) = \beta_0$.
+Small p-value for F-statistic confirm fitted model significance when compared with null model (model only with intercept).
+
+<!--
+$E(y_i|x_i) = \beta_0$.
+-->
 
 <!--
 Same result could be obtained by: 
@@ -161,19 +174,20 @@ fitted(fm)
 Prediction for response variable at specific values of the explanatories variable can be gained using `predict()` function with the following sintax:
 
 ```{r, predict}
-newdata = data.frame(dose = c(0.2, 0.4, 0.6 ))
+newdata <- data.frame(dose = c(0.2, 0.4, 0.6 ))
 predict (fm , newdata = newdata)
 ```
 
 Note how the `newdata` argument within `predict()` requires an object of class `data.frame`, whose column names have to be equal to the explicative variables names of the model.
 
+<!--
 Predict can be used for calculating prediction interval for the fitted model. Prediction interval for any new observation possibly within the regression support is given by:
 
 ```{r, prediction}
 predict (fm , newdata = newdata, interval = "prediction")
 ```
 
-<!--
+
 
 Prediction interval can be plotted by:
 
@@ -190,15 +204,16 @@ df2 <- data.frame(x_values=c(newdata$dose, rev(newdata$dose)), y_values=c(newdat
 pl_1 + ylim(ylim) + geom_polygon(mapping = aes(x= x_values, y= y_values), data=df2, alpha=0.3) +
   geom_line(mapping = aes(x=dose, y=fit), data=newdata, col="red")
 ```
--->
+
 
 Finally, the initial assumptions concerning the structure of the error term: 
 
  - $E(\varepsilon_{i}) = 0$ \hspace{1.7cm} ($i = 1, \dots, n$)
  - $\varepsilon_i \sim\; N(0,\,\sigma^2_\varepsilon)$ \hspace{1cm} ($i = 1, \dots, n$)
  - $Corr(\varepsilon_{i},\,\varepsilon_{i-j}) = 0$ \hspace{0.4cm} ($i = 1, \dots, n; 0 < j < i$)
+-->
 
-can be verified by the visual inspection of the suite of residuals plots offered by default by R:
+For a visual inspection of the suite of residuals plots of the model, the sintax is:
 
 ```{r, lmplot, fig = T, fig.height=7}
 par(mfrow = c(2,2))
@@ -257,6 +272,7 @@ summary(fm)
 
 Operators appears to be borderline significant as its F test p-value is 0.0258. That is, not a real difference exists between operators measurements methods.
 
+<!--
 The overall influence of Michelle outstanding single result can be tested by repeating the analysis after the single observation is excluded from the data.
 
 ```{r, aov2} 
@@ -270,8 +286,10 @@ summary(fm_2)
 
 Operators significance is cleary increased as its p-value decreased to 0.0226. Nevertheless, practical results remain unchanged.
 
+
 In mathematical notation the model can be written as:
 $E(y_i|x_i) = \beta_0+\beta_j$ with $j = 1,2,3$
+
 
 Single coefficients can be visualized by: 
 
@@ -280,6 +298,7 @@ summary.lm(fm)
 ```
 
 Note that the intercept assumes the average strength value for Kevin while the other coefficients represent the difference in _Strength_ between the corresponding operators and Kevin.
+-->
 
 Finally, normality of residuals can be checked by:
 ```{r, residualscarseat, fig = T}
@@ -310,10 +329,11 @@ pl_3 <- ggplot(data = boiling, mapping = aes(x=volume, y=time, colour=pan)) +
 pl_3
 ```
 
+<!--
 A simple linear model may provide the answer to the above questions:
 
 ```{r, boling lm}
-fm_3 = lm(time ~ volume + pan + volume:pan, data = boiling)
+fm_3 <- lm(time ~ volume + pan + volume:pan, data = boiling)
 # To visualize only coefficients part of summary output, the sintax is:
 summary(fm_3)$coeff
 ```
@@ -322,7 +342,7 @@ Given  $\alpha=0.05$ as significance level, only some coefficients result as sig
 
 _PanA_ has a shorter boiling time than _PanB_ but both the difference between the intercepts and the difference between slopes are not statistically significant.
 
-<!--
+
 A different parameterisation of the model, possibly more intuitive but less attinent with the original problem could be given by:  
 
 ```{r, boiling lm2}
@@ -336,12 +356,11 @@ fm_32 = lm(time ~ pan/volume - 1, data = boiling)
 summary(fm_32)$coeff
 ```
 
--->
 
 Finally, the same results could be obtained by using a generalized linear model with Gaussian family and its natural identity link function: 
 
 ```{r, boiling lm4}
-fm_4 = glm(time ~ pan * volume, data = boiling,
+fm_4 <- glm(time ~ pan * volume, data = boiling,
   family = gaussian(link = "identity"))
 summary(fm_4)$coeff
 ```
@@ -350,16 +369,19 @@ However, this model could be unsatisfactory in two respects:
 
  - boiling time cannot be negative,
  - the variance of boiling time might be expected to increase with its expectation.
+-->
 
-The natural candidate for this problem is the Gamma distibution as it respect the increasing relationship between mean and variance.
+The natural candidate for this problem is the Gamma distibution as it doesn't assume negative value (boiling time cannot be negative) and it respect the increasing relationship between mean and variance.
 
-As a result, a generalized linear model with family Gamma and link identity can be used in place of a standard linear model.
+As a result, a generalized linear model with family Gamma and link identity can be used:
 
 ```{r, boiling glm} 
-fm_5 = glm(time ~ pan*volume, data = boiling,
+fm_5 <- glm(time ~ pan*volume, data = boiling,
   family = Gamma(link = "identity"))
-summary(fm_5)$coeff 
+summary(fm_5) 
 ```
+
+<!--
 
 Models comparison can be given by the AIC statistics.
 ```{r, boiling aic} 
@@ -369,7 +391,7 @@ fm_5$aic
 
 Gamma model appears to be slightly better, as it has the lower AIC value.
 
-<!--
+
 
 ## Summary
 > In this chapter, we introduced statistical modelling with R. Through some examples on real data, we saw the `lm()` function to build a linear regression model, the `glm()` function to build a generalised linear model and `anova()` and `aov()` functions to build an ANOVA model. The `summary()` function is useful to investigate regression and ANOVA results. We used the `plot()` function both to draw the regression line in the scatter plot and to perform a residual analysis. P value were used to choose between two nested models, while AIC statistics were introduced to compare two not-nested models.

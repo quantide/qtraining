@@ -1,3 +1,7 @@
+## ----model, eval=FALSE---------------------------------------------------
+## linear_model <- lm(formula, data)
+## anova_model <- aov(formula, data)
+
 ## ---- drug---------------------------------------------------------------
 load("drug.Rda")
 str(drug)
@@ -17,7 +21,7 @@ pl_1
 pl_1 + geom_smooth(method="lm", se=FALSE) 
 
 ## ---- lm-----------------------------------------------------------------
-fm <- lm(time ~ dose, data = drug)
+fm <- lm(formula = time ~ dose, data = drug)
 
 ## ---- summary.lm---------------------------------------------------------
 summary(fm)
@@ -34,7 +38,7 @@ resid(fm)
 fitted(fm)
 
 ## ---- predict------------------------------------------------------------
-newdata = data.frame(dose = c(0.2, 0.4, 0.6 ))
+newdata <- data.frame(dose = c(0.2, 0.4, 0.6 ))
 predict (fm , newdata = newdata)
 
 ## ---- prediction---------------------------------------------------------
@@ -107,7 +111,7 @@ pl_3 <- ggplot(data = boiling, mapping = aes(x=volume, y=time, colour=pan)) +
 pl_3
 
 ## ---- boling lm----------------------------------------------------------
-fm_3 = lm(time ~ volume + pan + volume:pan, data = boiling)
+fm_3 <- lm(time ~ volume + pan + volume:pan, data = boiling)
 # To visualize only coefficients part of summary output, the sintax is:
 summary(fm_3)$coeff
 
@@ -120,14 +124,14 @@ fm_32 = lm(time ~ pan/volume - 1, data = boiling)
 summary(fm_32)$coeff
 
 ## ---- boiling lm4--------------------------------------------------------
-fm_4 = glm(time ~ pan * volume, data = boiling,
+fm_4 <- glm(time ~ pan * volume, data = boiling,
   family = gaussian(link = "identity"))
 summary(fm_4)$coeff
 
 ## ---- boiling glm--------------------------------------------------------
-fm_5 = glm(time ~ pan*volume, data = boiling,
+fm_5 <- glm(time ~ pan*volume, data = boiling,
   family = Gamma(link = "identity"))
-summary(fm_5)$coeff 
+summary(fm_5) 
 
 ## ---- boiling aic--------------------------------------------------------
 fm_4$aic
