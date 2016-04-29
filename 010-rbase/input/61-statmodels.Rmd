@@ -20,19 +20,28 @@ Formally, a relationship between $x$ and $y$ usually means that the expected val
 
 Regression model can be expressed in matrix form as:
 
+<!--
 <u>$\mu$</u> $=$ $E($<u>$y$</u>$) =$ $\mathbf{X}$ <u>$\beta$</u> $+$ <u>$\varepsilon$</u>
+-->
+
+$\vec{\mu} = E(\vec{y}) = \matrix{X} \vec{\beta} + \vec{\varepsilon}$
 
 where:
 
- - $\mathbf{X}$ is a $n \text{ x } (p+1)$ matrix, with all ones in the first columns, 
+ - $\matrix{X}$ is a $n \text{ x } (p+1)$ matrix, with all ones in the first columns, 
+ - $\vec{\beta}$ is the vector of $\beta_0, \beta_1, \dots, \beta_p$,
+ - $\vec{\varepsilon}$ is a **random** or **noise** component.
+
+<!--
  - <u>$\beta$</u> is the vector of $\beta_0, \beta_1, \dots, \beta_p$,
  - <u>$\varepsilon$</u> is a **random** or **noise** component.
+-->
 
 Models where response variable is a linear function of parameters are linear models.
 
 Parameters values are usually estimated via maximum likelihood.
 
-The main assumption of linear model is that the model is linear in the parameters. Other assumptions concern the error terms <u>$\varepsilon$</u>are:
+The main assumption of linear model is that the model is linear in the parameters. Other assumptions concern the error terms $\vec{\varepsilon}$ are:
 
  - $E(\varepsilon_{i}) = 0$ \hspace{1.7cm} ($i = 1, \dots, n$)
  - $\varepsilon_i \sim\; N(0,\,\sigma^2_\varepsilon)$ \hspace{1cm} ($i = 1, \dots, n$)

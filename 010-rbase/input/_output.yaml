@@ -6,7 +6,7 @@ html_document:
   self_contained: true
   theme: flatly
   highlight: textmate
-  mathjax: null
+  mathjax: "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
   lib_dir: include/libs
   includes:
     in_header: ../../include/html/in-header.html
