@@ -1,8 +1,11 @@
-## ----first, include=FALSE, purl=TRUE-------------------------------------
+## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
 # This code chunk contains R code already described in the previous chapters
 # that is required by following examples
+if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
 require(dplyr)
+if(! "ggplot2" %in% installed.packages()) {install.packages("ggplot2")}
 require(ggplot2)
+if(! "qdata" %in% installed.packages()) {install.packages("~/gdrive/quantide/int/corsi/corsiR/00-qdata/pkgs/qdata_0.16.tar.gz", repos = NULL, type = "source")}
 require(qdata)
 data(bands)
 

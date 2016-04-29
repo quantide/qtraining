@@ -2,6 +2,7 @@
 # Install required packages
 if(! "XLConnect" %in% installed.packages()) {install.packages("XLConnect")}
 if(! "RSQLite" %in% installed.packages()) {install.packages("RSQLite")}
+if(! "ggplot2" %in% installed.packages()) {install.packages("ggplot2")}
 ###################################################################
 require(XLConnect)
 require(RSQLite)
@@ -154,6 +155,8 @@ invisible(dev.off())
 # Add image file created to 'OzonePlot' named region with its original size 
 addImage(exc2, filename =  fileGraph, name = 'OzonePlot', originalSize = TRUE)
 saveWorkbook(exc2)
+# Remove the graph file created 
+file.remove(fileGraph)
 
 ## ----g5, echo=FALSE, fig.width=6-----------------------------------------
 include_graphics("images/excel-ozonePlot.png")

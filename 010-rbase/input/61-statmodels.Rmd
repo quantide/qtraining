@@ -6,7 +6,9 @@ output: html_document
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 require(knitr)
 opts_knit$set(root.dir = "../data")
+if(! "ggplot2" %in% installed.packages()) {install.packages("ggplot2")}
 require(ggplot2)
+if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
 require(dplyr)
 ```
 
