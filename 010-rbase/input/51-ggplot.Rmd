@@ -50,9 +50,12 @@ In particular, `bands` dataset provides data about process delays known as cylin
 
 ```{r scatterplot_first, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
-```
+``` 
 
-The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: the _data_ is in the `bands` data frame and you _map_ the data to _aesthetics_ (visual properties) of plot like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `viscosity` variable. Note that the variable names must be unquoted.
+The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: 
+
+* _data_ refers to the dataframe to use for the plot, in this case is the `bands` data frame 
+* _mapping_ refers to the  list of aesthetic mappings (visual properties) to use for plot, passed as arguments of the `aes()` function. In this case you _map_ the data to _aesthetics_  of plot like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `viscosity` variable. Note that the variable names must be unquoted.
 
 The `ggplot()` function does not return anything. You have to add to `ggplot()`, which geometric object (_geom_) you want to add. A scatter plot is made by points, and so you will use the `geom_point()` function, without any argument. 
 
@@ -659,9 +662,10 @@ Notice that `position="dodge"` is a short key for `position=position_dodge()` wi
 ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) +
   geom_bar(position=position_dodge(0.85), width=0.6)
 ```
--->
+
 
 The `width` in `geom_bar()` determines the width of the bar; the `width` in `position_dodge()` determines the position of each bar. Probably you can easily understand their behaviour after you play with them for a while.
+-->
 
 <!--
 All data related to `MOTTER70` press has `CATALOG` as `cylinder_size`. In this case, the bars related to other `cylinder_size` are missing and the `MOTTER70` bar will expand to fill the whole space.

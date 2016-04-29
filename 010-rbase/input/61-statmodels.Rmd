@@ -20,13 +20,15 @@ Formally, a relationship between $x$ and $y$ usually means that the expected val
 
 Regression model can be expressed in matrix form as:
 
-$\vec{\mu} = E(\vec{y}) = \mathbf{X} \vec{\beta} + \vec{\varepsilon}$
+<u>$\mu$</u>
+
+<u>$\mu$</u> $=$ $E($<u>$y$</u>$) =$ $\mathbf{X}$ <u>$\beta$</u> $+$ <u>$\varepsilon$</u>
 
 where:
 
  - $\mathbf{X}$ is a $n \text{ x } (p+1)$ matrix, with all ones in the first columns, 
- - $\vec{\beta}$ is the vector of $\beta_0, \beta_1, \dots, \beta_p$,
- - $\vec{\varepsilon}$ is a **random** or **noise** component.
+ - <u>$\beta$</u> is the vector of $\beta_0, \beta_1, \dots, \beta_p$,
+ - <u>$\varepsilon$</u> is a **random** or **noise** component.
 
 Models where response variable is a linear function of parameters are linear models.
 
@@ -88,6 +90,11 @@ str(drug)
 ```
 
 Basic graphical data exploration may be achieved with: 
+
+```{r require_ggplot2, eval=FALSE}
+require(ggplot2)
+```
+
 ```{r, drugplot, fig = TRUE}
 pl_1 <- ggplot(data = drug, mapping = aes(x = dose, y=time)) + 
   geom_point() +
@@ -124,11 +131,13 @@ Small p-values for t-test on coefficients lead to consider both coefficients as 
 
 Small p-value for F-statistic confirm fitted model significance when compared with null model: $E(y_i|x_i) = \beta_0$.
 
+<!--
 Same result could be obtained by: 
 
 ```{r, anova}
 anova(fm, test = F)
 ```
+-->
 
 You can also visualize single elements of `fm` list.  
 For example: 
@@ -149,23 +158,24 @@ newdata = data.frame(dose = c(0.2, 0.4, 0.6 ))
 predict (fm , newdata = newdata)
 ```
 
-Note how the `newdata` argument within `predict()` requires an object of class `data.frame` containing the same variables as in the explanatory part of the model.
+Note how the `newdata` argument within `predict()` requires an object of class `data.frame`, whose column names have to be equal to the explicative variables names of the model.
 
-Predict can be used for defining prediction interval for the fitted model. Prediction interval for any new observation possibly within the regression support is given by:
+Predict can be used for calculating prediction interval for the fitted model. Prediction interval for any new observation possibly within the regression support is given by:
 
 ```{r, prediction}
 predict (fm , newdata = newdata, interval = "prediction")
 ```
 
+<!--
+
 Prediction interval can be plotted by:
 
 ```{r, predictionplot, fig = T}
 # Compute predictions with interval from estimated model
-newdata = data.frame(dose = seq(0, 0.9 , len = 100))
-newdata = cbind(newdata, predict(fm, newdata = newdata,
-  interval = "prediction"))
+newdata <- data.frame(dose = seq(0, 0.9 , len = 100))
+newdata <- cbind(newdata, predict(fm, newdata = newdata, interval = "prediction"))
 # Compute limits for y axis
-ylim = c(min(newdata$lwr), max(newdata$upr)) * c(0.99, 1.01)
+ylim <- c(min(newdata$lwr), max(newdata$upr)) * c(0.99, 1.01)
 # data frame containing the information for drawing prediction interval 
 df2 <- data.frame(x_values=c(newdata$dose, rev(newdata$dose)), y_values=c(newdata$lwr , rev(newdata$upr)))
 
@@ -173,6 +183,7 @@ df2 <- data.frame(x_values=c(newdata$dose, rev(newdata$dose)), y_values=c(newdat
 pl_1 + ylim(ylim) + geom_polygon(mapping = aes(x= x_values, y= y_values), data=df2, alpha=0.3) +
   geom_line(mapping = aes(x=dose, y=fit), data=newdata, col="red")
 ```
+-->
 
 Finally, the initial assumptions concerning the structure of the error term: 
 
@@ -205,10 +216,19 @@ load("carseat.Rda")
 str(carseat)
 ```
 
-Boxplot of _Strength by Operator_ along with within operators averages and between averages connecting line can be display by:
+Boxplot of _Strength by Operator_ along with within operators averages can be display by:
+
+```{r require_dplyr, eval=FALSE}
+require(dplyr)
+```
+
 ```{r, carseatplot, fig = TRUE}
+# Data frame of Strength means for each Operator
+means_df <- carseat %>% group_by(Operator) %>% summarize(mean=mean(Strength))
+
 pl_2 <- ggplot(data = carseat, mapping = aes(x=Operator, y=Strength)) +
-  geom_boxplot(fill = "lightgray", outlier.colour = "red") +
+  geom_boxplot(fill = "lightgray", outlier.colour = "blue") +
+  geom_point(data=means_df, mapping = aes(x=Operator, y=mean), colour="red", shape=18, size=3) + 
   xlab(label = "Operator") + ylab(label = "Resistance")
 
 pl_2
@@ -291,10 +311,11 @@ fm_3 = lm(time ~ volume + pan + volume:pan, data = boiling)
 summary(fm_3)$coeff
 ```
 
-Given  $\alpha=0.05$ as significance level, only some coefficients result as significant. Note that `PanB` express the difference between the intercept, aliased with _PanA_, and _PanB_ while `volume:panB` represent the difference in slope between _PanA_ (volume) and _PanB_. 
+Given  $\alpha=0.05$ as significance level, only some coefficients result as significant. Note that `PanB` expresses the difference between the intercept, aliased with _PanA_, and _PanB_; while `volume:panB` represent the difference in slope between _PanA_ (volume) and _PanB_. 
 
 _PanA_ has a shorter boiling time than _PanB_ but both the difference between the intercepts and the difference between slopes are not statistically significant.
 
+<!--
 A different parameterisation of the model, possibly more intuitive but less attinent with the original problem could be given by:  
 
 ```{r, boiling lm2}
@@ -307,6 +328,8 @@ or alternatively by:
 fm_32 = lm(time ~ pan/volume - 1, data = boiling)
 summary(fm_32)$coeff
 ```
+
+-->
 
 Finally, the same results could be obtained by using a generalized linear model with Gaussian family and its natural identity link function: 
 
@@ -321,9 +344,9 @@ However, this model could be unsatisfactory in two respects:
  - boiling time cannot be negative,
  - the variance of boiling time might be expected to increase with its expectation.
 
-The natural candidate for this problem is the gamma distibution as it respect the increasing relationship between mean and variance.
+The natural candidate for this problem is the Gamma distibution as it respect the increasing relationship between mean and variance.
 
-As a result, a generalized linear model with family gamma and link identity can be used in place of a standard liear model.
+As a result, a generalized linear model with family Gamma and link identity can be used in place of a standard linear model.
 
 ```{r, boiling glm} 
 fm_5 = glm(time ~ pan*volume, data = boiling,
@@ -337,7 +360,7 @@ fm_4$aic
 fm_5$aic
 ```
 
-Gamma model appears to be slightly better.
+Gamma model appears to be slightly better, as it has the lower AIC value.
 
 <!--
 

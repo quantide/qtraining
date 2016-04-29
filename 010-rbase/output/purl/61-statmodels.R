@@ -2,6 +2,9 @@
 load("drug.Rda")
 str(drug)
 
+## ----require_ggplot2, eval=FALSE-----------------------------------------
+## require(ggplot2)
+
 ## ---- drugplot, fig = TRUE-----------------------------------------------
 pl_1 <- ggplot(data = drug, mapping = aes(x = dose, y=time)) + 
   geom_point() +
@@ -39,11 +42,10 @@ predict (fm , newdata = newdata, interval = "prediction")
 
 ## ---- predictionplot, fig = T--------------------------------------------
 # Compute predictions with interval from estimated model
-newdata = data.frame(dose = seq(0, 0.9 , len = 100))
-newdata = cbind(newdata, predict(fm, newdata = newdata,
-  interval = "prediction"))
+newdata <- data.frame(dose = seq(0, 0.9 , len = 100))
+newdata <- cbind(newdata, predict(fm, newdata = newdata, interval = "prediction"))
 # Compute limits for y axis
-ylim = c(min(newdata$lwr), max(newdata$upr)) * c(0.99, 1.01)
+ylim <- c(min(newdata$lwr), max(newdata$upr)) * c(0.99, 1.01)
 # data frame containing the information for drawing prediction interval 
 df2 <- data.frame(x_values=c(newdata$dose, rev(newdata$dose)), y_values=c(newdata$lwr , rev(newdata$upr)))
 
@@ -59,9 +61,16 @@ plot(fm)
 load("carseat.Rda")
 str(carseat)
 
+## ----require_dplyr, eval=FALSE-------------------------------------------
+## require(dplyr)
+
 ## ---- carseatplot, fig = TRUE--------------------------------------------
+# Data frame of Strength means for each Operator
+means_df <- carseat %>% group_by(Operator) %>% summarize(mean=mean(Strength))
+
 pl_2 <- ggplot(data = carseat, mapping = aes(x=Operator, y=Strength)) +
-  geom_boxplot(fill = "lightgray", outlier.colour = "red") +
+  geom_boxplot(fill = "lightgray", outlier.colour = "blue") +
+  geom_point(data=means_df, mapping = aes(x=Operator, y=mean), colour="red", shape=18, size=3) + 
   xlab(label = "Operator") + ylab(label = "Resistance")
 
 pl_2

@@ -2,15 +2,21 @@
 require(dplyr)
 require(lubridate)
 require(qdata)
+
+## ----bank_tbl_df---------------------------------------------------------
 data(bank) 
-bank <-  tbl_df(bank)
+bank <- tbl_df(bank)
 
 ## ----bank----------------------------------------------------------------
+# Select columns: year, month and day of bank data frame
 select(bank, year, month, day)
+# Select columns: year, month and day of bank data frame
 select(bank, year:day)
+# Select all columns of bank data frame apart from: year, month and day
 select(bank, -(year:day))
 
 ## ------------------------------------------------------------------------
+# Rename id variable as ID
 select(bank, ID = id)
 
 ## ------------------------------------------------------------------------
@@ -63,16 +69,21 @@ filter(bank, job == "student", as.character(date) == "2008-05-05")
 filter(bank, job == "student", date == ymd("2008-05-05"))
 
 ## ------------------------------------------------------------------------
+# Select all calls made to student of 18 years 
 filter(bank, age == 18 & job == "student")
 
 ## ------------------------------------------------------------------------
+# Select all calls made to people of 18 or years
 filter(bank, age == 18 | age == 95)
 
 ## ------------------------------------------------------------------------
+# Select all calls made to people of 18 or years
 filter(bank, age %in% c(18,95))
 
 ## ------------------------------------------------------------------------
+# Select all calls made to people whose jos is admin. or technician 
 filter(bank, job %in% c("admin.","technician"))
+# Select all calls made to people whose jos is admin. or technician 
 filter(bank, job == "admin." | job == "technician")
 
 ## ------------------------------------------------------------------------
@@ -178,7 +189,9 @@ mutate(time, short_duration = cumany(duration < 100))
 mutate(time, mean_duration = cummean(duration))
 
 ## ------------------------------------------------------------------------
+# Compute the mean of balance
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
+# Compute the minimum and the maximum value of balance
 summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
 
 ## ------------------------------------------------------------------------
