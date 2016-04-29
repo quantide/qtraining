@@ -3,8 +3,6 @@ title: "R Objects"
 output: html_document
 ---
 
-# R Objects
-
 There are different types of objects in R.  
 The most used are: 
 

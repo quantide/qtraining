@@ -1,25 +1,26 @@
 Introduction to R
 About R									| 11-intro.Rmd
-R, RStudio set up							| 12-setup.Rmd
-A first look to R session						| 13-firstlook.Rmd
+R, RStudio Set Up							| 12-setup.Rmd
+A First Look to R Session						| 13-firstlook.Rmd
 
-R objects
-R objects								| 21-robjects.Rmd
+R Objects
+R Objects								| 21-robjects.Rmd
 
 Data Import 
 Data Import and Export  						| 31-dataimport.Rmd
 
-Data manipulation with dplyr 
+Data Manipulation  
 Introduction to dplyr                 					| 41-dplyr-intro.Rmd
-Verb functions								| 42-dplyr-verbs.Rmd
+Verb Functions								| 42-dplyr-verbs.Rmd
 Group Data and Chain Verbs                       			| 43-group-chain.Rmd
 
-Data visualization with ggplot2  
-Graphs with ggplot2	  						| 51-ggplot.Rmd
+Data Visualization  
+Data Visualization with ggplot2 					| 51-ggplot.Rmd
 
 Data Analysis
-Statistical models with R						| 61-statmodels.Rmd
+Statistical Models with R						| 61-statmodels.Rmd
 
 R Development
-Writing R functions							| 71-functions.Rmd
+Writing R Functions							| 71-functions.Rmd
 R Markdown								| 72-rmarkdown.Rmd
+Git and Github								| 73-git.Rmd	

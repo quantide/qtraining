@@ -13,12 +13,16 @@ class(dff)
 
 
 dffn <- mutate(dff, n = row_number())
-
+dffn
 class(dffn)
 
-dffa <- arrange(dff, desc(x))
 
+
+dffa <- arrange(dff, desc(x))
+dffa
 class(dffa)
+
+
 
 dfg <- summarise(dff, x_avg = mean(x))
 

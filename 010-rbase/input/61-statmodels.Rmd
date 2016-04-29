@@ -1,4 +1,5 @@
 ---
+title: "Statistical Models with R"
 output: html_document
 ---
 
@@ -9,9 +10,6 @@ require(ggplot2)
 require(dplyr)
 ```
 
-
-# Statistical Models with R
-
 ## Regression Analysis
 
 Regression is the study of the change of the distribution of one variable, $y$, according to the value of another variable, $x$. Both continuous and discrete variables can be included in regression problems.
@@ -19,8 +17,6 @@ Regression is the study of the change of the distribution of one variable, $y$, 
 Formally, a relationship between $x$ and $y$ usually means that the expected value of $y$ is different for different values of $x$.
 
 Regression model can be expressed in matrix form as:
-
-<u>$\mu$</u>
 
 <u>$\mu$</u> $=$ $E($<u>$y$</u>$) =$ $\mathbf{X}$ <u>$\beta$</u> $+$ <u>$\varepsilon$</u>
 
@@ -34,7 +30,7 @@ Models where response variable is a linear function of parameters are linear mod
 
 Parameters values are usually estimated via maximum likelihood.
 
-The main assumption of linear model is that the model is linear in the parameters. Other assumptions concern the error terms $\vec{\varepsilon}$ are:
+The main assumption of linear model is that the model is linear in the parameters. Other assumptions concern the error terms <u>$\varepsilon$</u>are:
 
  - $E(\varepsilon_{i}) = 0$ \hspace{1.7cm} ($i = 1, \dots, n$)
  - $\varepsilon_i \sim\; N(0,\,\sigma^2_\varepsilon)$ \hspace{1cm} ($i = 1, \dots, n$)

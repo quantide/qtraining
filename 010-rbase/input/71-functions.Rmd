@@ -1,5 +1,5 @@
 ---
-title: "R functions"
+title: "Writing R functions"
 output: html_document
 ---
 
@@ -18,7 +18,7 @@ ls()
 The function `rm()` requires an input and doesn't return an output.
 
 ```{r, argument2}
-foo = 3
+foo <- 3
 rm(foo)
 ```
 
@@ -31,18 +31,19 @@ sum(1:10)
 The several elements of the input of a function are the arguments of the function. When a function is called the arguments can be declared explicitely or implicitely. The arguments can be explicitely with their name.
 
 ```{r, argument4}
-sum(c(1, 2, NA), na.rm = T)
+sum(c(1, 2, NA), na.rm = TRUE)
 ```
 In the above example, the `na.rm` argument of the `sum()` function is called explicitely.
 
 When arguments are called implicitely, the order of the arguments is fundamental. The third example of the code below returns a wrong result.
 
 ```{r, argument5}
-rdata = c(rnorm(100), NA)
-quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = T)
-quantile(rdata, c(0.25, 0.50, 0.75), T)
-quantile(rdata, T, c(0.25, 0.50, 0.75))
-quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))
+rdata <- c(rnorm(100), NA)
+quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = TRUE)
+quantile(rdata, c(0.25, 0.50, 0.75), TRUE)
+quantile(rdata, TRUE, c(0.25, 0.50, 0.75))
+# When arguments are called explicitely, you can change arguments order 
+quantile(rdata, na.rm = TRUE, probs = c(0.25, 0.50, 0.75))
 ```
 
 
@@ -198,7 +199,7 @@ cov(data)
 
 -->
 
-## Introduction to functions structure
+## Function Structure
 
 When working with R we all make constant use of functions and, when developing, we create new functions so that functions look like very familiar R objects. Nevertheless, understanding the theory and the rationals underlying R functions may help to create much more efficient and possibly elegant coding.
 
@@ -279,6 +280,7 @@ The order `R` uses for matching formals against value is:
 2. Check for a partial match
 3. Check for a positional match
 
+<!--
 Formals of a function are normally used within functions by the internal `R` evaluator but, we can use function `formals()` to expose formals explicitly. 
 
 ```{r functions-formals-f}
@@ -291,7 +293,7 @@ formals(f)
 args(f)
 ```
 
-<!--
+
 Surely, for programming purposes, `formals()` is a better choice as it returns a simple `pairlist` that can be handled as a list:
 
 ```{r functions-formals-list}
@@ -347,7 +349,7 @@ as its body is not a correct `R` statement.
 While this function:
 
 ```{r functions-body-right}
-right <- function(x){x+y}
+right <- function(x){x+h}
 ```
 
 is accepted by `R` as is formally correct even thought, except under specific circumstances, will always return an error:
@@ -355,6 +357,7 @@ is accepted by `R` as is formally correct even thought, except under specific ci
 ```{r functions-body-right-error, error=TRUE}
 right(x = 2)
 ```
+
 The body of a function, is usually a collection of statements in braces but it can be a single statement, a symbol or even a constant.
 
 ### Environment of a function
@@ -388,31 +391,48 @@ Environments have the following fundamental concepts:
 A function in R can be defined with the `function()` function. Its use can be summed up as follows:
   
 ```{r functions-writing2}
-myFunction =  function(a, b, c) {...}
+my_function <- function(a, b, c) {...}
 ```
 
-* `myFunction` is the name of the customised function 
-* `a`, `b` and `c` are the arguments of `myFunction()` 
+* `my_function` is the name of the customised function 
+* `a`, `b` and `c` are the arguments of `my_function()` 
 * the part in curly brackets contains the definition of the function
 
-As an example, write a function which calculates taxable income and taxes, given the total and the VAT percentage.
+It is good practice to end the function specifying its output with the `return()` or `invisible()` functions (inside curly brackets). The function output ought to be made of a single object. If there are multiple objects, they can be inserted in a list. 
 
-```{r functions-writing-example, tidy=FALSE}
-vat = function(amount, rate = 0.21) {
+Let us see some examples.  
+
+The following function squares an incoming argument. The function below takes the argument `x` and multiplies it by itself. It saves this value into the object called `square`, and then it returns the value of the object `square`.
+
+```{r functions-writing-example1, tidy=FALSE}
+# Function definition
+compute_square <- function(x) {
+    square <- x * x
+    return(square)
+}
+
+
+compute_square(2)
+compute_square(24)
+```
+
+
+The following function calculates taxable income and taxes, given the total and the VAT percentage.
+
+```{r functions-writing-example2, tidy=FALSE}
+# Function definition
+vat <- function(amount, rate = 0.21) {
   taxable = amount / (1 + rate)
   tax = amount - taxable
   return(list(tax = tax, taxable = taxable))
 }
+
 vat(121)
 vat(104, rate = 0.04)
 ```
 
 The value assigned to the `rate` argument is the default value assumed by the argument itself.
 
-It is good practice to end the function specifying its output with the `return()` or `invisible()` functions. The function output ought to be made of a single object. If there are multiple objects, they can be inserted in a list. 
-
-   
-   
    
 <!--
 

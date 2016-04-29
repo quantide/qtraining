@@ -1,11 +1,11 @@
 ---
-title: "R and RStudio set up"
+title: "R and RStudio Set Up"
 ---
 
 
-## Installing and updating R
+## Installing and Updating R
 
-### Design of the R system
+### Design of the R System
 
 The R system is divided into two conceptual parts:
 
@@ -63,7 +63,7 @@ In Linux, usually one R version at time can be installed. R can be updated follo
 ## Graphical User Interfaces
 
 
-### R default interfaces
+### R Default Interfaces
 
 R is provided with a Command Line Interface (CLI), which is the preferred user interface for power users because it allows direct control on calculations and it is flexible. However, good knowledge of the language is required. CLI is thus intimidating for beginners. 
 The learning curve is typically longer than with a Graphical User Interface (GUI), although it is recognised that the effort is profitable and leads to better practice (finer understanding of the analysis, command easily saved and replayed).
@@ -73,7 +73,7 @@ R is available for many different operative systems so it does not provide the s
 ![](images/ssDefaultGui.png)
 
 
-### RStudio and others R alternate interfaces
+### RStudio and Others R Alternate Interfaces
 
 Several projects develop or offer the opportunity to develop alternate user interfaces. They are presented at [www.sciviews.org/\_rgui](http://www.sciviews.org/_rgui/).
 
@@ -87,9 +87,9 @@ Several projects develop or offer the opportunity to develop alternate user inte
 
 ![](images/ssGuiRstudio.png)
 
-RStudio is available for Windows, Mac Os and Linux and you can install it from its website ([(www.rstudio.org)](http://www.rstudio.org/)), clicking on _Download RStudio_. Next, click _Download RStudio Desktop_. At this stage, click the link to the version of RStudio appropriate for your system in _Installers for Supported Platforms_ section. Clicking this link downloads RStudio to your computer. Run the installation file and RStudio will be installed on your system. 
+RStudio is available for Windows, Mac Os and Linux and you can install it from its website [(www.rstudio.org)](http://www.rstudio.org/), clicking on _Download RStudio_. Next, click _Download RStudio Desktop_. At this stage, click the link to the version of RStudio appropriate for your system in _Installers for Supported Platforms_ section. Clicking this link downloads RStudio to your computer. Run the installation file and RStudio will be installed on your system. 
 
-Similarly to RStudio, **JGR** [(rforge.net/JGR)](http://rforge.net/JGR/) and Rkward [(rkward.sourceforge.net)](http://rkward.sourceforge.net/) are multi-platform IDE. JGR is an R console replacement, it provides also a very decent R code editor with syntax highlighting, calltips, completion and submission of code to R.  Rkward has interesting features too to edit R script files and submit code to R.
+Similarly to RStudio, **JGR** [(rforge.net/JGR)](http://rforge.net/JGR/) and **Rkward** [(rkward.sourceforge.net)](http://rkward.sourceforge.net/) are multi-platform IDE. JGR is an R console replacement, it provides also a very decent R code editor with syntax highlighting, calltips, completion and submission of code to R.  Rkward has interesting features too to edit R script files and submit code to R.
 
 ![](images/ssGuiJgr.png)
 
@@ -127,9 +127,9 @@ The Revolution R Productivity Environment features:
 ![](images/ssGuiRevolution.jpg)
 -->
 
-## R packages
+## R Packages
 
-### Installing R packages
+### Installing R Packages
 
 R functions are collected in packages. Packages that are not contained in the "base" R systems can be downloaded from the CRAN website. A list of R packages accompanied by a brief description can be found on the CRAN website where there are more than 3700 packages available. Many of these packages are very useful; however, there are some packages in prerelease, incomplete packages, "abandoned" packages (i.e. not more updated) and/or packages containing functions with errors or compatibility troubles.
 
@@ -137,7 +137,7 @@ The simple way to install an R package is through the `install.packages()` funct
 
 When a function of a package that is not contained in the "base" R systems is required than the package must be loaded. The `require(pkg)` function load the _pkg_ package. 
 
-### Updating R packages
+### Updating R Packages
 
 R packages can be updated typing `update.packages()` within R. In Linux, R must be executed as administrator to update a package. Packages should be updated regularly.
 

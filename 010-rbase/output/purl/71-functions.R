@@ -2,21 +2,22 @@
 ls()
 
 ## ---- argument2----------------------------------------------------------
-foo = 3
+foo <- 3
 rm(foo)
 
 ## ---- argument3----------------------------------------------------------
 sum(1:10)
 
 ## ---- argument4----------------------------------------------------------
-sum(c(1, 2, NA), na.rm = T)
+sum(c(1, 2, NA), na.rm = TRUE)
 
 ## ---- argument5----------------------------------------------------------
-rdata = c(rnorm(100), NA)
-quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = T)
-quantile(rdata, c(0.25, 0.50, 0.75), T)
-quantile(rdata, T, c(0.25, 0.50, 0.75))
-quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))
+rdata <- c(rnorm(100), NA)
+quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = TRUE)
+quantile(rdata, c(0.25, 0.50, 0.75), TRUE)
+quantile(rdata, TRUE, c(0.25, 0.50, 0.75))
+# When arguments are called explicitely, you can change arguments order 
+quantile(rdata, na.rm = TRUE, probs = c(0.25, 0.50, 0.75))
 
 ## ---- help3, eval=F------------------------------------------------------
 ## help(read.table)
@@ -159,7 +160,7 @@ plot_depth(time, depth, lwd = 4, col = "red")
 ## wrong <- function(x) {x =}
 
 ## ----functions-body-right------------------------------------------------
-right <- function(x){x+y}
+right <- function(x){x+h}
 
 ## ----functions-body-right-error, error=TRUE------------------------------
 right(x = 2)
@@ -176,14 +177,27 @@ f <- function(x){x+1}
 x
 
 ## ----functions-writing2--------------------------------------------------
-myFunction =  function(a, b, c) {...}
+my_function <- function(a, b, c) {...}
 
-## ----functions-writing-example, tidy=FALSE-------------------------------
-vat = function(amount, rate = 0.21) {
+## ----functions-writing-example1, tidy=FALSE------------------------------
+# Function definition
+compute_square <- function(x) {
+    square <- x * x
+    return(square)
+}
+
+
+compute_square(2)
+compute_square(24)
+
+## ----functions-writing-example2, tidy=FALSE------------------------------
+# Function definition
+vat <- function(amount, rate = 0.21) {
   taxable = amount / (1 + rate)
   tax = amount - taxable
   return(list(tax = tax, taxable = taxable))
 }
+
 vat(121)
 vat(104, rate = 0.04)
 

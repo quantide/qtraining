@@ -4,7 +4,7 @@ output: html_document
 ---
 
 
-## R history
+## R History
 
 R is a programming environment for data analysis, graphics and statistical computing.  The R language is widely used among statisticians for developing statistical software and data analysis.
 
@@ -57,7 +57,7 @@ A bit of history:
 In April 2016, R is in 18th place of TIOBE Programming Community Index, that is an indicator of the popularity of programming languages. R is above SAS that is in 23th place.
 
 
-## The R-project and R licence
+## The R-project and R Licence
 
 R is supported by a wide community of academic users, professors, companies and developers. This community composes the so-called "R-project".  The "R-project" is supported by the "R Foundation". The R Foundation is a not for profit organisation.
 
@@ -107,7 +107,7 @@ On the contrary, R:
 In conclusion, R is an interpreted computer language. R provides a platform for the development and implementation of new algorithms and technology transfer. Most user-visible functions are written in R itself, calling upon a smaller set of internal primitives. It is possible to interface procedures written in C, C+, or FORTRAN languages for efficiency, and to write additional primitives. System commands can be called from within R.
 
 
-#### R advantages and disadvantages
+#### R Advantages and Disadvantages
 
 Main R advantages are:
   
@@ -131,7 +131,7 @@ Main R disadvantages are:
 
 ### R Resources
 
-#### R-project website
+#### R-project Website
 
 The R-project website  [(www.r-project.org)](http://www.r-project.org/) is the starting point for R materials.
 
@@ -168,7 +168,7 @@ There are four general mailing lists devoted to R:
    This list is intended for questions and discussion about code development in R.
 
 
-#### Other on-line resources
+#### Other Online Resources
 
 It is very difficult estimate how many sites about R are on-line. However, Google returns 224.000.000 sites searching "R stat blog". Also if only the 0.1% of these sites talk about R, it means almost 220.000 sites about R.
 

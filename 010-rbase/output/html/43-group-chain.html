@@ -304,23 +304,24 @@ $(document).ready(function () {
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Introduction to R</li>
   <li><a href="11-intro.html">About R</a></li>
-  <li><a href="12-setup.html">R, RStudio set up</a></li>
-  <li><a href="13-firstlook.html">A first look to R session</a></li>
-  <li class="nav-header">R objects</li>
-  <li><a href="21-robjects.html">R objects</a></li>
+  <li><a href="12-setup.html">R, RStudio Set Up</a></li>
+  <li><a href="13-firstlook.html">A First Look to R Session</a></li>
+  <li class="nav-header">R Objects</li>
+  <li><a href="21-robjects.html">R Objects</a></li>
   <li class="nav-header">Data Import</li>
   <li><a href="31-dataimport.html">Data Import and Export</a></li>
-  <li class="nav-header">Data manipulation with dplyr</li>
+  <li class="nav-header">Data Manipulation</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
-  <li><a href="42-dplyr-verbs.html">Verb functions</a></li>
+  <li><a href="42-dplyr-verbs.html">Verb Functions</a></li>
   <li><a href="43-group-chain.html">Group Data and Chain Verbs</a></li>
-  <li class="nav-header">Data visualization with ggplot2</li>
-  <li><a href="51-ggplot.html">Graphs with ggplot2</a></li>
+  <li class="nav-header">Data Visualization</li>
+  <li><a href="51-ggplot.html">Data Visualization with ggplot2</a></li>
   <li class="nav-header">Data Analysis</li>
-  <li><a href="61-statmodels.html">Statistical models with R</a></li>
+  <li><a href="61-statmodels.html">Statistical Models with R</a></li>
   <li class="nav-header">R Development</li>
-  <li><a href="71-functions.html">Writing R functions</a></li>
+  <li><a href="71-functions.html">Writing R Functions</a></li>
   <li><a href="72-rmarkdown.html">R Markdown</a></li>
+  <li><a href="73-git.html">Git and Github</a></li>
 </ul>
     </div>  
   </div>
@@ -362,12 +363,34 @@ dff</code></pre>
 <pre class="r"><code>class(dff)</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <pre class="r"><code>dffn &lt;- mutate(dff, n = row_number())
-
-class(dffn)</code></pre>
+dffn</code></pre>
+<pre><code>## Source: local data frame [6 x 3]
+## Groups: f [2]
+## 
+##       x     f     n
+##   (int) (int) (int)
+## 1     1     1     1
+## 2     2     1     2
+## 3     3     1     3
+## 4     4     2     1
+## 5     5     2     2
+## 6     6     2     3</code></pre>
+<pre class="r"><code>class(dffn)</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <pre class="r"><code>dffa &lt;- arrange(dff, desc(x))
-
-class(dffa)</code></pre>
+dffa</code></pre>
+<pre><code>## Source: local data frame [6 x 2]
+## Groups: f [2]
+## 
+##       x     f
+##   (int) (int)
+## 1     3     1
+## 2     2     1
+## 3     1     1
+## 4     6     2
+## 5     5     2
+## 6     4     2</code></pre>
+<pre class="r"><code>class(dffa)</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <pre class="r"><code>dfg &lt;- summarise(dff, x_avg = mean(x))
 

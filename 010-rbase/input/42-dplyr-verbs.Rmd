@@ -1,5 +1,5 @@
 ---
-title: "Verb functions"
+title: "Verb Functions"
 ---
 
 

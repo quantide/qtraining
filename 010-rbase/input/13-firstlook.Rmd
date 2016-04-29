@@ -1,9 +1,9 @@
 ---
-title: "A first look to R session"
+title: "A First Look to R Session"
 output: html_document
 ---
 
-## The first R session
+## The First R Session
 
 Start the R system, the cursor is waiting for you to type in some R commands. For example, use R as a simple calculator:
 
@@ -108,6 +108,7 @@ x
 y
 print(z)
 ```
+
 ## The R Workspace
 
 Objects created during an R session are hold in memory. The collection of objects currently avalaible is called the workspace.
@@ -136,7 +137,7 @@ ls()
 ```
 
 
-## The working directory
+## The Working Directory
 
 If you want to read files from a specific location or write files to a specific location you will need to set working directory in R. The following example shows how to set the working directory in R to the folder "Data" within the folder "Documents and Settings" on the C drive.
 
