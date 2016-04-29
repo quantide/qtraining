@@ -244,7 +244,7 @@ The output of the function is a list made of four objects called "coefficients",
 Even if rarely used, `list()` is the basic function to create a list. Its arguments are the elements of the list.
 
 ```{r, list create}
-my_list = list(vec = 1:7, mat = matrix(1:12, ncol = 3),
+my_list <- list(vec = 1:7, mat = matrix(1:12, ncol = 3),
   lis = list(a = 1, b = letters[1:4]))
 my_list
 ```

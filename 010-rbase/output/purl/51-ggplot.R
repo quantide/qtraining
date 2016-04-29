@@ -8,6 +8,7 @@ require(ggplot2)
 if(! "qdata" %in% installed.packages()) {install.packages("~/gdrive/quantide/int/corsi/corsiR/00-qdata/pkgs/qdata_0.16.tar.gz", repos = NULL, type = "source")}
 require(qdata)
 data(bands)
+if(! "gridExtra" %in% installed.packages()) {install.packages("gridExtra")}
 
 ## ---- eval=FALSE---------------------------------------------------------
 ## require(ggplot2)

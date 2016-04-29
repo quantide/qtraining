@@ -57,7 +57,7 @@ or
 ?read.table
 ```
 
-There lots of function type, let us see some examples:
+There lots of function types, let us see some examples.
 
 ### Mathematical Functions
 
@@ -66,9 +66,9 @@ The names of the basic functions and mathematical operators in R follow the stan
 Functions are usually applied to one or more vectors. In this case, operations are performed on each element of each vector. Vectors have to be the same length.
 
 ```{r, operations}
-x = 1:10
-y = 11:20
-z = -4:5
+x <- 1:10
+y <- 11:20
+z <- -4:5
 x + y + z
 exp(x)
 log(z)

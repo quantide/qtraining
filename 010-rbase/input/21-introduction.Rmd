@@ -8,7 +8,7 @@ There are different types of objects in R, which can be divided in:
 * data objects
 * function object
  
-**Data objects** are specific types of data structures by which is possible to organize the data. The most important are:
+**Data objects** are specific types of data structures by which is possible to organize data. The most important are:
 
 * vectors 
 * matrices 

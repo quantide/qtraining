@@ -606,7 +606,7 @@ out</code></pre>
 ## [1] &quot;qr&quot;</code></pre>
 <p>The output of the function is a list made of four objects called “coefficients”, “residuals”, “intercept” e “qr”. The first element of the list is a vector with intercept and slope. The second element is a vector with the residuals of the model. The third element is a Boolean vector of length one indicating if the model contains the intercept. The fourth element is a list containing the QR matrix decomposition of the independent variables.</p>
 <p>Even if rarely used, <code>list()</code> is the basic function to create a list. Its arguments are the elements of the list.</p>
-<pre class="r"><code>my_list = list(vec = 1:7, mat = matrix(1:12, ncol = 3),
+<pre class="r"><code>my_list &lt;- list(vec = 1:7, mat = matrix(1:12, ncol = 3),
   lis = list(a = 1, b = letters[1:4]))
 my_list</code></pre>
 <pre><code>## $vec

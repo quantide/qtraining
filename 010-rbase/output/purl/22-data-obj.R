@@ -131,7 +131,7 @@ out <- lsfit(x, y)
 out
 
 ## ---- list create--------------------------------------------------------
-my_list = list(vec = 1:7, mat = matrix(1:12, ncol = 3),
+my_list <- list(vec = 1:7, mat = matrix(1:12, ncol = 3),
   lis = list(a = 1, b = letters[1:4]))
 my_list
 

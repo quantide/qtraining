@@ -12,7 +12,7 @@ if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
 require(dplyr)
 ```
 
-In R data can be analysed by regression models. In particular, regression models is an analysis that attempts to determine the strength of the relationship between one dependent variable, $y$, and a series of other changing variables, $x$. 
+Data can be analysed by regression models with R. Regression is an analysis that attempts to determine the strength of the relationship between one dependent variable, $y$, and a series of other changing variables, $x$. 
 
 There are lots of different types of regression models in statistics but R mantains a coherent syntax for the estimation of all of them. Indeed, the common interface to fit a model in R is made of a call to the corresponding function with arguments `formula` and `data`.
 
@@ -256,7 +256,7 @@ pl_2 <- ggplot(data = carseat, mapping = aes(x=Operator, y=Strength)) +
 pl_2
 ```
 
-At first glance, difference between operators is hard to detect as within variation seems to be quite large. An outstanding value is shown at Michelle.
+At first glance, difference between operators is hard to detect as within variation seems to be quite large. 
 
 A simple one way analysis of variance model is computed with: 
 
@@ -373,7 +373,7 @@ However, this model could be unsatisfactory in two respects:
 
 The natural candidate for this problem is the Gamma distibution as it doesn't assume negative value (boiling time cannot be negative) and it respect the increasing relationship between mean and variance.
 
-As a result, a generalized linear model with family Gamma and link identity can be used:
+A generalized linear model with family Gamma and link identity can be used:
 
 ```{r, boiling glm} 
 fm_5 <- glm(time ~ pan*volume, data = boiling,
