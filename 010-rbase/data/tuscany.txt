@@ -1,0 +1,31 @@
+id|sex|year_of_birth|marital_status|income|house_number|city_name|province|provincial_acronym
+1|M|1969|married|16101.1|5144|Riparbella|Pisa|PI
+2|M|1962|single|17220|6158|Capolona|Arezzo|AR
+3|M|1965|divorcee|28801.9|10078|Pomarance|Pisa|PI
+4|F|1968|single|25964|11133.7|Cascina|Pisa|PI
+5|M|1975|married|16522.5|5078|Quarrata|Pistoia|PT
+6|M|1977|married|18124|5115|Castiglion Fiorentino|Arezzo|AR
+7|M|1972|single|25145|9801|Castel San Niccolò|Arezzo|AR
+8|F|1974|married|12741|5752|Barberino Val d Elsa|Firenze|FI
+9|F|1978|married|19051|6947|Forte dei Marmi|Lucca|LU
+10|F|1964|married|28893|9635|Fauglia|Pisa|PI
+11|M|1963|divorcee|29389|9950|Capraia e Limite|Firenze|FI
+12|F|1975|married|20169|7248|Gambassi Terme|Firenze|FI
+13|F|1984|married|20874|5313|Bucine|Arezzo|AR
+14|M|1971|married|25649.4|8391|Terricciola|Pisa|PI
+15|F|1969|single|27457|9396|Campiglia Marittima|Livorno|LI
+16|F|1977|married|19975|6717|Abetone|Pistoia|PT
+17|F|1968|marriedo|20824|5699|Vaglia|Firenze|FI
+18|F|1956|married|13890|4479|Bagno a Ripoli|Firenze|FI
+19|F|1972|married|25567|9258|Pontedera|Pisa|PI
+20|F|1973|single|13551|3890|Rio nell Elba|Livorno|LI
+21|F|1972|divorcee|15954|6142|Signa|Firenze|FI
+22|M|1961|divorcee|27277|8470|Stazzema|Lucca|LU
+23|M|1970|married|12444|3840|San Piero a Sieve|Firenze|FI
+24|M|1979|married|22243|6473|Piombino|Livorno|LI
+25|F|1974|married|25606|6583|Molazzana|Lucca|LU
+26|M|1978|divorcee|23225.7|6261|Santa Luce|Pisa|PI
+27|F|1975|married|16617|5080|Castelfiorentino|Firenze|FI
+28|F|1951|married|30496|10760|Livorno|Livorno|LI
+29|M|1964|married|26913|8785|Gallicano|Lucca|LU
+30|F|1963|single|27856|7801|Fiesole|Firenze|FI

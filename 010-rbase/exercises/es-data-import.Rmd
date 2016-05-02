@@ -1,0 +1,70 @@
+---
+title: "Data Import"
+author: "Quantide Srl"
+date: "2016-05-02"
+output:
+  pdf_document: default
+  html_document:
+    self_contained: no
+---
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="./../data")
+source("r/show-solution.R")
+show_solution <- TRUE
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+ 
+First of all, set your working directory in the data folder, using `setwd()` function, like in this example
+
+```{r setwd_fake, eval=FALSE}
+setwd("C:/Users/Veronica/Documents/data)
+```
+
+
+## Text Files
+### Exercise 1
+
+a. Import text file named "tuscany.txt" and save it in the object `tuscany_df`.   
+Open the text file before importing it to control if the first row contains column names and to control the field and the decimal separator characters. Remember to not import the character columns as factors.   
+```{r ex1a-txt, echo=show_solution, eval=show_solution}
+tuscany_df <- read.table("tuscany.txt", header = TRUE, sep = "|", 
+                         dec=".", stringsAsFactors = FALSE, quote = "")
+tuscany_df
+```
+
+b. Visualize the first rows of `tuscany_df`
+```{r ex1b-txt, echo=show_solution, eval=show_solution}
+head(tuscany_df)
+```
+
+
+### Exercise 2
+
+Import 7 rows of the text file named "solar.txt" skipping the first two rows and save it in the object `solar_df`.   
+Open the text file before importing it to control if the first row contains column names and to control the field and the decimal separator characters. Remember to not import the character columns as factors.   
+```{r ex2-txt, echo=show_solution, eval=show_solution}
+solar_df <- read.table("solar.txt", header = FALSE, sep = ",", 
+                       dec=".", stringsAsFactors = FALSE, quote = "", 
+                       nrows = 7, skip = 2)
+solar_df
+```
+
+
+### Exercise 3
+
+Save the following data frame in a .txt file named "exercise-3.txt" in data folder.
+
+```{r ex3a-txt}
+df <- data.frame(col1=1:4, col2=4:1, col3=c("one", "two", "three", "four"), 
+                 stringsAsFactors = FALSE)
+```
+
+
+```{r ex3b-txt, echo=show_solution, eval=show_solution}
+write.table(df, file="exercise-3.txt")
+```
