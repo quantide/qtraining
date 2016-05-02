@@ -17,7 +17,9 @@ data(bank)
 ```
 
 
-# Introduction
+![](./images/flow-dtman.png)
+
+
 
 The `dplyr` package for `R` is very powerful for data management since:
 

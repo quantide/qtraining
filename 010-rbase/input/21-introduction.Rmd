@@ -3,6 +3,12 @@ title: "Introduction to R Objects"
 output: html_document
 ---
 
+
+
+<!--
+<img src="./images/flow-robj.png" height="100px" width="500px" />
+-->
+
 There are different types of objects in R, which can be divided in:
 
 * data objects

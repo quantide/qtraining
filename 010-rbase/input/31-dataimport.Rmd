@@ -18,6 +18,8 @@ outDir <- "."
 ```
 
 
+![](./images/flow-robj.png)
+
 ## Text Files
 
 ### Data Import 

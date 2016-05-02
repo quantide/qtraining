@@ -12,6 +12,10 @@ if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
 require(dplyr)
 ```
 
+
+![](./images/flow-dtanal.png)
+
+
 Data can be analysed by regression models with R. Regression is an analysis that attempts to determine the strength of the relationship between one dependent variable, $y$, and a series of other changing variables, $x$. 
 
 There are lots of different types of regression models in statistics but R mantains a coherent syntax for the estimation of all of them. Indeed, the common interface to fit a model in R is made of a call to the corresponding function with arguments `formula` and `data`.
