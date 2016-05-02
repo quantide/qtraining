@@ -11,9 +11,6 @@ title: "Introduction to `dplyr`"
 # that is required by following examples
 if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
 require(dplyr)
-if(! "qdata" %in% installed.packages()) {install.packages("~/gdrive/quantide/int/corsi/corsiR/00-qdata/pkgs/qdata_0.16.tar.gz", repos = NULL, type = "source")}
-require(qdata)
-data(bank)
 ```
 
 
@@ -38,14 +35,6 @@ Let's start by having a look at how data frames are saved and visualized.
 
 `dplyr` can work with data frames as is but it is worthwhile to convert them to a `tbl_df`: this is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.
 
-<!--
-```{r tbl_df_bank}
-data(bank)
-class(bank)
-dim(bank)
-bank
-```
--->
 
 When the class of data object is not tbl, `tbl_df()` function should be used:
 

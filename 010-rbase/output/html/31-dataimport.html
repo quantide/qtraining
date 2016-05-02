@@ -461,32 +461,6 @@ write.table(df, file = &quot;df_write.txt&quot;)</code></pre>
 <p>The R package <code>XLConnect</code> permits to create a formatted spreadsheet usable as a dynamic report of the R analisys and it allows one to read existing xlsx files and to modify them from R.<br />
 Let us see how <code>XLConnect</code> works.</p>
 <pre class="r"><code>require(XLConnect)</code></pre>
-<!--
-### Read existing xlsx
-
-To read an existing excel file, the syntax is:
-
-
-
-```r
-exc2 <- loadWorkbook("newFile.xlsx")
-dt_air <- readWorksheet(exc2, 'Airquality')
-head(dt_air)
-```
-
-```
-FALSE   Ozone Solar.R Wind Temp Month Day isCurrent
-FALSE 1    41     190  7.4   67     5   1         0
-FALSE 2    36     118  8.0   72     5   2         0
-FALSE 3    12     149 12.6   74     5   3         0
-FALSE 4    18     313 11.5   62     5   4         0
-FALSE 5    NA      NA 14.3   56     5   5         0
-FALSE 6    28      NA 14.9   66     5   6         0
-```
-
-`loadWorkbook()` function loads a Microsoft Excel workbook, in this case "newFile.xlsx", into R creating a R workbook object, `exc2`.  
-`readWorksheet()` function reads data from `exc2` object. 
--->
 <div id="create-a-new-file-xlsx" class="section level3">
 <h3>Create a new file xlsx</h3>
 <p>To create a new empty file xlsx with one empty sheet named <em>Input</em> the syntax is:</p>
@@ -719,31 +693,6 @@ save(list = datalist, file = &quot;datasets.Rda&quot;)</code></pre>
 <p>To upload <code>Rda</code> files in R use the <code>load()</code> function.</p>
 <pre class="r"><code># It reads the datasets.Rda file previously created in the current directory
 load(&quot;datasets.Rda&quot;)</code></pre>
-<!--
-### R commands history  
-
-R has two functions which save and load the history of the arguments which have been used: `savehistory()` and `loadhistory()`, respectively. In both cases, the only argument of the function is the name of the file to be created or loaded.
-
-
-```r
-# It saves and loads command history files
-savehistory("hist.Rhistory")
-loadhistory("hist.Rhistory")
-```
-
-An R code contained in an external file can be recalled from the console or an R script. This can be done with the `source()` function.
-
-
-```r
-# It reads the script.R file in the current directory
-source("script.R")
-```
--->
-<!--
-## Summary
-> In this chapter, we showed how to import data from and export data into R. This includes data from text files and databases. In addition, the content of the whole workspace can be saved in a specific R format.  Now that you can import your data into R, it's time to analyze it. In the next chapter, we'll introduce R functions.
-
--->
 </div>
 </div>
 

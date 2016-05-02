@@ -3,18 +3,9 @@
 # that is required by following examples
 if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
 require(dplyr)
-if(! "qdata" %in% installed.packages()) {install.packages("~/gdrive/quantide/int/corsi/corsiR/00-qdata/pkgs/qdata_0.16.tar.gz", repos = NULL, type = "source")}
-require(qdata)
-data(bank)
 
 ## ----eval=FALSE----------------------------------------------------------
 ## require(dplyr)
-
-## ----tbl_df_bank---------------------------------------------------------
-data(bank)
-class(bank)
-dim(bank)
-bank
 
 ## ----tbl_df--------------------------------------------------------------
 # Example of data frame

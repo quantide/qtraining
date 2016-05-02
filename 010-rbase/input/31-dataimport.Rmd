@@ -115,21 +115,6 @@ Let us see how `XLConnect` works.
 require(XLConnect)
 ```
 
-<!--
-### Read existing xlsx
-
-To read an existing excel file, the syntax is:
-
-
-```{r load.xlsx1, comment=FALSE}
-exc2 <- loadWorkbook("newFile.xlsx")
-dt_air <- readWorksheet(exc2, 'Airquality')
-head(dt_air)
-```
-
-`loadWorkbook()` function loads a Microsoft Excel workbook, in this case "newFile.xlsx", into R creating a R workbook object, `exc2`.  
-`readWorksheet()` function reads data from `exc2` object. 
--->
 
 ### Create a new file xlsx 
 To create a new empty file xlsx with one empty sheet named *Input* the syntax is:
@@ -442,27 +427,3 @@ To upload `Rda` files in R use the `load()` function.
 load("datasets.Rda")
 ```
 
-<!--
-### R commands history  
-
-R has two functions which save and load the history of the arguments which have been used: `savehistory()` and `loadhistory()`, respectively. In both cases, the only argument of the function is the name of the file to be created or loaded.
-
-```{r, history, eval=FALSE}
-# It saves and loads command history files
-savehistory("hist.Rhistory")
-loadhistory("hist.Rhistory")
-```
-
-An R code contained in an external file can be recalled from the console or an R script. This can be done with the `source()` function.
-
-```{r, source, eval=FALSE}
-# It reads the script.R file in the current directory
-source("script.R")
-``` 
--->
-
-<!--
-## Summary
-> In this chapter, we showed how to import data from and export data into R. This includes data from text files and databases. In addition, the content of the whole workspace can be saved in a specific R format.  Now that you can import your data into R, it's time to analyze it. In the next chapter, we'll introduce R functions.
-
--->

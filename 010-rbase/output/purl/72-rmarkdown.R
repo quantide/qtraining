@@ -102,27 +102,6 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ## ----echo=FALSE,comment=""-----------------------------------------------
 show_chunk(
-"```{r,  engine='Rcpp'}
-#include <Rcpp.h>
-
-// [[Rcpp::export]]
-int fibonacci(const int x) {
-    if (x == 0 || x == 1) return(x);
-    return (fibonacci(x - 1)) + fibonacci(x - 2);
-}
-```"
-  )
-
-## ----echo=FALSE,comment=""-----------------------------------------------
-show_chunk(
-"```{r}
-fibonacci(10L)
-fibonacci(20L)
-```"
-  )
-
-## ----echo=FALSE,comment=""-----------------------------------------------
-show_chunk(
 "I counted`r 1+1`red trucks on the highway." )
 
 ## ----error=FALSE---------------------------------------------------------

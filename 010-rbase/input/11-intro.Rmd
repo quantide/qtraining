@@ -207,9 +207,3 @@ Springer is developing a series of books called _Use R!_.
 
 ![](./images/booksMany.png)
 
-<!--
-
-## Summary
-> In this chapter, we introduced R with a bit of history. We focused to some of the strengths that make R an attractive option for students, researchers, statisticians, and data analysts. We talked about the commercial support for R, presenting Revolution R. Because R can be a complex program, we spent some time looking at how to access the extensive resources that are available. Also, some useful books were presented. In the next chapter we'll install R and we'll introduce R graphical interfaces.
-
--->

@@ -51,11 +51,6 @@ head(df)
 ## ----use.text, eval=FALSE------------------------------------------------
 ## require(XLConnect)
 
-## ----load.xlsx1, comment=FALSE-------------------------------------------
-exc2 <- loadWorkbook("newFile.xlsx")
-dt_air <- readWorksheet(exc2, 'Airquality')
-head(dt_air)
-
 ## ----outDir_set_up, eval=FALSE-------------------------------------------
 ## # Set up output directory and output file name
 ## outDir <- "/home/marco/Desktop/xlsx"
@@ -214,13 +209,4 @@ dbDisconnect(con)
 ## ---- load, eval=FALSE---------------------------------------------------
 ## # It reads the datasets.Rda file previously created in the current directory
 ## load("datasets.Rda")
-
-## ---- history, eval=FALSE------------------------------------------------
-## # It saves and loads command history files
-## savehistory("hist.Rhistory")
-## loadhistory("hist.Rhistory")
-
-## ---- source, eval=FALSE-------------------------------------------------
-## # It reads the script.R file in the current directory
-## source("script.R")
 

@@ -110,22 +110,6 @@ GUIs and IDEs are designed to facilitate programming. Several projects try to pr
  - **R-Commander** [(socserv.mcmaster.ca/jfox/Misc/Rcmdr)](http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/), or Rcmdr,  provides also access to the most frequently used statistical tools through the mouse.
  - **Red-R** [(www.red-r.org)](http://www.red-r.org/) is a dataflow programming interface for R designed to bring the power of the R statistical environment to the general researcher or user.
 
-<!--
-### Revolution R
-
-Revolution R Enterprise features a visual development environment that enables faster, more accurate R programming for developers, leaving the command-line far behind!
-
-The Revolution R Productivity Environment features:
-
- - Experience a modern development environment for the R language with a syntax-aware Script Editor with highlighting, indentation, and more.
- - Improve R programming proficiency with hover-over help, word completion and customizable "code snippets" to automate common R programming tasks.
- - Streamline interactions with the R language with a fully-featured command-line editor and object browser.
- - Create quality R code, faster with a full-featured visual debugger with one-click breakpoints and step-processing.
- - Manage complex development projects with a Solution Explorer to organize data files, scripts and outputs. Save, load and switch projects with ease.
- - Help Teams Collaborate and Control Changes with open source Subversion version control software.
-
-![](images/ssGuiRevolution.jpg)
--->
 
 ## R Packages
 
@@ -142,8 +126,3 @@ When a function of a package that is not contained in the "base" R systems is re
 R packages can be updated typing `update.packages()` within R. In Linux, R must be executed as administrator to update a package. Packages should be updated regularly.
 
 
-<!--
-## Summary
-> In this chapter, we walked through the program's installation and talked about how to enhance R's capabilities by downloading additional packages. We presented the default interface and some alternative graphical interfaces. Then we took a look to R. We used R for the first time, as a calculator. We familiarized with R help. We saved the results of calculation in R objects, through assigment. The concept of workspace were introduced. Finally we talked about the installation and the updating of packages. In the next chapter, we'll look at the types of data R can handle.
-
--->

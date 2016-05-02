@@ -47,9 +47,6 @@ ggplot(data=ds) + geom_point(aes(x=X1, y=X2, size=X3*1), colour="#2B4C6F", show.
   theme(axis.text.x = element_blank(), axis.text.y = element_blank())
 ```
 
-<!--
-This chapter presents how to build scatter plots and introduces some basic concept of `ggplot2` graphics: aesthetics and geoms.
--->
 
 Let us know how to build a scatterplot.  
 Suppose you are interested in the relationship between the humidity and the viscosity in the `bands` dataset.  
@@ -72,33 +69,6 @@ Alternatively, the plot can be initialized with `ggplot()` without any argument 
 ggplot() + geom_point(data=bands, mapping=aes(x=humidity, y=viscosity))
 ```
 
-<!--
-
-
-To understand the difference between the two examples above, you can add a new `geom` to the plot. The `geom_smooth()` with `method="loess"` adds a curve which smooths data and describes their trend.
-
-```{r scatterplot_geomsmooth, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point() +  geom_smooth(method="loess")
-```
-
-The plot now display a regression line with its confidence interval.  
-
-You can try to add a smoother to the plot, but starting from the code with `ggplot()` without arguments.
-
-```{r scatterplot_noinherit, message=FALSE, warning=FALSE}
-ggplot() + geom_point(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_smooth(method="loess")
-```
-
-There is no line. Why? The reason is quite simple: `geom_smooth()` do not know which data and which variable should be used. You can solve the issue like follow.
-
-```{r scatterplot_settinggeoms, message=FALSE, warning=FALSE}
-ggplot() + 
-  geom_point(data=bands, mapping=aes(x=humidity, y=viscosity)) +
-  geom_smooth(data=bands, mapping=aes(x=humidity, y=viscosity), method="loess")
-```
-
-To sum up, data and aesthetics specified in ggplot are used by default by all layers. Layers are like tracing papers, you can overlay them. Each layer contains a geometry. If a layer has its own data and/or aesthetics, that layer will ignore the default values.
--->
 
 ### Assigning `ggplot`s to a variable
 
@@ -200,9 +170,6 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
 
 Since `alpha=0.25` (and 0.25 is 1/4) a point will be drawn as solid when four points overlap.
 
-<!--
-If you are familiar with base graphics in R, `shape` substitutes `pch`, `size` substitutes `cex`, `colour` substitutes `col` and `fill` substitutes `bg`. The base syntax can be used also in `ggplot2` but it is strongly suggested to migrate to the new and more intuitive syntax.
--->
 
 ### Mapping a third variable to scatter plots
 
@@ -253,34 +220,6 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
 
 It is more difficult perceiving small differences in size and colour, so variable mapped to these aesthetic attributes will be interpreted with a much lower accuracy than those mapped to spatial coordinates (`x` and `y`).
 
-<!--
-The following code will produce a scatter plot of `humidity` versus `viscosity` with `band_type` mapped to `colour`. 
-
-```{r scatterplot_map_colour_smooth, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type)) +
-  geom_point() + geom_smooth(method="lm")
-```
-
-The scatter plot has two regression lines. This is the expected results, as `band_type` is mapped to `colour` in the `ggplot()` function and its arguments are used not only by `geom_point()` but also by `geom_smooth()`.
-
-To produce a scatter plot with a single regression line the `colour` aesthetic must be mapped only to `geom_point()`.
-
-```{r scatterplot_map_colour_onesmooth, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
-  geom_point(mapping=aes(colour=band_type)) + geom_smooth(method="lm")
-```
-
-Finally, this is the plot if you are interested to three regression line, one for all values and one for each level of `band_type`.
-
-```{r scatterplot_map_colour_threesmooth, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
-  geom_point(mapping=aes(colour=band_type)) + 
-  geom_smooth(mapping=aes(colour=band_type), method="lm") +
-  geom_smooth(method="lm")
-```
-
--->
-
 ### Mapping four variables to scatter plots
 
 Although the interpretation may be difficult, different variable can map to different aesthetics at the same time. From a theoretical point of view you can map as many variable as the number of aesthetics, but it is not suggested map more than four variable.
@@ -309,9 +248,6 @@ ggp <- ggplot(data=ds, aes(x=x, y=y)) +
 gridExtra::grid.arrange(ggp+geom_point(colour="#2B4C6F"), ggp, ncol=2)
 ```
 
-<!--
-This chapter presents how to build line graphs and introduces other basic concepts of `ggplot2` graphics: `group` aesthetic and manual scales.
--->
 
 Let us know how to build a line graph.  
 `ChickWeight` data contains the body weight of 50 chicks over time. Suppose you are interested to the growth of the first chick.
@@ -406,119 +342,7 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   geom_line() + geom_point()
 ```
 
-<!--
-Sometimes, the `x` variable can be a categorical variable. This is the case when you have numerical values that are conceived as categorical ones. The `ToothGrowth` dataset can be a good case in point. The `ToothGrowth` dataset provides the effect of Vitamin C on Tooth Growth in Guinea Pigs.
 
-Data can be summarized as follow:
-
-```{r linegraph_tg, message=FALSE}
-tg <- ToothGrowth %>% group_by(supp, dose) %>% summarize(length=mean(len))
-tg
-```
-
-You can plot a line for each `supp` value:
-
-```{r linegraph_numericx, message=FALSE}
-ggplot(data=tg, mapping=aes(x=dose, y=length, colour=supp)) +
-  geom_line() + geom_point()
-```
-
-The plot is good but since `dose` level are fixed the space between 0.5-1.0 and 1.0-2.0 should be the same. You can fix this issue, transforming `dose` into a factor.
-
-```{r linegraph_factorx, message=FALSE}
-ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
-  geom_line() + geom_point()
-```
-
-Notice the use of `group=supp`. This is required to tell ggplot how to group data when it draws the lines. As [Hadley himself said](https://groups.google.com/forum/#!topic/ggplot2/Pwq6hO7r90w):
-
-> The important thing [for a line graph with a factor on the horizontal axis] is to manually specify the grouping. By default `ggplot2` uses the combination of all categorical variables in the plot to group geoms - that doesn't work for this plot because you get an individual line for each point. Manually specify `group = 1` indicates you want a single line connecting all the points.
-
-```{r linegraph_group1, message=FALSE}
-ggplot(data=(tg%>%filter(supp=="OJ")), mapping=aes(x=factor(dose), y=length, group=1)) +
-  geom_line() + geom_point()
-```
-
-When points overlap, you can _dodge_ them. Dodging adjusts points left and right and must be applied to both lines and points, to avoid misalignment.
-
-```{r linegraph_dodge, message=FALSE}
-ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
-  geom_line(position=position_dodge(0.15)) + geom_point(position=position_dodge(0.15))
-```
-
-
-
-### Changing the Appearance of Mapped Aesthetics
-
-When you feed your chicks, you use the "A" fodder for diet 1, the "B" fodder for diet 2, the "C" for diet 3 and the "D" for diet 4. 
-
-```{r linegraph_labels, message=FALSE}
-ChickWeightMean <- ChickWeightMean %>% mutate(Diet = factor(Diet, levels=1:4, labels=c("A","B","C","D")))
-```
-
-"A" fodder is sold in red bags and farmers immediately identify this product with the red colour. In the same way, B is associated with the blue, C with the green and D with the orange. To improve the readability of the plot, lines for each diet should be of the colour that identify the fodder maker.
-
-You cannot set the colour inside `ggplot()` or `geom_line()` using the `colour` argument, because this is admitted only when a variable is not _mapped_ to the `colour` aesthetic. You can set manually the colour with the function `scale_colour_manual()`.
-
-```{r linegraph_setcolourmanual, message=FALSE}
-ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line() + geom_point() + scale_color_manual(values=c("red", "blue", "green", "orange"))
-```
-
-Colours in the `values` string vector must appear in the same order as they appear in the legend. You can pass a named vector to be sure of the correspondence between colour and data.
-
-```{r linegraph_setcolourmanual_order, message=FALSE}
-ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line() + geom_point() + 
-  scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green"))
-```
--->
-<!--
-There are as many `scale_*_manual` function as aesthetics for which values can be set manually.
-
-```{r linegraph_setshape_order, message=FALSE}
-ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line(mapping=aes(linetype=Diet)) + geom_point(mapping=aes(shape=Diet)) + 
-  scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green")) +
-  scale_shape_manual(values=c(16,18,20,22)) + 
-  scale_linetype_manual(values=c(1,3,5,6))
-```
--->
-<!--
-### Adding horizontal and vertical lines
-
-Line graphs often contains horizontal or vertical lines.
-
-It may be interesting to analyse the average daily growth for each diet type.
-
-```{r linegraph_ChickWeightGrowthMean, message=FALSE}
-ChickWeightGrowth <- ChickWeight %>% group_by(Chick) %>%
-  mutate(growth=c(0,diff(weight))) %>% filter(growth != 0)
-  
-ChickWeightGrowthMean <- ChickWeightGrowth %>% group_by(Time, Diet) %>%
-  summarize(growth=mean(growth)) 
-
-ggp <- ggplot(data=ChickWeightGrowthMean, mapping=aes(x=Time, y=growth, colour=Diet)) +
-  geom_line(mapping=aes(linetype=Diet)) + geom_point(mapping=aes(shape=Diet))
-
-ggp
-```
-
-At this point you may want to add the average growth to the plot.
-
-```{r linegraph_hline, message=FALSE}
-growth_avg <- ChickWeightGrowth %>% magrittr::use_series(growth) %>% mean
-ggp1 <- ggp + geom_hline(yintercept = growth_avg, colour="grey20")
-ggp1
-```
-
-Data refers to a three-weeks period. It may be interesting to highlight each week adding a vertical line at days 7, 14 and 21.
-
-```{r linegraph_vline, message=FALSE}
-ggp1 + geom_vline(xintercept = c(7,14,21), colour="grey40", linetype=3)
-```
-
--->
 
 ## Bar graph
 
@@ -542,9 +366,6 @@ ggp2 <- ggp +
 
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
-<!--
-This chapter presents how to build bar graphs and introduces other basic concepts of `ggplot2` graphics: `stat`.
--->
 
 Let us know how to build a bar graph.  
 As seen in the previous paragraph, in `ChickWeight` dataset chicks receive one of four diets. A graphical summary about how chicks receive each diet can be obtained.
@@ -576,16 +397,6 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   geom_bar(fill=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b"))
 ```
 
-<!--
-```{r bargraph_scalefill, message=FALSE}
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
-  geom_bar(mapping=aes(fill=Diet)) +
-  scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b"))
-```
-
-These plots are identical except that for legend, but they are based on two different approaches. In the first plot, fill colours are set. If you do not set four different fill colours, all bars have the same colours as shown above. In the second plot, fill colours are mapped to the level of `Diet`. Since each bar represents a different type of diet, each bar has a different colour also when you do not set manually fill colours with `scale_fill_manual()`.
-
--->
 
 or mapping fill colours to the level of `Diet` in `geom_bar()` function:
 
@@ -594,26 +405,6 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   geom_bar(mapping=aes(fill=Diet))
 ```
 
-<!--
-The use of `scale_fill_manual()` allows you to choose which colours should be used. Since fill colours are mapped with a variable, in this case the legend will be shown. In this case the legend is useless, because the same aesthetic is mapped to `x` and you already know which Diet refer to each colour. You can hide the legend in `scale_fill_manual()`.
-
-```{r bargraph_nolegend_scale, message=FALSE}
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
-  geom_bar(mapping=aes(fill=Diet)) +
-  scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b"), guide=FALSE)
-```
-
-Alternatively, you can use the `guides` function to hide the legend, just setting to `FALSE` the related aesthetic, in this case `fill`.
-
-```{r bargraph_nolegend_guides, message=FALSE}
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
-  geom_bar(mapping=aes(fill=Diet)) +
-  scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b")) +
-  guides(fill=FALSE)
-```
-
-`ggplot2` provides some functions (e.g. `scale_*_brewer` or `scale_*_gradient`) to choose a palette (i.e. a set of coherent colours), but these functions are not shown in this chapter. You can still use `scale_*_manual` functions and refer to some on-line tool like [Color Brewer](http://colorbrewer2.org/) or [Paletton](http://paletton.com/) for a better choice of colours.
--->
 
 ### Summarized data and `stat`s
 
@@ -662,56 +453,6 @@ In the case you prefer a bar for each combination of `press_type` and `cylinder_
 ```{r bargraph_dodge, message=FALSE}
 ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar(position="dodge")
 ```
-<!--
-Notice that `position="dodge"` is a short key for `position=position_dodge()` with its default value and you can modify this value to add space between bars. In the case you want to add space between bars, you probably want also to modify the `width` in order to add spaces among each group of bars.
-
-```{r bargraph_manualdodge, message=FALSE}
-ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) +
-  geom_bar(position=position_dodge(0.85), width=0.6)
-```
-
-
-The `width` in `geom_bar()` determines the width of the bar; the `width` in `position_dodge()` determines the position of each bar. Probably you can easily understand their behaviour after you play with them for a while.
--->
-
-<!--
-All data related to `MOTTER70` press has `CATALOG` as `cylinder_size`. In this case, the bars related to other `cylinder_size` are missing and the `MOTTER70` bar will expand to fill the whole space.
-
-To avoid this behaviour you must have at least a `NA` value for each combination of factors. Since both `ggplot2` when you plot and `dplyr` when you build a frequency table, do not show the count for missing combinations, you should manually build a frequency table like the following one.
-
-```{r bargraph_bands_freq_na, message=FALSE}
-bands_freq_na <- bands %>% group_by(press_type, cylinder_size) %>% summarise(n = n()) %>%
-  right_join(
-    expand.grid(
-      press_type = bands %>% magrittr::use_series(press_type) %>% levels,
-      cylinder_size = c(bands %>% magrittr::use_series(cylinder_size) %>% levels, NA)
-    )
-  )
-bands_freq_na
-```
-
-At this point, you can easily build the plot starting from frequency table. Just remember to map the counts to `y` and to add `stat="identity"` to `geom_bar()`.
-
-```{r bargraph_stack_na, message=FALSE}
-ggplot(data=bands_freq_na, mapping=aes(x=press_type, y=n, fill=cylinder_size)) +
-  geom_bar(stat="identity", position="dodge")
-```
-
-
-### Adding text to plots
-
-Plots are useful to catch the eye of your audience but sometimes they cannot replace numbers or text. Adding text to a plot can help you to integrate information in your plot.
-
-```{r bargraph_geomtext, message=FALSE}
-bands_freq <- bands %>% group_by(press_type) %>% summarize(n=n())
-  
-ggplot(data=bands, mapping=aes(x=press_type)) +
-  geom_bar() +
-  geom_text(data=bands_freq, mapping=aes(y=n, label=n), vjust=1.5, colour="white")
-```
-
-`geom_text()` works as any other `geom` seen until now. It requires `x` and `y` coordinates; in this case, `x` is `press_type` and it is inherited from `ggplot()`, while `y` should be passed. Since `bands` data do not contains the count, that is computed by `stat_count` inside `geom_bar()`, default data are overwritten in `geom_text()` in order to use frequencies. `geom_text()` requires `label` that is the text to be written. Outside `aes()`, `vjust` move down (or up) the text and `colour` set text colour.
--->
 
 ## Histogram
 
@@ -729,9 +470,6 @@ ggp2 <- ggp + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins = 8) + ylab(
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-<!--
-This chapter presents how to build histograms and introduces a basic concepts of `ggplot2` graphics: faceting. 
--->
 
 
 Let us know how to build an histogram.    
@@ -799,50 +537,6 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   facet_grid(type_on_cylinder ~ press_type)
 ```
 
-<!--
-
-When you have a categorical variable with many levels, it does not make sense to try and display them all in one row (or one column) and you may want to wrap it. `facet_wrap(~ variable)` wraps a sequence of panels into rows and columns, to better fit screen.
-
-```{r histogram_facetwrap, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct)) +
-  geom_histogram(fill="#2B4C6F") +
-  facet_wrap(~ press_type)
-```
-
-Mapping `fill` to the faceting variable (`press_type`) returns a different coloured histogram for each panel.
-
-```{r histogram_facetwrap_fill, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct)) +
-  geom_histogram(mapping=aes(fill=press_type)) +
-  guides(fill=FALSE) +
-  facet_wrap(~ press_type)
-```
-
-
-
-### Making a density histogram
-
-To show densities instead than count (frequencies) on the y axis, the special word `..density..` must be used.
-
-```{r histogram_density, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
-  geom_histogram(fill="#74a9cf")
-```
-
-A density curve can be added.
-
-```{r histogram_geomdensity, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
-  geom_histogram(fill="#74a9cf") + geom_density(colour="#034e7b")
-```
-
-The `geom_density()` function draws a closed polygon. If you do not like the lines along the side and bottom, you can draw a density curve using `geom_line` with `stat="density"`.
-
-```{r histogram_geomline_density, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
-  geom_histogram(fill="#74a9cf") + geom_line(stat="density", colour="#034e7b")
-```
--->
 
 ## Box Plot
 
@@ -863,9 +557,6 @@ ggp2 <- ggp + theme(axis.ticks.y = element_blank()) + coord_flip()
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-<!--
-This chapter presents how to build box plots and show how to customize: main titles, axes labels and legend titles.
--->
 
 Let us know how to build a box plot.   
 Supposing you are interested in the differences of ink percentage accordingly to the type of press in `bands` data. You can build four box plots to compare distributions.
@@ -889,25 +580,6 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
   geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3)
 ```
 
-<!--
-### Making a single box plot
-
-Surprisingly, it is more complicated to draw a single box plot. This is because `geom_boxplot()` requires an `x` value that is used as grouping variable. You have to set a single value for `x` when you do not have a grouping variable.
-
-```{r boxplot_group0, message=FALSE, warning=FALSE}
-ggplot(data=bands, aes(x="0", y=ink_pct)) + 
-  geom_boxplot(fill="#74a9cf", colour="#034e7b")
-```
-
-It does the job, however you have to remove the x-axis tick marker and label in order to have a nice result.
-
-```{r boxplot_xlab, message=FALSE, warning=FALSE}
-ggplot(data=bands, aes(x="0", y=ink_pct)) + 
-  geom_boxplot(fill="#74a9cf", colour="#034e7b") +
-  xlab("") +
-  theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
-```
--->
 
 ### Customizing Titles and Axis
 

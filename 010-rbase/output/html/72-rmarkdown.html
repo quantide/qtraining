@@ -631,37 +631,6 @@ knitr::kable(mtcars)
 knitr::opts_chunk$set(cache=TRUE)
 ```</code></pre>
 <p>If you run into problems with cached output you can always clear the knitr cache by removing the folder named with a <code>_cache</code> suffix within your document’s directory.</p>
-<!--
-### Rcpp Code Chunks
-
-You can also create code chunks that define functions in C++ using Rcpp Attributes. This is accomplished using the `engine = 'Rcpp'` chunk option. For example:
-
-
-````
-```{r,  engine='Rcpp'}
-#include <Rcpp.h>
-
-// [[Rcpp::export]]
-int fibonacci(const int x) {
-    if (x == 0 || x == 1) return(x);
-    return (fibonacci(x - 1)) + fibonacci(x - 2);
-}
-```
-````
-
-
-Because `fibonacci` was defined with the `Rcpp::export` attribute it can now be called as a normal R function:
-
-
-````
-```{r}
-fibonacci(10L)
-fibonacci(20L)
-```
-````
-Note that caching should not be used with Rcpp code chunks (since the compiled C++ function will not survive past the lifetime of the current R session).
-
--->
 </div>
 </div>
 <div id="inline-r-code" class="section level2">
@@ -679,13 +648,6 @@ Note that caching should not be used with Rcpp code chunks (since the compiled C
 <li><code>$$ equation $$</code> for display equations;</li>
 <li><code>&lt;math ...&gt; &lt;/math&gt;</code> for MathML equations.</li>
 </ul>
-<!--
-For example:
-
-The Aritmetic mean is equal to $\dfrac{1}{n}\sum_{i=1}^{n} x_{i}$ or the summation of n number divided by n. 
-
-$\sum_{i=1}^{n} x_{i}$
--->
 </div>
 <div id="rendering-output" class="section level2">
 <h2>Rendering Output</h2>
@@ -738,11 +700,7 @@ output:
 <pre class="r"><code>#render(&quot;input.Rmd&quot;, &quot;pdf_document&quot;)</code></pre>
 <p>You can also render all formats defined in an input file with:</p>
 <pre class="r"><code>#render(&quot;input.Rmd&quot;, &quot;all&quot;)</code></pre>
-<!--
-## Summary
-> In this chapter, we showed how to build a report with R Markdown. We started with the program installation and the most commonly used R Markdown syntax. Then we explained the features of the chunk and various options that can be applied to it. Finally we talk about the  ways to render an R Markdown document into it’s final output format.
-
--->
+<p>–&gt;</p>
 </div>
 </div>
 

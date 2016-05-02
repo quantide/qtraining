@@ -22,9 +22,8 @@ data(bank)
 The verb functions are useful, but they become really powerful when you combine them with the idea of “group by”, repeating the operation individually on groups of observations within the dataset.
 In `dplyr`, you use the `group_by()` function to describe how to break a dataset down into groups of rows. You can then use the resulting object in exactly the same functions as above; they’ll automatically work “by group” when the input is a grouped.
 
-<!-- explain -->
 
-```{r}
+```{r grouped_df_class}
 df <- data.frame(x = 1:6, f = rep(1:2, each = 3))
 dff <- group_by(df, f)
 dff
@@ -52,7 +51,7 @@ class(dfg)
 
 In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (`count = n()`) and computing the average duration call (`dist = mean(duration, na.rm = TRUE)`) and balance (`delay = mean(balance, na.rm = TRUE)`):
 
-```{r}
+```{r group_by_1}
 bank <- tbl_df(bank)
 by_year <- group_by(bank, year)
 summarise(by_year,
@@ -61,80 +60,12 @@ summarise(by_year,
           mean_balance = mean(balance, na.rm = TRUE))
 ```
 
-<!--
-
-
-```{r}
-dm <- mtcars %>% 
-  group_by(cyl, carb) %>%
-  summarise(mpg_mean = mean(mpg))
-
-
-tapply(dm$mpg_mean, list(dm$cyl, dm$carb), FUN = I)
-
-with(dm, tapply(mpg_mean, list(cyl, carb), FUN = I))
-
-require(xtable)
-xtabs(mpg_mean~cyl+carb, data = dm)
-
-```
-
-Then, you search for the number of days covered per year. You report also the number of phone calls per year:
-
-```{r}
-summarise(by_year,
-          days = n_distinct(date),
-          count = n())
-```
-
-When you group by multiple variables, each summary peels off one level of the grouping. That makes it easy to progressively roll up a dataset:
-
-```{r}
-daily <- group_by(bank, year, month, day)
-groups(daily)
-
-per_day <- summarise(daily, calls = n())
-groups(per_day)
-
-per_month <- summarise(per_day, calls = sum(calls))
-groups(per_month)
-
-per_year <- summarise(per_month, calls = sum(calls))
-groups(per_year)
-```
-
-```{r}
-df <- data.frame(year = rep(c(2010, 2011, 2012), each = 3), 
-                 month = rep(1:3, each = 3), 
-                 day = rep(20:22, 3), 
-                 x = 1:9)
-
-df
-
-df1 <- df %>% group_by(year, month, day) 
-
-groups(df1)
-
-df2 <-  df1 %>% 
-  summarise(x_avg = mean(x), n = n())
-
-df2
-
-groups(df2)
-
-summarise(df2, n())
-
-ungroup(df2) %>% summarise(n())
-
-```
-
--->
 
 # Chain Together Multiple Operations: the `%>%` Operator
 
 The `dplyr` API (Application Program Interface) is functional in the sense that function calls don’t have side-effects, and you must always save their results. This doesn’t lead to particularly elegant code if you want to do many operations at once. You either have to do it step-by-step:
 
-```{r}
+```{r chain1}
 a1 <- group_by(bank, date)
 a2 <- select(a1, age, balance)
 a3 <- summarise(a2,
@@ -146,7 +77,7 @@ a3 <- summarise(a2,
 
 Or if you don’t want to save the intermediate results, you need to wrap the function calls inside each other:
 
-```{r}
+```{r chain2}
 filter(
   summarise(
     select(
@@ -161,7 +92,7 @@ filter(
 
 This is difficult to read because the order of the operations is from inside to out, and the arguments are a long way away from the function. To get around this problem, `dplyr` provides the `%>%` operator. `x %>% f(y)` turns into `f(x, y)` so you can use it to rewrite multiple operations so you can read from left-to-right, top-to-bottom:
 
-```{r}
+```{r chain3}
 bank %>%
   group_by(date) %>%
   select(age, balance) %>%

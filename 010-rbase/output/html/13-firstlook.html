@@ -368,118 +368,6 @@ $(document).ready(function () {
 <pre><code>## [1] 2.639057</code></pre>
 <pre class="r"><code>23.76 * log(8)/(23 + atan(9))</code></pre>
 <pre><code>## [1] 2.01992</code></pre>
-<!--
-
-## Introducing R Functions
-
-Functions are one of the most important objects in R.
-
-A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.
-
-The function `ls()` doesn't require any input and returns an output.
-
-
-```r
-ls()
-```
-
-```
-## character(0)
-```
-
-The function `rm()` requires an input and doesn't return an output.
-
-
-```r
-foo = 3
-rm(foo)
-```
-
-Usually, functions require an input and returns an output.
-
-
-```r
-sum(1:10)
-```
-
-```
-## [1] 55
-```
-
-The several elements of the input of a function are the arguments of the function. When a function is called the arguments can be declared explicitely or implicitely. The arguments can be explicitely with their name.
-
-
-```r
-sum(c(1, 2, NA), na.rm = T)
-```
-
-```
-## [1] 3
-```
-In the above example, the `na.rm` argument of the `sum()` function is called explicitely.
-
-When arguments are called implicitely, the order of the arguments is fundamental. The third example of the code below returns a wrong result.
-
-
-```r
-rdata = c(rnorm(100), NA)
-quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = T)
-```
-
-```
-##        25%        50%        75% 
-## -0.6088466 -0.0594199  0.6558911
-```
-
-```r
-quantile(rdata, c(0.25, 0.50, 0.75), T)
-```
-
-```
-##        25%        50%        75% 
-## -0.6088466 -0.0594199  0.6558911
-```
-
-```r
-quantile(rdata, T, c(0.25, 0.50, 0.75))
-```
-
-```
-## Warning in if (na.rm) x <- x[!is.na(x)] else if (anyNA(x)) stop("missing
-## values and NaN's not allowed if 'na.rm' is FALSE"): the condition has
-## length > 1 and only the first element will be used
-```
-
-```
-##     100% 
-## 2.581959
-```
-
-```r
-quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))
-```
-
-```
-##        25%        50%        75% 
-## -0.6088466 -0.0594199  0.6558911
-```
-
-
-It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:
-  
-
-```r
-help(read.table)
-```
-
-or
-
-
-```r
-?read.table
-```
-
--->
 </div>
 <div id="assignment" class="section level2">
 <h2>Assignment</h2>
@@ -511,9 +399,9 @@ z &lt;- x + y</code></pre>
 <h2>The R Workspace</h2>
 <p>Objects created during an R session are hold in memory. The collection of objects currently avalaible is called the workspace. To list the objects in the current R session, the function <code>ls()</code> or the function <code>objects()</code> may be used.</p>
 <pre class="r"><code>ls()</code></pre>
-<pre><code>## [1] &quot;rdata&quot; &quot;x&quot;     &quot;y&quot;     &quot;z&quot;</code></pre>
+<pre><code>## [1] &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
 <pre class="r"><code>objects()</code></pre>
-<pre><code>## [1] &quot;rdata&quot; &quot;x&quot;     &quot;y&quot;     &quot;z&quot;</code></pre>
+<pre><code>## [1] &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
 <p>So to run the function <code>ls</code> the name followed by an opening and a closing bracket must be entered. Entering only <code>ls</code> will just print the object, i.e. the underlying R code of the function.</p>
 <p>Most functions in R accept certain arguments. For example, one of the arguments of the function <code>ls()</code> is pattern. To list all objects starting with the letter <code>x</code>:</p>
 <pre class="r"><code>x2 &lt;- log(9)
@@ -522,7 +410,7 @@ ls(pattern = &quot;x&quot;)</code></pre>
 <p>If a value to an object that already exists is assigned then the contents of the object will be overwritten with the new value (without a warning!). The function <code>rm()</code> ought be used to remove one or more objects from your session.</p>
 <pre class="r"><code>rm(x2)
 ls()</code></pre>
-<pre><code>## [1] &quot;rdata&quot; &quot;x&quot;     &quot;y&quot;     &quot;z&quot;</code></pre>
+<pre><code>## [1] &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
 </div>
 <div id="the-working-directory" class="section level2">
 <h2>The Working Directory</h2>
@@ -551,12 +439,6 @@ ls()</code></pre>
 <pre class="r"><code>help.search(&quot;mean&quot;)</code></pre>
 <p>To get a list of function containing “mean” in the name, the <code>apropos()</code> function can be used.</p>
 <pre class="r"><code>apropos(&quot;mean&quot;)</code></pre>
-<!--
-
-## Summary
-> In this chapter, we took a look to R. We used R for the first time, as a calculator. We familiarized with R help. We saved the results of calculation in R objects, through assigment. The concept of workspace were introduced. In the next chapter, we'll look at the types of data R can handle.
-
--->
 </div>
 
 

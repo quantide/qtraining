@@ -21,64 +21,6 @@ log(14)
 
 
 
-<!--
-
-## Introducing R Functions
-
-Functions are one of the most important objects in R.
-
-A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.
-
-The function `ls()` doesn't require any input and returns an output.
-
-```{r, argument1}
-ls()
-```
-
-The function `rm()` requires an input and doesn't return an output.
-
-```{r, argument2}
-foo = 3
-rm(foo)
-```
-
-Usually, functions require an input and returns an output.
-
-```{r, argument3}
-sum(1:10)
-```
-
-The several elements of the input of a function are the arguments of the function. When a function is called the arguments can be declared explicitely or implicitely. The arguments can be explicitely with their name.
-
-```{r, argument4}
-sum(c(1, 2, NA), na.rm = T)
-```
-In the above example, the `na.rm` argument of the `sum()` function is called explicitely.
-
-When arguments are called implicitely, the order of the arguments is fundamental. The third example of the code below returns a wrong result.
-
-```{r, argument5}
-rdata = c(rnorm(100), NA)
-quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = T)
-quantile(rdata, c(0.25, 0.50, 0.75), T)
-quantile(rdata, T, c(0.25, 0.50, 0.75))
-quantile(rdata, na.rm = T, probs = c(0.25, 0.50, 0.75))
-```
-
-
-It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:
-  
-```{r, help3, eval=F}
-help(read.table)
-```
-
-or
-
-```{r, help4, eval=F}
-?read.table
-```
-
--->
 
 ## Assignment
 
@@ -191,9 +133,3 @@ To get a list of function containing "mean" in the name, the `apropos()` functio
 apropos("mean")
 ```
 
-<!--
-
-## Summary
-> In this chapter, we took a look to R. We used R for the first time, as a calculator. We familiarized with R help. We saved the results of calculation in R objects, through assigment. The concept of workspace were introduced. In the next chapter, we'll look at the types of data R can handle.
-
--->

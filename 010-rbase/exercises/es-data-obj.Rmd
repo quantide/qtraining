@@ -1,0 +1,338 @@
+---
+title: "Data Object"
+author: "Quantide Srl"
+date: "2016-05-02"
+output:
+  pdf_document: default
+  html_document:
+    self_contained: no
+---
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+source("r/show-solution.R")
+show_solution <- TRUE
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+ 
+
+## Vectors
+### Exercise 1
+
+a. Create a vector, named `vec1`, containing the following values:  
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90    
+```{r ex1a-vec, echo=show_solution, eval=show_solution}
+vec1 <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90)
+```
+
+b. Select the 5-th element of `vec1`. 
+```{r ex1b-vec, echo=show_solution, eval=show_solution}
+vec1[5]
+```
+
+c. Select the first 10 elements of `vec1.`  
+```{r ex1c-vec, echo=show_solution, eval=show_solution}
+vec1[1:10]
+```
+
+d. Select all the elements of `vec1` apart from the 2nd and the 6th element.  
+
+```{r ex1d-vec, echo=show_solution, eval=show_solution}
+vec1[-c(2,6)]
+```
+
+### Exercise 2
+
+a. Generate a vector, named `vec2`, containing numbers from 1 to 10 and of length 8, using the operator `seq`.  
+```{r ex2a-vec, echo=show_solution, eval=show_solution}
+vec2 <- seq(from=1, to=10, length.out = 8)
+```
+
+b. Select the values of `vec2` which are greater than 4.  
+```{r ex2b-vec, echo=show_solution, eval=show_solution}
+vec2[vec2>4] # or y > 4; b[y]
+```
+
+c. Select the values of `vec2` which are equal or less than 2 or which are equal or greater than 6.  
+
+```{r ex2c-vec, echo=show_solution, eval=show_solution}
+vec2[vec2<=2 | vec2>=6]
+```
+
+### Exercise 3
+
+a. Generate the following vector using the operator `rep`:   
+`vec3 <- c("one", "two", "one", "two", "one", "two")`  
+
+```{r ex3a-vec, echo=show_solution, eval=show_solution}
+vec3 <- rep(c("one", "two"), times=3)
+```
+
+b. Generate a new vector, named `vec5`, combining the previous vector, `vec3`, with the following one:   
+ 
+```{r ex3b1-vec}
+vec4 <- c("three", "four")
+```
+
+```{r ex3b2-vec, echo=show_solution, eval=show_solution}
+vec5 <- c(vec3, vec4)
+vec5
+```
+
+## Matrices
+
+### Exercise 1
+
+Generate a matrix, named `mat1`, with 5 rows and 3 columns, using `matrix` function:
+
+```{r ex1a-mat, echo=FALSE}
+mat1 <- matrix(1:15, nrow = 5, ncol = 3, byrow = TRUE)
+mat1
+```
+
+
+```{r ex1b-mat, echo=show_solution, eval=show_solution}
+mat1 <- matrix(1:15, nrow = 5, ncol = 3, byrow = TRUE)
+```
+
+
+### Exercise 2
+
+Starting from the following vector:  
+```{r ex2a-mat}
+mat2 <- 1:8
+```
+
+Generate a matrix with 2 rows and 4 columns using the function `dim`. 
+
+```{r ex2b-mat, echo=show_solution, eval=show_solution}
+dim(mat2) <- c(2,4)
+mat2
+```
+
+
+### Exercise 3
+
+a. Generate a matrix, named `mat3`, combining the following columns:
+```{r ex3a-mat}
+a <- 1:3
+b <- 7:9
+c <- 8:6
+```
+
+```{r ex3b-mat, echo=show_solution, eval=show_solution}
+mat3 <- cbind(a,b,c)
+mat3
+```
+
+b. Add the following row to `mat3`: 
+
+```{r ex3c1-mat}
+d <- 4:6
+```
+
+
+```{r ex3c2-mat, echo=show_solution, eval=show_solution}
+mat3 <-rbind(mat3, d)
+mat3
+```
+
+### Exercise 4
+
+Considering the following matrix, named `mat4`:
+
+```{r ex4a-mat}
+mat4 <- matrix(1:24, nrow = 6, ncol = 4, byrow = TRUE)
+mat4
+```
+
+a. Select the third and the fifth row of `mat4`.  
+```{r ex4b1-mat, echo=show_solution, eval=show_solution}
+mat4[c(3,5),]
+```
+
+b. Select all columns of `mat4` apart from the first.  
+```{r ex4b2-mat, echo=show_solution, eval=show_solution}
+mat4[, -1]
+```
+
+c. Select second and third rows and second and third columns of `mat4`.  
+
+```{r ex4b3-mat, echo=show_solution, eval=show_solution}
+mat4[2:3, 2:3] # or mat4[c(2,3) , c(2,3)] 
+```
+
+## Lists
+
+### Exercise 1
+
+a. Generate a list, named `list1` that contains the following R elements:
+
+```{r ex1a1-list}
+vec <- 1:10
+mat <- matrix(1:9, ncol = 3)
+name <- "Oscar"
+```
+
+```{r ex1a2-list, echo=show_solution, eval=show_solution}
+list1 <- list(vec = 1:10, mat = matrix(1:9, ncol = 3), name = "Oscar")
+list1
+```
+
+b. Add to `list1` the following element:
+
+```{r ex1b1-list}
+letters <- c("a", "b", "c", "d")
+```
+
+```{r ex1b2-list, echo=show_solution, eval=show_solution}
+list1$letters <- letters
+list1
+```
+
+
+### Exercise 2
+
+Given the following list, named `list2`:
+```{r ex2a-list}
+list2 <- list(vec = c(1,3,5,7,8), mat = matrix(1:12, ncol = 4), 
+              sub_list = list(names = c("Veronica", "Enrico", "Andrea", "Anna"), 
+                              numbers = 1:4))
+list2
+```
+
+a. Entract the first element of `list2`.  
+```{r ex2b1-list, echo=show_solution, eval=show_solution}
+list2[1]
+```
+
+b. Extract the objects contained in the first element of `list2`.  
+```{r ex2b2-list, echo=show_solution, eval=show_solution}
+list2[[1]]
+```
+
+c. Extract the object named `sub_list` of `list2`.  
+```{r ex2b3-list, echo=show_solution, eval=show_solution}
+list2$sub_list
+```
+
+d. Extract the second rows of the matrix included in the second element of `list2`.  
+```{r ex2b4-list, echo=show_solution, eval=show_solution}
+list2[[2]][2,] # or list2$mat[2,]
+```
+
+
+## Factors
+
+### Exercise 1
+
+Starting from the vector:  
+```{r ex1a-factors}
+fac1 <- c("F", "F", "M", "M" , "F")
+```
+
+Generate the corresponding factor with two levels: "F" and "M"
+
+```{r ex1-factors, echo=show_solution, eval=show_solution}
+fac1 <- factor(fac1, levels = c("F", "M"))
+fac1
+```
+
+### Exercise 2
+
+Starting from the vector:  
+```{r ex2a1-factors, echo=show_solution, eval=show_solution}
+fac2 <- c(1, 1, 1, 2, 2, 2) 
+```
+
+a. Generate the corresponding factor considering that 1 = "Female", 2 = "Male" e 3 = "Trans".  
+```{r ex2a2-factors, echo=show_solution, eval=show_solution}
+fac2 <- factor(fac2, levels = c(1,2,3), labels = c("Female", "Male", "Trans"))
+fac2
+```
+
+b. Select the all elements of `fac2` apart from "Male".     
+```{r ex2b-factors, echo=show_solution, eval=show_solution}
+fac2[fac2!= "Male"]
+```
+
+## Data Frames
+
+
+### Exercise 1
+
+a. Generate a data frame, named `df1`, corresponding to:
+
+```{r ex1a1-df, echo=FALSE}
+df1 <- data.frame(id=1:10, 
+                  name=c("Luca", "Chiara", "Lisa", "Matteo", "Alice", "Marco", 
+                         "Veronica", "Nicola", "Elena", "Daniele"),
+                  class=c(rep("5A", times=5), rep("5B", times=5)),
+                  mean= c(6,7,5,6.5,7.5,4.5, 9, 8, 8.5, 7), stringsAsFactors = FALSE)
+df1
+```
+
+Remember to maintain character vectors as they are, specifiyng `stringsAsFactors = FALSE`.    
+```{r ex1a2-df, echo=show_solution, eval=show_solution}
+df1 <- data.frame(id=1:10, 
+                  name=c("Luca", "Chiara", "Lisa", "Matteo", "Alice", "Marco", 
+                         "Veronica", "Nicola", "Elena", "Daniele"),
+                  class=c(rep("5A", times=5), rep("5B", times=5)),
+                  mean= c(6,7,5,6.5,7.5,4.5, 9, 8, 8.5, 7), stringsAsFactors = FALSE)
+df1
+
+# Other solution
+id <- 1:10
+name <- c("Luca", "Chiara", "Lisa", "Matteo", "Alice", "Marco", 
+          "Veronica", "Nicola", "Elena", "Daniele")
+class <- c(rep("5A", times=5), rep("5B", times=5))
+mean <- c(6,7,5,6.5,7.5,4.5, 9, 8, 8.5, 7)
+df1 <- data.frame(id, name, class, mean, stringsAsFactors = FALSE)
+df1
+```
+
+
+b. Select the first 3 rows of `df1`.  
+```{r ex1b-df, echo=show_solution, eval=show_solution}
+df1[1:3,]
+```
+
+c. Select the last 6 rows and the first 3 columns of `df1`.    
+```{r ex1c-df, echo=show_solution, eval=show_solution}
+df1[5:10, 1:3]
+```
+
+d. Select the column `class` of `df1`.   
+```{r ex1d-df, echo=show_solution, eval=show_solution}
+df1$class
+```
+
+e. Convert the column `class` of `df1` in a factor with levels: "5A" and "5B"
+```{r ex1e-df, echo=show_solution, eval=show_solution}
+df1$class <- factor(df1$class, levels = c("5A", "5B"))
+df1$class
+```
+
+f. How many columns and rows `df1` has?   
+```{r ex1f-df, echo=show_solution, eval=show_solution}
+dim(df1) # or ncol(df1) and nrow(df1)
+```
+
+g. Generate another dataframe, named `df2` composed by the columns `name` and `mean` of `df1`, specifying the argument `stringsAsFactors = FALSE`.   
+```{r ex1g-df, echo=show_solution, eval=show_solution}
+df2 <- data.frame(name = df1$name, mean=df1$mean, stringsAsFactors = FALSE)
+df2
+```
+
+h. Show the first rows and the structure of `df2`.    
+```{r ex1h-df, echo=show_solution, eval=show_solution}
+head(df2)
+str(df2)
+```
+
+
+
+
+
