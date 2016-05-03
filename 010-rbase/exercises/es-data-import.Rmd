@@ -1,9 +1,8 @@
 ---
-title: "Data Import"
-author: "Quantide Srl"
-date: "2016-05-02"
+title: 
+author:
+date: 
 output:
-  pdf_document: default
   html_document:
     self_contained: no
 ---
@@ -12,12 +11,13 @@ output:
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-opts_knit$set(root.dir="./../data")
-source("r/show-solution.R")
-show_solution <- TRUE
+opts_knit$set(root.dir="./data")
+show_solution <- FALSE
 
 # ATTENZIONE: leggere nota dentro show-solution.R
 ```
+
+# Data Import
  
 First of all, set your working directory in the _data_ folder, using `setwd()` function, like in this example
 
@@ -70,11 +70,16 @@ Save it in a .txt file named _"exercise-3.txt"_ in _data_ folder.
 write.table(df, file="exercise-3.txt")
 ```
 
+```{r ex3c-txt, echo=FALSE, message=FALSE, results='hide'}
+if(file.exists("exercise-3.txt")){file.remove("exercise-3.txt")}
+```
+
+
 ## Excel Files
 
 ### Exercise 1
 
-a. Import xlsx file _"flowers.xlsx"_ using `XLConnect` function `loadWorkbook()` and save it in a R workbook object named `flowers`.  
+a. Import .xlsx file _"flowers.xlsx"_ using `XLConnect` function `loadWorkbook()` and save it in a R workbook object named `flowers`.  
   Remember to load `XLConnect` package, supposing it is already installed.
 
 ```{r ex1-xlsx-require, message=FALSE}
@@ -101,7 +106,7 @@ ex_2 <- loadWorkbook(filename = "exercise-2.xlsx", create = TRUE)
 saveWorkbook(ex_2)
 ```
 
-b. Create a sheet in the R workbook object, named `df`, using `createSheet()` function. Remember to save the changes also in .xlsx file (use `saveWorkbook()` function). 
+b. Create a sheet, named `df`, in the R workbook object using `createSheet()` function. Remember to save the changes also in .xlsx file (use `saveWorkbook()` function). 
 
 ```{r ex2b-xlsx, echo=show_solution, eval=show_solution}
 createSheet(object = ex_2, name = 'df')
@@ -111,7 +116,8 @@ saveWorkbook(ex_2)
 c. Considering the following data frame, named `numbers_df`:
 
 ```{r ex2c-xlsx}
-numbers_df <- data.frame(a= 1:4, b=c("one", "two", "three", "four"), stringsAsFactors = FALSE)
+numbers_df <- data.frame(a= 1:4, b=c("one", "two", "three", "four"), 
+                         stringsAsFactors = FALSE)
 numbers_df
 ```
   Add it to `df` sheet of `ex_2` R workbook object, starting from row 3 and from column 2. Use the function `writeWorksheet()`. Remember to save the changes also in .xlsx file (use `saveWorkbook()` function). 

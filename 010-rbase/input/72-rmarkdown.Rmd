@@ -415,8 +415,8 @@ There are two ways to render an R Markdown document into it’s final output for
 
 If you are not using RStudio then you simply need to call the `rmarkdown::render` function, for example:
 
-```{r error=FALSE}
-#rmarkdown::render("input.Rmd")
+```{r error=FALSE, eval=FALSE}
+rmarkdown::render("input.Rmd")
 ```
 
 Note that in the case using the “Knit” button in RStudio the basic mechanism is the same (RStudio calls the `rmarkdown::render` function under the hood).
@@ -485,12 +485,11 @@ output:
 
 If you are using `rmarkdown::render` then you can pass a format name to render to select from the available formats. For example:
 
-```{r}
-#render("input.Rmd", "pdf_document")
+```{r, eval=FALSE}
+render("input.Rmd", "pdf_document")
 ```
 
 You can also render all formats defined in an input file with:
-```{r}
-#render("input.Rmd", "all")
+```{r, eval=FALSE}
+render("input.Rmd", "all")
 ```
--->

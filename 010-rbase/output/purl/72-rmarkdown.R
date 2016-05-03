@@ -104,8 +104,8 @@ knitr::opts_chunk$set(cache=TRUE)
 show_chunk(
 "I counted`r 1+1`red trucks on the highway." )
 
-## ----error=FALSE---------------------------------------------------------
-#rmarkdown::render("input.Rmd")
+## ----error=FALSE, eval=FALSE---------------------------------------------
+## rmarkdown::render("input.Rmd")
 
 ## ----echo=FALSE,comment=""-----------------------------------------------
 show_chunk("
@@ -151,9 +151,9 @@ output:
 ---"
   )
 
-## ------------------------------------------------------------------------
-#render("input.Rmd", "pdf_document")
+## ---- eval=FALSE---------------------------------------------------------
+## render("input.Rmd", "pdf_document")
 
-## ------------------------------------------------------------------------
-#render("input.Rmd", "all")
+## ---- eval=FALSE---------------------------------------------------------
+## render("input.Rmd", "all")
 
