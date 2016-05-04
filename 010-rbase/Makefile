@@ -37,7 +37,7 @@
 
 
 
-
+########################## COURSE MATERIAL ##########################
 
 # Project name
 PROJECT = rbase
@@ -68,10 +68,10 @@ toc:
 
 html: $(HTML_FILES)
 
-.PHONY: change_dir
+#.PHONY: change_dir
 
-change_dir:
-	$(MAKE) -C $(INPUT_DIR)
+#change_dir:
+#	$(MAKE) -C $(INPUT_DIR)
  
 %.html: %.Rmd
 	R --slave -e "set.seed(100);rmarkdown::render('$<',output_dir='$(OUTPUT_DIR)/');setwd('$(INPUT_DIR)/');knitr::purl('../$<')"
@@ -81,7 +81,90 @@ change_dir:
 	R --slave -e "set.seed(100);rmarkdown::render('$<',output_dir='$(OUTPUT_DIR)/')"
 
 
+#.PHONY: clean
+#clean:
+#	$(RM) -rf $(OUTPUT_DIR)/*
+
+
+
+
+
+########################## EXERCISE BOOK ##########################
+
+### PARAMETERS DEFINITION
+    	
+### List of source files (without extension: it will be used for .Rmd, .html and .R)
+LIST = \
+  1-intro \
+	es-data-obj \
+	es-data-import \
+	
+
+# Pandoc Path (RSTUDIO VERSION)
+PANDOC_PATH = /usr/lib/rstudio/bin/pandoc/pandoc
+
+# Input and output paths
+INPUT_PDF_DIR = exercises
+OUTPUT_PDF_DIR = output/pdf
+
+# Output file name
+PDF_OUT = data-programming-exercises-questions.pdf
+#PDF_OUT = data-programming-exercises-solutions.pdf
+
+# List of md files to build pdf 
+MD_PATH = $(addprefix exercises/,$(LIST))
+MD = $(addsuffix .md,$(MD_PATH))
+MD_LIST = $(addsuffix .md,$(MD_PATH))
+
+# Pandoc pdf options
+PANDOC_PDF_OPTIONS = \
+  --latex-engine xelatex  \
+  --template='./../include/tex/manual-with-written-cover.tex' \
+	--variable=geometry:a4paper \
+	--variable=links-as-notes \
+  --chapters \
+  --number-sections \
+	--toc
+
+
+### COMPILE
+# all: by default perform all actions
+
+all: knitr pdf
+
+#.PHONY: change_dir
+
+#change_dir:
+#	$(MAKE) -C $(INPUT_PDF_DIR)
+	
+# build md files from rmd
+%.md: %.Rmd
+	Rscript -e "require(knitr); knit('$<', output= '$@', quiet=FALSE)"
+
+
+# build R files from rmd and upload
+#%.R: %.Rmd
+#	Rscript -e "require(knitr);  purl('$<'); getwd()"
+
+
+
+# build pdf file from md
+$(PDF_OUT): $(MD_LIST)
+	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $(MD_LIST) --output $(OUTPUT_PDF_DIR)/$(PDF_OUT)
+
+# single actions
+knitr: $(MD)
+#html: $(addsuffix .html,$(MD_PATH))
+#purl: $(addsuffix .R,$(MD_PATH))
+pdf: $(PDF_OUT)
+
+
 .PHONY: clean
-clean:
-	$(RM) -rf $(OUTPUT_DIR)/*
+clean: 
+	rm -f *.md 	
+#	mv 	*.R $(PURL_DIR)/
+
+	rm -f *.md *.html *.R	
+###################################################################
+
 

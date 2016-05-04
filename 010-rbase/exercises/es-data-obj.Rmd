@@ -1,9 +1,8 @@
 ---
-title: "Data Object"
-author: "Quantide Srl"
-date: "2016-05-02"
+title: 
+author:
+date: 
 output:
-  pdf_document: default
   html_document:
     self_contained: no
 ---
@@ -12,12 +11,11 @@ output:
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-source("r/show-solution.R")
-show_solution <- TRUE
+show_solution <- FALSE
 # ATTENZIONE: leggere nota dentro show-solution.R
 ```
  
-
+# Data Object
 ## Vectors
 ### Exercise 1
 
@@ -45,7 +43,7 @@ vec1[-c(2,6)]
 
 ### Exercise 2
 
-a. Generate a vector, named `vec2`, containing numbers from 1 to 10 and of length 8, using the operator `seq`.  
+a. Generate a vector, named `vec2`, containing the numbers from 1 to 10 and of length 8, using the function `seq()`.  
 ```{r ex2a-vec, echo=show_solution, eval=show_solution}
 vec2 <- seq(from=1, to=10, length.out = 8)
 ```
@@ -63,7 +61,7 @@ vec2[vec2<=2 | vec2>=6]
 
 ### Exercise 3
 
-a. Generate the following vector using the operator `rep`:   
+a. Generate the following vector using the function `rep()`:   
 `vec3 <- c("one", "two", "one", "two", "one", "two")`  
 
 ```{r ex3a-vec, echo=show_solution, eval=show_solution}
@@ -85,7 +83,7 @@ vec5
 
 ### Exercise 1
 
-Generate a matrix, named `mat1`, with 5 rows and 3 columns, using `matrix` function:
+Generate a matrix, named `mat1`, with 5 rows and 3 columns, using `matrix()` function:
 
 ```{r ex1a-mat, echo=FALSE}
 mat1 <- matrix(1:15, nrow = 5, ncol = 3, byrow = TRUE)
@@ -105,7 +103,7 @@ Starting from the following vector:
 mat2 <- 1:8
 ```
 
-Generate a matrix with 2 rows and 4 columns using the function `dim`. 
+Generate a matrix with 2 rows and 4 columns using `dim()` function. 
 
 ```{r ex2b-mat, echo=show_solution, eval=show_solution}
 dim(mat2) <- c(2,4)
@@ -213,7 +211,7 @@ b. Extract the objects contained in the first element of `list2`.
 list2[[1]]
 ```
 
-c. Extract the object named `sub_list` of `list2`.  
+c. Extract the element named `sub_list` of `list2`.  
 ```{r ex2b3-list, echo=show_solution, eval=show_solution}
 list2$sub_list
 ```
@@ -243,7 +241,7 @@ fac1
 ### Exercise 2
 
 Starting from the vector:  
-```{r ex2a1-factors, echo=show_solution, eval=show_solution}
+```{r ex2a1-factors}
 fac2 <- c(1, 1, 1, 2, 2, 2) 
 ```
 
