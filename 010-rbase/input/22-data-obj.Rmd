@@ -306,7 +306,6 @@ To create a factor variable the `factor()` function is used. The only required a
 
 ```{r, factors}
 grade <- c(3, 4, 2, 2, 4, 1, 1, 4, 2, 2)
-grade <- c(grade, 3)
 factor(grade)  
 gender <- c(rep("male", 3), rep("female", 4))
 gender <- factor(gender, levels=c("male", "female", "trans"))
@@ -367,7 +366,7 @@ From a formal point of view, data frames are not a new type of objects. They are
 
 Furthermore, data imported in R from external sources, such as text files, Excel files or databases, is saved in R as data frame-like objects.
 
-To sum up, unless there are have specific needs, data frames in R are the ideal tool for data filing and management.
+To sum up, unless we have specific needs, data frames in R are the ideal tool for data filing and management.
 
 Data frames are usually imported from external sources but the creation of a data frame object in R might sometimes be needed. The most widespread method to define a data frame is the `data.frame()` function. Its inputs are a series of vectors or factors of the same length. The generated object is made of as many columns as input elements. 
 
@@ -385,7 +384,8 @@ Alternatively, the vectors composing the data frame can be defined inside the `d
 df <- data.frame(
   height = c(180, 170, 175, 190, 168, 160, 165),
   name = c("James", "Stevie", "Otis", "Bob", "Levon", "Patti", "Karen"),
-  gender = factor(c("M", "M", "M", "M", "M", "F", "F"))
+  gender = factor(c("M", "M", "M", "M", "M", "F", "F")),
+  stringsAsFactors = FALSE
 )
 df
 ```
