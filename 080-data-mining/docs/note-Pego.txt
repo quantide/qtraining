@@ -39,4 +39,3 @@ Ridurre esempi PCA e EFA
 Esercizio per CA con dati smoke del package ca? (Senior Manager, Junior Manager, Senior Employees, Junior Eployees, Secretaries)
 Clustering: rimosso esempio con dati iris; da proporre come esercizio
 
-SISTEMARE qdata! Per esempio, la descrizione del file bostonhousing forbes94 german mds volcano3d wea wines è totalmente sballata. Aggiungere anche smoke.RData
