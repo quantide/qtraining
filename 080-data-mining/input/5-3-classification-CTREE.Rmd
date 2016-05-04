@@ -1,0 +1,405 @@
+---
+title: "Classification Trees (CTREE)"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+require(qdata)
+data(german)
+data(Carseats, package = "ISLR")
+data(kyphosis, package = "rpart")
+
+## Other datasets used
+# iris
+
+####################################################################
+## packages needed: tree, caret, rpart, ggplot2, rpart.plot, ISLR ##
+####################################################################
+```
+
+
+# Introduction
+
+Decision Tree is one of the commonly used exploratory data analysis and objective segmentation techniques.  
+Great advantage with Decision Tree is that the its output is relatively easy to understand or interpret.  
+Simple way to understand decision tree is that it is a hierarchical approach to partition the input data. And at each node one variable and its value is used for the partition.  
+If we are working on an objective segmentation problem, our aim is to find conditions which help us finding a segment which is very similar on target variable value.  
+For example, when customer applies for a credit card, the bank or credit card provider accepts or rejects the application based on predicted risk -probability of default- for the application.  
+For building rules for predicting the risk from a credit card application, we can use Decision Tree. The decision tree can help in finding out the segments which have a low risk (default probability).  
+
+Tree-based methods can be used for both regression and classification
+problems. These involve stratifying or segmenting the predictor space into a
+number of simple regions. A prediction for a given observation is then
+obtained by typically using the mean or the mode of the training
+observations in the region to which it belongs.
+
+A classification tree (CT) is used to predict a qualitative response. In
+CTs the prediction for an observation generally corresponds to the most
+commonly occurring class of training observations in the region to which it 
+belongs. In interpreting the results of a classification tree, we are
+typically interested in the class prediction corresponding to a particular
+terminal node region, but also in the class proportions among the training
+observations that fall into that region.
+
+To grow a classification binary splitting is used.
+To split the nodes, the minimum "within-node variability" is searched, and
+two alternative "variability" measures are used:
+
+- the Gini index, which provides a measure of the total uncertainty across the k
+  classes; it is often referred to as a measure of node "purity", because a
+  small value indicates that a node contains predominantly observations from
+  a single class.
+
+- the cross-entropy, which, like the Gini index, takes on a small value if a
+  node is pure.
+
+For "pruning" the tree, 
+classification error rate is mostly used, if prediction accuracy is the goal.
+To increase predictive accuracy, multiple tress can be combined to yield a
+single consensus prediction. Bagging, random forests, and boosting are some
+approaches that implement such a strategy. The price to pay for the
+increased accuracy is some loss in interpretation.
+
+There are a number of `R` packages with functions for building single
+classification trees. One of the most popular is `rpart`. The `rpart()` function of the `rpart` package
+implements Classfication and Regression Tree (CART) type of Decision Tree algorithm for Recursive Partitioning and Regression Trees.
+`rpart()` automatically grows and prunes the tree using the internal cross-validation
+procedure:
+
+We now illustrate this package using some examples.
+
+## Example 1: Iris Data
+
+In this example we will try to simply introduce the tree-building process.  
+Let's start with an "almost non pruned" tree:
+
+```{r iris_1}
+require(pROC)
+require(caret)
+require(rpart)
+set.seed(123456)
+iris_rp <- rpart(Species ~ ., method = "class", data = iris,
+								 control = rpart.control(minsplit = 4, cp = 0.000001))
+```
+
+We can control the rules and splits using `control` option in `rpart` algorithm.
+For example, the minimum number of observations for a node to be considered for a split is given by
+using `minsplit`. Minimum observations for a child node to consider a rule for node
+split is given by using `minbucket`.  
+Now we print the contents of produced tree:
+
+```{r iris_2}
+# Print the object
+print(iris_rp)
+```
+In above output a summary of splitting procedure is shown:
+
+1. At first step, the "root only" tree is evaluated;
+2. At the second step, the procedure scans all the variables looking for the partition that maximally reduces the chosen "variabiliy" measure (Gini index or Entropy measure) on the dependent variable; then the predictor ("feature") that minimizes the variability, with its partition, is used as first "branch" (in this case, `Petal.Length` with threshold equal to 2.45), and the data set is splitted in two subsets;
+3. At the third step, at each subset the procedure scans again all the variables looking for the partition that minimizes the "variabiliy" measure on the dependent variable, and then retains the predictor ("feature") that maximally reduces the variability, with its partition (`Petal.Width` and 1.75); then the sub-dataset is again splitted;
+4. And so on ....
+
+Below a detailed summary of tree is reported:
+```{r iris_3}
+# Detailed summary
+summary(iris_rp)
+```
+And finally we produce a graph representing the tree:
+
+```{r iris_4}
+plot(iris_rp, uniform = TRUE)
+text(iris_rp)
+```
+
+
+
+To better read the dendrogram there are lot of options:
+
+```{r bp1}
+plot(iris_rp, uniform = TRUE, compress = TRUE, margin = 0.2, branch = 0.3)
+text(iris_rp, use.n = TRUE, digits = 3, cex = 0.6)
+```
+
+If we want to see the labels of a dendrogram object created by `rpart`, we can use `labels()`:
+
+```{r dg}
+labels(iris_rp)
+```
+
+To see how the feature (i.e., predictor variables) space has been partitioned in this example, we produce the following graph:
+
+```{r message=FALSE}
+require(ggplot2)
+```
+
+```{r bq}
+ggp <- ggplot(data = iris)
+ggp <- ggp + geom_point(aes(x = Petal.Length, y = Petal.Width, colour = Species))
+ggp <- ggp + geom_vline(xintercept = 2.45, linetype = 2)
+ggp <- ggp + geom_segment(x = 2.45, y = 1.75, xend = max(iris$Petal.Length)*2,yend = 1.75, linetype = 2)
+ggp <- ggp + geom_segment(x = 4.95, y = min(iris$Petal.Width)*-2, xend = 4.95,yend = 1.75, linetype = 2)
+ggp <- ggp + geom_segment(x = 2.45, y = 1.65, xend = 4.95, yend = 1.65, linetype = 2)
+ggp <- ggp + geom_segment(x = 4.95, y = 1.55, xend = max(iris$Petal.Length)*2,yend = 1.55, lty = 2)
+ggp <- ggp + ggtitle("Partitions with respect to Petal.Length and Petal.Width" )
+ggp
+```
+
+An important concept in tree-based methods is that of pruning: it allows
+to avoid overfitting. It is important to:
+
+   - ensure that the tree is small enough to avoid putting random
+     variation into predictions,
+   - ensure that the tree is large enough to avoid putting systematic biases
+     into predictions.
+
+To prune the tree, `rpart` uses the complexity measure $R(\alpha)$:  
+$R(\alpha) = R + \alpha \cdot T$  
+where
+
+ - $R$ is the "tree risk" (for classification: the misclassification error;
+    for regression: RSS);
+ - $\alpha$ is the complexity parameter which is a penalty term that controls
+    the size of the tree;
+ - $T$ is the number of splits/terminal nodes in tree
+
+When $\alpha$ grows, the tree with minimum $R(\alpha)$ is a smaller subtree of original one.  
+When $\alpha$ grows, the sequence of subtrees is nested.  
+At each subtree is "linked" a value of complexity parameter for which we can accept the
+subtree as the "minimum complexity" one.  
+
+The following code prints a table of optimal pruning based on a complexity parameter:
+
+```{r br}
+printcp(iris_rp)
+```
+
+In above table:
+
+- `CP` is the $\alpha$ parameter; 
+- `nsplit` is the number of splits of best tree found based on `CP`;
+- `rel error` is the relative (resubstitution) prediction error of the selected tree with respect to the "root only" tree; the resubstitution error is calculated on the same data where the tree has been trained.
+- `xerror` is the cross-validation error, obtained by splitting the data in `xval` subsets, applying the training procedure iteratively on data where one of the subsets is removed, and then predicting on the removed subset; `xerror` is the mean of `xval` obtained cross-validation errors
+- `xstd` is the standard deviation of error estimated via cross-validation
+
+The tree with the lowest cross-validated error rate (xerror) is number 3.  
+The tree yielding the minimum resubstitution error rate is tree number 5.  
+The largest tree will always yield the lowest resubstitution error rate.  
+
+Two are the criterions used to decide the amoount of tree pruning:
+
+- The tree with lowest cross-validation error
+- The smallest tree with cross-validation error less than the minimum cross-validation error plus one time its standard deviation.  
+
+A plot of the resubstitution error rate for the tree is obtained by:
+
+```{r bs}
+ggp <- ggplot(data = data.frame(iris_rp$cptable, Tree.number = 1:nrow(iris_rp$cptable)), mapping = aes(x = Tree.number, y = rel.error))
+ggp <- ggp + geom_line()
+ggp <- ggp + geom_point()
+ggp
+```
+
+The plot of the cross-validation error rate is instead obtained with:
+
+```{r bt}
+plotcp(iris_rp)
+```
+
+As already noted, the simplest tree with the lowest `xerror` value is tree number 3.  
+Notice that the values in abscissa are different from the ones in CP table: graph cp values are calculate as the geometric mean of adjacent values of CP table.
+
+The following code shows how to extract subtrees from a given tree:
+
+```{r bu, eval=FALSE}
+plot(iris_rp, uniform = TRUE)
+text(iris_rp)
+iris_rp1 <- snip.rpart(iris_rp)
+plot(iris_rp1)
+text(iris_rp1)
+```
+
+Code for a (not shown) quick plot of errors with legends placed by user:
+
+```{r bv, eval=FALSE}
+plotcp(iris_rp)
+with(iris_rp, {
+	lines(cptable[, 2] + 1, cptable[ , 3], type = "b", col = "red")
+	legend("topright", c("Resub. Error", "CV Error", "min(CV Error) + 1se"),
+				 lty = c(1, 1, 2), col = c("red", "black", "black"), bty = "n")
+})
+```
+
+And here is the custom-pruned tree:
+
+```{r bw}
+iris.pruned <- prune(iris_rp, cp=0.01)
+plot(iris.pruned)
+text(iris.pruned)
+```
+
+Finally, the partition of the feature space for the pruned tree:
+
+```{r bx}
+ggp <- ggplot(data = iris)
+ggp <- ggp + geom_point(aes(x = Petal.Length, y = Petal.Width, colour = Species))
+ggp <- ggp + geom_vline(xintercept = 2.45, linetype = 2)
+ggp <- ggp + geom_segment(x = 2.45, y = 1.75, xend = max(iris$Petal.Length)*2,yend = 1.75, linetype = 2)
+ggp <- ggp + ggtitle("Partitions with respect to Petal.Length and Petal.Width for the pruned tree")
+ggp
+```
+
+The predictions are then obtained as usual with the predict() function:
+
+```{r by}
+iris_pred <- predict(iris.pruned, type = "class")
+```
+
+The corresponding confusion matrix is obtained simply as
+
+```{r bz}
+table(iris_pred, iris$Species)
+```
+
+Or, using `confusionMatrix()`:
+```{r iris_confusionmatrix}
+confusionMatrix(data = iris_pred, reference = iris$Species)
+
+```
+
+## Example 2: German Credit Data
+
+Let's consider the `german` dataset, which deals with German credit data (see the section *Introduction and datasets used* for further information).  
+In this case we wanto to predict if a customer will default (Bad) or will pay (Good) on the credit card.
+So, we have an input data which has both good and bad customers. We want to find out the rules or conditions which separate Good Customers from bad customers. 
+The rule(s) should help you find out the segments with significantly higher percentage of good customers.
+
+```{r ch}
+table(german$Class)
+```
+
+We first split the sample into training and test sets, to allow the test on tree:
+
+```{r ci}
+set.seed(20)
+sel <- sample(1:1000, size = 600, replace = FALSE)
+train <- german[sel, ]
+test <- german[setdiff(1:1000, sel), ]
+table(train$Class)
+table(test$Class)
+```
+
+We then begin the analysis building the tree without any other specifications:
+
+```{r cj}
+set.seed(20)
+modelg0 <- rpart(Class ~ ., data = train, cp = 0)
+plotcp(modelg0)
+plot(modelg0)
+text(modelg0)
+```
+
+Now, we try to see te ROC curve for the tree:
+
+```{r gc_ROC1}
+probs <- predict(modelg0, newdata = test, type = "prob")[,1] 
+roc(response = (test$Class=="Bad"), predictor = probs, auc = TRUE, ci = TRUE,
+	plot = TRUE, main = "ROC curve on German Credit", legacy.axes = TRUE)
+```
+
+We can now check the tree performaces on train data 
+```{r gc_test1}
+train$pred <- predict(modelg0, newdata = train, type = "class") 
+table(train$pred, train$Class)
+confusionMatrix(data = train$pred, reference = train$Class, positive = "Bad")
+```
+
+And then to check the tree performaces on test data 
+```{r gc_test2}
+test$pred <- predict(modelg0, newdata = test, type = "class") 
+table(test$pred, test$Class)
+confusionMatrix(data = test$pred, reference = test$Class, positive = "Bad")
+```
+
+As expected, the performances of tree in test data are poor with respect to train data.
+We now try to prune the tree at cp = 0.031 (the cp with minimum xval error in graph), to
+see if some overfitting occurred.
+
+```{r ck}
+modelg0 <- prune(modelg0, cp = 0.031)
+plot(modelg0)
+text(modelg0)
+```
+
+Now we can check the tree using the test sample
+
+```{r cl}
+test$pred <- predict(modelg0, newdata = test, type = "class") 
+table(test$pred, test$Class)
+confusionMatrix(data = test$pred, reference = test$Class, positive = "Bad")
+```
+
+By reducing the tree complexity, the performances change. If the global accuracy reduces only a few,
+the number of Bad customers actually found by the tree reduces too. Also, the specificity grows
+while the sensitivity reduces.
+
+The above results might depend from the fact that the tree gives same "importance" to Bad and Good customers. This is 
+not really correct, because the loss for a misclassified Bad customer is greater than the loss due to 
+a misclassified Good customer.
+
+To overtake this problem we can build the tree giving different loss values to
+the two types of misclassification errors, and then giving more "weight"" to
+misclassified `Bad` customers.
+We then set a loss matrix, where we assign a loss of 5 for
+misclassified Bad customers and a loss of 1 for misclassified Good customers.
+
+```{r cm}
+# Reset previous predictions
+train$pred <- NULL
+train$pred <- NULL
+# Set Loss matrix
+(lmat <- matrix(c(0, 1, 5, 0), byrow = TRUE, nrow = 2))
+# Grows the tree
+modelg1 <- rpart(Class ~ ., parms = list(loss = lmat), data = train, cp = 0)
+# CP table
+printcp(modelg1)
+plotcp(modelg1)
+# Tree
+plot(modelg1, uniform = FALSE, compress = TRUE, margin = 0.1, branch = 0.1)
+text(modelg1, use.n = TRUE, digits = 3, cex = 0.6)
+```
+
+Notice that the minimum xerror tree is the one with CP parameter equal to 0.  
+This means that no pruning should be applied to tree without potentially loose in 
+predictive power of tree.
+
+```{r message=FALSE}
+require(rpart.plot) # provides alternative ways to plot the tree
+rpart.plot(modelg1)
+print(modelg1)
+```
+
+Now then we check the tree using the test sample:
+
+```{r co}
+test$pred <- predict(modelg1, newdata = test, type = "class") 
+table(test$pred, test$Class)
+confusionMatrix(data = test$pred, reference = test$Class, positive = "Bad")
+
+```
+
+The global accuracy of tree is reduced again, but the sensitivity has sensibly grown,
+at the cost of a reduction of specificity.
+
+Globally, this last tree model "recognizes" much more Bad customers, with respect to
+the tree that don't use the loss matrix.
+
+<!---
+# Exercises with kyphosis, utilities, uscrimes or Smarket
+--->

@@ -1,0 +1,13 @@
+---
+title: ""
+---
+
+```{r library2, echo=FALSE}
+library2 <- function(x) {
+	vals <- deparse(substitute(x))
+	if (!(vals %in% installed.packages())) {
+		install.packages(vals)
+	}
+	library(vals, character.only = TRUE)
+}
+```

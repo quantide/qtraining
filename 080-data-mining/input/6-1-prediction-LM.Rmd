@@ -1,0 +1,673 @@
+---
+title: "Linear Model Variations (LM)"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+cacheTF <- FALSE
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+# none
+
+## Other datasets used
+# none
+
+###############################################################
+## packages needed: leaps, MASS, pls, glmnet, ddplot2 GGally ##
+###############################################################
+```
+
+
+# Introduction
+
+We now proceed to compare the results from using different alternative
+fitting techniques for a linear model. We do this using some simulated data
+with many independent variables, the first of which is highly correlated with
+some of the others:
+
+```{r a}
+# Generate simulate data
+set.seed(10)
+n <- 1000
+p <- 100
+X <- data.frame(matrix(runif(n*p), nrow = n, ncol = p))
+# Give names to data columns
+names(X) <- paste("x", 1:ncol(X), sep = "")
+# The first column is really correlated with the columns from 2 to 5.
+X$x1 <- X$x2 + 2*X$x3 + 3*X$x4 - 4*X$x5 + rnorm(n, sd = .000001)
+# The model for dependent variable
+X$y <- 4 + 0.2*X$x1 + .5*X$x2 - .9*X$x3 + X$x4 - 0.5*X$x5 + 0.2*X$x6 + rnorm(n, mean = 0, sd = 1)
+
+dt <- X
+rm(X)
+```
+Since in above data frame only the columns from 1 to 6 and 101 are really correlated, 
+a scatterplot matrix of these columns (along with a few of other columns) can be useful to 
+show the relations between variables:
+```{r a2}
+require(ggplot2)
+require(GGally)
+
+ggpairs(data = dt, columns = c(1:10,101), mapping = aes(alpha = 0.3))
+```
+
+And some test on collinearity:
+```{r a3}
+# Collinearity test
+X <- as.matrix(dt[,1:10])
+require(Matrix)
+rankMatrix(X)
+try(solve(t(X)%*%X))
+
+```
+Note that the $(\underline{X}^T \underline{X})^{-1}$ matrix has very high diagonal values.
+This is because of collinearity between predictors. This also will probably produce very
+high standard errors and very unstable  parameter estimates (since the variance/covariance
+matrix of parameter estimates is equal to $\sigma^2 (\underline{X}^T \underline{X})^{-1}$).
+
+To assess the relative predictive performances of the methods that will study, we split the
+dataset into training (75%) and test sets (25%):
+
+```{r b}
+# Splits the data into training and test data frames
+sel_train <- sample(1:nrow(dt), replace = FALSE, size = n*.75)
+dt_train <- dt[sel_train, ]
+dt_test <- dt[setdiff(1:n, sel_train), ]
+```
+
+
+## (1) Ordinary Least Squares (OLS)
+
+This usually does not perform well for models with many independent
+variables and for models with highly correlated independent variables:
+
+```{r c}
+ols_fit <- lm(y ~ ., data = dt_train)
+summary(ols_fit)
+```
+The model finds many non significant parameters; also, as expected, the 
+standard errors of parameters are big. Anyway,  $\hat{\sigma}^2 = 1.002$ 
+means that the training residuals performs almost well.  
+Notice also that the parameter estimates are very far from the true values.
+
+However, to test the predictive performances of model, it must be applied on 
+test data, with following results:
+```{r c2}
+rmse <- summary((predict(ols_fit, newdata = dt_test) - dt_test$y)^2)
+print(rmse)
+ggp <- ggplot(data = data.frame(fit=predict(ols_fit, newdata = dt_test), obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+  geom_point() +
+  ggtitle("OLS: Observed Vs. Predicted") +
+  xlab("Observed Y's") + ylab("Fitted Y's") + 
+  geom_abline(slope = 1,intercept = 0, colour="red")
+print(ggp)
+```
+
+The resuduals on test data show a greater variability with respect to residuals on train data.
+
+Maybe, by searching a more parsimonious model we could obtain better predictions.
+
+## (2) Forward Stepwise Selection
+
+Forward stepwise selection begins with a model containing no predictors, and
+then adds one predictor at a time to the model until all of the "significant" predictors
+are in the model. The "Forward stepwise" selection procedure try to minimize an optimality
+criterion function (often AIC), and acts as follows:
+
+1. Start from an "initial model" (often the "only mean, no predictors" model) and
+  calculates the criterion function
+2. Add the predictor that best reduces the criterion function
+3. Add another predictor (if exists) that best reduces the criterion function
+4. Check if the previously inserted predictors can be removed from model (i.e., check
+  if removing some previously inserted variables the criterion function reduces); 
+  remove them one by one
+5. Are there other predictors that if added to model reduce the criterion function?
+  If Yes, then go to step 3.
+6. Exit
+
+While computationally advantageous, for example,  with respect to best subset selection, the
+Forward Stepwise method does not guarantee to find the best possible model out of all models
+containing subsets of the $p$ predictors. For instance, suppose that in a given
+dataset with $p = 3$ predictors, the best possible one-variable model contains
+$X1$, and the best possible mode is a two-variable one that contains $X2$ and $X3$. Then
+forward stepwise selection could fail to select the best possible two-variable
+model, because at the second step the model couldn't be able to remove $X1$.
+
+```{r message=FALSE}
+require(MASS)
+```
+
+```{r g}
+m_init <- lm(y ~ 1, data = dt_train)
+upr <- paste("x",1:100, sep="", collapse=" + ")
+upr <- as.formula(paste("~",upr))
+forw_fit <- stepAIC(m_init, scope = list(upper = upr, lower = ~ 1) , direction = "forward", trace = FALSE)
+summary(forw_fit)
+```
+In this case, the parameter estimates are close enough to the true parameter values.  
+Also, too many variables were selected by the procedure (with respect to true model). Maybe, it could depend
+from the multicollinearity.
+
+The predictive performaces are:
+```{r g1}
+# Plots Observed Vs. Predicted values
+ggp <- ggplot(data = data.frame(fit=predict(forw_fit, newdata = dt_test), obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+  geom_point() +
+  ggtitle("Forward Stepwise: Observed Vs. Predicted") +
+  xlab("Observed Y's") + ylab("Fitted Y's") + 
+  geom_abline(slope = 1,intercept = 0, colour="red")
+print(ggp)
+
+y_pred_forw <- predict(forw_fit, newdata = dt_test)
+rmse <- rbind(rmse, summary((y_pred_forw - dt_test$y)^2))
+rownames(rmse)[nrow(rmse)] <- "Forward"
+rmse
+```
+
+In this case the Forward stepwise selection gives almost good results.
+The best model selected is a few "redundant" (at least with respect to best subset model),
+but it shows good predictive performances.
+
+## (3) Backward Stepwise Selection
+
+Unlike forward stepwise selection, backward stepwise selection begins with
+the full least squares model containing all predictors, and then iteratively
+removes the least useful predictor, one-at-a-time. Also the "Backward stepwise"
+selection procedure try to minimize an optimality criterion function (often
+AIC), and acts as follows:
+
+1. Start from an "initial model" (often the "all predictors" model) and
+  calculate the criterion function
+2. Remove the predictor that best reduces the criterion function
+3. Remove another predictor (if exists) that best reduces the criterion function
+4. Check if the previously removed predictors can be re-inserted into model (i.e.,
+  check if adding some previously removed variables the criterion function reduces); 
+  add them one by one
+5. Are there other predictors that when removed from model reduce the criterion function?
+  If Yes, then go to step 3.
+6. Exit
+
+Like forward stepwise selection, backward stepwise selection does not
+guarantee to yield the best model containing a subset of the $p$ predictors.
+In contrast to forward stepwise, Backward selection requires that the sample
+size $n$ is larger than the number of variables $p$ (so that the full model
+can be fit).
+Anyway, the Backward stepwise procedure usually obtains better results with respect to
+the Forward one.
+
+```{r h, cache=cacheTF }
+m_init <- lm(y ~ ., data = dt_train)
+back_fit <- stepAIC(m_init, scope = list(upper = ~ ., lower = ~ 1) , direction = "backward", trace = FALSE)
+summary(back_fit)
+
+```
+Also in this case, the parameter estimates are almost close to the true parameter values.  
+Perhaps too many variables were selected by the procedure. Maybe, it could depend
+from the multicollinearity too.
+
+The predictive performaces:
+```{r h1}
+# Plots Observed Vs. Predicted values
+ggp <- ggplot(data = data.frame(fit=predict(back_fit, newdata = dt_test), obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+  geom_point() +
+  ggtitle("Backward Stepwise: Observed Vs. Predicted") +
+  xlab("Observed Y's") + ylab("Fitted Y's") + 
+  geom_abline(slope = 1,intercept = 0, colour="red")
+print(ggp)
+
+y_pred_back <- predict(back_fit, newdata = dt_test)
+rmse <- rbind(rmse, summary((y_pred_back - dt_test$y)^2))
+rownames(rmse)[nrow(rmse)] <- "Backward"
+rmse
+```
+
+In this case, Backward Stepwise yields a few worse results than Forward one.
+
+
+## (4) Best Subset Selection 
+
+In best subset selection we fit a separate least squares regression for each
+possible combination of the $p$ predictors. That is, we fit all models that
+contain exactly one predictor, all models that contain exactly two
+predictors, and so forth. We then identify the model that is "best"" with respect
+to a given optimality criterion (typically, adjusted R-squared, BIC, AIC, or Mallows' Cp).
+
+While best subset selection is a simple and conceptually appealing approach,
+it suffers from computational limitations. The number of possible models
+that must be considered grows rapidly as the number of potential predictors
+increases. With $p$ = 10, there are approximately 1,000 possible models to
+consider, therefore it becomes computationally intractable for a number of
+variables not too big (around 40). Moreover, best subset selection does not
+perform well in situations where $p > n$, that is when the number of predictors
+is larger than the number of cases, as well as when some of the predictors
+are strongly correlated.
+
+Anyway, the package `leaps` contains the `regsubsets()` function that implements the best
+subset approach:
+
+```{r message=FALSE}
+require(leaps)
+```
+
+```{r d1, warning=FALSE}
+# Performs a best-subset exhaustive (see 'method' parameter) model search
+nvmax <- 20
+dt_t <- dt_train
+dt_train <- dt_train[, c(1:70,101)]
+bs_fit <- regsubsets(x = dt_train[, 1:(ncol(dt_train)-1)], y = dt_train[, ncol(dt_train)], method = "exhaustive", nvmax = nvmax, really.big = TRUE) 
+l <- summary(bs_fit)
+
+# Plots the BIC index
+ggp <- ggplot(data = data.frame(size=1:nvmax, cp=l$cp), mapping = aes(x = size, y = cp)) +
+  geom_point() +
+  xlab("Model size") + ylab("Mallows' Cp")
+print(ggp)
+```
+
+Note: Mallows' $Cp =  \frac{RSS_p}{s^2}-(n - 2p)$, where $s^2$ is the residual standard
+deviation calculated on most complete model, $p$ is the
+number of parameters estimated in model, and $n$ is the sample size.  
+We then select best model according to $Cp$:
+
+```{r e1}
+# Selects the predictors of best model
+bestfeat <- l$which[which.min(l$cp), ]
+# Adds the dependent variable
+bestfeat <- c(bestfeat[-1], TRUE)
+```
+
+Finally, we train and test the best model selected
+
+```{r f}
+m_bestsubset <- lm(y ~ ., data = dt_train[, bestfeat])
+summary(m_bestsubset)
+```
+
+The model on train data seems to select correctly the variables that actually 
+impact on dependent variable. However, almost all the parameters are very far
+from the true parameter values and show a very high p-value. This can depend
+on high multicollinearity.
+
+Let's see the predictive performances:
+
+```{r f2}
+
+# Plots Observed Vs. Predicted values
+ggp <- ggplot(data = data.frame(fit=predict(m_bestsubset, newdata = dt_test), obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+  geom_point() +
+  ggtitle("Best Subset: Observed Vs. Predicted") +
+  xlab("Observed Y's") + ylab("Fitted Y's") + 
+  geom_abline(slope = 1,intercept = 0, colour="red")
+print(ggp)
+
+y_pred_bestsubset <- predict(m_bestsubset, dt_test[, bestfeat])
+rmse <- rbind(rmse, summary((y_pred_bestsubset - dt_test$y)^2))
+rownames(rmse)[1] <- "OLS"
+rownames(rmse)[nrow(rmse)] <- "Best subset"
+rmse
+
+dt_train <- dt_t
+rm(dt_t)
+```
+
+Best subset seems to predict better. This may depend on the big number of
+predictors selected from above methods, that produces an overfitting on data: the 
+above methods predict well the train data, but not the test data, also if
+it arises from the same process (by construction).  
+Note that this result can change if we use a different criterion to select the
+best model (for example, AIC or BIC instead of Mallows' Cp).
+
+## (5) Ridge Regression
+
+When many predictors are available, and when high collinearity exists between
+predictors, then the estimates can become unstable and less reliable.
+
+A method to solve this problem, is by fitting a model containing
+all $p$ predictors using a technique that "constraints" or "regularizes" the
+coefficient estimates, or equivalently, that shrinks the coefficient
+estimates towards zero. Shrinking the coefficient estimates has the effect of
+significantly reducing the coefficients' variance. The best-known technique
+for shrinking the regression coefficients towards zero is ridge regression.
+
+In ridge regression coefficients are estimated by minimizing a slightly
+different quantity with respect to least squares. In particular, the
+objective function in ridge regression is a penalized version of the sum of
+squared deviations used in least squares. The penalty (called a shrinkage
+penalty), is small when the coefficients are close to zero, and so it has the
+effect of shrinking the estimates towards zero. In the objective function
+we find a tuning parameter that regulates the amount of shrinkage.  
+In mathematical form, the ridge regression search for the $\hat{\underline{\beta}}=(\beta_0, \beta_1, \dots, \beta_p)^T$ values
+that minimize the following modified least squares criterion:
+
+$$\sum_{i=1}^n \left(y_i - \underline{x}_i^T\underline{\beta} \right)^2 + \lambda \sum_{j=1}^p \beta_j^2$$
+
+Where $\lambda$ is the penalization parameter. The selection of a good value for $\lambda$ is critical, and it is
+typically carried out by cross-validation.
+
+Ridge regression produces less variable and less correlated coefficient estimates
+at the cost of a slight increase in the estimation bias.  
+Also ridge regression tends to "push toward zero" the estimated coefficients.  
+Notice that ridge regression does not penalize the intercept term.
+
+Ridge regression has been developed to overtake the problem induced by highly
+correlated predictors (so called multicollinearity). In fact, the least
+squares estimates of standard error of the coefficients can be expressed as
+$s^2/((n - 1) \cdot Var(x_j) \cdot 1/(1 - R_j)$, where $s^2$ is the residual variance,
+$Var(x_j)$ is the variance of $j$-th predictor, and $R_j$ is the determination
+coefficient of the regression of the $j$-th predictor on the remaining
+predictors. The factor $1/(1 - R_j)$ is called the variance inflation factor
+(VIF).
+
+In our example, the VIF for the first predictor is given by:
+
+```{r i}
+1/(1 - summary(lm(x1 ~ ., data = dt_train[,1:100]))$r.squared)
+```
+
+which is very high! The most common threshold used for the VIF is 10.
+
+In R, the `lm.ridge()` function is available inside the MASS package. This function 
+performs ridge regression and gives tools to select the best value of $\lambda$:
+
+```{r j}
+ridge_fit <- lm.ridge(y ~ ., data = dt_train, lambda = seq(0, 400, by = 0.01))
+select(ridge_fit) ## Note: HKB and L-W are alternative estimators of ridge parameter
+# Plot of CV Lambda values with its RSS:
+ggp <- ggplot(data = as.data.frame(ridge_fit[c("lambda", "GCV")]), mapping = aes(x=lambda, y=GCV)) +
+  geom_line() +
+  xlab("Lambda (tuning parameter)") + ylab("Generalized Cross-Validation (GCV) values")
+print(ggp)
+
+ridge_fit <- lm.ridge(y ~ ., data = dt_train, lambda = ridge_fit$GCV[which(ridge_fit$GCV == min(ridge_fit$GCV))])
+```
+
+Since there is no predict method implemented, we need to do it by ourselves:
+
+```{r k}
+y_pred_ridge <- as.numeric(cbind(1, as.matrix(dt_test[, 1:(ncol(dt) - 1)])) %*% coef(ridge_fit))
+```
+
+And now the predictive performaces:
+```{r k1}
+# Plots Observed Vs. Predicted values
+ggp <- ggplot(data = data.frame(fit=y_pred_ridge, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+  geom_point() +
+  ggtitle("Ridge regression: Observed Vs. Predicted") +
+  xlab("Observed Y's") + ylab("Fitted Y's") + 
+  geom_abline(slope = 1,intercept = 0, colour="red")
+print(ggp)
+```
+
+The corresponding RMSE is given by
+
+```{r l}
+rmse <- rbind(rmse, summary((y_pred_ridge - dt_test$y)^2))
+rownames(rmse)[nrow(rmse)] <- "Ridge"
+rmse
+```
+
+We can see that, at least in this case, ridge regression is not able to produce very
+accurate predictions. This is probably due to an overfitting effect, since no variable
+selection has been performed. We could try to first select the variables using one of
+above methods, and then, if a collinearity between predictors appears, apply ridge 
+regression.
+
+Finally, the coefficient estimates, compared with the OLS one:
+
+```{r m}
+coef(ridge_fit)
+coef(ols_fit)
+```
+
+As we can see, the estimated coefficients are more similar to the true ones than many
+other techniques previusly used.
+
+## (6) Principal Components Regression
+
+We now explore two methods that transform the predictors and then fit a least
+squares model using the transformed variables. The first approach is called
+principal component regression (PCR), which first constructs the
+principal components of the matrix of $X$ variables, and then used these as the
+predictors in a least squares linear regression model. In
+PCR it is hence assumed that the directions in which $X1$,...,$Xp$ show the most
+variation are the directions that are associated with $Y$. While this
+assumption is not guaranteed to be true, it often turns out to be a
+reasonable enough approximation.
+
+In PCR, the number of principal components, is typically chosen by cross-
+validation. The `pls` package contains a function, `pcr()`, that implements the
+approach we just described:
+
+```{r message=FALSE}
+require(pls)
+```
+
+```{r n}
+pcr_fit <- pcr(y ~ ., data = dt_train, validation = "CV")
+```
+
+We now select the number of components (by CV)
+
+```{r o}
+# Plot of CV components values with its RSS:
+ggp <- ggplot(data = data.frame(comps=1:100, t(pcr_fit$validation$PRESS)), mapping = aes(x=comps, y=y)) +
+  geom_line() +
+  xlab("Number of components") + ylab("Generalized Cross-Validation (GCV) values")
+print(ggp)
+
+(ncomp <- which.min(pcr_fit$validation$PRESS))
+```
+
+Surprisingly, the number of components selected by PCR is equal to `r ncomp` (by definition of 
+predictors' matrix, there is only a variable correlated with the others, and about 94 non useful
+predictors).
+We can then calculate the predicted values
+
+```{r q}
+y_pred_pcr <- as.vector(predict(pcr_fit, dt_test, ncomp = ncomp))
+rmse <- rbind(rmse, summary((y_pred_pcr - dt_test$y)^2))
+rownames(rmse)[nrow(rmse)] <- "PCR"
+rmse
+```
+
+```{r q1}
+# Plots Observed Vs. Predicted values
+ggp <- ggplot(data = data.frame(fit=y_pred_pcr, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+  geom_point() +
+  ggtitle("Ridge regression: Observed Vs. Predicted") +
+  xlab("Observed Y's") + ylab("Fitted Y's") + 
+  geom_abline(slope = 1,intercept = 0, colour="red")
+print(ggp)
+```
+
+In this case, the results are better than the ones of OLS and backward and forward stepwise.  
+A possibile step ahead  could be to try to reduce the model starting from the matrix of
+`r ncomp` principal components.
+
+## (7) Partial Least Squares (PLS)
+
+As we already pointed out, in PCR there is no guarantee that the directions
+that best explain the predictors will also be the best directions to use for
+predicting the response. In other words, in finding the components, the
+response Y is not used.
+
+Partial least squares (PLS), instead, identifies the components in a
+supervised way, that is, it makes use of the response $Y$ in order to identify
+new features that not only approximate the old features well, but also that
+are related to the response. Roughly speaking, the PLS approach attempts to
+find directions that help explain both the response and the predictors. As
+with PCR, the number of partial least squares directions used in PLS is a
+tuning parameter that is typically chosen by cross-validation. 
+Actually, PLS splits the model in two "chunks":  
+$X=TP^T + E$  
+$Y=UQ^T + F$  
+Where $E$ and $F$ are error matrices, $P$ and $Q$ are factor loadings, and $T$
+and $U$ are factor scores.  
+PLS try to maximize the correlation between $T$ and $U$.  
+$Y$ can be multivariate.  
+Also, PLS can deal without any problems with data in which the number of cases $n$
+is much less than the number $p$ of independent variables (e.g., NIR spectrum analysis)
+
+```{r r}
+pls_fit <- as.vector(plsr(y ~ ., data = dt_train, validation = "CV"))
+# Plot of CV components values with its RSS:
+ggp <- ggplot(data = data.frame(comps=1:100, t(pls_fit$validation$PRESS)), mapping = aes(x=comps, y=y)) +
+  geom_line() +
+  xlab("Number of components") + ylab("Generalized Cross-Validation (GCV) values")
+print(ggp)
+
+(ncomp <- which.min(pls_fit$validation$PRESS))
+y_pred_pls <- predict(pls_fit, dt_test, ncomp = ncomp)
+rmse <- rbind(rmse, summary((y_pred_pls - dt_test$y)^2))
+rownames(rmse)[nrow(rmse)] <- "PLS"
+rmse
+```
+
+PLS reduces even to `r ncomp` the number of features (independent variables) in model.
+The predictive results are almost good, also if the error is between stepwise and PCR
+results.
+
+## (8) `glmnet` (Elastic-Net)
+
+`glmnet` is a package that fits a generalized linear model via penalized
+maximum likelihood. The regularization path is computed at a grid of values
+for the regularization parameter. The algorithm is extremely fast, and can
+exploit sparsity in the input matrix $X$. It fits linear, logistic and
+multinomial, Poisson, and Cox regression models.
+
+The _elastic net_  approach (in linear model) tries to minimize the following
+criterion function:
+$$\frac{\sum_{i=1}^n \left(y_i - \underline{x}_i^T\underline{\beta} \right)^2}{n} + \lambda \sum_{j=1}^p \left[\alpha | \beta_j| +(1-\alpha) \beta_j^2 \right]$$
+
+Where $\underline{\beta}=(\beta_0, \beta_1, \cdots, \beta_p)^T$, (with $\beta_0$
+the intercept), $0 \le \alpha \le1$, and $\lambda$ is the penalty term.  
+
+When $\alpha=1$, then the so-called _LASSO_ (Least Absolute Shrinkage and Selection
+Operator) penalty term is used, that is based on $L_1$ norm.  
+The use of the $L_1$ penalty causes a subset of the solution coefficients $\beta_j$
+to be exactly zero, for a sufficiently large value of the tuning parameter $\lambda$.  
+
+When $\alpha=0$, then the above seen _ridge_ penalty term is used, that is based on $L_2$
+norm.  
+The ridge penalty, as already seen, tends to shrink the coefficients of correlated
+variables toward each other.
+
+Elasticnet is introduced as a compromise between these two techniques, and has a penalty
+which is a mix of $L_1$ and $L_2$ norms. In the package, $\lambda$ may be estimated by
+cross-validation, while (currently) $\alpha$ is set by the user.
+
+```{r message=FALSE}
+require(glmnet)
+```
+
+```{r s}
+set.seed(10)
+```
+
+We first search for a "good" value for `lambda`:
+
+```{r t}
+# Set folding parameter
+foldid <- sample(rep(seq(10),length=nrow(dt_train)))
+cv <- cv.glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha = 0.9, foldid=foldid)
+plot(cv)
+```
+
+The plot shows that a good lambda parameter in model is in between 5 and 20.
+
+```{r u}
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = cv$lambda.min, alpha = 0.9)
+coef(glmnet_fit)
+y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
+rmse <- rbind(rmse, summary((y_pred_glmnet - dt_test$y)^2))
+rownames(rmse)[nrow(rmse)] <- "glmnet"
+rmse
+```
+
+`cv$lambda.min` returns the value of lambda for which the minimum value of CV error is obtained.
+
+If we want to see what happens when variyng the lambda parameter, we can use the `plot()` method
+
+```{r v}
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha=1) # default alpha (LASSO)
+plot(glmnet_fit,xvar="lambda")
+
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha=0.9) # elastic-net
+plot(glmnet_fit,xvar="lambda")
+
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha=0) # ridge
+plot(glmnet_fit,xvar="lambda")
+```
+
+We now try other combinations of lambda and alpha. Let's try to use the lambda.1se value obtained from CV:
+
+```{r w}
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = cv$lambda.1se, alpha = 0.9)
+y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
+summary((y_pred_glmnet - dt_test$y)^2)
+```
+
+Here, we serach for the best `lambda` value for with `alpha = 1`:
+
+```{r x}
+cv <- cv.glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha = 1)
+plot(cv)
+```
+
+The plot shows that the lambda parameter in model is between 5 and 15.
+
+```{r y}
+# Plots the model arameters with alpha=0 (ridge) when varying the L1 norm
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha = 0)
+plot(glmnet_fit, label = TRUE)
+
+# Compares the models with alpha=1 (LASSO) with lambda.min and lambda.1se
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = cv$lambda.min, alpha = 1)
+y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
+summary((y_pred_glmnet - dt_test$y)^2)
+
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = cv$lambda.1se, alpha = 1)
+y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
+summary((y_pred_glmnet - dt_test$y)^2)
+```
+
+Results for `alpha` = 0.9 and `alpha` = 1 are substantially comparable. Also, using `lambda.min` and `lambda.1se`
+seems do not change sensibly the results.
+Anyway, it seems that the best solution is the LASSO one.
+
+Now we perform a grid search for the parameters pairs (`lambda`, `alpha`) that produce the best model:
+```{r z}
+alphas <- (0:101)/101
+cv_fits <- lapply(X = alphas,FUN = function(a, dt_train, foldid){
+      fit <- cv.glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha = a, foldid = foldid)
+      return(fit)
+    },
+    dt_train=dt_train, foldid=foldid
+  )
+
+mins <- t(sapply(X = cv_fits, FUN = function(x){return(c(lambda=x$lambda.min, cvm=min(x$cvm, na.rm = TRUE) ))}))
+wm <- which.min(mins[,"cvm"])
+alpha_opt <- alphas[wm]
+(opt <- c(alpha=alpha_opt, mins[wm,]))
+
+glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = opt["lambda"], alpha = opt["alpha"])
+coef(glmnet_fit, label = TRUE)
+y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
+
+rmse <- rbind(rmse, summary((y_pred_glmnet - dt_test$y)^2))
+rownames(rmse)[nrow(rmse)] <- "best-glmnet"
+rmse
+
+```
+
+Suprisingly, the best model is not really "best". Maybe, this could be due to rounding effects.
+Anyway, the differences between this model and the previous one are really small.
+
+<!---
+# Exercises?
+--->

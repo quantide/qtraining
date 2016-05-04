@@ -1,0 +1,457 @@
+---
+title: "Univariate Descriptions"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+require(qdata)
+data(wea, forbes94, volcano3d)
+
+## Other datasets used
+# iris
+
+#########################################################
+## packages needed: Hmisc, fBasics, mice, ggplot2, rgl ##
+#########################################################
+```
+ 
+
+# Introduction
+
+Univariate analysis is the simplest one. Despite the fact that a plethora of tools has been developed for this aim, these are usually not very sophisticated. The tools here presented probably are the most known and used too. Anyway, some introduction to them may be useful.
+ 
+
+# Numerical Analysis
+
+To illustrate some examples of descriptions, the `wea` data frame will be used first (see the section *Introduction and datasets used* for further information).  
+
+The simplest text-based statistical summary of a dataset is provided by `summary()`. Let's apply it to the `wea` dataset (only columns from 7 to 9: `Sunshine`, `WindGustDir` and `WindGustSpeed`).
+
+```{r summary-weather}
+summary(wea[,7:9])
+```
+
+A more detailed summary is obtained from `describe()`, provided by the `Hmisc` package. The `Hmisc` package contains many functions useful for data analysis, high-level graphics, utility operations, and many other functionalities.
+To illustrate the `describe()` function we first load `Hmisc`:
+
+```{r require-Hmisc, message=FALSE}
+require(Hmisc)
+```
+
+For numeric variables, `describe()` returns two more deciles (10% and 90%) and two
+other percentiles (5% and 95%). The output continues with a list of the lowest few and highest few observations of the variable. This extra
+information is quite useful in building up our picture of the data.
+
+```{r describe-cont-example}
+describe(wea$Sunshine)
+```
+
+For categorical variables, `describe()` produces also the frequency count and the corresponding percentage for each level. 
+
+```{r describe-cat-example}
+describe(wea$WindDir9am)
+```
+
+An even more detailed summary of the numeric data is provided by `basicStats()` from `fBasics` (Wuertz et al., 2010).
+
+```{r require-fBasics, message=FALSE}
+require(fBasics)
+```
+
+Though intended for time series data, it provides useful statistics in general, as we see in the code box below.
+
+```{r basicStats-fBasics}
+basicStats(wea$Sunshine)
+```
+
+Anyway, a frequent issue in data analysis is the presence of `NA`'s in data. There can be many reasons for missing values, including the fact that the data is hard to collect and so not always available.
+
+Knowing why or when the data is missing is important in deciding how to deal with the missing values.
+The nature of the missing data can be explored using `md.pattern()` from `mice` package:
+
+```{r require-mice, message=FALSE}
+require(mice)
+```
+
+```{r md_pattern}
+md.pattern(wea[,7:10])
+```
+
+`md.pattern()` returns a matrix with `ncol(x)+1` (where `x` is the analyzed data frame) columns, in which each row corresponds to a missing data pattern (`1`=observed, `0`=missing). Rows and columns are sorted in increasing amounts of missing information. The last column shows the "complexity" of missing data pattern (= the number of variables with missing data in that pattern), while the last row contains counts of missing data for each column of data frame, and total.
+
+This function does not strictly perform univariate analysis (as from chapter title), but is useful for investigating any structure of missing observation in the data. In specific case, the missing data pattern could be (nearly) monotone. 
+
+ To perform a so-called *complete-case* analysis using only the data with no missing values, you can use the `complete.cases()` function, which returns a logical vector indicating which cases are complete:
+
+```{r summarycompletecases,warning=FALSE,message=FALSE}
+summary(wea[, 7:10])                              # NAs still in the data
+summary(wea[complete.cases(wea[,7:10]), 7:10])    # NAs removed
+```
+
+To calculate aggregation measures such as mean, summary, etc., by the levels of a categorical variable you can use the `tapply()` function:
+
+```{r tapply, warning=FALSE, message=FALSE}
+tapply(X = wea$Sunshine, INDEX = wea$WindGustDir, FUN = mean, na.rm = TRUE)
+tapply(X = wea$Sunshine, INDEX = wea$WindGustDir, FUN = length)
+table(wea$WindGustDir, useNA = "ifany")
+tapply(X = wea$Sunshine, INDEX = wea$WindGustDir, FUN = summary)
+```
+
+Notice above that the combination between the `tapply()` and the `length()` functions gives (almost) the same result as the `table()` function, which gives a frequency table.  
+With the `aggregate()` function you can get the same results of `tapply()` in a convenient form. Furthermore with `aggregate()` you can get aggregation measures by combinations of levels of more than one categorical variable:
+
+```{r aggregate, warning=FALSE, message=FALSE}
+aggregate(x = wea$Pressure9am, by = list(wgd=wea$WindGustDir), FUN = summary)
+(res <- aggregate(x = wea$Pressure9am, by = list(wgd=wea$WindGustDir, rt=wea$RainToday), FUN = summary))
+str(res)
+(res <- cbind(res[,1:2], res$x))
+str(res)
+(res <- aggregate(x = wea[,c("Pressure9am","Pressure3pm")],
+                  by = list(wgd=wea$WindGustDir, rt=wea$RainToday), FUN = summary))
+```
+
+With the `by()` function you can get results similar to those obtained by `aggregate()`:
+
+```{r by, warning=FALSE, message=FALSE}
+by(data = wea[,c("Sunshine","Pressure9am","Pressure3pm")],
+   INDICES = list(wgd=wea$WindGustDir, rt=wea$RainToday), 
+   FUN = summary)
+```
+
+More recent packages (i.e., `dplyr`) allow the researcher to develop by-group analyses in very simple and clear form:
+```{r dplyr_examples, warning=FALSE, message=FALSE}
+require(dplyr)
+
+wea %>% 
+  group_by(WindGustDir, RainToday) %>% 
+  summarise(count = n(),
+            mean_pressure9am = mean(Pressure9am),
+            mean_pressure3pm =mean(Pressure3pm))
+```
+
+`table()`, as already seen, returns the absolute frequency table of a categorical variable. If you want the relative frequency table of a categorical table, you can apply the `prop.table()` function to the output of `table()`. With the `margin` option you can choose to calculate row or column relative frequencies:
+
+```{r prop.table, warning=FALSE, message=FALSE}
+(tbl <- table(wea$WindGustDir, wea$RainToday))
+prop.table(tbl)
+prop.table(tbl, margin = 2)
+prop.table(tbl, margin = 1)
+```
+
+
+# Graphical Analysis
+
+Graphical analysis allows us to take a "picture" of data distribution, and then to recognize patterns and/or catch outliers.  
+
+Let us load the `ggplot2` package and consider the `iris` dataset (see the section *Introduction and datasets used* for further information on it):
+
+```{r loadiris, message=FALSE}
+require(ggplot2)
+```
+
+```{r iris}
+head(iris)
+str(iris)
+```
+
+
+## Time Series Plots
+Suppose that data was collected in a time-ordered fashion. Let us add a datetime column to the dataset and plot the time series:
+
+```{r tsplot, fig.width=plot_with_legend_fig_width_medium}
+iris$datetime <- seq.POSIXt(from = as.POSIXct("2012-10-10 08:00:00"), by = "1 min", length.out = nrow(iris))
+iris$labels <- ifelse(iris$Sepal.Width < 2.8 | iris$Sepal.Width > 3.3, as.character(iris$Sepal.Length), "")
+
+ggp <- ggplot(data = iris, aes(x = datetime, y = Sepal.Length)) +
+  geom_point(aes(col = Sepal.Length))+
+  geom_line(col = "blue") +
+  ggtitle("Time series plot of Sepal.Length") +
+  xlab("Date/time") + ylab("Sepal Length") +
+  geom_text(aes(label = labels))
+print(ggp)
+```
+
+To plot several lines in one graph:
+
+```{r tssplot, fig.width=plot_with_legend_fig_width_large}
+dt <- data.frame(measure = c(iris$Sepal.Length,iris$Sepal.Width),
+                 type = c(rep("Sepal Lentgh",150), rep("Sepal Width",150)), datetime=rep(iris$datetime,2))
+ggp <- ggplot(data = dt, aes(x = datetime, y = measure, col = type)) +
+  geom_line() +
+  ggtitle("Time series plot of Sepal.Length and Sepal.Width") +
+  xlab("Date/time") + ylab("Measures")
+print(ggp)
+```
+
+or (but note the legend):
+
+```{r tss2plot}
+ggp <- ggplot(data = iris, aes(x = datetime, y = Sepal.Length)) +
+  geom_line(colour = "blue") +
+  geom_line(aes(y = Sepal.Width), colour = "red") +
+  ggtitle("Time series plot of Sepal.Length and Sepal.Width") +
+  xlab("Date/time") + ylab("Measures")
+print(ggp)
+```
+
+
+## Histograms
+
+### Basic Histograms
+
+These do both the same thing:
+
+```{r histplot}
+(ggp <- ggplot(iris, aes(x = Sepal.Length)) + geom_histogram(binwidth = .3))
+```
+
+Draw with black outline, white fill:
+
+```{r hist2plot}
+(ggp <- ggplot(iris, aes(x = Sepal.Length)) +
+   geom_histogram(binwidth = .3, colour = "black", fill = "white"))
+```
+
+Plot of density curve:
+
+```{r densityplot}
+(ggp <- ggplot(iris, aes(x = Sepal.Length)) + geom_density())
+```
+
+Histogram overlaid with kernel density curve:
+
+```{r densityhistplot}
+ggp <- ggplot(iris, aes(x = Sepal.Length)) +
+  geom_histogram(aes(y = ..density..),      # Histogram with density instead of count on y-axis
+                 binwidth = .3, colour = "black", fill = "white") +
+  geom_density(alpha = .2, fill = "#FF6666")  # Overlay with transparent density plot
+print(ggp)
+```
+
+Histogram overlaid with kernel density curve and bars coloured with density values:
+
+```{r densityhistplot_colouredbars}
+ggp <- ggplot(iris, aes(x = Sepal.Length)) +
+  geom_histogram(aes(y = ..density.., fill = ..density..), # Histogram with density instead of count on y-axis
+                 binwidth = .3, colour = "black") +
+  geom_density(alpha = .2, fill = "#FF6666")  # Overlay with transparent density plot
+print(ggp)
+```
+
+Histogram with mean line:
+
+```{r histwithmeanplot}
+ggp <- ggplot(iris, aes(x = Sepal.Length)) +
+  geom_histogram(binwidth = .5, colour = "black", fill = "white") +
+  geom_vline(aes(xintercept = mean(Sepal.Length, na.rm = TRUE)),   # Ignore NA values for mean
+                        color = "red", linetype = "dashed", size = 1)
+print(ggp)
+```
+
+Density plots with semi-transparent fill (not really univariate, but an high-impact plot):
+
+```{r densityplots, fig.width=plot_with_legend_fig_width_large, warning=FALSE, message=FALSE}
+(ggp <- ggplot(dt, aes(x = measure, fill = type)) + geom_density(alpha = .3))
+(ggp <- ggplot(dt, aes(x = measure, fill = type)) + geom_histogram(alpha = 0.3, position = "identity")) # position="identity" is used to avoid stacked histograms
+rm(dt)
+```
+
+
+## Boxplots
+
+Boxplots in ggplot are "mutivariate" by design. If univariate, by design ggplot requires x and y dimensions. x dimension must be put in graph, and the scale value has to be removed:
+
+```{r boxplot}
+ggp <- ggplot(iris, aes(x = "", y = Sepal.Length)) +
+  geom_boxplot() +
+  xlab("Values")
+print(ggp)
+```
+
+Horizontal layout:
+
+```{r horizboxplot}
+(ggp <- ggp + coord_flip())  ## What happens if we use coord_flip(), e.g., with histgrams?
+```
+
+"Standard" boxplot:
+
+```{r stdboxplot}
+nums <- tapply(iris$Sepal.Length, INDEX = iris$Species, FUN = length)
+dt <- data.frame(pos = 1:length(nums), Species = names(nums), Count = nums)
+ggp <- ggplot(iris, aes(x = Species, y = Sepal.Length)) +
+  geom_boxplot() +
+  geom_text(data=dt,aes(x = pos,
+                        y = tapply(X = iris$Sepal.Length+1, INDEX = iris$Species, FUN = median),
+                        label = Count)) +
+  ggtitle("Sepal Length Vs Iris Type")
+print(ggp)
+
+ggp <- ggplot(iris, aes(x = "", y = Sepal.Length)) +
+  geom_boxplot(aes(facet = Species)) + 
+  facet_grid(facets = ~Species, as.table = TRUE)
+print(ggp)
+```
+
+
+## Violin Plots
+
+Violin plots are similar to boxplot, but they show the distribution of variable instead of simple "summaries".
+Violin plots in ggplot are "multivariate" by design too.
+
+```{r violinplot}
+ggp <- ggplot(iris, aes(x = "", y = Sepal.Length)) +
+  geom_violin() +
+  xlab("Values")
+print(ggp)
+```
+
+Add the points to plot:
+
+```{r addpointstoviolinplot}
+ggp <- ggp + geom_jitter()
+print(ggp)
+```
+
+"Standard" violin plot:
+
+```{r violin2plot}
+ggp <- ggplot(iris, aes(x = Species, y = Sepal.Length)) +
+  geom_violin() +
+  ggtitle("Sepal Length Vs Iris Type")
+print(ggp)
+```
+
+Overlay boxplot:
+
+```{r addboxtoviolinplot}
+ggp <- ggp + geom_boxplot()
+print(ggp)
+```
+
+Add the points to plot:
+
+```{r addpointstoviolin2plot}
+ggp <- ggp + geom_jitter()
+print(ggp)
+```
+
+Boxplots are also useful because they provide a simple approach to identify potential outliers.  
+To show this feature of the boxplot we use the `forbes94` dataset (see the section *Introduction and datasets used* for further information).
+
+```{r loadfandplotfb}
+str(forbes94)
+
+ggp <- ggplot(forbes94, aes(x = WideIndustry, y = Salary)) +
+  geom_boxplot(outlier.shape = 19, outlier.colour = "red", outlier.size = 2) +
+  ggtitle("Salary vs. Industry")
+print(ggp)
+```
+
+The boxplots above allow one to compare the salary distributions across the industries. Moreover,
+they clearly show that in many industries there are some outliers. These are reported in each
+boxplot as isolated observations. Outliers can be dangerous because they can strongly
+influence the results of the analysis.
+
+
+## 3D Plots
+
+If a 3D plot is desired, several options are available.  
+Let's consider the `volcano3d` dataset (see the section *Introduction and datasets used* for further information).
+
+### Level Plots
+
+```{r 3dplot}
+head(volcano3d)
+ggp <- ggplot(volcano3d, aes(x = x, y = y, z = z)) +
+  stat_contour()
+print(ggp)
+```
+
+With coloured z levels:
+
+```{r 3dplot1, fig.width=plot_with_legend_fig_width_short}
+ggp <- ggplot(volcano3d, aes(x = x, y = y, z = z)) +
+  stat_contour(geom = "polygon", aes(fill = ..level..))
+print(ggp)
+```
+
+As tiles:
+
+```{r 3dplot2, fig.width=plot_with_legend_fig_width_short}
+ggp <- ggplot(volcano3d, aes(x = x, y = y, z = z)) +
+  geom_tile(aes(fill = z)) +
+  stat_contour()
+print(ggp)
+```
+
+3d density plot:
+
+```{r 3dplot3, fig.width=plot_with_legend_fig_width_short, message=FALSE}
+ggp <- ggplot(forbes94, aes(x = Sales, y = Profits)) +
+  stat_density2d(aes(fill = ..level..), geom = "polygon")
+print(ggp)
+```
+
+
+### 3D Scatterplots
+
+Try these examples directly in your `R`, since no plots will be shown (these plots are interactive and you can move and turn them by clicking on them with the mouse).
+
+```{r require_rgl, eval=FALSE}
+require(rgl)
+```
+
+```{r 3dplot4, eval=FALSE}
+open3d()
+with(forbes94,
+plot3d(x = StockOwned, y = Sales, z = Profits,
+       xlab = "StockOwned", ylab = "Sales", zlab = "Profits", type = "p"#), #col=,  
+#        size, lwd, radius,
+#        add = FALSE, aspect = !add, ...)
+))
+```
+
+```{r 3dplot5, eval=FALSE}
+open3d()
+with(forbes94,
+     plot3d(x = log(StockOwned), y = log(Sales), z = Profits,
+            xlab = "StockOwned", ylab = "Sales", zlab = "Profits", type = "s",
+            col = as.numeric(as.factor(WideIndustry))
+            #        size, lwd, radius,
+            #        add = FALSE, aspect = !add, ...)
+     ))
+```
+
+```{r 3dplot6, eval=FALSE}
+open3d()
+with(forbes94,
+     plot3d(x = log(StockOwned), y = log(Sales), z = Profits,
+            xlab = "StockOwned", ylab = "Sales", zlab = "Profits", type = "p",
+            col = as.numeric(as.factor(WideIndustry))
+            #        size, lwd, radius,
+            #        add = FALSE, aspect = !add, ...)
+     ))
+```
+
+
+### 3D Surfaces
+
+```{r 3dplot7, eval=FALSE}
+z <- 2 * volcano        # Exaggerate the relief
+x <- 10 * (1:nrow(z))   # 10 meter spacing (S to N)
+y <- 10 * (1:ncol(z))   # 10 meter spacing (E to W)
+zlim <- range(z)
+zlen <- zlim[2] - zlim[1] + 1
+colorlut <- terrain.colors(zlen) # height color lookup table
+col <- colorlut[ z - zlim[1] + 1 ] # assign colors to heights for each point
+open3d()
+surface3d(x, y, z, color = col, back = "lines")
+```

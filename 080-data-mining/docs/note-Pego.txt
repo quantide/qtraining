@@ -1,0 +1,42 @@
+# 01-univariate
+OK Descrivere i dati usati negli esempi
+OK Non è chiara la frase "The last column and row contain row and column counts, respectively.": non è proprio chiaro cosa contengano l'ultima riga e colonna della tabella
+OK Time series plot: manca il titolo del paragrafo
+-  Attenzione ai formati (per es, "Basic histogram These both do the same thing:")
+OK Togliere i setwd()
+-  Ultimo boxplot migliorabile: mostrare un esempio in cui le etichette sull'asse x sono "girate" 
+
+# 02a-dimreduction-MDS
+OK Descrivere i dati
+OK Togliere setwd()
+-  spiegare cosa sono le prossimità e come si distinguono, per esempio, dalle distanze?
+-  Toglierei la parte relativa alle procuste
+-  Toglierei anche gli altri metodi che non sono di cmdscale() o isoMDS(). Semplicemente, se possibile, proverei ad implementare i metodi "classici" (metrici e onn metrici) sui dati degli esempi successivi, mettendo un riferimento agli altri package e alle loro finalità (cosa fanno in più, etc..)
+
+# 02b-dimreduction-PCA
+OK Descrivere i dati
+OK Togliere setwd(), e/o standardizzare con gli altri capitoli
+-  Sostituire i qplot() con ggplot()
+-  Fare in modo che il primo e il secondo esempio siano "copie reciproche" dell'analisi
+-  Si riesce a sostituire il levelplot() con un grafico ggplot?
+-  Fare pure quello che è scritto in maiuscolo e sistemare le formule non corrette
+
+....
+
+OK NON METTIAMO NEL CORSO LE SOM
+
+Per scaricare graphs e RGraphviz bisogna farlo da biocondutor:
+source("http://bioconductor.org/biocLite.R")
+biocLite("Rgraphviz")
+...
+
+
+	rivedere bene parte previsione
+	tagliare esempi in più e gli approfondimenti (li avrebbe tolti alla fine in modo da tenerli allineati c gli altri fino all'ultimo)
+	allineare alcune analisi sullo stesso dataset
+Capire secondo esempio MDS con Life Data (probabilmente rimuoverlo)
+Ridurre esempi PCA e EFA
+Esercizio per CA con dati smoke del package ca? (Senior Manager, Junior Manager, Senior Employees, Junior Eployees, Secretaries)
+Clustering: rimosso esempio con dati iris; da proporre come esercizio
+
+SISTEMARE qdata! Per esempio, la descrizione del file bostonhousing forbes94 german mds volcano3d wea wines è totalmente sballata. Aggiungere anche smoke.RData

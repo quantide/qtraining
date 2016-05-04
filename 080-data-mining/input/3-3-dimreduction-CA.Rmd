@@ -1,0 +1,207 @@
+---
+title: "Outlines on Correspondence Analysis (CA)"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+require(qdata)
+data(uscrime)
+
+## Other datasets used
+# none
+
+###############################
+## packages needed: ca, MASS ##
+###############################
+```
+
+
+# Introduction
+
+Correspondence Analysis (CA) is a form of multidimensional scaling, which essentially consists in an
+approach for constructing a spatial model that displays the associations
+among a set of categorical variables. If the set includes only two variables,
+the method is usually called simple CA (SCA). SCA is often used to supplement
+a standard chi-squared test of independence for two categorical variables
+forming a contingency table. If the analysis involves more than two
+variables, it is called multiple CA (MCA). Below we briefly present one
+example of SCA. A more thorough account of both SCA and MCA ca be found on
+any book on multivariate data analysis (see for example Johnson, R. and
+Wichern, D., Applied Multivariate Statistical Analysis, 6th edition, Pearson,
+2014).
+
+Consider a general two-dimensional contingency table in which there are R
+rows and C columns. From this table we can construct tables of column
+proportions and row proportions. The key quantity computed in a CA is the
+chi-squared distance among columns and among rows of the table. The chi-
+square distance can be considered as a weighted Euclidean distance based on
+column (row) proportions. It will be zero if two columns (rows) have the
+same values for these proportions.
+
+A CA is then obtained by applying classical MDS to each distance matrix in
+turn and plotting (usually) the first two coordinates for column categories
+and those for row categories on the same diagram. The interpretation of the
+resulting diagram may be summarized as follows:
+
+1. The proximity of two rows (columns) indicates a similar profile in these
+     rows (columns), where "profile" refers to the conditional frequency
+     distribution of a row (column); those two rows (columns) are almost
+     proportional. The opposite interpretation applies when the two rows (two
+     columns) are far apart.
+2. The proximity of a particular row to a particular column indicates that
+     this row (column) has a particularly important weight in this column
+     (row). In contrast to this, a row that is quite distant from a particular
+     column indicates that there are almost no observations in this column for
+     this row (and vice versa). In other terms, row points that lie close to
+     column points represent a row/column combination that occurs more
+     frequently than would be expected if the row and column variables were
+     independent. Conversely, row and column points that are distant from one
+     another indicate a cell in the table where the count is lower than would
+     be expected under independence. These conclusions are particularly true
+     when the points are far away from 0.
+3. The origin is the average of the row and column factors. Hence, a
+     particular point (row or column) projected close to the origin indicates
+     an average profile.
+4. All the interpretations outlined above must be carried out in view of
+     the quality of the graphical representation which is evaluated, as in
+     PCA, using the cumulated percentage of variance.
+
+In `R` there are many functions available to carry out a CA, like `corresp()` and
+`mca()` in the MASS package for performing SCA and MCA respectively. Here we
+focus on the `ca` package, which provides many functions for conducting
+different flavors of CA.
+
+
+## Example: U.S. Crime Rates
+
+We consider the `uscrime` dataset (see the section *Introduction and datasets used* for further information), which provides the number of crimes (per 100,000 residents) in the 50 states of the U.S. classified in 1985 for the following seven categories: _murder_, _rape_, _robbery_, _assault_, _burglary_, _larceny_ and _auto-theft_. Since the data are rates, we first transform these into number of crimes (note that the reported population is in 1,000 people):
+
+```{r 02c-loadcr}
+states <- uscrime$state
+uscrime <- data.frame(uscrime[,-1])
+rownames(uscrime) <- states
+uscrime.old <- uscrime
+uscrime[, 3:9] <- round(uscrime.old[, 3:9]*uscrime.old[, 2]/100)
+summary(uscrime)
+```
+
+We now perform CA using the `ca()` function and represent graphically the
+solution:
+
+```{r message=FALSE}
+require(ca)
+```
+
+```{r 02c-analysiscr}
+uscrime.ca <- ca(as.matrix(uscrime[, 3:9]))
+summary(uscrime.ca)
+plot(uscrime.ca)
+```
+
+<!---
+burglary :  furto in appartamento
+larceny :  furto
+rape :  violenza
+--->
+
+In above table, the term `mass` means, repectively, the row or column marginal 
+totals for the total proportions table (multiplied by 1000).
+`qlt` means "quality", i.e., the sum of `cor` (squared correlation) values of
+individual points in selected components. The quality value should be compared
+with sum of squared correlations for all the components. The squared correlations
+represent some association between the point and the given component. `inr` 
+(inertia) is the proportion of inertia ("Pearson Chi-Square") acconted by the row
+(column). `ctr` are contributions of individual rows (columns) to components.
+
+It appears that the first axis is robbery versus larceny and that the second
+factor contrasts assault and murder to auto-theft. The dominating states for
+the first axis are the North-Eastern States (MA and NY) contrasting the
+Western States (WY and ID). For the second axis, the differences are seen
+between the Northern States (MA and RI) and the Southern States (AL, MS and
+AR). The plot also shows in which states the proportion of a particular crime
+category is higher or lower than the national average (the origin). Note also
+that overall the first two dimensions shown allow to explain around 74.8% of
+the total variability (called inertia in CA).
+
+The same output would be obtained using the `corresp()` function in the `MASS`
+package:
+
+```{r message=FALSE}
+require(MASS)
+```
+
+```{r 02c-analysisMASScr, fig.width=plot_with_legend_fig_width_short}
+biplot(corresp(uscrime[, 3:9], nf = 2))
+```
+
+
+# Some Theoretical Backgrounds
+Let us suppose to have a a sample of $n$ observations with 2 categorical variables, and we produce a two-way $(I \times J)$ contingency table (cross tabulation) from these observations. Let us call $X$ such contingency table. 
+Let's define:
+
+- $n_{ij}$ the element at $i$-th row and $j$-th column of $X$ table;
+- $n_{i+}$ the total of the $i$-th row in table;
+- $n_{+j}$ the total of the $j$-th column in table;
+- $n_{++}$, or simply $n$, the grand total of $X$ table ($n_{ij}$ values);
+- $p_{ij} = n_{ij}/n$;
+- $r_{i}$ or $p_{i+}$ the mass of $i$-th row, i.e., $n_{i+}/n$;
+- $c_{j}$ or $p_{+j}$ the mass of $j$-th column, i.e., $n_{+j}/n$;
+- $a_{ij}$ the $j$-th element of the profile of row $i$, i.e., $a_{i,j}=n_{ij}/n_{i+}$; the $i$-th row profile vector is denoted by $\underline{a}_i$;
+- $b_{ij}$ the $i$-th element of the profile of column $j$, i.e., $b_{i,j}=n_{ij}/n_{+j}$ ; the $j$-th column profile vector is denoted by $\underline{b}_j$;
+- $\sqrt{\sum_j{(a_{ij}-a_{i'j})^2}/c_j}$ the $\chi^2$ distance between the $i$-th and $i'$-th row profiles, denoted also as $\left \| \underline{a}_i-\underline{a}_{i'} \right \|_c$;
+- $\sqrt{\sum_j{(b_{ij}-b_{ij'})^2}/r_i}$ the $\chi^2$ distance between the $j$-th and $j'$-th column profiles, denoted also as $\left \| \underline{b}_j-\underline{b}_{j'} \right \|_r$
+- $\sqrt{\sum_j{(a_{ij}-c_j)^2}/c_j}$ the $\chi^2$ distance between the $i$-th row profile and the average row profile $\underline{c}$ (the vector of column masses), denoted also as $\left \| \underline{a}_i-\underline{c} \right \|_c$;
+- $\sqrt{\sum_j{(b_{ij}-r_i)^2}/r_i}$ the $\chi^2$ distance between the $j$-th  and the average column profile $\underline{r}$ (the vector of row masses), denoted also as $\left \| \underline{b}_j-\underline{r} \right \|_r$
+
+Let us define the _Total Inertia_, a function of Pearson Chi-square ($\chi^2$) test statistics, as:
+
+$$
+\phi = \dfrac{\chi^2}{n}=\sum_i{r_i \left \| \underline{a}_i-\underline{c} \right \|_c} \\
+\phantom{\phi = \dfrac{\chi^2}{n}}=\sum_i{r_i \sum_j{ \left(\dfrac{p_{ij}}{r_i} -c_j\right)^2}} \\
+\phantom{\phi = \dfrac{\chi^2}{n}}= \sum_j{c_j \left \| \underline{b}_j-\underline{r} \right \|_r} \\
+\phantom{\phi = \dfrac{\chi^2}{n}}=\sum_j{c_j \sum_i{ \left(\dfrac{p_{ij}}{c_j} -r_i\right)^2}} 
+$$
+
+Then:
+
+1. The chi-square ($\chi^2$) statistic is an overall measure of the difference between the observed frequencies in a contingency table and the expected frequencies calculated under a hypothesis of homogeneity of the row profiles (or of the column profiles).
+2. The (total) inertia of a contingency table is the ($\chi^2$) statistic divided by the total $n$ of the table.
+3. Geometrically, the inertia measures how "far" the row profiles (or the column profiles) are from their average profile. The average profile can be considered to represent the hypothesis of homogeneity (i.e., equality) of profiles.
+4. Distances between profiles are measured using the chi-square distance ($\chi^2$ - distance). This distance is similar in formulation to the Euclidean distance between points in physical space, except that each squared difference between coordinates is divided by the corresponding element of the average profile.
+5. The inertia can be rewritten in a form which can be interpreted as the weighted average of squared $\chi^2$ - distances between the row profiles and their average profile (similarly, between the column profiles and their average).
+Now, Let us define:
+$$
+D_r=diag(\underline{r}) \\
+D_c=diag(\underline{c})  \\
+P=\dfrac{1}{n} \cdot X = \{p_{ij}\}
+$$
+
+Simply stated, the goal of CA is in finding independent linear combinations of $\underline{a}_i$ ($\underline{b}_j$) that maximize the distance between linear combinations themselves. The weights of linear combinations are constrained to have unit length.
+
+To obtain the solution, the following matrix:
+$$
+S=D_r^{-\frac{1}{2}}\left( P- \underline{r}\underline{c}^T\right)D_c^{-\frac{1}{2}}
+$$
+must be decomposed by SVD in:
+$$ 
+S = U D_\alpha V^T; \text{  where  }  U^T U =I \text{  and  }  V^T V = I
+$$
+
+$D_\alpha$ is the diagonal matrix of (positive) singular values in descending order, and the quantities 
+
+$$
+\Phi=D_r^{-\frac{1}{2}} U; \phantom{ aaa } \Gamma=D_c^{-\frac{1}{2}} V; \phantom{ aaa }  F=D_r^{-\frac{1}{2}} U D_\alpha = \Phi D_\alpha;  \phantom{ aaa }  \Gamma=D_c^{-\frac{1}{2}} V D_\alpha= \Gamma D_\alpha 
+$$
+
+are, respectively, the _Standard coordinates of rows_, the _Standard coordinates of columns_, the _Principal coordinates of rows_, and the _Principal coordinates of columns_.
+
+<!---
+# Exercises: CA su smoke.RData
+--->

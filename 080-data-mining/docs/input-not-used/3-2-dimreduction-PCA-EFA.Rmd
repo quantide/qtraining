@@ -1,0 +1,771 @@
+---
+title: "Principal Component Analysis (PCA) and Exploratory Factor Analysis (EFA)"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+require(qdata)
+data(banknotes, uscompanies, druguse, life)
+
+## Other datasets used
+# none
+
+####################################################################
+## packages needed: GGally, ggplot2, rgl, lattice, ellipse, psych ##
+####################################################################
+```
+
+
+# Introduction
+
+When faced with situations involving high-dimensional data, it is natural to
+consider the possibility of projecting those data onto a lower-dimensional
+subspace without losing important information regarding the original
+variables. One way of accomplishing this reduction of dimensionality is
+through variable selection, also called "feature selection". Another way is
+by creating a reduced set of linear or nonlinear transformations of the input
+variables. The creation of such composite variables (or features) by
+projection methods is often referred to as "feature extraction".
+
+Principal Component Analysis (PCA) and Factor Analysis (FA) are techniques for reducing the dimensionality of a set of data
+whose main aims are exploratory analysis, data visualization and feature
+extraction to use in further analyses.
+
+
+# PCA
+
+Principal component analysis (PCA) is a technique for deriving a reduced set
+of orthogonal linear projections of a single collection of correlated
+variables, where the projections are ordered by decreasing variances. The
+reduced set of orthogonal linear projections (known as the principal
+components, PC) is obtained by properly linearly combining the original
+variables.
+
+In PCA, "information" is interpreted as the "total variation" of the input
+variables, that is, as the sum of variances of the original variables. At the
+heart of PCA stands the spectral decomposition (also called the
+eigendecomposition) of the (sample) covariance matrix. This returns the
+eigenvalues and eigenvectors of the same matrix. The eigenvalues (provided
+in decreasing order) represent the amount of total observed variability of
+the original variables accounted for by each principal component, while the
+eigenvectors represent the corresponding (orthogonal) directions of maximal
+variability.
+
+Hopefully the sample variances of the first few sample PCs will be
+large, whereas the rest will be small enough for the corresponding set of
+sample PCs to be omitted. A variable that does not change much (relative to
+other variables) in independent measurements may be treated approximately as
+a constant, and so omitting such low-variance sample PCs and putting all
+attention on high-variance sample PCs is, therefore, a convenient way of
+reducing the dimensionality of the dataset.
+
+Given a set of multivariate data where the variables have completely
+different types, then the structure of the principal components derived from
+the covariance matrix will depend upon the essentially arbitrary choice of
+units of measurement. Additionally, if there are large differences between
+the variances of the original variables, then those whose variances are
+largest will tend to dominate the early components. Therefore, PCs should
+only be extracted from the sample covariance matrix when all the original
+variables have roughly the same scale. But this is rare and consequently, in
+practice, PCs are extracted from the correlation matrix of the variables,
+which is equivalent to calculating the PCs from the original variables after
+each has been standardized to have unit variance. This is always a sensible
+suggestion to try to make the original variables "equally important".
+
+In `R` there are many functions for computing PC. The basic ones available in
+base `R` are `princomp()` and `prcomp()`. The former uses the eigendecomposition
+for finding the PCs, while the latter uses the singular value decomposition
+(SVD). SVD is generally the preferred method for numerical accuracy.
+Moreover, `princomp()` uses $n$ (the sample size)  as the divisor for calculating the sample
+variances, while `prcomp()` uses the more usual $(n - 1)$.
+Of course, when correlation matrices are used to perform PCA, the divisor does not
+impact on results at all.
+
+
+## Example: Banknotes
+
+Let's consider the `banknotes` dataset (see the section *Introduction and datasets used* for further information). This example involves six measures taken on 100 genuine and 100 counterfeit old Swiss 1000-franc banknotes. The six measures are given by the following variables:
+
+- length of the banknote;
+- height of the banknote, measured on the left;
+- height of the banknote, measured on the right;
+- distance of inner frame to the lower border;
+- distance of inner frame to the upper border;
+- length of the diagonal.
+
+Observations 1–100 are the genuine banknotes and the other 100 observations are the counterfeit banknotes.
+
+```{r 02b-loaddata}
+str(banknotes)
+summary(banknotes)
+```
+
+We use only the first six variables in the data frame because the last one
+(type) is a factor and hence cannot be used in a PCA. We will use it for
+graphing the results.
+
+```{r message=FALSE}
+require(GGally)
+```
+
+```{r 02b-graphsummary1}
+bn <- banknotes[, -7]
+ggscatmat(banknotes, columns = 1:6)
+```
+
+```{r 02b-graphsummary2, fig.width=plot_with_legend_fig_width_medium}
+ggscatmat(banknotes, columns = 1:6, color = "type")
+```
+
+As seen from the scatter plot matrix, some of the original variables are
+somewhat correlated, therefore it could be useful to pre-process the data
+using PCA. Because of wide variations in the different variables, each
+variable is first standardized. We achieve this by specifying the optional
+arguments `cor = TRUE` and `scale = TRUE` in `princomp()` and `prcomp()`
+respectively. As we said, this corresponds to perform a PCA on the
+correlation matrix of the original variables:
+
+```{r 02b-performance}
+system.time(pca_princomp <- princomp(bn, cor = TRUE))
+summary(pca_princomp)
+system.time(pca_prcomp <- prcomp(bn, center = TRUE, scale = TRUE))
+summary(pca_prcomp)
+```
+
+The two functions return the same results. `prcomp()` is numerically
+more accurate, but somewhat slower for larger dataset. In the rest of the
+presentation we'll keep going using `princomp()`.
+
+From the output we can see that the first three PCs account for more than 84%
+of the total variance, and have coefficients:
+
+```{r 02b-summary}
+print(summary(pca_princomp, loadings = TRUE)) # (cutoff = .1)
+print(summary(pca_princomp, loadings = TRUE), cutoff = .5)
+```
+
+<!--- Notice that the first PC puts little weight on carbohydrates, while the
+second PC puts little weight on fat and saturated fat. --->
+
+A useful approach for interpreting the estimated PCs is to calculate the
+correlations of the PCs with each one of the original variables:
+
+```{r 02b-correlation, fig.width=plot_with_legend_fig_width_medium}
+cor(bn, pca_princomp$scores)
+ggcorr(cbind(bn, pca_princomp$scores), label = TRUE, cex = 2.5)
+```
+
+The table shows that the 1st PC is strongly related to height measured both
+on the left and on the right as well as it is inversely related to the length
+of the diagonal. The 2nd PC represents instead the length of the banknote.
+The 3rd component is related to the distances of inner frame to the lower and
+upper borders, while the remaining PCs do not seem to be strongly related to
+any of the original variables.
+
+The coordinates of the estimated PCs are called component scores. These are
+the new variables that one should use in other analyses such as a regression.
+Component scores are part of the output provided by `princomp()`. Typically one
+can represent them graphically to look for features in the data like clusters,
+outliers, etc. In our example, the scatter plot of the first two PCs is
+obtained as:
+
+```{r message=FALSE}
+require(ggplot2)
+```
+
+```{r 02b-scoreplots, fig.width=plot_with_legend_fig_width_medium}
+pca_sc <- data.frame(pca_princomp$scores, type = banknotes[, 7])
+ggplot(pca_sc, aes(x = Comp.1, y = Comp.2, color = type)) + geom_point()
+```
+
+The scatter plot shows that the first two PCs allow to almost perfectly
+separate the two groups of banknotes (genuine vs. counterfeit) and this could
+also facilitate the classification of banknotes in either one of the two groups.
+Another graphical representation of the results of a PCA where both the
+component scores and the loadings are jointly represented is the biplot,
+which can be obtained with the `biplot()` function:
+
+```{r 02b-biplot, fig.width=plot_with_legend_fig_width_short}
+biplot(pca_princomp, cex = c(.7, .7), col = c("gray", "red"))
+```
+
+<!---
+Notice that the results of a PCA (both loadings and scores) have an arbitrary
+sign.--->
+
+How many PCs should we retain? This is probably the main question while
+carrying out a PCA. Because the criterion for a good projection in PCA is a
+high variance for that projection, we should only retain those principal
+components with large variances. The question, therefore, involves the
+magnitudes of the eigenvalues of the sample covariance matrix. Different
+criteria have been introduced in the literature and we review now the most
+popular:
+
+- **explained variance**: retain just enough components to explain some
+							 specified large percentage of the total variation
+							 of the original variables. Values between 70% and
+							 90% are usually suggested.
+- **scree plot**: this plot represents the ordered sample eigenvalues
+					 against their order number. If the largest few sample
+					 eigenvalues dominate in magnitude, with the remaining
+					 sample eigenvalues very small, then the scree plot will
+					 exhibit an "elbow" in the plot corresponding to the
+					 division into "large" and "small" values of the sample 
+					 eigenvalues. The order number at which the elbow occurs 
+					 can be used as the number of PCs to retain.
+- **Kaiser’s rule**: retain only those PCs whose eigenvalues exceed unity.
+						This decision guideline is based upon the argument that
+						because the total variation of all the R standardized
+						variables is equal to `R`, it follows that a PCA should
+						account for at least the average variation of a single
+						standardized variable. This rule is popular but
+						controversial; there is evidence that the cutoff value
+						of 1 is too high. A modified rule retains all PCs whose
+						eigenvalues of the sample correlation matrix exceed
+						0.7.
+
+For the banknotes example, the explained variance criterion would suggest to
+use 3 components. The scree plot, given by
+
+```{r 02b-plotprincomp}
+plot(pca_princomp, type = "lines")
+```
+
+does not offer any advice on the number of PCs to retain because there is no
+clear elbow in the plot (note that the variances reported on the vertical 
+axis of this plot correspond to the egienvalues of the correlation matrix of
+the original data). The Kaiser's rule suggests that 3 components provide a
+good summary of the overall information contained in the original data.
+
+To plot the scores for components different from the first two, one can still
+use the `biplot()` function adding the argument 'choices' for the components to
+plot. In following example the default "Comp.1" and "Comp.2" are chosen:
+
+```{r 02b-biplotprincomp, fig.width=plot_with_legend_fig_width_short}
+biplot(pca_princomp, cex = c(.7, .7), col = c("gray", "red"), choices = c("Comp.1","Comp.2"))
+```
+
+A 3-dimensional plot of the first three PCs can be obtained with the
+`plot3d()` function in the `rgl` package (the plot can be spinned with the
+ mouse):
+
+```{r eval=FALSE}
+require(rgl)
+```
+
+```{r eval=FALSE}
+plot3d(pca_princomp$scores[, 1:3], col = as.integer(banknotes[, 7]) + 2, size = 5)
+play3d(spin3d(axis = c(1, 1, 1), rpm = 15), duration = 10)
+```
+
+(Note: the above command shows a dynamic 3D graph that cannot be shown here, of course)  
+
+Let us now replay the analysis by using separately genuine and counterfeit banknotes.
+
+```{r 02b-banknotes_altro1}
+unique(banknotes$type)
+# banknotes <- (banknotes[ banknotes$type=="genuine",])
+# bn <- banknotes[, -7]
+
+# Splits the two datasets
+bn_list <- split(x = banknotes,f = banknotes$type)
+bn_list <- lapply(X = bn_list, FUN = function(x){x[,-7]})
+
+# Produces the scatterplot matrix for each data frame
+lapply(X = bn_list,FUN = function(x){ggscatmat(x, columns = 1:6)})
+```
+
+
+```{r 02b-banknotes_altro3, fig.width=plot_with_legend_fig_width_medium}
+# Produce a list with the two principal components results
+pca_princomp <- lapply(X = bn_list, FUN = function(x){princomp(x, cor = TRUE)})
+# Produce the summary for either results
+lapply(X = pca_princomp, FUN = summary)
+# Show the loadings with cutoff=0.1
+invisible(lapply(X = pca_princomp, FUN = function(x){print(summary(x, loadings = TRUE), cutoff = .1)}))
+# Produce the table of correlations between variables and principal components scores
+lapply(X = 1:2, FUN = function(x, bn, pca_princomp){cor(bn[[x]], pca_princomp[[x]]$scores)}, bn_list, pca_princomp)
+# Produce the graph of correlations between variables and principal components scores
+lapply(X = 1:2, FUN = function(x, bn, pca_princomp){ggcorr(cbind(bn[[x]], pca_princomp[[x]]$scores), label = TRUE, cex = 2.5)}, bn_list, pca_princomp)
+```
+
+```{r 02b-banknotes_altro4}
+lapply(X = pca_princomp, FUN = function(x){plot(x, type = "lines")})
+```
+
+```{r 02b-banknotes_altro5, fig.width=plot_with_legend_fig_width_short}
+lapply(X = pca_princomp, FUN = function(x){biplot(x, cex = c(.7, .7), col = c("black", "red"), choices = c("Comp.1","Comp.2"))})
+```
+
+The two types of banknotes have a different pattern in first two principal components. This difference could help to identify counterfeit banknotes, by using some classification models on scores.
+
+## Example: US Companies
+
+As a second example, we consider the `uscompanies` dataset (see the section *Introduction and datasets used* for further information), which is about some measurements for 79 U.S. companies:
+
+- assets (USD);
+- sales (USD);
+- market value (USD);
+- profits (USD);
+- cash flow (USD);
+- employees;
+
+together with the name and industry for each company.
+
+```{r 02b-loaduc}
+summary(uscompanies)
+ggscatmat(uscompanies, columns = 2:7)
+```
+
+The scatter plot matrix shows a considerable correlation among most of the
+variables in the dataset.
+
+```{r 02b-princompuc}
+uscompanies.pca <- princomp(uscompanies[, 2:7], cor = TRUE)
+summary(uscompanies.pca, loadings=TRUE)
+```
+
+All the criteria described above suggest to consider 1 or 2 components:
+
+```{r 02b-plotuc}
+plot(uscompanies.pca, type = "lines")
+```
+
+The interpretation of the components is possible by calculating the
+correlations of the estimated PCs with each one of the original variables:
+
+```{r 02b-coruc}
+cor(uscompanies[, 2:7], uscompanies.pca$scores)
+```
+
+The first PC is strongly related to all of the variables, while the second
+one is only weakly related with the assets measure.
+
+The plot of the first 2 PC scores reveals an interesting point:
+
+```{r 02b-plotscoresuc}
+ggp <- ggplot(data = data.frame(uscompanies.pca$scores), mapping = aes(x = Comp.1, y = Comp.2)) +
+  xlab("Component 1") + ylab("Component 2") +
+  geom_text(label = uscompanies[, 9], size = 4)
+print(ggp)
+```
+
+<!---
+
+or, equivalently:
+
+```{r 02b-plotscoresuc2}
+qplot(x = uscompanies.pca$scores[, 1], y = uscompanies.pca$scores[, 2],
+	  xlab = "Component 1", ylab = "Component 2",
+	  label = as.character(uscompanies[, 9]), alpha = I(.001)) + geom_text(size = 4)
+```
+--->
+
+The two outliers marked as belonging to the hi-tech industry on the left
+are IBM and General Electric (GE), which differ from the other companies with
+their high market values. As can be seen from the correlations above, market
+value has the strongest relation with the first PC, adding to the isolation
+of these two companies. The first component, then, is due mostly to IBM and GE.
+If IBM and GE were to be excluded from the dataset, a completely different
+picture would emerge:
+
+```{r 02b-plots2uc}
+id <- match(c("IBM", "GeneralElectric"), uscompanies[, 1])
+uscompanies_new <- uscompanies[-id, ]
+uscompanies_new.pca <- princomp(uscompanies_new[, 2:7], cor = TRUE)
+summary(uscompanies_new.pca, loadings=TRUE)
+plot(uscompanies_new.pca, type = "lines")
+cor(uscompanies_new[, 2:7], uscompanies_new.pca$scores)
+```
+
+And now the biplot:
+
+```{r 2b-plots2uc_biplot, fig.width=plot_with_legend_fig_width_short}
+biplot(uscompanies_new.pca)
+```
+
+Following above criteria, 2 or 3 components should be retained. Moreover, it appears that the first PC
+is a (inverse) "size effect", because it is strongly correlated with all the
+variables describing the size of the activity of the companies. The second
+component oppose "profits-cash flow" with "assets-sales", and is more
+difficult to interpret from an economic point of view. The third component
+is quite strongly related to assets as opposed to employees.
+
+Anyway, notice that the distribution of companies in scatterplot matrix is very skewed. This
+may in general lead to results that are highly influenced by few very high observations (units).
+(Remember that the principal components analysis decomposes the Covariance matrix.). For this,
+reason, it might be useful to analyze transformed data, such that they distribute "more regularly".
+
+In following lines an "experiment":
+
+```{r pca_on_transformed_vars}
+uscompanies_sq9 <- sign(uscompanies[,2:7])*abs(uscompanies[,2:7])^(1/9)
+uscompanies_sq9 <- cbind(uscompanies[,1], uscompanies_sq9, uscompanies[,8:9])
+ggscatmat(uscompanies_sq9, columns = 2:7)
+uscompanies_sq9.pca <- princomp(uscompanies_sq9[, 2:7], cor = TRUE)
+summary(uscompanies_sq9.pca, loadings=TRUE)
+plot(uscompanies_sq9.pca, type = "lines")
+cor(uscompanies_sq9[, 2:7], uscompanies_sq9.pca$scores)
+```
+
+The above results suggest a solution with 2 principal components.
+The first component seem to oppose pure profits to all the other variables. 
+The second component, however, opposes "financial" to "capital" indicators.  
+In following graphs, the score plot the biplot are produced.
+
+```{r pca_on_transformed_vars_2}
+ggp <- ggplot(data = data.frame(uscompanies_sq9.pca$scores), mapping = aes(x = Comp.1, y = Comp.2)) +
+  xlab("Component 1") + ylab("Component 2") +
+  geom_text(label = uscompanies[, 9], size = 4)
+print(ggp)
+
+biplot(uscompanies_sq9.pca)
+```
+
+
+# Exploratory Factor Analysis (EFA)
+
+Factor analysis is related to principal components, but the two methods have
+different goals. Principal components tries to identify orthogonal linear
+combinations of the variables, to be used either for descriptive purposes or
+to substitute a smaller number of uncorrelated components for the original
+variables. In contrast, factor analysis represents a model for the data, and
+as such is more elaborate.  
+The factor analysis model hypothesizes that the response variables can be
+modeled as linear combinations of a smaller set of unobserved, "latent"
+(i.e. unobserved) random variables, called common factors, along with an
+error term, also known as the specific factor (for more details about the
+model specification see Johnson and Wichern, *Applied Multivariate Statistical Analysis*, 6th edition, Pearson, 2014).  
+The coefficients of the linear combinations are called the factor loadings.
+The variabilities of the response variables explained by the set of common
+factors are called the communalities, while the unexplained variabilities are
+called uniqueness or specific variances.
+
+
+## Example: Drug Usage
+
+The example we consider is based on `druguse` dataset (see the section *Introduction and datasets used* for further information), which is about drug usage rates for a sample of 1,634 students in the seventh to ninth grades in 11 schools in the greater metropolitan area of Los Angeles. Each participant completed a questionnaire about the number of times a particular substance had ever been used. The substances asked about were as follows:
+
+- cigarettes;
+- beer;
+- wine;
+- liquor;
+- cocaine;
+- tranquillizers;
+- drug store medications used to get high;
+- heroin and other opiates;
+- marijuana;
+- hashish;
+- inhalants (glue, gasoline, etc.);
+- hallucinogenics (LSD, mescaline, etc.);
+- amphetamine stimulants.
+
+Responses were recorded on a five-point scale: never tried, only once, a few times, many times, and regularly.  
+The correlations between the usage rates of the 13 substances are represented graphically using the `levelplot()` function from the package `lattice` with a somewhat lengthy panel function (the correlation coefficients multiplied by 100 are printed inside the ellipses):
+
+```{r message=FALSE}
+require(lattice)
+require(ellipse)
+```
+
+```{r 02b-loaddu, fig.width=plot_with_legend_fig_width_short}
+panel.corrgram <- function(x, y, z, subscripts, at, level = 0.9, label = FALSE, ...) {
+	#require("ellipse", quietly = TRUE)
+	x <- as.numeric(x)[subscripts]
+	y <- as.numeric(y)[subscripts]
+	z <- as.numeric(z)[subscripts]
+	zcol <- level.colors(z, at = at, ...)
+	for (i in seq(along = z)) {
+		ell <- ellipse(z[i], level = level, npoints = 50, scale = c(.2, .2),
+					   centre = c(x[i], y[i]))
+		panel.polygon(ell, col = zcol[i], border = zcol[i], ...)
+	}
+	if (label) {
+		panel.text(x = x, y = y, lab = 100 * round(z, 2), cex = 0.8,
+				   col = ifelse(z < 0, "white", "black"))
+	}
+}
+print(levelplot(druguse, at = do.breaks(c(-1.01, 1.01), 20), 
+	  xlab = NULL, ylab = NULL, colorkey = list(space = "top"), 
+	  scales = list(x = list(rot = 90)), panel = panel.corrgram, label = TRUE))
+```
+
+Note that the correlation structure is not very strong. To function
+appropriately, factor analysis requires a minimum level of correlation.  
+Tests have been developed to ascertain whether there exists sufficiently
+high correlation to perform factor analysis:
+
+- **Kaiser–Meyer–Olkin statistic**: measures the proportion of variability
+									   within the standardized predictor
+									   variables which is shared in common,
+									   and therefore might be caused by
+									   underlying factors; values of the KMO
+									   statistic less than 0.50 indicate that
+									   factor analysis may not be appropriate.
+- **Bartlett's test**: tests the null hypothesis that the correlation
+						  matrix is an identity matrix, that is, that the
+						  variables are really uncorrelated. Of course, if Bartlett's test
+              "says" that the correlation matrix may be an Identity matrix, 
+              then a factor analysis may be unuseful
+
+Both tools are available in the `psych` package:
+
+```{r message=FALSE}
+require(psych)
+```
+
+```{r 02b-testsdu}
+KMO(druguse)
+cortest.bartlett(druguse, n = 1634)
+```
+
+Since both tools provide reasonable results, we proceed with the factor
+analysis. The factor analysis model can be estimated in `R` using the function
+`factanal()`, which implements a maximum likelihood approach for the estimation
+of the factor loadings:
+
+```{r 02b-factandu}
+du_fa2 <- factanal(covmat = druguse, n.obs = 1634, factors = 2,
+                   rotation = "none")
+du_fa2
+```
+
+The output of a factor analysis is very similar to that of a PCA and it can
+be interpreted in a similar way: choosing two factors, we are able to explain
+about 41% of the overall variance of the original variables. However, looking
+at the factor loadings (which now provide the correlation with each one of
+the original variables) we cannot easily interpret them. Finally, the
+uniquenesses signal that most of the variability for many of the original
+variables is still unexplained. These conclusions suggest that probably
+this first solution is not appropriate.
+
+If multivariate normality hypothesis is acceptable, to determine a reasonable 
+number of factors to extract, we may use the likelihood 
+ratio test provided by the `factanal()` function for the null hypothesis
+that a given number of factors is sufficient:
+
+```{r 02b-tests2du}
+pval <- sapply(1:6, function(nf)
+		factanal(covmat = druguse, factors = nf, n.obs = 1634)$PVAL)
+names(pval) <- sapply(1:6, function(nf) paste0("nf = ", nf))
+pval
+```
+These values suggest that the six-factor solution provides an adequate
+fit. The results from the six-factor solution are obtained from:
+
+```{r 02b-factan6du}
+du_fa6 <- factanal(covmat = druguse, n.obs = 1634, factors = 6,
+				   rotation = "none")
+du_fa6
+```
+
+To better interpret the estimated factors, we can apply a rotation to the
+factor loadings. A very popular rotation is the varimax rotation, which aims
+to produce factors that have high correlations with one small set of
+variables and little or no correlation with other sets. We can apply a
+rotation directly in the `factanal()` function by providing the name of the
+rotation method in the 'rotation' argument:
+
+```{r 02b-factan6rotdu}
+du_fa6_rot <- factanal(covmat = druguse, n.obs = 1634, factors = 6,
+					   rotation = "varimax")
+du_fa6_rot
+```
+
+Substances that load highly on the first factor are cigarettes, beer, wine,
+liquor, and marijuana and we might label it "social/soft drug use". Cocaine,
+tranquillizers, and heroin load highly on the second factor - the obvious
+label for the factor is "hard drug use". Factor three is essentially simply
+amphetamine use, and factor four hashish use. The remaining factors load
+mainly on a single variable.
+
+As for PCA, we can ask for the factor scores in EFA adding the argument
+'scores', which can only be produced if a data matrix is supplied and used.
+The scores are the accessible through the scores element in the returned
+list.
+
+<!---
+
+## Example: Life Expectancy
+
+As a second example, we consider the `life` dataset (see the section *Introduction and datasets used* for further information), which deals with life expectancy in years by country, age, and sex:
+
+```{r 02b-loaddatale1, fig.width=plot_with_legend_fig_width_medium}
+summary(life)
+life[22,"m25"] <- 43   # correction
+ggcorr(life[,-1], label = TRUE, label_round = 2)
+```
+
+```{r 02b-loaddatale2}
+ggscatmat(life[,-1])   # scatterplot matrix
+```
+
+To begin, we will use the formal likelihood ratio test for the number of
+factors:
+
+```{r 02b-testsle}
+pval <- sapply(1:3, function(nf) factanal(life[,-1], factors = nf)$PVAL)
+names(pval) <- sapply(1:3, function(nf) paste0("nf = ", nf))
+pval
+```
+
+These results suggest that a three-factor solution might be adequate to
+account for the observed covariances in the data. The three-factor solution
+using a varimax rotation (the default) is as follows:
+
+```{r 02b-factanle}
+(fct <- factanal(life[,-1], factors = 3, scores="Bartlett"))
+```
+
+Examining the estimated factor loadings, we see that the first factor is
+dominated by life expectancy at birth for both males and females; this
+factor could be labeled "life force at birth". The second reflects life
+expectancies at older ages, and we might label it "life force amongst the
+elderly". The third factor from the varimax rotation has its highest
+loadings for the life expectancies of men aged 50 and 75 and in the same
+vein might be labeled "life force for elderly men".
+
+Let us plot loadings:
+
+```{r 02b-factloadplot}
+lds <- fct$loadings[,1:3]
+ggp <- ggpairs(lds)
+for(c in 1:3){
+  for(r in c:3){
+    if(r==c)
+      next()
+    gp1 <- getPlot(ggp,i = r,j = c)
+    gp1 <- gp1 + geom_text(label=names(life[,-1]))
+    ggp <- putPlot(ggp,gp1,i = r,j = c)
+  }
+}
+ggp
+```
+
+The estimated factor scores are found as follows:
+
+```{r 02b-factscoresplot}
+scores <- fct$scores
+
+ggp <- ggpairs(scores)
+for(c in 1:3){
+  for(r in c:3){
+    if(r==c) next()
+    gp1 <- getPlot(ggp, i = r, j = c)
+    gp1 <- gp1 + geom_text(label = life$country)
+    ggp <- putPlot(ggp, gp1, i = r, j = c)
+  }
+}
+ggp
+```
+
+AGGIUNGERE UNA ANALISI GRAFICA DEI LOADING E DEI PUNTEGGI FATTORIALI PER DETERMINARE COME SI PROIETTANO I PAESI ALL'INTERNO DELLO SPAZIO DETERMINATO DAI FATTORI?
+
+AGGIUNGERE ANCHE LA MATRICE DI CORRELAZIONE RIPRODOTTA?
+--->
+
+
+# Some Theoretical Backgrounds
+
+## PCA
+
+The aim of Principal Components Analysis is to find the linear combinations of analyzed variables that report highest variability, given the data.
+
+Let us suppose that the data contains numerical values for $p$ variables on $n$ cases. Let name $X$ the $(n \times p)$ data matrix.  
+Let us suppose then that each row of $X$, denoted by  $\underline{x}$ , is a random realization from the same multivariate random distribution, with variance/covariance matrix denoted by $\Sigma$.  
+Now, we want to find the linear combination 
+$$
+z= \underline{a}^T\underline{x}
+$$
+Such that $Var(z)$ is maximum. Since this problem has no unique solution, we will constraint the problem within unit norm vector ($\underline{a}^T\underline{a}=1$).
+
+However, it may be shown that $Var(z)= \underline{a}^T \Sigma \underline{a}$, and then that the above problem can be expressed as a constraint maximization problem:
+$$
+\max_{\underline{a}\, s.t.:\underline{a}^T\underline{a}=1} \left\{\underline{a}^T \Sigma \underline{a}\right\}\\ 
+$$
+
+This optimum problem can be solved by using Lagrange multipliers, and the solution is given by the $\underline{a}$('s) vector(s) such that 
+$$
+(\Sigma - \lambda \underline{I}) \underline{a}=\underline{0}
+$$
+
+i.e., the solution of the problem is given by the (orthonormal) eigenvectors of $\Sigma$.  
+
+The number of non-null eigenvalues $\lambda$ is equal to $g = rank(X) \le p$, and they sum up to the sum of diagonal elements of $\Sigma$, i.e., the variances of $\underline{x}$. At each eigenvalue correspond an eigenvector $\underline{a}$ that is a solution of above equation.  
+As a result of these calculations we obtain a factorization of $\Sigma$ as:
+$$
+\Sigma = \Gamma \Lambda \Gamma^T
+$$
+
+Where $\Gamma$ is the $(p \times g)$ matrix resulting combining side by side the eigenvectors $\underline{a}$, and $\Lambda$ is the $(g \times g)$ diagonal matrix containing the $g$ eigenvaules ($\lambda$) in descending order of magnitude.
+
+The $\underline{a}$ vectors are called loadings, while the $\underline{z}$ are named scores. Consequently, if there are $p$ non null eigenvalues, then there are also $p$ distinct $\underline{z}$'s, one for each solution, and then we may think to a $\underline{z}$ vector:
+$\underline{z}=\Gamma^T \underline{x}$.
+
+The variance/covariance matrix of $\underline{z}$ is then:
+$$
+Var\{\underline{z}\}=\Gamma^T Var\{\underline{x}\}\Gamma=\Gamma^T \Gamma \Lambda \Gamma^T \Gamma=\Lambda
+$$
+
+Of course, $\Sigma$ is usually unknown. In that cases, we can use $S$, the sample estimate of $\Sigma$ in place of $\Sigma$ itself. 
+
+Anyway, given the above results, and given a data matrix $X$, we can obtain a sample score matrix $Z$ as:
+$$
+Z = X \Gamma
+$$
+Where $\Gamma$ is the matrix of eigenvectors obtained from $S$.
+
+The sample variance/covariance matrix of $Z$, of course, is $\Lambda$, where $\Lambda$ is the diagonal matrix obtained by factorizing $S$ as above.
+
+
+## EFA
+
+EFA is very similar to PCA in terms of goals and of methods used to obtain the results.  
+However, notice that in this paragraph the notations and smybols are disjointed from the notations and symbols used for describing PCA. 
+
+EFA hypothesizes that the individual data vector, $\underline{x}$, comes from a multivariate distribution with mean $\underline{\mu}$ and variance/covariance matrix $\Sigma$, and that the following model holds:
+$$
+\underline{x} = \Gamma \underline{f} + \underline{\varepsilon} + \underline{\mu}
+$$
+where $\Gamma$ is a $(p \times g)$ matrix of constants (_factor loadings_), and $\underline{f}$  and $\underline{\varepsilon}$ are, respectively, the $(g \times 1)$ and $(p \times 1)$ random vectors of _common_ and _specific_ factors, for which:
+$$
+E\{\underline{f}\}=\underline{0}; Var\{\underline{f}\}=\underline{I}
+$$
+$$
+E\{\underline{\varepsilon}\}=\underline{0}; Var\{\underline{\varepsilon}\}=\Lambda=diag(\lambda_1,\cdots,\lambda_g)
+$$
+and
+$$
+Cov\{\underline{f},\underline{\varepsilon}\}=\underline{0}
+$$
+Thus, all the factors are uncorrelated with one anoter and further the factors $\underline{f}$ are each standardized to have variance 1.  
+It is sometimes convenient to suppose that $\underline{f}$ and $\underline{\varepsilon}$ (ad hence $\underline{x}$) are multinormally distributed.
+
+The validity of $g$-factor model can be expressed in terms of a simple condition on $\Sigma$:
+$$
+\Sigma=\Gamma \Gamma^T + \Lambda
+$$
+
+The converse also holds. If $\Sigma$ can be decomposed into the form above, then the $g$-factor model holds for $\underline{x}$.
+
+
+### Non-Uniqueness of Factor Loadings
+
+Since the above results, one may argue that there is no unique solution on EFA model. In fact, if $\Phi$ is a rotation matrix (i.e., a matrix such that $\Phi \Phi^T=\underline{I}$), then $\underline{x}$ may be written as:
+$$
+\underline{x} = (\Gamma\Phi) (\Phi^T \underline{f}) + \underline{\varepsilon} + \underline{\mu}
+$$
+Since the random vector $\Phi^T \underline{f}$ satisfies the above conditions about the factors and the following holds for $\Sigma$:
+$$
+\Sigma=(\Gamma\Phi)(\Gamma\Phi)^T + \Lambda = \Gamma\Gamma^T + \Lambda 
+$$
+Then the $g$-factor model is valid with new factors $(\Phi^T \underline{f})$ and new factor loadings $(\Gamma\Phi)$.
+
+This allows the researcher to find some rotational strategy on loadings to make the factor solutions more easily interpretable.
