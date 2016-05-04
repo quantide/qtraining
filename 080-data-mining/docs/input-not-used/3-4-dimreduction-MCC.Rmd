@@ -1,0 +1,154 @@
+---
+title: "Multivariate Control Charts Example"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("../input/options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+require(qdata)
+data(bimetal1)
+
+## Other datasets used
+# none
+
+################################################
+## packages needed: mvtnorm, MSQC, mvnormtest ##
+################################################
+```
+
+
+# Introduction
+
+The need of manufacturing companies to track the quality of a product by
+monitoring simultaneously many characteristics of the same product has
+increased very rapidly over the last years. The main idea behind this
+multivariate approach to the process control is that often many of the
+characteristics of interest are correlated among themselves. This implies
+that, in order to clean up the data from the redundancy of the information,
+a reduction of the dimensionality of the data should be performed before
+proceeding to the monitoring.
+
+For these reasons, multivariate extensions of the standard univariate control
+charts have been developed. The most common are:
+
+- the control ellipsoid or chi-square control chart,
+- the $T^2$ or Hotelling chart,
+- the multivariate exponentially weighted moving average (MEWMA) chart,
+- the multivariate cumulative sum (MCUSUM) chart,
+- the chart based on Principal Components Analysis (PCA).
+
+Many of these control charts are based on the multivariate normal
+distribution, an example of which in two dimensions is provided by the
+following picture:
+
+```{r 02l-createdata-a}
+mu <- c(0, 0)
+sigma <- matrix(c(10, 3, 3, 6), 2, 2)
+x1 <- x2 <- seq(-12, 12, .25)
+x <- expand.grid(x = x1, x2 = x2)
+```
+
+```{r message=FALSE}
+require(mvtnorm)
+```
+
+```{r 02l-createdata-b}
+f <- dmvnorm(x, mean = mu, sigma = sigma)
+f.persp <- matrix(f, nrow = length(x1), ncol =length(x2), byrow = TRUE)
+persp(x1, x2, f.persp, xlab = "x1", ylab = "x2", zlab = "Density", theta = 20,
+	  phi = 30, r = 50, d = 0.2, expand = 0.6)
+```
+
+Given some values for a set of variables on a sample of observations, one
+might test whether the variables are jointly normally distributed by
+performing a multivariate normality test. There are many of these tests
+available, of which we provide now a brief list:
+
+- `Mardia()` ==> function for the Mardia test, available in the `MSQC` package,
+- `HZ.test()` ==> functions that computes the Henze-Zirkler test, available in the `MSQC` package,
+- `mshapiro.test()` ==> function for the Shapiro-Wilk test, available in the`mvnormtest` package.
+
+More specifically, we now provide some more details about the $T^2$ Hotelling
+chart. The origin of the $T^2$ control chart dates back to the pioneer works of
+Harold Hotelling who applied this method to the bomb-sight problem in Second
+World War. The Hotelling procedure has become the most applied in
+multivariate process control and it is the multivariate analogous of the
+Shewhart control chart. For that reason, it is also known as the multivariate
+Shewhart control chart. The chart is based on a statistic (called $T^2$), which
+represents the extension of the univariate t statistic based on a univariate
+normal population. Based on the assumption of a population distributed
+according to a multivariate normal distribution, it can be shown that this
+statistic follows an F distribution. The $T^2$ chart has a good performance in
+detecting large shifts in the mean.
+
+The `MSQC` `R` package provides the `mult.chart()` function, which allows to
+produce most of the charts described above. In particular, the selection of
+the chart to use is done by specifying the argument `type`: it can be set to
+`t2`, `mewma`, `mcusum` or `mcusum2`. For more help about this function, type
+
+```{r 02l-help,eval=FALSE}
+help(package = "MSQC")
+```
+
+Here we focus on the charts based on PCA. A typical approach is to produce
+a $T^2$ Hotelling chart applied to the principal component scores. To illustrate
+we consider the `bimetal1` dataset (see the section *Introduction and datasets used* for further information) and we transform it into a standard `R` data frame:
+
+```{r message=FALSE}
+require(MSQC)
+```
+
+```{r 02l-loadbm}
+bimetal <- as.data.frame(bimetal1)
+str(bimetal)
+pairs(bimetal)
+```
+
+We first perform a PCA on these data:
+
+```{r 02l-pcabm}
+bimetal.pca <- princomp(bimetal, cor = TRUE)
+summary(bimetal.pca)
+screeplot(bimetal.pca, type = "lines")
+abline(h = 1, lty = 2)
+```
+
+which shows that two components are enough to retain approximately 77% of the
+overall information. After checking whether the scores are (approximately)
+distributed according to a multivariate normal distribution, we proceed to
+build a $T^2$ Hotelling control charts using only the first two principal
+components:
+
+```{r message=FALSE}
+require(mvnormtest)
+```
+
+```{r 02l-chartbm, fig.width=plot_with_legend_fig_width_short}
+bimetal.score <- bimetal.pca$scores[, 1:2]
+MardiaTest(bimetal.score)
+HZ.test(bimetal.score)   # the first number returned is the p-value
+mshapiro.test(t(bimetal.score))
+mult.chart(bimetal.score, type = "t2", alpha = 0.01)
+```
+
+All the tests confirm the multivariate normality, and the chart shows no
+samples out of control, because no points fall beyond the UCL. Therefore, we
+conclude that the process is in statistical control.
+
+Let us now try to apply the $T^2$ chart to the original variables and then compare the results with the chart obtained from the principal components.
+
+```{r 02-original_chart, fig.width=plot_with_legend_fig_width_short}
+MardiaTest(bimetal1)
+HZ.test(bimetal1)   # the first number returned is the p-value
+mshapiro.test(t(bimetal1))
+mult.chart(data.frame(bimetal1), type = "t2", alpha = 0.01)
+```
+
+Even in the original variables case, all the tests confirm the multivariate normality, and the chart has a pattern very similar to the previous one. Therefore, even in this case, we conclude, as in the principal components case, that the process is in statistical control.
+

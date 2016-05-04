@@ -1,0 +1,561 @@
+---
+title: "Linear and Quadratic Discriminant Analyses (LDA and QDA)"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+data(Default, Smarket, package = "ISLR")
+
+## Other datasets used
+# none
+
+###############################################################
+## packages needed: MASS, caret, pROC, GGally, ggplot2, ISLR ##
+###############################################################
+```
+# Recalls on Logistic Regression
+Logistic regression is part of GLM models. Its goal is to find a causal relation
+between the predictors (the columns of $X$ matrix) and the response $Y$ variable,
+where $Y$ can assume only $0/1$ (where $0$ = "absence"; $1$ = "presence") values.
+
+The model used to find this relation states that the dependent variable is Binomially
+distibuted with parameters $n$ and $p$, 
+
+$$Y_i \sim Bi(n_i, p_i)$$
+
+and that $p$ is tied to the predictors via a tranformation of a linear function:
+
+$p_i = \frac{exp\left(a + b x_{i1} + c x_{i2} + \dots \right)}{1 + exp\left(a + b x_{i1} + c x_{i1} + \dots \right)}$
+
+where $x_{ij}$ values represent the $i$-th value (row) of $j$-th column of $X$ matrix 
+(i.e., the $p$ predictors for the $i$-th observation). 
+
+Logistic regression finds the $a, b, c, \dots$ parameters that maximize the probability
+of having the observed data. These parameter values will be the estimates of parameters
+themselves.
+
+## Example: Credit Card Default
+
+The first example we present is on the `Default` dataset (see the section 
+*Introduction and datasets used* for further information), some data about ten thousand
+customers with the aim to predict which customers will default on their credit card debt:
+
+```{r 02h-loadcc}
+summary(Default)
+```
+To perform Logistic Regression on Credit Card data, we use the `glm()` function. This function
+requires to set a formula that specifies the categorical response and the
+predictors to use, the data frame containing the data, the distribution family, and a series
+of other optional arguments:
+
+```{r first_logit}
+res_logit <- glm(default ~ student + balance, data = Default,
+				 family = binomial(link = logit))
+summary(res_logit)
+```
+
+To obtain the probabiity of being a defaulter for a individual customer, the `predict()` function
+must be used:
+```{r pred_logit}
+post_logit <- predict(res_logit, type = "response")
+head(post_logit)
+```
+
+Starting from the probability of default, we can choose the threshold for which to states
+that a customer is a probable defaulter.  
+For example, if we the set threshold to $0.5$, then the individual customer will be classified
+as defaulter if his/her estimated probability of defalut is greater than $0.5$:
+
+```{r prob_def}
+default_logit <- ifelse(post_logit>0.5, "Pred: Yes", "Pred: No")
+```
+
+To assess the goodness of the classification, a standard tool is to obtain
+the so called "confusion matrix", which cross-tabulates the actual and the
+predicted classes for each observation:
+
+```{r logit_check}
+table(default_logit, Default$default)
+```
+
+# Linear Discriminant Analysis (LDA)
+
+In LDA, the distribution of the predictors $X$ are modeled separately in each
+of the response classes (i.e. given $Y$), and then a rule from probability
+theory, known as Bayes' theorem, is used to turn these into estimates for
+$Pr(Y = k|X = x)$, called "posterior" probabilities. More specifically, Bayes'
+theorem allows to obtain the posterior probabilities by combining "prior"
+probabilities with the evidence coming from the data. Every observation is
+then assigned to the class with the highest posterior probability.
+
+Alternatively, following the formulation by Fisher, the goal of LDA can also
+be stated as finding a linear combination $w$ of the predictors that maximizes
+the separation between the centers of the data while at the same time
+minimizing the variation within each group of data after projection onto $w$.
+Recall that the first principal component is the direction that maximizes
+the projected variance of the points. The key difference between PCA and LDA
+is that the former deals with unlabeled data and tries to  maximize variance,
+whereas the latter deals with labeled data and tries to  maximize the
+discrimination between the classes. 
+
+The assumption in LDA is that the predictors' covariance matrices within each class are equal.
+
+In LDA the unknown parameters of the multivariate normal distributions of
+each class have to be first estimated. These estimates are then used to find
+the decision boundaries based on which observations are assigned to the
+different classes. These boundaries are determined by the so called "Fisher's
+linear discriminant function".
+
+
+To perform LDA on Credit Card data, we use the `lda()` function of the MASS package. This function
+requires to set a formula that specifies the categorical response and the
+predictors to use, the data frame containing the data, and a series
+of other optional arguments, such as the method to use for estimation and the
+prior probabilities for each class (if the prior argument is not specified,
+the class proportions for the training set are used):
+
+```{r message=FALSE}
+require(MASS)
+```
+
+```{r 02h-ldacc}
+res <- lda(default ~ student + balance, data = Default)
+res
+```
+
+The output (an object of class `lda`) shows that non-students with a higher
+balance are more likely to default. To classify the observations to either
+of the two classes, we use the `predict()` function:
+
+```{r 02h-predictcc}
+default_hat <- predict(res)$class
+```
+
+And now we can assess the goodness of the classification:
+
+```{r 02h-confusioncc}
+table(default_hat, Default$default)
+```
+
+Elements on the diagonal of the matrix represent individuals whose default
+statuses were correctly predicted, while off-diagonal elements represent
+individuals that were misclassified. So, the LDA model fit to the 10,000
+observations results in an error rate of (23 + 252)/10,000 = 0.0275, i.e. a
+2.75%. This sounds like a low error rate, but two caveats must be noted:
+
+1. First, error rates for the observations used in estimation are typically
+	  expected to be smaller than if we use the model to predict whether or
+	  not a new set of individuals will default. The reason is that we
+	  specifically adjust the parameters of our model to do well on the
+	  "training" data;
+
+2. Second, since only 3.33% of the individuals in the training sample
+	  defaulted, a simple but useless classifier that always predicts that
+	  each individual will not default, regardless of his or her credit card
+	  balance and student status, will result in an error rate of 3.33%. In
+	  other words, the trivial null classifier will achieve an error rate that
+	  is only a bit higher than the LDA training set error rate.
+
+However, of the 333 individuals who defaulted, 252 (or 252/333 = 0.757) were
+missed by LDA. So, while the overall error rate is low, the error rate among
+individuals who defaulted is very high. From the perspective of a credit
+card company that is trying to identify high-risk individuals, an error rate
+of 75.7% among individuals who default might be unacceptable.
+A further way to assess class-specific performance uses the concepts of
+sensitivity" and "specificity". The sensitivity is the percentage of true
+defaulters that are identified, in the example equal to 81/(252 + 81) =
+0.243. The specificity is the percentage of non-defaulters that are correctly
+identified, in the example equal to 9,644/(9,644 + 23) = 0.998.
+
+In the `caret` package we find the `confusionMatrix()` function that calculates
+automatically the table and other statistics related to the classification
+problem:
+
+```{r message=FALSE}
+require(caret)
+```
+
+```{r 02h-confusioncaretcc}
+confusionMatrix(data = default_hat, reference = Default$default,
+				positive = "Yes")
+```
+
+To understand why LDA is performing so poorly (especially from the
+sensitivity point of view), note that in this example we are particularly
+concerned with the misclassification of individuals who actually default,
+whereas the misclassification of individuals who will not default is less
+problematic. So far, to assign an observation to the default class, we used a
+threshold of 50% for the posterior probability of default. One possibility to
+improve the sensitivity of this classifier is to lower this threshold. For
+instance, we might label any customer with a posterior probability of default
+above 20% to the default class. Doing this we would get the following
+results:
+
+```{r 02h-predictchgthreshcr}
+post <- predict(res)$posterior
+threshold <- 0.2
+default_hat_20 <- as.factor(ifelse(post[, 2] > threshold, 1, 0))
+levels(default_hat_20) <- c("No", "Yes")
+prop.table(table(default_hat_20, Default$default), margin = 2)
+confusionMatrix(data = default_hat_20, reference = Default$default,
+				positive = "Yes")
+```
+
+Of the 333 individuals who default, now LDA correctly predicts all but 138,
+41.4%). This is a huge improvement! However, this improvement has a price:
+now 235 individuals who do not default are incorrectly classified. As a
+result, the overall error rate has increased slightly to 3.73%. Probably this
+might be considered a small price to pay for a more accurate identification
+of individuals who default. The key question now is how to choose which
+threshold value is best. Unfortunately there is no immediate answer, because
+this decision must be based on domain knowledge, such as detailed information
+about the costs associated with default.
+
+A popular tool for assessing the performance of a classifier is the "receiver
+operating characteristics" curve (or ROC curve). This is a graph that
+simultaneously displays both the sensitivity and specificity for all possible
+thresholds. More specifically, the ROC curves reports on the vertical axis
+the sensitivity and on the horizontal axis one minus the specificity
+corresponding to many different thresholds ranging from zero to 1. ROC curves
+are useful for comparing different classifiers. A synthesis of the overall
+performance of a classifier is given by the area under the ROC curve (AUC).
+An ideal ROC curve will get to the top left corner, so the larger the AUC
+the better the classifier. There are many `R` packages that include functions
+for producing a ROC curve. One of the easiest to use is the `pROC` package:
+
+```{r message=FALSE}
+require(pROC)
+```
+
+```{r 02h-roccc}
+roc(response = Default$default, predictor = post[, 2], auc = TRUE, ci = TRUE,
+	plot = TRUE, main = "ROC curve")
+```
+
+The AUC for our example is around 0.95, which is pretty close to the maximum
+attainable value of 1, so would be considered very good. Note that this
+function produces a ROC curve reporting the specificity on the horizontal
+axis, which is then reversed. To produce a standard ROC curve with (1 - 
+specificity) reported on the horizontal axis, use the argument
+`legacy.axes = TRUE`.
+
+```{r 02h-roclegacycc}
+roc(response = Default$default, predictor = post[, 2], auc = TRUE, ci = TRUE,
+	plot = TRUE, main = "ROC curve", legacy.axes = TRUE)
+```
+
+To compare these results with a competing classifier, let's add to the
+predictor set also the income of the customers that we excluded in the
+previous analysis:
+
+```{r 02h-roccomparecc}
+res_new <- lda(default ~ ., data = Default)
+res_new
+post_new <- predict(res_new)$posterior
+# plot the ROC fot original model
+roc(response = Default$default, predictor = post[, 2], auc = TRUE, ci = TRUE,
+	plot = TRUE, col = "magenta", main = "ROC comparison")
+# add the ROC fot new model
+roc(response = Default$default, predictor = post_new[, 2], auc = TRUE,
+	ci = TRUE, plot = TRUE, col = "cyan", add = TRUE)
+legend(x = "bottomright", legend = c("w/o income", "w income"),
+	   col = c("magenta", "cyan"), lty = rep(1, 2), lwd = rep(2, 2))
+```
+
+The two ROC curves and the corresponding AUC are indistinguishable, therefore
+it seems that the addition of income doesn't help to better discriminate
+the two groups. Other comparisons could be made with further models for
+classification like the logistic regression previously estimated, which in this
+example would return the same results:
+
+```{r 02h-roclogitcc}
+roc(response = Default$default, predictor = post[, 2], auc = TRUE, ci = TRUE,
+	plot = TRUE, col = "magenta", main = "ROC comparison")
+roc(response = Default$default, predictor = post_logit, auc = TRUE,
+	ci = TRUE, plot = TRUE, col = "cyan", add = TRUE)
+legend(x = "bottomright", legend = c("LDA", "logit"),
+	   col = c("magenta", "cyan"), lty = rep(1, 2), lwd = rep(2, 2))
+```
+
+A more appropriate assessment of the predictive ability of these methods
+would involve the comparison of the error rate on a separate "test" set. This
+can be achieved by specifying the 'subset' argument in the `lda()` function.
+
+
+# An Extension: Quadratic Discriminant Analysis (QDA)
+
+QDA relaxes one the main assumption of LDA by assuming that each class has its
+own covariance matrix. This modification gives rise to decision boundaries
+that in QDA are quadratic functions of the predictors. Why would one prefer
+LDA or QDA? The answer involves a trade-off between bias and variance of the
+predictions. Roughly speaking, LDA tends to produce better results than QDA
+if there are relatively few training observations and so reducing variance is
+crucial. In contrast, QDA is recommended if the training set is larger, so
+that the variance of the classifier is not a major concern.
+
+The function `qda()` in the `MASS` package performs QDA:
+
+```{r 02h-qdacc}
+res_qda <- qda(default ~ student + balance, data = Default)
+post_qda <- predict(res_qda)$posterior
+threshold <- 0.2
+default.qda <- as.factor(ifelse(post_qda[, 2] > threshold, 1, 0))
+levels(default.qda) <- c("No", "Yes")
+prop.table(table(default.qda, Default$default), margin = 2)
+confusionMatrix(data = default.qda, reference = Default$default,
+				positive = "Yes")
+roc(response = Default$default, predictor = post[, 2], auc = TRUE, ci = TRUE,
+	plot = TRUE, col = "magenta", main = "ROC comparison")
+roc(response = Default$default, predictor = post_qda[, 2], auc = TRUE,
+	ci = TRUE, plot = TRUE, col = "cyan", add = TRUE)
+legend(x = "bottomright", legend = c("LDA", "QDA"),
+	   col = c("magenta", "cyan"), lty = rep(1, 2), lwd = rep(2, 2))
+```
+
+In this example QDA doesn't appear to improve over LDA since both techniques
+return exactly the same results.
+
+
+## Example: Stock Market Data
+
+We consider now `Smarket` (see the section *Introduction and datasets used* for further information), a second dataset consisting of percentage returns for the S&P 500 stock index over 1,250 days, from the beginning of 2001 until the end of 2005. For each date, the percentage returns for each of the five previous trading days (Lag1 through Lag5), the number of shares traded on the previous day (Volume, in billions), the percentage return on the date in question (Today) and whether the market was up or down on this date (Direction) have been recorded:
+
+```{r message=FALSE}
+require(GGally)
+```
+
+```{r 02h-loadsm, message=FALSE}
+summary(Smarket)
+ggpairs(Smarket)
+```
+
+The correlations between the lag variables and today's returns are close to
+zero. The only non negligible correlation is between Year and Volume, because
+the average number of shares traded daily increased from 2001 to 2005:
+
+```{r 02h-lineplotsm}
+ggp <- ggplot(Smarket, aes(x = 1:length(Volume), y = Volume)) + geom_line() +
+	xlab("Day")
+plot(ggp)
+```
+
+We aim to predict the `Direction` values using `Lag1` through `Lag5` and `Volume`.
+To this end, we'll compare the results from logistic regression, LDA and QDA.
+We start with logistic regression:
+
+```{r 02h-glmsm}
+glm_fit <- glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume,
+               data = Smarket, family = binomial(link = logit))
+summary(glm_fit)
+glm_probs <- predict(glm_fit, type = "response")
+glm_pred <- rep("Down", nrow(Smarket))
+glm_pred[glm_probs > .5] <- "Up"
+confusionMatrix(data = glm_pred, reference = Smarket$Direction,
+				positive = "Up")
+```
+
+Therefore we conclude that the error rate on the training data is 52.2%,
+slightly better than random guessing. However, as we already remarked, the
+training error rate is often overly optimistic, because it tends to
+underestimate the test error rate. In order to better assess the accuracy of
+the logistic regression model in this setting, we should fit the model using
+part of the data, and then examine how well it predicts the held out data.
+We therefore decide to use the observations from 2001 through 2004 for
+training and those from 2005 for testing:
+
+```{r 02h-glm2sm}
+train <- (Smarket$Year < 2005)
+Smarket_2005 <- Smarket[!train, ]
+glm_fit <- glm(Direction ~Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume,
+			   data = Smarket, family = binomial(link = logit), subset = train)
+glm_probs <- predict(glm_fit, Smarket_2005, type = "response")
+glm_pred <- rep("Down", nrow(Smarket_2005))
+glm_pred[glm_probs > .5] <- "Up"
+confusionMatrix(data = glm_pred, reference = Smarket_2005$Direction,
+				positive = "Up")
+```
+
+The test error rate is 52%, which is worse than random guessing! This result
+is not that surprising, since it is a well known fact that one would not
+generally expect to be able to use previous days' returns to predict future
+market performance. As an attempt to improve the model, we remove the
+predictors with the smallest p-values refitting the logistic regression
+using just `Lag1` and `Lag2`:
+
+```{r 02h-glm3sm}
+glm_fit <- glm(Direction ~ Lag1 + Lag2, data = Smarket,
+			   family = binomial(link = logit), subset = train)
+glm_probs <- predict(glm_fit, Smarket_2005, type = "response")
+glm_pred <- rep("Down", nrow(Smarket_2005))
+glm_pred[glm_probs > .5] <- "Up"
+confusionMatrix(data = glm_pred, reference = Smarket_2005$Direction,
+				positive = "Up")
+```
+
+Now 56% of the daily movements have been correctly predicted.
+
+We now perform LDA using only the observations before 2005:
+
+```{r 02h-ldasm}
+lda_fit <- lda(Direction ~ Lag1 + Lag2, data = Smarket, subset = train)
+lda_probs <- predict(lda_fit, Smarket_2005)$posterior[, 2]
+lda_class <- predict(lda_fit, Smarket_2005)$class
+confusionMatrix(data = lda_class, reference = Smarket_2005$Direction,
+				positive = "Up")
+```
+
+LDA provides practically the same result as logistic regression. We now move
+to QDA:
+
+```{r 02h-qdasm}
+qda_fit <- qda(Direction ~ Lag1 + Lag2, data = Smarket, subset = train)
+qda_probs <- predict(qda_fit, Smarket_2005)$posterior[, 2]
+qda_class <- predict(qda_fit, Smarket_2005)$class
+confusionMatrix(data = qda_class, reference = Smarket_2005$Direction,
+				positive = "Up")
+```
+
+This implies that QDA predictions are accurate almost 60% of the time. This
+suggests that QDA may capture the true relationship slightly more accurately
+than LDA and logistic regression. This is confirmed by comparing the 
+corresponding ROC curves:
+
+```{r 02h-rocqdasm}
+roc(response = Smarket_2005$Direction, predictor = glm_probs, auc = TRUE, ci = TRUE, plot = TRUE, col = "magenta", main = "ROC comparison",
+	legacy.axes = TRUE)
+roc(response = Smarket_2005$Direction, predictor = lda_probs, auc = TRUE,
+	ci = TRUE, plot = TRUE, col = "cyan", add = TRUE, legacy.axes = TRUE)
+roc(response = Smarket_2005$Direction, predictor = qda_probs, auc = TRUE,
+	ci = TRUE, plot = TRUE, col = "darkgray", add = TRUE, legacy.axes = TRUE)
+legend(x = "bottomright", legend = c("Logistic regression", "LDA", "QDA"),
+	   col = c("magenta", "cyan", "darkgray"), lty = rep(1, 3),
+	   lwd = rep(2, 3))
+```
+
+
+# Some Theoretical Backgrounds
+
+Two are the main approaches to Discriminant Analysis:
+1. The first was from Fisher, who developed the Linear Discriminant Functions without formulating any distributional assumptions on data (excluding constant variance/covariance matrix within groups)
+2. The second one, instead, assumes that the distribution of data is a multivariate normal, and basically applies LR methods to perform discriminations
+
+
+## Linear Discriminant Functions
+
+Let us suppose, for sake of simplicity, that two groups of observations are to be discriminated based on their measurements on two dimensions. 
+We have then $g=2$ groups of observations; for each group we have $n$ observations on $p=2$ (continuous) dimensions.  
+A possible representation of data points in a bidimensional Cartesian space could be the following:
+
+```{r message=FALSE}
+require(ggplot2)
+```
+
+```{r 02h-thplot1, echo=FALSE, message=FALSE, fig.width=plot_with_legend_fig_width_short}
+set.seed(seed = 12345)
+mu1 <- c(1.3,3)
+mu2 <- c(2,1.2)
+Sigma <- matrix(data = c(.5,.35,.35,.9),nrow = 2)
+data <- mvrnorm(n = 50,mu = mu1,Sigma = Sigma)
+data <- rbind(data,mvrnorm(n = 50,mu = mu2,Sigma = Sigma))
+data <- data.frame(data,group=factor(rep(c(1,2),each=50)))
+names(data)[1:2] <- c("x1","x2")
+mds <- aggregate(x = data[,1:2], by = list(group=data$group),FUN = mean)
+ggp <- ggplot(data = mds,mapping = aes(x = x1,y=x2,colour=group))
+ggp <- ggp + geom_point(shape=13,size=10)
+m <- (mds[2,3]-mds[1,3])/((mds[2,2]-mds[1,2]))
+q <- mds[1,3]-m*mds[1,2]
+df1 <- data.frame(m=m,q=q)
+ggp <- ggp + geom_abline(data=df1, mapping = aes(intercept=q,slope=m))
+ggp <- ggp + geom_point(data = data,mapping = aes(x=x1,y=x2,colour=group))
+#ggp <- ggp + geom_line(mapping = aes(group=""),colour="black")
+print(ggp)
+```
+
+We must find the linear transformation of data points such that the two groups on this new dimension are "maximally separated".  
+This is solved by finding the solution of:
+$$
+\begin{matrix}
+\max\\ 
+\underline{a}
+\end{matrix}\left\{\frac{\left [ \underline{a}^T \left(\underline{\overline{x}}_1-\underline{\overline{x}}_2 \right) \right ]}{\underline{a}^T S \underline{a}}\right\}
+$$
+Where $S$ is the pooled variance/covariance matrix of two subgroups
+
+The solution of above problem is:
+
+$$
+\underline{a} = S^{-1}  \left(\underline{\overline{x}}_1-\underline{\overline{x}}_2 \right) 
+$$
+and
+$$
+z=\underline{a}^T \underline{x} =  \left(\underline{\overline{x}}_1-\underline{\overline{x}}_2 \right)^T S^{-1} \underline{x}
+$$
+
+Where $\underline{x}$ is a generic vector of observed data. $\underline{a}^T \underline{x}$ is the so-called _Fisher Linear Discriminant Function_.
+
+```{r 02h-plotzetas,echo=FALSE, fig.width=plot_with_legend_fig_width_short}
+lds <- lda(group~x1+x2,data=data)
+a <- lds$scaling
+data$z <- as.vector(as.matrix(data[,1:2]) %*% a)
+ggp <- ggplot(data, aes(x=z, fill=group)) 
+ggp <- ggp + geom_density(alpha=0.3)
+ggp <- ggp + ggtitle("z scores from sample data (vertical line: threshold between groups)")
+ggp <- ggp + geom_vline(xintercept=mean(data$z),linetype="dashed")
+ggp <- ggp + geom_vline(xintercept=mean(data$z[1:50]),col="red")
+ggp <- ggp + geom_vline(xintercept=mean(data$z[51:100]),col="blue")
+ggp <- ggp + geom_rug(aes(col=group))
+print(ggp)
+```
+
+The thershold between groups is given by the mean of mean scores of the two groups, then the criterion to assign an observation to first group is:
+$$
+\left(\underline{\overline{x}}_1-\underline{\overline{x}}_2 \right)^T S^{-1} \underline{x} - \left(\underline{\overline{x}}_1-\underline{\overline{x}}_2 \right)^T S^{-1} \left(\frac{\underline{\overline{x}}_1+\underline{\overline{x}}_2}{2} \right) >0
+$$
+
+
+The above method may be applied also when $g >2$. In this case, the problem becomes more complex, and requires the maximization, with respect to the $\underline{a}$, of the function:
+$$
+R = \frac{\underline{a}^T B \underline{a}}{\underline{a}^T W \underline{a}}
+$$
+Under some constraints on $\underline{a}$ and $\underline{a}^T \underline{x}$ values.  
+In above formula, $B$ is an estimate of the "between" groups variance/covariance matrix, and $W$ is an estimated of "within" groups variance/covariance matrix.  
+In this case, $max\{p,g-1\}$ orthogonal Linear Discriminant Functions shall be obtained.
+
+
+## Probability Models
+
+An alternative approach to discrimination is via probability models.  
+Let $\pi_i (i=1, \cdots, g)$ denote the prior probabilities of the groups, and $p(\underline{x}|i)$ the densities of distributions of the observations for each group. Then the posterior distribution of belonging to $i$-th group after observing $\underline{x}$ is
+$$
+p(i|\underline{x}) = \frac{\pi_i p(\underline{x} | i)}{p(\underline{x})} \propto \pi_i p(\underline{x} | i)
+$$
+and it is fairly simple to show that the allocation rule which makes the smallest
+expected number of errors chooses the class with maximal $p(i | \underline{x})$; this is known
+as the _Bayes rule_.
+
+Now suppose the distribution for group $i$ is multivariate normal with mean $\mu_i$
+and covariance $\Sigma_i$ . Then the Bayes rule minimizes
+$$
+Q_i = −2 \log(p(\underline{x} | i)) − 2 \log(\pi_i)
+= (\underline{x} − \mu_i )^T\Sigma_i^{−1} (\underline{x} − \mu_i ) + \log(|\Sigma_i |) − 2 \log( \pi_i)
+$$
+
+The first addendum of last term of above formula is the squared Mahalanobis distance to the group centre. The rule to assign observation to group $i$ that minimizes the above formula gives the _Quadratic Discriminant Function_.
+
+If we suppose that the groups have a common covariance matrix $\Sigma$. Differences in the $Q_i$ are then linear functions of $\underline{x}$, and we can maximize $−Q_i /2$ or
+$$ 
+L_i = \underline{x} \Sigma^{−1} \mu^T_i − \mu_i Σ^{−1} \mu^T_i /2 + \log(\pi_i)
+$$
+If we substitute $\mu_i$ and $\Sigma$ with sample estimates (sample mean $\overline{\underline{x}}$ and sample within groups variance/covariance matrix $S$), then
+the above formula gives results that, for $\pi_i=1/g$, are equivalent to the the ones of Linear Discriminant Functions.
+
+<!---
+Exercises with iris or utilities or uscrimes 
+--->

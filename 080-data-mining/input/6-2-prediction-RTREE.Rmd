@@ -1,0 +1,158 @@
+---
+title: "Regression Trees (RTREE)"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+require(qdata)
+data(bostonhousing)
+data(cu.summary, package = "rpart")
+
+## Other datasets used
+# none
+
+####################################
+## packages needed: rpart, party ##
+####################################
+```
+
+
+# Introduction
+
+Tree-based methods differ from regression methods because they partition the
+feature space into a set of rectangular regions, and then fit a simple model
+(like a constant) in each one. They are conceptually simple but powerful. We
+describe now a method for tree-based regression and classification called
+CART.
+
+## `rpart` package
+
+We now illustrate the idea behind regression trees using some data on makes
+of car taken from the `rpart` package.
+`rpart` actually calculates the mean within nodes of trees.
+
+```{r message=FALSE}
+require(rpart)
+```
+
+Let's consider the `cu.summary` dataset (see the section *Introduction and datasets used* for further information). We first grow the tree:
+
+```{r aa}
+fit <- rpart(Mileage ~ Price + Country + Reliability + Type, method = "anova",
+						 data = cu.summary)
+printcp(fit) 	# display the results 
+plotcp(fit)		# visualize cross-validation results 
+summary(fit)	# detailed summary of splits
+```
+
+Note: $R_{cp}(T) = R(T) + cp * |T| * R(T_0)$
+i.e.: if any split does not increase the overall $R^2$ model by at least $cp$ (where $R^2$ is the usual linear-models definition) then that split is decreed to be, a priori, not worth pursuing.
+We can create additional plots:
+
+```{r ab}
+op <- par(mfrow = c(1, 2))
+rsq.rpart(fit)
+par(op)
+```
+
+The X Relative Error si related to PRESS residuals.
+
+Finally we plot the tree:
+
+```{r ac}
+plot(fit, uniform = TRUE, main = "Regression tree for Mileage")
+text(fit, use.n = TRUE, all = TRUE, cex = .8)
+```
+
+We then prune the tree:
+
+```{r ad}
+pfit <- prune(fit, cp = 0.01160389) # from cptable   
+```
+
+And plot the pruned tree:
+
+```{r ae}
+plot(pfit, uniform = TRUE, main = "Pruned regression tree for Mileage")
+text(pfit, use.n = TRUE, all = TRUE, cex = .8)
+```
+That returns the same results of non-pruned tree.
+
+## `party` package
+
+As a final remark, we mention the package `party`, whose `mob()` function
+implements a variant of the regression tree approach described so far called
+model-based recursive partitioning.
+
+The `mob()` function allows one to estimate separate regression models, by
+splitting the data using some variables. The formula for specifying such a
+model is:
+
+y ~ x1 + x2 + ... + xk | z1 + ... + zl,
+
+where the variables on the left of | specify the regression variables,
+while those on the right of | specify the partitioning variables. The general
+procedure for fitting is the following:
+
+  1. Fit the model once to all observations in the current node.
+  2. Assess whether the parameter estimates are stable with respect to every
+     partitioning variable z1, . . . , zl. If there is some instability,
+     select the variable zj associated with the smallest p-value for partitioning,
+     otherwise stop.
+  3. Compute the split point(s) that locally optimize an objective function.
+  4. Re-fit the model in both children, and repeat from step 2.
+
+To illustrate, we consider now an example based on the well known `bostonhousing` dataset (see the section *Introduction and datasets used* for further information).
+
+This dataset contains information for 506 houses in Boston. In particular, the dataset provides the median value of the house (in USD 1000) along with 14 covariates including the number of rooms per dwelling (rm) and the percentage of lower status of the population (lstat).  
+A segment-wise linear relationship between the house value and these two variables is very intuitive, whereas the shape of the influence of the remaining covariates is unclear and hence should be learned from the data. Therefore, a linear regression model for the median value explained by rm^2 and log(lstat) with k = 3 regression coefficients is employed and partitioned with respect to the l = 11 remaining variables.
+
+```{r ag}
+bostonhousing$lstat <- log(bostonhousing$lstat)
+bostonhousing$rm <- bostonhousing$rm^2
+bostonhousing$chas <- factor(bostonhousing$chas, levels = 0:1, labels = c("no", "yes"))
+bostonhousing$rad <- factor(bostonhousing$rad, ordered = TRUE)
+```
+
+Both the transformations only affect the parameter stability test chosen
+(step 2), but not the splitting procedure (step 3).
+
+We set some control parameters for the procedure:
+
+```{r message=FALSE}
+require(party)
+```
+
+```{r ah}
+ctrl <- mob_control(alpha = 0.05, bonferroni = TRUE, minsplit = 40, objfun = deviance, verbose = TRUE)
+```
+
+Then, we estimates the model:
+
+```{r ai}
+fmBH <- mob(medv ~ age + lstat + rm | zn + indus + chas + nox + age + dis + rad + tax + crim + b + ptratio,	data = bostonhousing, control = ctrl, model = linearModel)
+fmBH
+plot(fmBH)
+coef(fmBH)
+summary(fmBH)
+```
+
+For summarizing the quality of the fit, we compute the mean squared error,
+the log-likelihood and the AIC index:
+
+```{r aj}
+mean(residuals(fmBH)^2)
+logLik(fmBH)
+AIC(fmBH)
+```
+
+<!---
+# Exercises?
+--->

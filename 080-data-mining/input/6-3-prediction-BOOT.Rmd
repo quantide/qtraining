@@ -1,0 +1,169 @@
+---
+title: "Outlines on Bootstrap Techniques"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+data(Auto, package = "ISLR")
+
+## Other datasets used
+# none
+
+################################
+## packages needed: boot ISLR ##
+################################
+```
+
+
+# Introduction
+
+The bootstrap is a widely applicable and extremely powerful tool that can be
+used to quantify the uncertainty associated with a given estimator. The power
+of the bootstrap lies in the fact that it can be easily applied to a wide
+range of statistical methods, including some for which a measure of
+variability is otherwise difficult to obtain and is not automatically
+provided by statistical software. Suppose for example that one is interested
+in making inferences about a ratio of two population means. There is no
+simple traditional method for inference in this setting. Bootstrap can be
+effectively used in such non-standard situations.
+
+The (nonparametric) bootstrap works no matter what is the distribution of the population.
+With respect to this aspect, the bootstrap provides a general nonparametric
+approach for performing inferences about the characteristics of a population
+of interest.
+
+Suppose a set of $n$ observations is available from which one estimates a
+parameter (or set of parameters) $T$, the estimate being denoted as $t$. The 
+steps to apply the nonparametric bootstrap are:
+
+1. Generate $B$ new samples (usually few hundreds are enough), called
+   bootstrap samples, or resamples, by sampling with replacement from the
+   original random sample. Each resample is the same size as the original
+   random sample, $n$. Sampling with replacement means that, after one
+   randomly draws an observation from the original sample, he/she puts it back
+   into the original sample before drawing the next observation. As a result,
+   any number can be drawn once, more than once, or not at all.
+
+2. For each resample, calculate the statistic of interest, denoted as $t(b)$,
+   with $b = 1, \cdots ,B$; the distribution of these resample statistics is called
+   the bootstrap distribution.
+
+3. The bootstrap distribution gives information about the features (shape,
+   center, spread, etc.) of the sampling distribution of the statistic of
+   interest. In other words, the bootstrap distribution provides an
+   approximation to the sampling distribution for the statistic.
+
+Therefore, the basic idea is that the original sample represents the
+population from which it was drawn. So, resampling from this sample
+represents what one would get if many samples were taken from the
+population. The bootstrap distribution of a statistic, based on many
+resamples, represents the sampling distribution of the $t$ statistic, based on
+many samples.
+
+Performing a bootstrap analysis in `R` requires only two steps. First, we must create a function that computes the statistic of interest. Second, we use the `boot()` function of the `boot` package to perform the bootstrap by repeatedly sampling observations from the dataset with replacement.  
+As an illustration we use the `Auto` dataset in the `ISLR` package (see the section *Introduction and datasets used* for further information) to assess the variability of the intercept and slope terms for the linear regression model that uses `horsepower` to predict `mpg`. We will then compare the estimates obtained using the bootstrap with those obtained with the OLS method.
+
+```{r ct}
+summary(Auto)
+```
+
+We first create a simple function, `boot.fn()`, which takes in the Auto data
+set as well as a set of indices for the observations, and returns the
+intercept and slope estimates. We then apply this function to compute the
+estimates on the entire dataset using the usual linear regression
+coefficient estimate formulas:
+
+```{r cu}
+boot.fn <- function(data, index) {
+	return(coef(lm(mpg ~ horsepower, data = data, subset = index)))
+}
+boot.fn(Auto, 1:392)
+```
+
+The `boot.fn()` function can also be used in order to create bootstrap
+estimates for the intercept and slope terms by randomly sampling from among
+the observations with replacement:
+
+```{r cv}
+set.seed(10)
+boot.fn(Auto, sample(1:392, 392, replace = TRUE))
+```
+
+The resulting estimates are a bootstrap sample estimate of intercept and slope parameters.
+
+Next, we use the `boot()` function of the `boot` package to compute the standard errors of 1,000
+bootstrap estimates for the intercept and slope terms:
+
+```{r cv1, message=FALSE}
+require(boot)
+```
+
+```{r cw}
+set.seed(20)
+res <- boot(data = Auto, statistic = boot.fn, R = 1000)
+print(res)
+```
+
+```{r sds, message=FALSE,echo=FALSE, results='hide'}
+sds <- apply(X = res$t,MARGIN = 2, FUN = sd, na.rm=TRUE)
+```
+This indicates that the bootstrap estimate for the intercept standard error
+is `r sds[1]`, and that the bootstrap estimate for the slope standard error is
+`r sds[2]`. The corresponding OLS standard errors are given by 
+
+```{r cx}
+summary(lm(mpg ~ horsepower, data = Auto))$coef
+```
+
+Interestingly, these are somewhat different from the estimates obtained
+using the bootstrap. Does this indicate a problem with the bootstrap? In
+fact, it suggests the opposite, because the usual inference in a linear
+regression model requires certain assumptions (i.e., linearity,
+homoscedasticity, normality, etc.) that rarely are satisfied in practice.
+
+As a further example, below we compute the bootstrap standard error
+estimates and the standard linear regression estimates that result from
+fitting the quadratic model to the same data:
+
+```{r cy}
+boot.fn <- function(data, index) {
+	return(coefficients(lm(mpg ~ horsepower + I(horsepower^2), data = data,
+	subset = index)))
+}
+set.seed(10)
+res <- boot(data = Auto, statistic = boot.fn, R = 1000)
+print(res)
+summary(lm(mpg ~ horsepower + I(horsepower^2), data = Auto))$coef
+```
+
+Finally, to test the bootstrap on data which are corretly specified by design,
+we could try the following:
+
+```{r cz}
+set.seed(10)
+
+x <- runif(n = 500, max = 200)
+y <- 2 + 3*x +rnorm(500)
+
+dsim <- data.frame(x=x,y=y)
+boot.fn <- function(data, index) {
+	return(coefficients(lm(y ~ x, data = data,
+	subset = index)))
+}
+
+res <- boot(data = dsim, statistic = boot.fn, R = 1000)
+print(res)
+summary(lm(y ~ x, data = dsim))$coef
+```
+In this case, where the model is correctly specified "by design", the bootstrap and "standard" results are quite similar.
+
+<!---
+# Exercises?
+--->

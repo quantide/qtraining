@@ -1,0 +1,15 @@
+html_document:
+  course_title: Data Mining with <code>R</code>
+  toc: true
+  fig_width: 6.5
+  fig_height: 3.5
+  self_contained: true
+  theme: flatly
+  highlight: textmate
+  mathjax: default
+  lib_dir: ../include/libs
+  includes:
+    in_header: ../../include/html/in-header.html
+    before_body: ../../include/html/before-body.html
+    after_body: ../../include/html/after-body.html
+

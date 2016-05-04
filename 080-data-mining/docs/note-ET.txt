@@ -1,0 +1,69 @@
+Già fatto
+OK adeguare inizio Rmd (chunk con purl, pacchetti)
+OK trovare il modo di sistemare le formule
+
+Giorno 0 - 10/3
+OK sistemare gerarchia titoli (devono partire con 1 cancelletto, non con 2)
+OK library -> require
+OK far sparire parte su dplyr e su SOM
+OK sistemare acknowledgements
+OK sistemare le altre specifiche dei corsi QTD
+OK sistemare TOC
+
+Giorno 1 - 14/3
+OK includere tutti i file dentro qData
+OK sistemare chunk che caricano i dati
+OK controllare che funzioni la ricompilazione
+OK controllare i file su cui dplyr non funziona
+OK controllare che funzioni la ricompilazione
+OK `R` e non R
+
+Giorno 2 - 16/3
+OK sistemare introduzione corso
+OK sistemare descrizione dati e metterla al posto giusto
+
+Giorno 3 - 17/3
+OK qdata invece di qData
+-  documentare tutti i file dentro qdata (QUASI)
+
+Giorno 4 - 21/3
+-  cercare di basare ogni classe di analisi su un solo dataset -> ridurre i dataset utilizzati
+OK incorporare descrizioni dati in qdata
+
+Giorno 5 - 22/3
+-  dove possibile standardizzare i confronti grafici (QUASI)
+OK togliere i warning/message lunghi o inutili
+OK aumentare grandezza grafici
+-  ridurre etichette troppo grandi
+
+Giorno 6 - 23/3 (e 24/3?)
+-  sistemare bene PRED
+OK separare in maniera logica CLASS e PRED
+OK separare CLASS
+OK separare PRED
+
+Giorno 7 - 29/3
+OK pippo su 2.Rmd
+OK "where x is the analyzed data.frame") o dataframe io lo cambierei in "data frame"
+OK data set -> dataset
+-  qplot -> ggplot
+-  aggiornamento codice secondo nuove specifiche e buone norme di ordine generale
+OK togliere codici commentati non utilizzati (es.: primo ggplot in univariate)
+-  tenere solo rpart per i pacchetti degli alberi
+-  altre indicazioni Pego contenute nel file note-Pego.txt
+-  titoli a esempi (aggiungere quelli che mancano e mettere a tutti con 2 o 3 #)
+
+Giorno 8 - 4/4
+-  rileggere tutto controllando se tutto scorre e se i passaggi sono coerenti tra loro e nel frattempo:
+	* correggere errori
+	* adeguare testo a standard QTD 
+	* spostare gli esempi tolti in un Rmd a parte
+	* ordine codice
+OK aggiungere introduzione a tutte le parti
+
+### 2.Rmd
+-  these both... (histograms) ???
+
+### Miglioramenti successivi
+-  modello logistico?
+-  confronto tra previsioni?

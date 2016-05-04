@@ -1,0 +1,29 @@
+Introduction
+Introduction and Data Used            | 1-intro.Rmd
+Descriptive Statistics                | 2-descriptive-statistics.Rmd
+
+Reduction of Data Dimensions
+Introduction                          | 3-0-dimreduction-intro.Rmd
+MDS		                                | 3-1-dimreduction-MDS.Rmd
+PCA and EFA		                        | 3-2-dimreduction-PCA-EFA.Rmd
+CA     		                            | 3-3-dimreduction-CA.Rmd
+
+Clustering
+Introduction                          | 4-0-clustering-intro.Rmd
+HC	                                  | 4-1-clustering-HC.Rmd
+NHC                                   | 4-2-clustering-Kmeans-NHC.Rmd
+GMM                                   | 4-3-clustering-GMM.Rmd
+
+Classification
+Introduction                          | 5-0-classification-intro.Rmd
+LDA and QDA                           | 5-1-classification-LDA-QDA.Rmd
+KNN                                   | 5-2-classification-KNN.Rmd
+CTREE                                 | 5-3-classification-CTREE.Rmd
+SVM                                   | 5-4-classification-SVM.Rmd
+
+Prediction
+Introduction                          | 6-0-prediction-intro.Rmd
+LM                                    | 6-1-prediction-LM.Rmd
+RTREE                                 | 6-2-prediction-RTREE.Rmd
+Bootstrap Techniques                  | 6-3-prediction-BOOT.Rmd
+

@@ -1,0 +1,317 @@
+---
+title: "Data Mining with `R`"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+# none
+
+## Other datasets used
+# none
+
+############################
+## packages needed: qdata ##
+############################
+```
+
+
+# Introduction
+
+This course will provide an overview of the main data mining techniques through the statistical software `R`. It is divided into five big sections:
+
+1. **Basic data mining techniques for univariate data**: simple descriptive techniques to analyze single variables;
+2. **Dimensionality reduction**: whose aim is at showing some methods to reduce the number of variables contained in the data by keeping almost the same information;
+3. **Clustering**: when the objective of the analysis is to divide observations into groups, created on the basis of the variables at our disposal;
+4. **Classification**: when the objective of the analysis is to correctly assign a new observation to a value of a categorical response variable, through a proper statistical model estimated from the data;
+5. **Prediction**: when the objective of the analysis is to predict the value of a response variable in a new observation, through a proper statistical model estimated from the data.
+
+Several `R` packages, besides the base `R` distribution, will be used in this course: `boot`, `ca`, `caret`, `clusterSim`, `dplyr`, `e1071`, `ellipse`, `fBasics`, `GGally`, `ggplot2`, `glmnet`, `Hmisc`, `HSAUR2`, `ISLR`, `kohonen`, `lattice`, `leaps`, `MASS`, `mclust`, `MCMCpack`, `mice`, `MSQC`, `mvnormtest`, `mvtnorm`, `party`, `pls`, `pROC`, `psych`, `reshape2`, `rgl`, `rpart`, `rpart.plot`, `smacof`, `tree`.  
+
+Please, install of them before starting.
+
+
+# Datasets Used in the Examples of This Course
+
+Let us load the datasets which will be used in the examples of this course. They are loaded from the packages `qdata`, `HSAUR2`, `smacof`, `ISLR` and `rpart`:
+
+```{r load datasets, results="hide", message=FALSE}
+## Remove all objects in the R environment
+rm(list = ls())
+
+## qdata package
+require(qdata)
+
+## qdata data frames used in this course
+course_qdata_df <- c("banknotes","bimetal1","bostonhousing","druguse","forbes94","german","life","mds",
+                     "uscompanies","uscrime","utilities","volcano3d","wea","wwiileaders","wines")
+
+## Load qdata data frames used in this course
+data(list = course_qdata_df)
+
+## Load other data frames used in this course
+data(skulls, package = "HSAUR2")
+data(bread, package = "smacof")
+data(Auto, Carseats, Default, Smarket, package = "ISLR")
+data(cu.summary, kyphosis, package = "rpart")
+```
+
+The following datasets are used in the examples of this course.
+
+
+## `Auto`
+This dataset, included in the `R` package `HSLR`, deals with 392 vehicles on which 9 variables are measured (Games, G., Witten, D., Hastie, T., and Tibshirani, R., *An Introduction to Statistical Learning with applications in `R`*, [www.statlearning.com](www.statlearning.com), Springer-Verlag, 2013).
+
+```{r auto}
+str(Auto)
+```
+
+For further details, see the help page of the data: `?ISLR::Auto`
+
+
+## `banknotes`
+This dataset deals with 200 old Swiss 1,000-franc banknotes classified by dimensions (6 numerical characteristics) and type (genuine/counterfeit) (see Härdle and Simar, *Applied Multivariate Statistical Analysis*, 3rd ed., Springer, 2012).
+
+```{r banknotes}
+str(banknotes)
+```
+
+For further details, see the help page of the data: `?banknotes`
+
+
+## `bimetal1`
+This dataset, derived from the dataset with the same name included in the `R` package `MSQC`, deals with 28 metal strips on which 5 numerical variables are measured (defelection, curvature, resistivity Hardness, low side Hardness, high side).
+
+```{r bimetal1}
+str(bimetal1)
+```
+
+For further details, see the help page of the data: `?bimetal1`
+
+
+## `bostonhousing`
+This dataset deals with 506 houses in Boston classified by 13 numerical characteristics (age, tax, etc.) and one categorical characteristic (chas).
+
+```{r bostonhousing}
+str(bostonhousing)
+```
+
+For further details, see the help page of the data: `?bostonhousing`
+
+
+## `bread`
+The data, included in the `R` package `smacof`, contains 8 distance matrices carried out by 8 raters, based on ratings of 10 breads on 11 different attributes. Note that the bread samples are pairwise replications: each of the 5 different breads, which have a different salt content, was presented twice for rating. The attributes are bread odor, yeast odor, off-flavor, color, moisture, dough, salt taste, sweet taste, yeast taste, other taste, and total.
+
+```{r bread}
+str(bread)
+```
+
+For further details, see the help page of the data: `?smacof::bread`
+
+
+## `Carseats`
+This dataset, included in the `R` package `ISLR`, deals with sales of child car seats at 400 different stores (see James, G., Witten, D., Hastie, T., and Tibshirani, R., *An Introduction to Statistical Learning with applications in `R`*, Springer, 2013).
+
+```{r Carseats}
+str(Carseats)
+```
+
+For further details, see the help page of the data: `?ISLR::Carseats`
+
+
+## `cu.summary`
+This dataset, included in the `R` package `rpart`, deals with makes of cars taken from the April, 1990 issue of *Consumer Reports*. It has 117 rows and 5 columns.
+
+```{r cu.summary}
+str(cu.summary)
+```
+
+For further details, see the help page of the data: `?part::cu.summary`
+
+
+## `Default`
+This dataset, included in the `R` package `ISLR`, deals with 10,000 customers with the aim to predict which customers will default on their credit card debt (see James, G., Witten, D., Hastie, T., and Tibshirani, R., *An Introduction to Statistical Learning with applications in `R`*, Springer, 2013).
+
+```{r Default}
+str(Default)
+```
+
+For further details, see the help page of the data: `?ISLR::Default`
+
+
+## `druguse`
+The data contains the correlation matrix among rates (recorded on a 5-point scale) for a sample of 1,634 students in the seventh to ninth grades in 11 schools in the greater metropolitan area of Los Angeles on 13 different drugs or substances (beer, cigarettes, wine, marijuana, hashish, etc.) (see Everitt, B. and Hothorn, T., *An Introduction to Applied Multivariate Analysis with `R`*, Springer, 2011).
+
+```{r druguse}
+druguse
+```
+
+For further details, see the help page of the data: `?druguse`
+
+
+## `faithful`
+The data, already included in the base `R` distribution, contains information on 272 eruptions for the Old Faithful geyser in Yellowstone National Park, Wyoming, USA: the eruption time and the waiting time to next eruption.
+
+```{r faithful}
+str(faithful)
+```
+
+For further details, see the help page of the data: `?faithful`
+
+
+## `forbes94`
+The data deals with the compensation received in 1994 by the 800 most paid CEOs in US (This dataset comes from a ranking published by the Forbes newspaper in the same year).
+
+```{r forbes94}
+str(forbes94)
+```
+
+For further details, see the help page of the data: `?forbes94`
+
+
+## `german`
+This dataset deals with a sample of 1,000 customers which apply for a credit card. Some have defaulted (Bad class) and other not (Good) on the credit card. 20 further characteristics about them or their credit card have been measured. 
+
+```{r german}
+str(german)
+```
+
+For further details, see the help page of the data: `?german`
+
+
+## `iris`
+The data, already included in the base `R` distribution, contains the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. 
+
+```{r iris}
+str(iris)
+```
+
+For further details, see the help page of the data: `?iris`
+
+
+## `kyphosis`
+This dataset, included in the `R` package `rpart`, has 81 rows representing data on 81 children who have had corrective spinal surgery. Age, number of vertebrae involved and the first vertebra operated on were detected on the children, besides the indication of presence or absence of kyphosis (a type of deformation).
+
+```{r kyphosis}
+str(kyphosis)
+```
+
+For further details, see the help page of the data: `?rpart::kyphosis`
+
+
+## `life`
+The data contains life expectations at birth, 25, 50 and 75 years for men and women in 31 Countries or regions (Everitt, B. and Hothorn, T., *An Introduction to Applied Multivariate Analysis with `R`*, Springer, 2011).
+
+```{r life}
+str(life)
+```
+
+For further details, see the help page of the data: `?life`
+
+
+## `mds`
+This fictional data contains 10 observations on which 5 numerical variables are measured.
+
+```{r mds}
+str(mds)
+```
+
+For further details, see the help page of the data: `?mds`
+
+
+## `Smarket`
+This dataset, included in the `R` package `ISLR`, deals with percentage returns for the S&P 500 stock index over 1250 days, from the beginning of 2001 until the end of 2005 (see James, G., Witten, D., Hastie, T., and Tibshirani, R., *An Introduction to Statistical Learning with applications in `R`*, Springer, 2013). For each date, the percentage returns for each of the five previous trading days (Lag1 through Lag5), the number of shares traded on the previous day (Volume, in billions), the percentage return on the date in question (Today) and whether the market was up or down on this date (Direction) have been recorded.
+
+```{r Smarket}
+str(Smarket)
+```
+
+For further details, see the help page of the data: `?ISLR::Smarket`
+
+
+## `skulls`
+This dataset, included in the `R` package `HSAUR2`, deals with 150 male Egyptian skulls from five epochs classified by 4 measurements (see Everitt, B. and Hothorn, T., *An Introduction to Applied Multivariate Analysis with `R`*, Springer, 2011).
+
+```{r skulls}
+str(skulls)
+```
+
+For further details, see the help page of the data: `?HSAUR2::skulls`
+
+
+## `uscompanies`
+This dataset deals with 79 U.S. companies (see Härdle and Simar, *Applied Multivariate Statistical Analysis*, 3rd ed., Springer, 2012) classified by 6 numerical characteristics (assets, sales, etc.) and one categorical characteristic (industry); indshort is a shortening for industry.
+
+```{r uscompanies}
+str(uscompanies)
+```
+
+For further details, see the help page of the data: `?uscompanies`
+
+
+## `uscrime`
+The data deals with crime rates (number of crimes per 100,000 residents) in the 50 U.S.; the dataset includes also land and population (in 1985) of the 50 U.S., which are classified by the following seven categories: murder, rape, robbery, assault, burglary, larceny and auto-theft (from Härdle, W. K. and Simar, L., *Applied Multivariate Statistical Analysis*, 3rd edition, Springer, 2012).
+
+```{r uscrime}
+str(uscrime)
+```
+
+For further details, see the help page of the data: `?uscrime`
+
+
+## `utilities`
+This dataset deals with 22 U.S. companies classified by 8 numerical characteristics (coverage, return, cost, etc.).
+
+```{r utilities}
+str(utilities)
+```
+
+For further details, see the help page of the data: `?utilities`
+
+
+## `volcano3d`
+The data, derived from the `volcano` dataset included in the base `R` distribution, gives the topographic information for Maunga Whau, one of about 50 volcanos in the Auckland volcanic field, on a 10m by 10m grid. 
+
+```{r volcano3d}
+str(volcano3d)
+```
+
+For further details, see the help page of the data: `?volcano3d`
+
+
+## `wea`
+Weather daily data (temperature, rain, wind, etc.) in Canberra, Australia, from 2007-11-01 to 2008-10-31.
+
+```{r wea}
+str(wea)
+```
+
+For further details, see the help page of the data: `?wea`
+
+
+## `wines`
+The data, derived from the dataset with the same name included in the `R` package `kohonen`, contains information on a set of 177 Italian wine samples from three different grape cultivars; 13 variables have been measured (alcohol, malic acid, tc.). 
+
+```{r wines}
+str(wines)
+```
+
+For further details, see the help page of the data: `?wines`
+
+
+## `wwiileaders`
+The data contains a distance matrix among 12 country leaders during II World War, which is based on the judgments of the dissimilarities in ideology. The subjects made judgments on a nine-point scale, with the extreme points of the scale, 1 and 9, being described as indicating “very similar” and “very dissimilar”, respectively (see Everitt, B. and Hothorn, T., *An Introduction to Applied Multivariate Analysis with `R`*, Springer, 2011).
+
+```{r wwiileaders}
+wwiileaders
+```
+
+For further details, see the help page of the data: `?wwiileaders`
+
+

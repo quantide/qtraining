@@ -1,0 +1,194 @@
+---
+title: "Non-Hierarchical Clustering (K-Means) (NHC)"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+require(qdata)
+data(uscrime)
+
+## Other datasets used
+# iris
+
+##################################################
+## packages needed: ggplot2, GGally, clusterSim ##
+##################################################
+```
+
+
+# Introduction
+
+## Non-Hierarchical (Partitioning) Methods
+
+Given a preassigned number $K$ of groups, Non-Hierarchical Clustering (NHC)
+methods seek to partition the data into $K$ clusters so that the items within
+each cluster are similar to each other, whereas items from different
+clusters are quite dissimilar.
+
+A possible approach to do this would be to enumerate all the possible groupings of the
+items in $K$ groups and then choose as the best solution the grouping that
+optimizes some predefined criterion. Unfortunately, such an
+approach would become rapidly infeasible, especially for large datasets,
+requiring incredible amounts of computer time and storage. As a result, all
+available clustering techniques are iterative and work on only a very
+limited amount of enumeration.
+
+Among the many non-hierarchical clustering algorithms developed so far, the
+most popular is the K-means one. In its basic implementation, the
+K-means algorithm starts either by assigning items to one of $K$ predetermined
+clusters and then computing the $K$ cluster centroids, or by pre-specifying
+the $K$ cluster centroids. The pre-specified centroids may be randomly selected
+items or may be obtained by cutting a dendrogram at an appropriate height.
+Then, through an iterative procedure, the algorithm seeks to minimize the
+within-group sum of squares (WGSS) over all variables by reassigning items to
+clusters. The procedure stops when no further reassignment reduces the value
+of WGSS.
+
+The solution will typically not be unique; the algorithm will only find a
+local minimum of WGSS. Therefore, it is recommended that the algorithm be
+run using different initial random assignments of the items to $K$ clusters
+(or by randomly selecting K initial centroids) in order to find the global
+minimum of WGSS and, hence, the best clustering solution based upon $K$
+clusters.
+
+As an example, we consider the `uscrime` dataset (see the section *Introduction and datasets used* for further information):
+
+```{r message=FALSE}
+require(ggplot2)
+require(GGally)
+```
+
+```{r 02e-loadandsummaryuc}
+uscrime_tmp <- uscrime[, 4:10]
+ggpairs(uscrime_tmp)
+```
+
+If we first calculate the variances of the crime rates for the different
+types of crimes we find the following:
+
+```{r 02e-sapplyuc}
+sapply(uscrime_tmp, var)
+```
+
+The variances are very different, and using K-means on the raw data would not
+be sensible; we must standardize the data in some way, and here we
+choose to standardize each variable by its range. After such standardization,
+the variances become
+
+```{r 02e-applyandsweepuc}
+rge <- sapply(uscrime_tmp, function(x) diff(range(x)))
+uscrime_s <- sweep(x = uscrime_tmp, MARGIN = 2, STATS = rge, FUN = "/")
+sapply(uscrime_s, var)
+```
+
+We can now proceed with clustering the data. First we plot the WGSS for one-
+to six-group solutions to see if we can get any indication of the number of
+groups. The plot is obtained as follows:
+
+```{r 02e-scree1uc}
+k_max <- 6
+wss <- rep(0, k_max)
+for (k in 1:k_max) {
+	wss[k] <- kmeans(uscrime_s, centers = k)$tot.withinss
+}
+ggp <- ggplot(data = data.frame(x=1:6, y=wss), mapping = aes(x=x,y=y)) +
+  geom_point() +
+  geom_line() +
+  xlab("Number of groups") + 
+  ylab("Within groups sum of squares")
+print(ggp)
+```
+
+As the number of groups increases, the sum of squares will necessarily
+decrease, but an obvious "elbow" in the plot may be indicative of the most
+useful solution for the investigator to look at in detail. In our case there
+are two possible "elbows" in the plot, at two and four groups, and we now
+look at these solutions. The group means for these solutions are computed by
+
+```{r 02e-plotsuc1}
+km_2 <- kmeans(uscrime_s, centers = 2)
+km_2$centers * rge
+km_4 <- kmeans(uscrime_s, centers = 4)
+km_4$centers * rge
+
+uscrime_pca <- princomp(uscrime[, 4:10], cor = TRUE)
+summary(uscrime_pca)
+plot(uscrime_pca, type = "l")
+abline(h = 1, lty = 2)
+```
+
+Now we can try using the XXXX index to help us in finding the optimal number of clusters:
+```{r 02d-chfuncut,warning=FALSE}
+require(clusterSim)
+minC <- 2
+maxC <- 10
+res <- numeric(maxC - minC)
+for (nc in minC:maxC) {
+	res[nc - minC + 1] <- index.G1(uscrime_s, kmeans(uscrime_s,centers = nc)$cluster)
+}
+ggp <- ggplot(data=data.frame(x=2:(length(res)+1), y= res), mapping = aes(x=x,y=y)) + 
+  geom_point() + 
+  geom_line() +
+  xlab("Number of clusters") +
+  ylab("Calinski-Harabasz pseudo F-statistic")
+print(ggp)
+```
+
+Als with this index, not a really clear indication appears on the number of clusters to choose.
+
+Since many variables are available, we will try to plot the grouing information on the plot of scores of 
+a simple 2-dimensions PCA analysis
+
+```{r 02e-plotsuc2, fig.width=plot_with_legend_fig_width_short}
+Cluster <- as.character(km_2$cluster)
+uscrime_scores <- cbind(data.frame(uscrime_pca$scores[, c("Comp.1", "Comp.2")]), state=uscrime$state, Cluster=Cluster)
+ggp <- ggplot(data= uscrime_scores, mapping = aes(x = Comp.1, y=Comp.2, label=state, colour=Cluster)) +
+  geom_point() +
+  xlab("1st PCA dimension") +
+  ylab("2nd PCA dimension") +
+  geom_text(hjust=0.5, vjust=-0.5, size=3)
+print(ggp)
+```
+
+```{r 02e-plotsuc3}
+pairs(uscrime[, 4:10], col = Cluster, pch = Cluster, cex = .75)
+```
+
+```{r 02e-plotsuc4, fig.width=plot_with_legend_fig_width_short}
+Cluster <- as.character(km_4$cluster)
+ggp <- ggplot(data=data.frame(x = uscrime_scores[, 1], y = uscrime_scores[, 2], Cluster=Cluster, state=uscrime$state), mapping = aes(x=x,y=y, colour=Cluster))+
+  geom_point() +
+  xlab("1st PCA dimension") +
+  ylab("2nd PCA dimension") +
+  geom_text(mapping = aes(label=state), hjust = 0.5, vjust = -0.5, size = 3)
+print(ggp)
+```
+
+```{r 02e-plotsuc5}
+pairs(uscrime[, 4:10], col = Cluster, pch = Cluster, cex = .75)
+```
+
+The previous plots together with the next ones suggest that the two groups
+solution seems to be more interpretable:
+
+```{r 02e-levelplotsuc}
+uscrime$reg <- as.factor(uscrime$reg)
+levels(uscrime$reg) <- c("Northeast", "Midwest", "South", "West")
+
+plot(table(uscrime$reg, km_2$cluster), main = "Clusters vs. US States region",
+			xlab = "Region of US", ylab = "2 groups solution")
+
+plot(table(uscrime$reg, km_4$cluster), main = "Clusters vs. US States region",
+			xlab = "Region of US", ylab = "4 groups solution")
+```
+
+<!---
+# Exercises with iris o utilities 
+--->
