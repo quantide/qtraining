@@ -126,7 +126,7 @@ confusionMatrix(data = svm.pred, reference = dat[-train, "y"], positive = "1")
 36% of test observations are misclassified by this SVM.
 
 ## Some theory about SVM
-![Schema SVM](./images/svm-schema.png)
+![](./images/svm-schema.png)
 
 When the classes are perfectly separated (__hard margin__), then SVM search for the
 "line" that maximally separates the 2 classes data points.  
