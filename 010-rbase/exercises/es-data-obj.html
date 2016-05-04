@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="" />
+
+
+<title></title>
+
+<script src="es-data-obj_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="es-data-obj_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="es-data-obj_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="es-data-obj_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="es-data-obj_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="es-data-obj_files/highlight/default.css"
+      type="text/css" />
+<script src="es-data-obj_files/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script src="es-data-obj_files/navigation-1.0/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+</div>
+
+
+<div id="data-object" class="section level1">
+<h1>Data Object</h1>
+<div id="vectors" class="section level2">
+<h2>Vectors</h2>
+<div id="exercise-1" class="section level3">
+<h3>Exercise 1</h3>
+<ol style="list-style-type: lower-alpha">
+<li><p>Create a vector, named <code>vec1</code>, containing the following values:<br />
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90</p></li>
+<li><p>Select the 5-th element of <code>vec1</code>.</p></li>
+<li><p>Select the first 10 elements of <code>vec1.</code></p></li>
+<li><p>Select all the elements of <code>vec1</code> apart from the 2nd and the 6th element.</p></li>
+</ol>
+</div>
+<div id="exercise-2" class="section level3">
+<h3>Exercise 2</h3>
+<ol style="list-style-type: lower-alpha">
+<li><p>Generate a vector, named <code>vec2</code>, containing the numbers from 1 to 10 and of length 8, using the function <code>seq()</code>.</p></li>
+<li><p>Select the values of <code>vec2</code> which are greater than 4.</p></li>
+<li><p>Select the values of <code>vec2</code> which are equal or less than 2 or which are equal or greater than 6.</p></li>
+</ol>
+</div>
+<div id="exercise-3" class="section level3">
+<h3>Exercise 3</h3>
+<ol style="list-style-type: lower-alpha">
+<li><p>Generate the following vector using the function <code>rep()</code>:<br />
+<code>vec3 &lt;- c(&quot;one&quot;, &quot;two&quot;, &quot;one&quot;, &quot;two&quot;, &quot;one&quot;, &quot;two&quot;)</code></p></li>
+<li><p>Generate a new vector, named <code>vec5</code>, combining the previous vector, <code>vec3</code>, with the following one:</p></li>
+</ol>
+<pre class="r"><code>vec4 &lt;- c(&quot;three&quot;, &quot;four&quot;)</code></pre>
+</div>
+</div>
+<div id="matrices" class="section level2">
+<h2>Matrices</h2>
+<div id="exercise-1-1" class="section level3">
+<h3>Exercise 1</h3>
+<p>Generate a matrix, named <code>mat1</code>, with 5 rows and 3 columns, using <code>matrix()</code> function:</p>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6
+## [3,]    7    8    9
+## [4,]   10   11   12
+## [5,]   13   14   15</code></pre>
+</div>
+<div id="exercise-2-1" class="section level3">
+<h3>Exercise 2</h3>
+<p>Starting from the following vector:</p>
+<pre class="r"><code>mat2 &lt;- 1:8</code></pre>
+<p>Generate a matrix with 2 rows and 4 columns using <code>dim()</code> function.</p>
+</div>
+<div id="exercise-3-1" class="section level3">
+<h3>Exercise 3</h3>
+<ol style="list-style-type: lower-alpha">
+<li>Generate a matrix, named <code>mat3</code>, combining the following columns:</li>
+</ol>
+<pre class="r"><code>a &lt;- 1:3
+b &lt;- 7:9
+c &lt;- 8:6</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Add the following row to <code>mat3</code>:</li>
+</ol>
+<pre class="r"><code>d &lt;- 4:6</code></pre>
+<p>### Exercise 4</p>
+<p>Considering the following matrix, named <code>mat4</code>:</p>
+<pre class="r"><code>mat4 &lt;- matrix(1:24, nrow = 6, ncol = 4, byrow = TRUE)
+mat4</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4]
+## [1,]    1    2    3    4
+## [2,]    5    6    7    8
+## [3,]    9   10   11   12
+## [4,]   13   14   15   16
+## [5,]   17   18   19   20
+## [6,]   21   22   23   24</code></pre>
+<ol style="list-style-type: lower-alpha">
+<li><p>Select the third and the fifth row of <code>mat4</code>.</p></li>
+<li><p>Select all columns of <code>mat4</code> apart from the first.</p></li>
+<li><p>Select second and third rows and second and third columns of <code>mat4</code>.</p></li>
+</ol>
+</div>
+</div>
+<div id="lists" class="section level2">
+<h2>Lists</h2>
+<div id="exercise-1-2" class="section level3">
+<h3>Exercise 1</h3>
+<ol style="list-style-type: lower-alpha">
+<li>Generate a list, named <code>list1</code> that contains the following R elements:</li>
+</ol>
+<pre class="r"><code>vec &lt;- 1:10
+mat &lt;- matrix(1:9, ncol = 3)
+name &lt;- &quot;Oscar&quot;</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Add to <code>list1</code> the following element:</li>
+</ol>
+<pre class="r"><code>letters &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;)</code></pre>
+</div>
+<div id="exercise-2-2" class="section level3">
+<h3>Exercise 2</h3>
+<p>Given the following list, named <code>list2</code>:</p>
+<pre class="r"><code>list2 &lt;- list(vec = c(1,3,5,7,8), mat = matrix(1:12, ncol = 4), 
+              sub_list = list(names = c(&quot;Veronica&quot;, &quot;Enrico&quot;, &quot;Andrea&quot;, &quot;Anna&quot;), 
+                              numbers = 1:4))
+list2</code></pre>
+<pre><code>## $vec
+## [1] 1 3 5 7 8
+## 
+## $mat
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    4    7   10
+## [2,]    2    5    8   11
+## [3,]    3    6    9   12
+## 
+## $sub_list
+## $sub_list$names
+## [1] &quot;Veronica&quot; &quot;Enrico&quot;   &quot;Andrea&quot;   &quot;Anna&quot;    
+## 
+## $sub_list$numbers
+## [1] 1 2 3 4</code></pre>
+<ol style="list-style-type: lower-alpha">
+<li><p>Entract the first element of <code>list2</code>.</p></li>
+<li><p>Extract the objects contained in the first element of <code>list2</code>.</p></li>
+<li><p>Extract the element named <code>sub_list</code> of <code>list2</code>.</p></li>
+<li><p>Extract the second rows of the matrix included in the second element of <code>list2</code>.</p></li>
+</ol>
+</div>
+</div>
+<div id="factors" class="section level2">
+<h2>Factors</h2>
+<div id="exercise-1-3" class="section level3">
+<h3>Exercise 1</h3>
+<p>Starting from the vector:</p>
+<pre class="r"><code>fac1 &lt;- c(&quot;F&quot;, &quot;F&quot;, &quot;M&quot;, &quot;M&quot; , &quot;F&quot;)</code></pre>
+<p>Generate the corresponding factor with two levels: “F” and “M”</p>
+</div>
+<div id="exercise-2-3" class="section level3">
+<h3>Exercise 2</h3>
+<p>Starting from the vector:</p>
+<pre class="r"><code>fac2 &lt;- c(1, 1, 1, 2, 2, 2) </code></pre>
+<ol style="list-style-type: lower-alpha">
+<li><p>Generate the corresponding factor considering that 1 = “Female”, 2 = “Male” e 3 = “Trans”.</p></li>
+<li><p>Select the all elements of <code>fac2</code> apart from “Male”.</p></li>
+</ol>
+</div>
+</div>
+<div id="data-frames" class="section level2">
+<h2>Data Frames</h2>
+<div id="exercise-1-4" class="section level3">
+<h3>Exercise 1</h3>
+<ol style="list-style-type: lower-alpha">
+<li>Generate a data frame, named <code>df1</code>, corresponding to:</li>
+</ol>
+<pre><code>##    id     name class mean
+## 1   1     Luca    5A  6.0
+## 2   2   Chiara    5A  7.0
+## 3   3     Lisa    5A  5.0
+## 4   4   Matteo    5A  6.5
+## 5   5    Alice    5A  7.5
+## 6   6    Marco    5B  4.5
+## 7   7 Veronica    5B  9.0
+## 8   8   Nicola    5B  8.0
+## 9   9    Elena    5B  8.5
+## 10 10  Daniele    5B  7.0</code></pre>
+<p>Remember to maintain character vectors as they are, specifiyng <code>stringsAsFactors = FALSE</code>.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li><p>Select the first 3 rows of <code>df1</code>.</p></li>
+<li><p>Select the last 6 rows and the first 3 columns of <code>df1</code>.</p></li>
+<li><p>Select the column <code>class</code> of <code>df1</code>.</p></li>
+<li><p>Convert the column <code>class</code> of <code>df1</code> in a factor with levels: “5A” and “5B”</p></li>
+<li><p>How many columns and rows <code>df1</code> has?</p></li>
+<li><p>Generate another dataframe, named <code>df2</code> composed by the columns <code>name</code> and <code>mean</code> of <code>df1</code>, specifying the argument <code>stringsAsFactors = FALSE</code>.</p></li>
+<li><p>Show the first rows and the structure of <code>df2</code>.</p></li>
+</ol>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
