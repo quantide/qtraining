@@ -2,7 +2,7 @@
 title: "About this course"
 ---
 
-![](images/flow.png) 
+![](images/data-mining-schema.png) 
 
 
 ## Syllabus:
