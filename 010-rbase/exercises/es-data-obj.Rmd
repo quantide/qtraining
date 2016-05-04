@@ -96,6 +96,7 @@ mat1 <- matrix(1:15, nrow = 5, ncol = 3, byrow = TRUE)
 ```
 
 
+
 ### Exercise 2
 
 Starting from the following vector:  
@@ -136,6 +137,8 @@ d <- 4:6
 mat3 <-rbind(mat3, d)
 mat3
 ```
+
+\clearpage
 
 ### Exercise 4
 
@@ -190,6 +193,7 @@ list1$letters <- letters
 list1
 ```
 
+\clearpage
 
 ### Exercise 2
 
@@ -221,6 +225,7 @@ d. Extract the second rows of the matrix included in the second element of `list
 list2[[2]][2,] # or list2$mat[2,]
 ```
 
+\clearpage
 
 ## Factors
 
@@ -255,6 +260,8 @@ b. Select the all elements of `fac2` apart from "Male".
 ```{r ex2b-factors, echo=show_solution, eval=show_solution}
 fac2[fac2!= "Male"]
 ```
+
+\clearpage
 
 ## Data Frames
 

@@ -7,21 +7,14 @@ output:
     self_contained: no
 ---
 
-```{r setup, echo=FALSE, message=FALSE, results='hide'}
-require(knitr) 
-options(width=80)
-opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-opts_knit$set(root.dir="./data")
-show_solution <- FALSE
 
-# ATTENZIONE: leggere nota dentro show-solution.R
-```
 
 # Data Import
  
 First of all, set your working directory in the _data_ folder, using `setwd()` function, like in this example
 
-```{r setwd_fake, eval=FALSE}
+
+```r
 setwd("C:/Users/Veronica/Documents/rbase/data)
 ```
 
@@ -32,27 +25,17 @@ We will work inside this folder.
 
 a. Import text file named _"tuscany.txt"_ and save it in an R object named `tuscany_df`.   
 Open the text file before importing it to control if the first row contains column names and to control the field and the decimal separator characters. Remember to not import the character columns as factors.   
-```{r ex1a-txt, echo=show_solution, eval=show_solution}
-tuscany_df <- read.table("tuscany.txt", header = TRUE, sep = "|", 
-                         dec=".", stringsAsFactors = FALSE)
-```
+
 
 b. Visualize the first rows of `tuscany_df`
-```{r ex1b-txt, echo=show_solution, eval=show_solution}
-head(tuscany_df)
-```
+
 
 
 ### Exercise 2
 
 Import 7 rows of the text file named _"solar.txt"_ skipping the first two rows. Save it in the object `solar_df`.   
 Open the text file before importing it to control if the first row contains column names and to control the field and the decimal separator characters. Remember to not import the character columns as factors.   
-```{r ex2-txt, echo=show_solution, eval=show_solution}
-solar_df <- read.table("solar.txt", header = FALSE, sep = ",", 
-                       dec=".", stringsAsFactors = FALSE,  
-                       nrows = 7, skip = 2)
-solar_df
-```
+
 
 \clearpage
 
@@ -60,20 +43,17 @@ solar_df
 
 Considering the following data frame, named `df`: 
 
-```{r ex3a-txt}
+
+```r
 df <- data.frame(col1=1:4, col2=4:1, col3=c("one", "two", "three", "four"), 
                  stringsAsFactors = FALSE)
 ```
 
 Save it in a .txt file named _"exercise-3.txt"_ in _data_ folder.
 
-```{r ex3b-txt, echo=show_solution, eval=show_solution}
-write.table(df, file="exercise-3.txt")
-```
 
-```{r ex3c-txt, echo=FALSE, message=FALSE, results='hide'}
-if(file.exists("exercise-3.txt")){file.remove("exercise-3.txt")}
-```
+
+
 
 
 ## Excel Files
@@ -83,54 +63,47 @@ if(file.exists("exercise-3.txt")){file.remove("exercise-3.txt")}
 a. Import .xlsx file _"flowers.xlsx"_ using `XLConnect` function `loadWorkbook()` and save it in a R workbook object named `flowers`.  
   Remember to load `XLConnect` package, supposing it is already installed.
 
-```{r ex1-xlsx-require, message=FALSE}
+
+```r
 require(XLConnect)
 ```
 
-```{r ex1a-xlsx, echo=show_solution, eval=show_solution}
-flowers <- loadWorkbook("flowers.xlsx")
-```
+
 
 b. Read _iris_ sheet with  `readWorksheet()` function and save it in `flower_df` object. Then, visualize its first rows.
-```{r ex1b-xlsx, echo=show_solution, eval=show_solution}
-flowers_df <- readWorksheet(flowers, sheet = 'iris')
-head(flowers_df)
-```
+
 
 ### Exercise 2
 
 a. Create a new file xlsx, named _"exercise-2.xlsx"_, and save it in the R worksheet object, named `ex_2`. Use: `loadWorkbook()` and `saveWorkbook()` functions of `XLConnect`. 
 
-```{r ex2a-xlsx, echo=show_solution, eval=show_solution, message=FALSE}
-require(XLConnect)
-ex_2 <- loadWorkbook(filename = "exercise-2.xlsx", create = TRUE)
-saveWorkbook(ex_2)
-```
+
 
 b. Create a sheet, named `df`, in the R workbook object using `createSheet()` function. Remember to save the changes also in .xlsx file (use `saveWorkbook()` function). 
 
-```{r ex2b-xlsx, echo=show_solution, eval=show_solution}
-createSheet(object = ex_2, name = 'df')
-saveWorkbook(ex_2)
-```
+
 
 c. Considering the following data frame, named `numbers_df`:
 
-```{r ex2c-xlsx}
+
+```r
 numbers_df <- data.frame(a= 1:4, b=c("one", "two", "three", "four"), 
                          stringsAsFactors = FALSE)
 numbers_df
 ```
+
+```
+##   a     b
+## 1 1   one
+## 2 2   two
+## 3 3 three
+## 4 4  four
+```
   Add it to `df` sheet of `ex_2` R workbook object, starting from row 3 and from column 2. Use the function `writeWorksheet()`. Remember to save the changes also in .xlsx file (use `saveWorkbook()` function). 
 
-```{r ex2d-xlsx, echo=show_solution, eval=show_solution}
-writeWorksheet(object = ex_2, data = numbers_df, sheet = "df", startRow = 3, startCol = 3)
-saveWorkbook(ex_2)
-```
 
-```{r ex2e-xlsx, echo=FALSE, message=FALSE, results='hide'}
-if(file.exists("exercise-2.xlsx")){file.remove("exercise-2.xlsx")}
-```
+
+
 
 ## Databases
 
@@ -139,36 +112,27 @@ if(file.exists("exercise-2.xlsx")){file.remove("exercise-2.xlsx")}
 a. Connect to _"plant.sqlite"_ SQLite database, using `dbConnect()` function of `RSQLite` package. Save the connection in an R object, named `con`.   
   Remember to load `RSQLite` package, supposing it is already installed.
 
-```{r ex1a-db-require, message=FALSE}
+
+```r
 require(RSQLite)
 ```
 
-```{r ex1a-db, echo=show_solution, eval=show_solution}
-con <- dbConnect(RSQLite::SQLite(), "plant.sqlite")
-```
+
 
 b. See the list of available tables in _"plant.sqlite"_ db, using `dbListTables()` function.
-```{r ex1b-db, echo=show_solution, eval=show_solution}
-dbListTables(con)
-```
+
 
 c. See list of fields in _"PlantGrowth"_ table of  _"plant.sqlite"_ db, using `dbListFields()` function.
 
-```{r ex1c-db, echo=show_solution, eval=show_solution}
-dbListFields(con, name = "PlantGrowth")
-```
+
 
 d.  Send query to _"PlantGrowth"_ table of _"plant.sqlite"_ which select the records with `weight` greater than 5.5.
 
-```{r ex1d-db, echo=show_solution, eval=show_solution}
-dbGetQuery(con, "SELECT * FROM PlantGrowth WHERE weight >= 5.5")
-```
+
 
 e. Disconnect from the database, using `dbDisconnect()` function. 
 
-```{r ex1e-db, echo=show_solution, eval=show_solution}
-dbDisconnect(con)
-```
+
 
 ## R Data Files
 
@@ -176,27 +140,22 @@ dbDisconnect(con)
 
 Given the following data frame, named `df_rdata`:
 
-```{r ex1a-rdata}
+
+```r
 df_rdata <- data.frame(a=1:20, b=20:1)
 ```
 
 Save it in _.Rda_ format in the file _"df\_rdata.Rda"_, using `save()` function. 
 
-```{r ex1b-rdata, echo=show_solution, eval=show_solution}
-save(df_rdata, file = "df_rdata.Rda")
-```
 
-```{r ex1c-rdata, echo=FALSE}
-if(file.exists("df_rdata.Rda")){file.remove("df_rdata.Rda")}
-```
+
+
 
 ### Exercise 2
 
 Load _"drug.Rda"_ file into the environment, using `load()` function.
 
-```{r ex2b-rdata, echo=show_solution, eval=show_solution}
-load("drug.Rda")
-```
+
 
 
 

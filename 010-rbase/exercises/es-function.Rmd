@@ -12,11 +12,11 @@ output:
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=3, fig.height=2.5, fig.pos='H!'))#, fig.path="figures/lm-"))
-show_solution <- TRUE
+show_solution <- FALSE
 ```
  
-# Writing R function
-
+# Writing R functions
+## Writing R functions
 ### Exercise 1
 
 Write a function, named `compute_summary`, which computes: sum, subtraction, multiplication and division of two numbers. The function arguments should be the two numbers, named as: `x` and `y`. The function should return all amounts computed. 

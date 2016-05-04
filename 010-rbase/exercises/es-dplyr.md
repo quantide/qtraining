@@ -8,18 +8,14 @@ output:
     self_contained: no
 ---
 
-```{r setup, echo=FALSE, message=FALSE, results='hide'}
-require(knitr) 
-options(width=80)
-opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-show_solution <- FALSE
-```
+
  
 # Data Manipulation with `dplyr`
 
 Load `dplyr` package, supposing it is already installed.
 
-```{r require_dplyr, message=FALSE}
+
+```r
 require(dplyr)
 ```
 
@@ -29,12 +25,10 @@ require(dplyr)
 All the following exercises are based on the `nycflights13` data, taken from the `nycflights13` package.  
 So first of all, install and load this package 
 
-```{r require_data1, echo=FALSE, message=FALSE}
-if (!"nycflights13" %in% installed.packages()){install.packages("nycflights13", repos = "http://cran.us.r-project.org")}
-require(nycflights13)
-```
 
-```{r require_data2, eval=FALSE}
+
+
+```r
 install.packages("nycflights13")
 require(nycflights13)
 ```
@@ -59,7 +53,8 @@ To help understand what causes delays, it includes a number of useful datasets:
 
 Let us explore the features of `flights` datasets, which will be used in the following exercises.
 
-```{r data}
+
+```r
 data("flights")
 ```
 
@@ -147,28 +142,19 @@ Extract the following information:
 * distance.
 
 
-```{r ex1-select, echo=show_solution, eval=show_solution}
-select(flights, month, day, air_time, distance)
-# flights %>% select(month, day, air_time, distance)
-```
+
 
 ### Exercise 2
 
 Extract all information about `flights` except hour and minute.
 
-```{r ex2-select, echo=show_solution, eval=show_solution}
-select(flights, -c(hour, minute))
-# flights %>% select(-c(hour, minute))
-```
+
 
 ### Exercise 3
 
 Extract `tailnum` variable and rename it into `tail_num`
 
-```{r ex3-select, echo=show_solution, eval=show_solution}
-select(flights, tail_num=tailnum)
-# flights %>% select(tail_num=tailnum)
-```
+
 
 ## Filter
 
@@ -176,29 +162,20 @@ select(flights, tail_num=tailnum)
 
 Select all flights which delayed more than 1000 minutes at departure.
 
-```{r ex1-filter, echo=show_solution, eval=show_solution}
-filter(flights, dep_delay > 1000)
-# flights %>% filter(dep_delay > 1000)
-```
+
 
 
 ### Exercise 2
 
 Select all flights which delayed more than 1000 minutes at departure or at arrival.
 
-```{r ex2-filter, echo=show_solution, eval=show_solution}
-filter(flights, dep_delay > 1000 | arr_delay >1000)
-# flights %>% filter(dep_delay > 1000 | arr_delay >1000)
-```
+
 
 ### Exercise 3
 
 Select all flights which took off from "EWR" and landed in "IAH".
 
-```{r ex3-filter, echo=show_solution, eval=show_solution}
-filter(flights, origin == "EWR" & dest == "IAH")
-# flights %>% filter(origin == "EWR" & dest == "IAH")
-```
+
 
 \clearpage
 
@@ -208,29 +185,20 @@ filter(flights, origin == "EWR" & dest == "IAH")
 
 Sort the flights in chronological order.
 
-```{r ex1-arrange, echo=show_solution, eval=show_solution}
-arrange(flights, year, month, day)
-# flights %>% arrange(year, month, day)
-```
+
 
 ### Exercise 2
 
 Sort the flights by decreasing arrival delay.
 
-```{r ex2-arrange, echo=show_solution, eval=show_solution}
-arrange(flights, desc(arr_delay))
-# flights %>% arrange(desc(arr_delay))
-```
+
 
 
 ### Exercise 3
 
 Sort the flights by origin (in alphabetical order) and decreasing arrival delay.
 
-```{r ex3-arrange, echo=show_solution, eval=show_solution}
-arrange(flights, origin, desc(arr_delay))
-# flights %>% arrange(origin, desc(arr_delay))
-```
+
 
 
 ## Mutate
@@ -243,10 +211,7 @@ Add the following new variable to the `flights` dataset:
 
 Consider that times are in minutes and distances are in miles.
 
-```{r ex1-mutate, echo=show_solution, eval=show_solution}
-mutate(flights, speed = distance / air_time * 60)
-# flights %>% mutate(speed =distance / air_time * 60)
-```
+
 
 ### Exercise 2
 
@@ -255,12 +220,7 @@ Add the following new variables to the `flights` dataset:
 * the gained time in minutes (named `gain`), defined as the difference between delay at departure and delay at arrival;
 * the gain time per hours, defined as `gain` / (`air_time` / 60)
 
-```{r ex2-mutate, echo=show_solution, eval=show_solution}
-mutate(flights, gain = arr_delay - dep_delay,
-  gain_per_hour = gain / (air_time / 60))
-# flights %>% mutate(gain = arr_delay - dep_delay, 
-#     gain_per_hour = gain / (air_time / 60))
-```
+
 
 ## Summarise
 
@@ -268,14 +228,7 @@ mutate(flights, gain = arr_delay - dep_delay,
 
 Calculate minimum, mean and maximum delay at arrival. Remember to add `na.rm=TRUE` option to all calculations.
 
-```{r ex1-summarise, echo=show_solution, eval=show_solution}
-summarise(flights, min_delay = min(arr_delay, na.rm=TRUE), 
-          mean_delay = mean(arr_delay, na.rm=TRUE), 
-          max_delay = max(arr_delay, na.rm=TRUE))
-# flights %>% summarise(min_delay = min(arr_delay, na.rm=TRUE), 
-#     mean_delay = mean(arr_delay, na.rm=TRUE), 
-#     max_delay = max(arr_delay, na.rm=TRUE))
-```
+
 
 ## Group_by
 
@@ -284,34 +237,14 @@ summarise(flights, min_delay = min(arr_delay, na.rm=TRUE),
 Calculate number of flights, minimum, mean and maximum delay at departure for flights by month.  
 Remember to add `na.rm=TRUE` option to all calculations.
 
-```{r ex1-group_by, echo=show_solution, eval=show_solution}
-by_month <- group_by(flights, month)
 
-summarise(by_month, min_delay = min(dep_delay, na.rm=TRUE), 
-          mean_delay = mean(dep_delay, na.rm=TRUE), 
-          max_delay = max(dep_delay, na.rm=TRUE))
-# flights %>% group_by(month)  %>% 
-#     summarise(min_delay = min(dep_delay, na.rm=TRUE), 
-#     mean_delay = mean(dep_delay, na.rm=TRUE), 
-#     max_delay = max(dep_delay, na.rm=TRUE))
-```
 
 ### Exercise 2
 
 Calculate number of flights (using `n()` operator), mean delay at departure and arrival for flights by origin.  
 Remember to add `na.rm=TRUE` option to mean calculations.
 
-```{r ex2-group_by, echo=show_solution, eval=show_solution}
-by_origin <- group_by(flights, origin)
 
-summarise(by_origin, n_flights = n(), 
-          mean_dep_delay = mean(dep_delay, na.rm=TRUE), 
-          mean_arr_delay = max(arr_delay, na.rm=TRUE))
-# flights %>% group_by(origin)  %>% 
-#     summarise(n_flights = n(), 
-#     mean_dep_delay = mean(dep_delay, na.rm=TRUE), 
-#     mean_arr_delay = max(arr_delay, na.rm=TRUE))
-```
 
 
 ## Chain multiple operations (%>%)
@@ -321,31 +254,18 @@ summarise(by_origin, n_flights = n(),
 Calculate number of flights, minimum, mean and maximum delay at departure for flights by month.  
 Remember to add `na.rm=TRUE` option to all calculations.
 
-```{r ex1-chain, echo=show_solution, eval=show_solution}
-flights %>% group_by(month)  %>% 
-    summarise(min_delay = min(dep_delay, na.rm=TRUE), 
-    mean_delay = mean(dep_delay, na.rm=TRUE), 
-    max_delay = max(dep_delay, na.rm=TRUE))
-```
+
 
 ### Exercise 2
 
 Calculate the monthly mean gained time in minutes, where the gained time is defined as the difference between delay at departure and delay at arrival.
 Remember to add `na.rm=TRUE` option to mean calculations.
-```{r ex2-chain, echo=show_solution, eval=show_solution}
-flights %>% group_by(month)  %>% 
-  mutate(gain = dep_delay - arr_delay) %>%
-  summarise(mean_gain = mean(gain, na.rm=TRUE))
-```
+
 
 ### Exercise 3
 
 For each destination, select all days where the mean delay at arrival is greater than 30 minutes.  
 Remember to add `na.rm=TRUE` option to mean calculations.
-```{r ex3-chain, echo=show_solution, eval=show_solution}
-flights %>% group_by(dest)  %>%
-  summarise(mean_arr_delay = mean(arr_delay, na.rm=TRUE)) %>%
-  filter(mean_arr_delay > 30)
-```
+
 
 
