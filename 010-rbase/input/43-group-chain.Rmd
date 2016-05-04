@@ -22,7 +22,6 @@ data(bank)
 The verb functions are useful, but they become really powerful when you combine them with the idea of “group by”, repeating the operation individually on groups of observations within the dataset.
 In `dplyr`, you use the `group_by()` function to describe how to break a dataset down into groups of rows. You can then use the resulting object in exactly the same functions as above; they’ll automatically work “by group” when the input is a grouped.
 
-
 ```{r grouped_df_class}
 df <- data.frame(x = 1:6, f = rep(1:2, each = 3))
 dff <- group_by(df, f)
@@ -30,7 +29,7 @@ dff
 class(dff)
 
 
-dffn <- mutate(dff, n = row_number())
+dffn <- mutate(dff, n = n())
 dffn
 class(dffn)
 
