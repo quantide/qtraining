@@ -5,8 +5,6 @@ Data mining course material project
 
 ## Syllabus:
 
-0. Data management with dplyr
-
 1. Basic Data Mining Techniques for univariate data
 
 2. Dimensionality reduction
