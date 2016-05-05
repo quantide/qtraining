@@ -1,7 +1,7 @@
 data-mining
 ===========
 
-Data mining course material project
+Data mining course material project.
 
 ## Syllabus:
 
