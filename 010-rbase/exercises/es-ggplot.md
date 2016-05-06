@@ -24,7 +24,7 @@ require(ggplot2)
 
 ### iris
 
-Almost all the following exercises are based on the `iris` data, taken from the `datasets` package.  
+Almost all the following exercises are based on the `iris` dataset, taken from the `datasets` package.  
 It is a base package so it is already installed and loaded.  
 
 
@@ -81,16 +81,26 @@ str(iris)
 
 ### mpg
 
-Some of the exercises are based on `mpg` dataset, taken from the `datasets` package.  
-It is a base package so it is already installed and loaded.  
+Some of the exercises are based on `mpg` dataset, taken from the `ggplot2` package.  
 
 
 ```r
 data("mpg")
 ```
 
-This dataset contains the fuel economy data from 1999 and 2008 for 38 popular models of car.
+This dataset contains the fuel economy data from 1999 and 2008 for 38 popular models of car.  
+`mpg` dataset contains the following variables:
 
+* `manufacturer`
+* `model`
+* `displ`: engine displacement, in litres
+* `year`
+* `cyl`: number of cylinders
+* `trans`: type of transmission
+* `drv`: drivetrain type, f = front-wheel drive, r = rear wheel drive, 4 = 4wd
+* `cty`: city miles per gallon
+* `hwy`: highway miles per gallon
+* `fl`:  fuel type
 
 
 ```r
@@ -138,10 +148,19 @@ str(mpg)
 
 ## Scatterplot
 
+Let us consider `iris` dataset.
+
 ### Exercise 1
 
 a. Generate a scatterplot to analyze the relationship between `Sepal.Width` and `Sepal.Length` variables.  
 b. Set the size of the point as 3 and their colour (`colour` and `fill` arguments as "green").
+
+
+```r
+pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length)) +
+        geom_point(size=3, colour="green", fill="green")
+pl
+```
 
 ![](figure/ex1-scatterplot-1.png)
 
@@ -151,17 +170,34 @@ b. Set the size of the point as 3 and their colour (`colour` and `fill` argument
 
 a. Generate a scatterplot to analyze the relationship between `Petal.Width` and `Petal.Length` variables according to iris species, mapped as `colour` aes.   
 
+
+```r
+pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length, colour=Species)) +
+        geom_point()
+pl
+```
+
 ![](figure/ex2-scatterplot-1.png)
 
 \clearpage
 
 ## Box Plot
 
+Let us consider `iris` dataset.
+
 ### Exercise 1
 
 a. Build a box plot to compare the differences of sepal width accordingly to the type of iris species.
-b. Set the fill of boxes as "#00FFFF", the colour as "#0000FF" and the outlier colours as "red".
+b. Set the fill colour of boxes as "#00FFFF", the lines colour of boxes as "#0000FF" and the outliers colour as "red".
 c. Add the plot title: "Boxplot of Sepal.Width vs Species" 
+
+
+```r
+pl <- ggplot(data=iris, aes(x=Species, y=Sepal.Width)) + 
+  geom_boxplot(fill="#00FFFF", colour="#0000FF", outlier.colour = "red") +
+  ggtitle("Boxplot of Sepal.Width vs Species")
+pl 
+```
 
 ![](figure/ex1-boxplot-1.png)
 
@@ -169,21 +205,31 @@ c. Add the plot title: "Boxplot of Sepal.Width vs Species"
 
 ## Histogram
 
+Let us consider `iris` dataset.
+
 ### Exercise 1
 
-a. Represent the distribution of sepal length with an histogram.
-b. Set bins fill as "hotpink" and colour as "deeppink".
+a. Represent the distribution of `Sepal_Length` variable with an histogram.
+b. Set bins fill colour as "hotpink" and bins line colour as "deeppink".
 c. Set the number of bins as 15.
+
+
+```r
+pl <- ggplot(data=iris, aes(x=Sepal.Length)) + 
+    geom_histogram(fill="hotpink", colour="deeppink", bins=15)
+pl
+```
 
 ![](figure/ex1-histogram-1.png)
 
 \clearpage
 
-## Lineplot
+## Line graph
 
 ### Exercise 1
 
-Let us suppose that the observations on flowers are taken along time, so let us consider the following dataset:
+Let us suppose that the observations on `iris` are taken along time.  
+So let us consider the following dataset, named `iris2`, in which `time` variable is added:
 
 
 ```r
@@ -191,21 +237,35 @@ require(dplyr)
 iris2 <- iris %>% mutate(time=1:150)
 ```
 
-a. Build a line plot to visualize the `Sepal.Length` along time.
+a. Build a line graph to visualize the measures of `Sepal.Length` variable along time.
+
+
+```r
+ggplot(data = iris2, mapping = aes(y=Sepal.Width, x= time)) + geom_line()
+```
 
 ![](figure/ex1b-lineplot-1.png)
 
+\clearpage
+
 ### Exercise 2
 
-Let us suppose that the observations on flowers are taken along time, so let us consider the following dataset:
+Let us suppose that the observations on `iris` are taken along time.  
+So let us consider the following dataset, named `iris3`, in which `time` variable is added:
 
 
 ```r
 iris3 <- iris %>% mutate(time=rep(1:50, times=3))
 ```
 
-a. Build a line plot to visualize the `Sepal.Length` along time, according to the `Species`.
+a. Build a line graph to visualize the measures of `Sepal.Length` variable along time, according to the `Species` variable, mapped as `colour` aes.
 b. Set linetype as "twodash".
+
+
+```r
+ggplot(data = iris3, mapping = aes(y=Sepal.Length, x= time, colour=Species)) + 
+  geom_line(linetype=6)
+```
 
 ![](figure/ex2b-lineplot-1.png)
 
@@ -217,8 +277,16 @@ Let us consider `mpg` dataset.
 
 ### Exercise 1
 
-a. Represent graphically with a bar graph, how many cars there are for each class. 
-b. Represent horizontal bar and set bar width as 0.6
+a. Represent graphically with a bar graph how many cars there are for each class. 
+b. Represent horizontal bars and set bars width as 0.6.
+
+
+```r
+pl <- ggplot(mpg, aes(class)) + 
+      coord_flip() +
+      geom_bar(width=0.6)
+pl
+```
 
 ![](figure/ex1-bargraph-1.png)
 
@@ -226,13 +294,27 @@ b. Represent horizontal bar and set bar width as 0.6
 
 ### Exercise 2
 
-a. Represent graphically with a bar graph, how many cars there are for each class according to manifacturer. 
+a. Represent graphically with a bar graph how many cars there are for each class according to manifacturer.
+
+
+```r
+pl <- ggplot(mpg, aes(class, fill=manufacturer)) +
+  geom_bar()
+pl
+```
 
 ![](figure/ex2a-bargraph-1.png)
 
 \clearpage
 
-b. Represent graphically with a bar graph, the distribution of manifacturerfor each class. 
+b. Represent graphically with a bar graph, the distribution of manifacturerfor each class (set `position` argument of `geom_bar`). 
+
+
+```r
+pl <- ggplot(mpg, aes(class, fill=manufacturer)) +
+  geom_bar(position ="fill")
+pl
+```
 
 ![](figure/ex2b-bargraph-1.png)
 

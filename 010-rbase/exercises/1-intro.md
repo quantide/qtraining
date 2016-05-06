@@ -17,13 +17,13 @@ Introduction
 
 In this document you will find some exercises about these sections: 
 
-
+<!--
 * _Data Objects_ 
 * _Data Import and Export_ 
+-->
 
-<!--
-* _Data Manipulation_ 
+* _Data Manipulation with dplyr_ 
 * _Data Visualization with ggplot2_ 
 * _Writing R functions_
--->
+
 
