@@ -12,7 +12,7 @@ output:
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-show_solution <- FALSE
+show_solution <- TRUE
 ```
  
 # Data Manipulation with `dplyr`
@@ -298,7 +298,7 @@ summarise(by_month, min_delay = min(dep_delay, na.rm=TRUE),
 
 ### Exercise 2
 
-Calculate number of flights (using `n()` operator), mean delay at departure and arrival for flights by origin.  
+Calculate number of flights (using `n()` operator), mean delay at departure and at arrival for flights by origin.  
 Remember to add `na.rm=TRUE` option to mean calculations.
 
 ```{r ex2-group_by, echo=show_solution, eval=show_solution}
