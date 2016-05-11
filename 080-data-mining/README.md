@@ -5,7 +5,7 @@ Data mining course material project
 
 ## Syllabus:
 
-1. Basic Descriptive Techniques for univariate data
+1. Basic Descriptive Techniques
 
 2. Dimensionality reduction
   - Multidimensional Scaling (MDS)
