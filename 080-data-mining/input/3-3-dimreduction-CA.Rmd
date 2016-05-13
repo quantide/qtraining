@@ -118,7 +118,7 @@ individual points in selected components. The quality value should be compared
 with sum of squared correlations for all the components. The squared correlations
 represent some association between the point and the given component. `inr` 
 (inertia) is the proportion of inertia ("Pearson Chi-Square") acconted by the row
-(column). `ctr` are contributions of individual rows (columns) to components.
+(column). `ctr` are contributions of individual rows (columns) to individual components.
 
 It appears that the first axis is robbery versus larceny and that the second
 factor contrasts assault and murder to auto-theft. The dominating states for
