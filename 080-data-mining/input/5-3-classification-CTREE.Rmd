@@ -28,17 +28,21 @@ data(kyphosis, package = "rpart")
 # Introduction
 
 Decision Tree is one of the commonly used exploratory data analysis and objective segmentation techniques.  
-Great advantage with Decision Tree is that the its output is relatively easy to understand or interpret.  
-Simple way to understand decision tree is that it is a hierarchical approach to partition the input data. And at each node one variable and its value is used for the partition.  
-If we are working on an objective segmentation problem, our aim is to find conditions which help us finding a segment which is very similar on target variable value.  
-For example, when customer applies for a credit card, the bank or credit card provider accepts or rejects the application based on predicted risk -probability of default- for the application.  
-For building rules for predicting the risk from a credit card application, we can use Decision Tree. The decision tree can help in finding out the segments which have a low risk (default probability).  
-
+Great advantage with Decision Tree is that its output is relatively easy to understand or interpret.  
 Tree-based methods can be used for both regression and classification
-problems. These involve stratifying or segmenting the predictor space into a
+problems. These involve stratifying or segmenting the predictors' space into a
 number of simple regions. A prediction for a given observation is then
 obtained by typically using the mean or the mode of the training
 observations in the region to which it belongs.
+
+A simple way to understand decision tree is that it is a hierarchical approach to partition the input data:
+at each node (step) one independent variable and one of its values, is used for the partition.  
+<!--- If we are working on an objective segmentation problem, our aim is to find conditions which help us finding
+a segment which is very similar on target variable value.  
+For example, when customer applies for a credit card, the bank or credit card provider accepts or rejects
+the application based on predicted risk -probability of default- for the application. 
+For building rules for predicting the risk from a credit card application, we can use Decision Tree. The
+decision tree can help in finding out the segments which have a low risk (default probability).  --->
 
 A classification tree (CT) is used to predict a qualitative response. In
 CTs the prediction for an observation generally corresponds to the most
@@ -48,9 +52,11 @@ typically interested in the class prediction corresponding to a particular
 terminal node region, but also in the class proportions among the training
 observations that fall into that region.
 
-To grow a classification binary splitting is used.
-To split the nodes, the minimum "within-node variability" is searched, and
-two alternative "variability" measures are used:
+The building of a tree is usually produced in two phases: _growth_ and _pruning_.
+
+To grow a classification tree, a binary splitting is used.
+To split the nodes, the minimum "within-node variability" is searched; the
+"variability" is usually measured with two alternative indices:
 
 - the Gini index, which provides a measure of the total uncertainty across the k
   classes; it is often referred to as a measure of node "purity", because a
@@ -60,31 +66,35 @@ two alternative "variability" measures are used:
 - the cross-entropy, which, like the Gini index, takes on a small value if a
   node is pure.
 
-For "pruning" the tree, 
-classification error rate is mostly used, if prediction accuracy is the goal.
+For "pruning" the tree, the
+classification error rate is mostly used, if prediction accuracy is the goal.  
+
 To increase predictive accuracy, multiple tress can be combined to yield a
-single consensus prediction. Bagging, random forests, and boosting are some
+single consensus prediction. Bagging, random forests, and boosting (not shown here) are some
 approaches that implement such a strategy. The price to pay for the
 increased accuracy is some loss in interpretation.
 
 There are a number of `R` packages with functions for building single
-classification trees. One of the most popular is `rpart`. The `rpart()` function of the `rpart` package
-implements Classfication and Regression Tree (CART) type of Decision Tree algorithm for Recursive Partitioning and Regression Trees.
-`rpart()` automatically grows and prunes the tree using the internal cross-validation
-procedure:
+classification trees. One of the most popular is `rpart`. 
 
 We now illustrate this package using some examples.
 
-## Example 1: Iris Data
+## Example: Iris Data
 
 In this example we will try to simply introduce the tree-building process.  
+The aim of this example is to predict the correct specie of iris flowers given their
+length and width measures for petals and sepals.  
 Let's start with an "almost non pruned" tree:
 
-```{r iris_1}
+```{r iris_1, message=FALSE}
 require(pROC)
 require(caret)
 require(rpart)
 set.seed(123456)
+
+str(iris)
+head(iris)
+
 iris_rp <- rpart(Species ~ ., method = "class", data = iris,
 								 control = rpart.control(minsplit = 4, cp = 0.000001))
 ```
@@ -171,7 +181,7 @@ where
 
 When $\alpha$ grows, the tree with minimum $R(\alpha)$ is a smaller subtree of original one.  
 When $\alpha$ grows, the sequence of subtrees is nested.  
-At each subtree is "linked" a value of complexity parameter for which we can accept the
+Thus, each subtree is linked to a value of complexity parameter $\alpha$ for which we can accept the
 subtree as the "minimum complexity" one.  
 
 The following code prints a table of optimal pruning based on a complexity parameter:
@@ -188,7 +198,7 @@ In above table:
 - `xerror` is the cross-validation error, obtained by splitting the data in `xval` subsets, applying the training procedure iteratively on data where one of the subsets is removed, and then predicting on the removed subset; `xerror` is the mean of `xval` obtained cross-validation errors
 - `xstd` is the standard deviation of error estimated via cross-validation
 
-The tree with the lowest cross-validated error rate (xerror) is number 3.  
+The simplest tree with the lowest cross-validated error rate (xerror) is number 3.  
 The tree yielding the minimum resubstitution error rate is tree number 5.  
 The largest tree will always yield the lowest resubstitution error rate.  
 
@@ -215,7 +225,7 @@ plotcp(iris_rp)
 As already noted, the simplest tree with the lowest `xerror` value is tree number 3.  
 Notice that the values in abscissa are different from the ones in CP table: graph cp values are calculate as the geometric mean of adjacent values of CP table.
 
-The following code shows how to extract subtrees from a given tree:
+The following code shows how to extract interactively subtrees from a given tree:
 
 ```{r bu, eval=FALSE}
 plot(iris_rp, uniform = TRUE)
@@ -225,9 +235,9 @@ plot(iris_rp1)
 text(iris_rp1)
 ```
 
-Code for a (not shown) quick plot of errors with legends placed by user:
+This is the code for a quick plot of errors with legends:
 
-```{r bv, eval=FALSE}
+```{r bv, eval=TRUE}
 plotcp(iris_rp)
 with(iris_rp, {
 	lines(cptable[, 2] + 1, cptable[ , 3], type = "b", col = "red")
@@ -236,7 +246,7 @@ with(iris_rp, {
 })
 ```
 
-And here is the custom-pruned tree:
+And here is the custom-pruned tree for `cp=0.01` (the minimum xerror tree):
 
 ```{r bw}
 iris.pruned <- prune(iris_rp, cp=0.01)
@@ -255,7 +265,7 @@ ggp <- ggp + ggtitle("Partitions with respect to Petal.Length and Petal.Width fo
 ggp
 ```
 
-The predictions are then obtained as usual with the predict() function:
+The predictions for new data from a tree are then obtained, as usual, with the `predict()` method:
 
 ```{r by}
 iris_pred <- predict(iris.pruned, type = "class")
@@ -273,7 +283,7 @@ confusionMatrix(data = iris_pred, reference = iris$Species)
 
 ```
 
-## Example 2: German Credit Data
+## Example: German Credit Data
 
 Let's consider the `german` dataset, which deals with German credit data (see the section *Introduction and datasets used* for further information).  
 In this case we wanto to predict if a customer will default (Bad) or will pay (Good) on the credit card.

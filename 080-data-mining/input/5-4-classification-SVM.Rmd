@@ -126,12 +126,14 @@ confusionMatrix(data = svm.pred, reference = dat[-train, "y"], positive = "1")
 36% of test observations are misclassified by this SVM.
 
 ## Some theory about SVM
+The following plot shows an example of SVM with two perfect separable classes in $\mathbb{R}^2$.
+
 ![](./images/svm-schema.png)
 
-When the classes are perfectly separated (__hard margin__), then SVM search for the
-"line" that maximally separates the 2 classes data points.  
+When the classes are perfectly separated (__hard margin__), then SVM searches for the
+"line" that maximally separates the data points of the two classes.  
 SVM then maximizes the margin $m$.  
-Since the distance between the origin and the line $w^Tx = k$ is $\frac{k}{\left \| w \right \|}$, the margin $m=\frac{2}{\left \| w \right \|}$.
+Since the distance between the origin and the line $w^Tx = k$ is $\frac{k}{\left \| w \right \|}$, the size of $m$ margin is $m=\frac{2}{\left \| w \right \|}$.
 
 Let $\{ x_1 , \dots , x_n \}$ be our data set and let $y_i \in \{1,-1\}$ be
 the class label of $x_i$ (where $x_i$ are points in $\mathbb{R}^p$):
@@ -139,7 +141,7 @@ the class label of $x_i$ (where $x_i$ are points in $\mathbb{R}^p$):
 * The decision boundary should classify all points correctly  
   $y_i \left(w^Tx_i + b \right) \ge 1 ,     \forall i \in 1, \dots, n$
   
-* The decision boundary can be found by solving the  
+* Thus the decision boundary can be found by solving the  
   following constrained optimization problem (Lagrnge multipliers):  
   $\min \left\{ \|w\| \right \}  \text{ s.t. } y_i \left(w^Tx_i + b \right) \ge 1 \forall i \in 1, \dots, n$
 
