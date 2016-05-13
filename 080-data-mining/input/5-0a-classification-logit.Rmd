@@ -1,0 +1,85 @@
+---
+title: "Recalls on Logistic Regression"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+data(Default, Smarket, package = "ISLR")
+
+## Other datasets used
+# none
+
+###############################################################
+## packages needed: MASS, caret, pROC, GGally, ggplot2, ISLR ##
+###############################################################
+```
+Logistic regression is part of GLM models. Its goal is to find a causal relation
+between the predictors (the columns of $X$ matrix) and the response $Y$ variable,
+where $Y$ can assume only $0/1$ (where $0$ = "absence"; $1$ = "presence") values.
+
+The model used to find this relation states that the dependent variable is Binomially
+distibuted with parameters $n$ and $p$, 
+
+$$Y_i \sim Bi(n_i, p_i)$$
+
+and that $p$ is tied to the predictors via a tranformation of a linear function:
+
+$$p_i = \frac{exp\left(a + b x_{i1} + c x_{i2} + \dots \right)}{1 + exp\left(a + b x_{i1} + c x_{i1} + \dots \right)}$$
+
+where $x_{ij}$ values represent the $i$-th value (row) of $j$-th column of $X$ matrix 
+(i.e., the $p$ predictors for the $i$-th observation). 
+
+Logistic regression finds the $a, b, c, \dots$ parameters that maximize the probability
+of having the observed data. These parameter values will be the estimates of parameters
+themselves.
+
+## Example: Credit Card Default
+
+The first example we present is on the `Default` dataset (see the section 
+*Introduction and datasets used* for further information), some data about ten thousand
+customers with the aim to predict which customers will default on their credit card debt:
+
+```{r 02h-loadcc}
+summary(Default)
+```
+To perform Logistic Regression on Credit Card data, we use the `glm()` function. This function
+requires to set a formula that specifies the categorical response and the
+predictors to use, the data frame containing the data, the distribution family, and a series
+of other optional arguments:
+
+```{r first_logit}
+res_logit <- glm(default ~ student + balance, data = Default,
+				 family = binomial(link = logit))
+summary(res_logit)
+```
+
+To obtain the probabiity of being a defaulter for a individual customer, the `predict()` function
+must be used:
+```{r pred_logit}
+post_logit <- predict(res_logit, type = "response")
+head(post_logit)
+```
+
+Starting from the probability of default, we can choose the threshold for which to states
+that a customer is a probable defaulter.  
+For example, if we the set threshold to $0.5$, then the individual customer will be classified
+as defaulter if his/her estimated probability of defalut is greater than $0.5$:
+
+```{r prob_def}
+default_logit <- ifelse(post_logit>0.5, "Pred: Yes", "Pred: No")
+```
+
+To assess the goodness of the classification, a standard tool is to obtain
+the so called "confusion matrix", which cross-tabulates the actual and the
+predicted classes for each observation:
+
+```{r logit_check}
+table(default_logit, Default$default)
+```
