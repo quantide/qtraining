@@ -271,7 +271,7 @@ cv <- cv.glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha = 1)
 plot(cv)
 
 ## ----y-------------------------------------------------------------------
-# Plots the model arameters with alpha=0 (ridge) when varying the L1 norm
+# Plots the model parameters with alpha=0 (ridge) when varying the L1 norm
 glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha = 0)
 plot(glmnet_fit, label = TRUE)
 

@@ -108,9 +108,7 @@ comb$z= 2 + 3 * comb$x - 2 * comb$y + runif(n = 100,min = -2, max = 2)
 
 ## ----02a-fakedataanalysis1-----------------------------------------------
 D <- dist(x = comb,method = "euclidean")
-
 mds_1 <- cmdscale(d = D,k = 3,eig = TRUE)
-
 mds_1
 
 ## ----02a-fakedataanalysis2-----------------------------------------------
