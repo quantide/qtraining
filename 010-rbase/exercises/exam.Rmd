@@ -170,7 +170,7 @@ a. (1 pt) Calculate the number of rows and columns of the `mtcars` dataset.
 dim(mtcars) # or nrow(mtcars) and ncol(mtcars)
 ```
 
-b. (3 pt) Build a scatterplot to analyze the relationship between `mpg` and `wt` variables. Use `geom_point()` function.
+b. (3 pt) Build a scatterplot to analyze the relationship between `mpg` and `wt` variables. Use `ggplot()` and `geom_point()` functions.
 
 ```{r ex5_b, eval=show_solution, echo=show_solution}
 ggp <- ggplot(data = mtcars, mapping = aes(x=wt, y=mpg)) + 
@@ -178,7 +178,7 @@ ggp <- ggplot(data = mtcars, mapping = aes(x=wt, y=mpg)) +
 print(ggp)
 ```
 
-c. (3 pt) Represent the distribution of `mpg` variable with an histogram. Use `geom_histogram()` function.
+c. (3 pt) Represent the distribution of `mpg` variable with an histogram. Use `ggplot()` and `geom_histogram()` functions.
 
 ```{r ex5_c, eval=show_solution, echo=show_solution}
 ggp <- ggplot(data = mtcars, mapping = aes(x=mpg)) + 
