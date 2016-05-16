@@ -16,6 +16,7 @@ GMM                                   | 4-3-clustering-GMM.Rmd
 
 Classification
 Introduction                          | 5-0-classification-intro.Rmd
+Logit recalls                         | 5-0a-classification-logit.Rmd
 LDA and QDA                           | 5-1-classification-LDA-QDA.Rmd
 KNN                                   | 5-2-classification-KNN.Rmd
 CTREE                                 | 5-3-classification-CTREE.Rmd

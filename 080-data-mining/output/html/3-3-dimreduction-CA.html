@@ -323,6 +323,7 @@ $(document).ready(function () {
   <li><a href="4-3-clustering-GMM.html">GMM</a></li>
   <li class="nav-header">Classification</li>
   <li><a href="5-0-classification-intro.html">Introduction</a></li>
+  <li><a href="5-0a-classification-logit.html">Logit recalls</a></li>
   <li><a href="5-1-classification-LDA-QDA.html">LDA and QDA</a></li>
   <li><a href="5-2-classification-KNN.html">KNN</a></li>
   <li><a href="5-3-classification-CTREE.html">CTREE</a></li>
@@ -477,7 +478,7 @@ burglary :  furto in appartamento
 larceny :  furto
 rape :  violenza
 --->
-<p>In above table, the term <code>mass</code> means, repectively, the row or column marginal totals for the total proportions table (multiplied by 1000). <code>qlt</code> means “quality”, i.e., the sum of <code>cor</code> (squared correlation) values of individual points in selected components. The quality value should be compared with sum of squared correlations for all the components. The squared correlations represent some association between the point and the given component. <code>inr</code> (inertia) is the proportion of inertia (“Pearson Chi-Square”) acconted by the row (column). <code>ctr</code> are contributions of individual rows (columns) to components.</p>
+<p>In above table, the term <code>mass</code> means, repectively, the row or column marginal totals for the total proportions table (multiplied by 1000). <code>qlt</code> means “quality”, i.e., the sum of <code>cor</code> (squared correlation) values of individual points in selected components. The quality value should be compared with sum of squared correlations for all the components. The squared correlations represent some association between the point and the given component. <code>inr</code> (inertia) is the proportion of inertia (“Pearson Chi-Square”) acconted by the row (column). <code>ctr</code> are contributions of individual rows (columns) to individual components.</p>
 <p>It appears that the first axis is robbery versus larceny and that the second factor contrasts assault and murder to auto-theft. The dominating states for the first axis are the North-Eastern States (MA and NY) contrasting the Western States (WY and ID). For the second axis, the differences are seen between the Northern States (MA and RI) and the Southern States (AL, MS and AR). The plot also shows in which states the proportion of a particular crime category is higher or lower than the national average (the origin). Note also that overall the first two dimensions shown allow to explain around 74.8% of the total variability (called inertia in CA).</p>
 <p>The same output would be obtained using the <code>corresp()</code> function in the <code>MASS</code> package:</p>
 <pre class="r"><code>require(MASS)</code></pre>

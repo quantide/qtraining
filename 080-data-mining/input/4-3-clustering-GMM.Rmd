@@ -27,12 +27,12 @@ source("options.R")
 The clustering methods described so far are not based on formal models for
 cluster structure in the data, making problems such as deciding between
 methods, estimating the number of clusters, etc., particularly difficult.
-And, if one needs to use the clustering solution for predictive purposes,
+Again, if one needs to use the clustering solution for predictive purposes,
 without a model, formal inference is precluded.
 
 One approach to clustering that postulates a formal statistical model for
 the population from which the data are sampled, is known as a finite mixture
-density. This model postulates that the population consists of a number of
+density model. This model postulates that the population consists of a number of
 subpopulations (the "clusters"), each having variables with a different
 multivariate probability density function. By adopting this approach, the
 clustering problem becomes that of estimating the parameters of the assumed
@@ -52,7 +52,7 @@ multivariate normal component densities in which they allow some of the
 features of the covariance matrix to vary between clusters while constraining
 others to be the same. This approach is implemented for example in the mclust
 package, but many other packages have been developed in this field (see the
-CRAN task view at [http://cran.r-project.org/web/views/Cluster.html][http://cran.r-project.org/web/views/Cluster.html] on cluster
+CRAN task view at [http://cran.r-project.org/web/views/Cluster.html](http://cran.r-project.org/web/views/Cluster.html) on cluster
 analysis).
 
 ```{r message=FALSE}

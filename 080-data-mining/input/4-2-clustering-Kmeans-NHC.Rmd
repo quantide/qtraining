@@ -123,8 +123,13 @@ summary(uscrime_pca)
 plot(uscrime_pca, type = "l")
 abline(h = 1, lty = 2)
 ```
+```{r 02e-plotsuc1a}
+biplot(uscrime_pca)
+ggcorr(cbind(uscrime_s, uscrime_pca$scores), label = TRUE, cex = 2.5)
+```
 
-Now we can try using the XXXX index to help us in finding the optimal number of clusters:
+The first component seems related to general "intensity" of crime phenomenon, while the second component seems to oppose brute crimes with "milder" ones.  
+Now we can try using the Calinski-Harabasz index to help us in finding the optimal number of clusters to "combine" with PCA analysis results:
 ```{r 02d-chfuncut,warning=FALSE}
 require(clusterSim)
 minC <- 2
@@ -141,7 +146,7 @@ ggp <- ggplot(data=data.frame(x=2:(length(res)+1), y= res), mapping = aes(x=x,y=
 print(ggp)
 ```
 
-Als with this index, not a really clear indication appears on the number of clusters to choose.
+Also this index, does not give a really clear indication on the number of clusters to choose.
 
 Since many variables are available, we will try to plot the grouing information on the plot of scores of 
 a simple 2-dimensions PCA analysis
@@ -157,6 +162,7 @@ ggp <- ggplot(data= uscrime_scores, mapping = aes(x = Comp.1, y=Comp.2, label=st
 print(ggp)
 ```
 
+This graph show how the 2 groups are related with the first component of PCA.
 ```{r 02e-plotsuc3}
 pairs(uscrime[, 4:10], col = Cluster, pch = Cluster, cex = .75)
 ```
@@ -171,12 +177,14 @@ ggp <- ggplot(data=data.frame(x = uscrime_scores[, 1], y = uscrime_scores[, 2], 
 print(ggp)
 ```
 
+The graph above, show how the 4 groups are related to crossing of "intensity" and "cruelty" of crimes.
 ```{r 02e-plotsuc5}
 pairs(uscrime[, 4:10], col = Cluster, pch = Cluster, cex = .75)
 ```
 
 The previous plots together with the next ones suggest that the two groups
-solution seems to be more interpretable:
+solution seems to be more interpretable. Anyway, we can also cross ths information
+with the geographic areas:
 
 ```{r 02e-levelplotsuc}
 uscrime$reg <- as.factor(uscrime$reg)
@@ -189,6 +197,7 @@ plot(table(uscrime$reg, km_4$cluster), main = "Clusters vs. US States region",
 			xlab = "Region of US", ylab = "4 groups solution")
 ```
 
+Thus, it seems that the cluster are also associated with geographic areas of US states.
 <!---
 # Exercises with iris o utilities 
 --->

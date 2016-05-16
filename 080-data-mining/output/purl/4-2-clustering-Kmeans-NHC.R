@@ -53,6 +53,10 @@ summary(uscrime_pca)
 plot(uscrime_pca, type = "l")
 abline(h = 1, lty = 2)
 
+## ----02e-plotsuc1a-------------------------------------------------------
+biplot(uscrime_pca)
+ggcorr(cbind(uscrime_s, uscrime_pca$scores), label = TRUE, cex = 2.5)
+
 ## ----02d-chfuncut,warning=FALSE------------------------------------------
 require(clusterSim)
 minC <- 2

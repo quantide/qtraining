@@ -51,7 +51,7 @@ responses, need to be considered.
 In this part we will present a set of methodologies specifically developed for
 classification:
 
-1. **Logistic Regression**
+1. Recalls on **Logistic Regression**
 2. **Linear and Quadratic Discriminant Analyses (LDA and QDA)**
 3. **K-Nearest Neighbors (KNN)**
 4. **Classification Trees (CTREE)**

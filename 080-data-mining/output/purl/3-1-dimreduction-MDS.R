@@ -36,16 +36,17 @@ require(ggplot2)
 
 ## ----02a-screefk---------------------------------------------------------
 eig <- X_mds$eig
-eig <- data.frame(Dimensions = 1:attr(D, "Size"), Eigenvalue = eig)
+dims <- 1:attr(D, "Size")
+eig <- data.frame(Dimensions = dims, Eigenvalue = eig)
 ggp <- ggplot(eig, aes(x = Dimensions, y = Eigenvalue)) +
   geom_point() +
   geom_line() +
-  scale_x_continuous("Dimensions", breaks = 1:attr(D, "Size")) +
+  scale_x_continuous("Dimensions", breaks = dims) +
   geom_hline(yintercept = 0, linetype = "dashed")
 print(ggp)
 
 ## ----02a-coordsfk_alternative_plot---------------------------------------
-ggp <- ggplot(data = data.frame(x = as.numeric(dist(mds)), y = as.numeric(dist(cmdscale(D, k = 5)))),
+ggp <- ggplot(data = data.frame(x = as.numeric(D), y = as.numeric(dist(cmdscale(D, k = 5)))),
             mapping = aes(x = x, y = y)) +
   geom_point() +
   geom_abline(intercept = 0, slope = 1) +
@@ -59,12 +60,12 @@ X_eig <- X_mds$eig
 P1 <- cumsum(abs(X_eig))/sum(abs(X_eig))
 P2 <- cumsum(X_eig^2)/sum(X_eig^2)
 
-mardia <- data.frame(Dimensions = rep(1:attr(D, "Size"),2), P = c(P1, P2), 
+mardia <- data.frame(Dimensions = rep(dims,2), P = c(P1, P2), 
                      Criterion=rep(c("P1", "P2"),each=attr(D, "Size")))
 ggp <- ggplot(data = mardia, aes(x = Dimensions, y = P, colour=Criterion)) +
   geom_point() +
   geom_line() +
-  scale_x_continuous("Dimensions", breaks = 1:attr(D, "Size")) +
+  scale_x_continuous("Dimensions", breaks = dims) +
   scale_y_continuous("Value", breaks = seq(0, 1, by = .1)) +
   geom_hline(yintercept = .8, linetype = "dashed", color = "darkgray")
 print(ggp)
@@ -76,8 +77,8 @@ D_hat <- dist(X_final, method = "euclidean")
 D_all <- data.frame(Observed = as.numeric(D), Fitted = as.numeric(D_hat))
 ggplot(data = D_all, mapping = aes(x = Observed, y = Fitted)) +
   geom_point() +
-  scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, by = 1)) + 
-  scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, by = 1)) +
+  scale_y_continuous(limits = c(0, 10)) + 
+  scale_x_continuous(limits = c(0, 10)) +
   geom_abline(linetype = "dashed", color = "gray")
 
 ## ----02a-plotfinalfk-----------------------------------------------------
@@ -89,6 +90,88 @@ pairs(x = X_final, pch = rownames(mds))
 ##      plot3d(x = X1, y = X2, z = X3,
 ##             xlab = "X1", ylab = "X2", zlab = "X3", type = "p")
 ##      )
+
+## ----02a-fakedata1-------------------------------------------------------
+x <- 1:10
+y <- 1:10
+
+comb <- expand.grid(x,y)
+names(comb) <-c("x","y")
+comb$z= 2 + 3 * comb$x - 2 * comb$y + runif(n = 100,min = -2, max = 2)
+
+## ----02a-fakedata_plot, echo=TRUE, eval=FALSE----------------------------
+## open3d()
+## with(comb,
+##      plot3d(x = x, y = y, z = z,
+##             xlab = "x", ylab = "y", zlab = "z", type = "p"
+##      ))
+
+## ----02a-fakedataanalysis1-----------------------------------------------
+D <- dist(x = comb,method = "euclidean")
+mds_1 <- cmdscale(d = D,k = 3,eig = TRUE)
+mds_1
+
+## ----02a-fakedataanalysis2-----------------------------------------------
+eig <- mds_1$eig
+dims <- 1:attr(D, "Size")
+eig <- data.frame(Dimensions = dims, Eigenvalue = eig)
+ggp <- ggplot(eig, aes(x = Dimensions, y = Eigenvalue)) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous("Dimensions", breaks = 1:attr(D, "Size")) +
+  geom_hline(yintercept = 0, linetype = "dashed")
+print(ggp)
+
+ggp <- ggplot(data = data.frame(x = as.numeric(D), y = as.numeric(dist(cmdscale(D, k = 3)))),
+              mapping = aes(x = x, y = y)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  xlab("Original distances") +
+  ylab("Fitted distances")
+print(ggp)
+max(abs(D - dist(cmdscale(D, k = 3))))
+
+## ----02a-fakedata_plot_1, echo=TRUE, eval=FALSE--------------------------
+## my_surface <- function(f, n=10, ...) {
+##   ranges <- rgl:::.getRanges()
+##   x <- seq(ranges$xlim[1], ranges$xlim[2], length=n)
+##   y <- seq(ranges$ylim[1], ranges$ylim[2], length=n)
+##   z <- outer(x,y,f)
+##   surface3d(x, y, z, ...)
+## }
+## 
+## f <- function(x, y){
+##   return(2 + 3 * x - 2*y)
+## }
+## 
+## open3d()
+## with(comb,
+##      plot3d(x = x, y = y, z = z,
+##             xlab = "x", ylab = "y", zlab = "z", type = "p", col="red")
+##      )
+## my_surface(f, alpha=.7 )
+
+## ----02a-fakedataanalysis4-----------------------------------------------
+# 2-dims reproduced solution
+comb_3 <- setNames(data.frame(mds_1$points), c("x","y","z"))
+comb_3$z <- 0
+
+## ----graph_3d_final, eval=FALSE------------------------------------------
+## open3d()
+## with(comb_3,
+##      plot3d(x = x, y = y, z = z,
+##             xlab = "x", ylab = "y", zlab = "z", type = "p", col="red")
+##      )
+
+## ----02a-fakedataanalysis5-----------------------------------------------
+ggp <- ggplot(data = data.frame(x = as.numeric(D), y = as.numeric(dist(cmdscale(D, k = 2)))),
+              mapping = aes(x = x, y = y)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1) +
+  xlab("Original distances") +
+  ylab("Fitted distances")
+print(ggp)
+max(abs(D - dist(cmdscale(D, k = 2))))
 
 ## ----02a-loades, fig.width=plot_with_legend_fig_width_large--------------
 # Summarize the data

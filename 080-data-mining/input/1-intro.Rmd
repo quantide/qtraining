@@ -26,7 +26,7 @@ source("options.R")
 
 This course will provide an overview of the main data mining techniques through the statistical software `R`. It is divided into five big sections:
 
-1. **Basic data mining techniques for univariate data**: simple descriptive techniques to analyze single variables;
+1. **Basic data mining techniques**: simple descriptive techniques to analyze single variables;
 2. **Dimensionality reduction**: whose aim is at showing some methods to reduce the number of variables contained in the data by keeping almost the same information;
 3. **Clustering**: when the objective of the analysis is to divide observations into groups, created on the basis of the variables at our disposal;
 4. **Classification**: when the objective of the analysis is to correctly assign a new observation to a value of a categorical response variable, through a proper statistical model estimated from the data;

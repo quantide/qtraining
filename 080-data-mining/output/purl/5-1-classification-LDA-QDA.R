@@ -12,26 +12,11 @@ data(Default, Smarket, package = "ISLR")
 ## packages needed: MASS, caret, pROC, GGally, ggplot2, ISLR ##
 ###############################################################
 
-## ----02h-loadcc----------------------------------------------------------
-summary(Default)
-
-## ----first_logit---------------------------------------------------------
-res_logit <- glm(default ~ student + balance, data = Default,
-				 family = binomial(link = logit))
-summary(res_logit)
-
-## ----pred_logit----------------------------------------------------------
-post_logit <- predict(res_logit, type = "response")
-head(post_logit)
-
-## ----prob_def------------------------------------------------------------
-default_logit <- ifelse(post_logit>0.5, "Pred: Yes", "Pred: No")
-
-## ----logit_check---------------------------------------------------------
-table(default_logit, Default$default)
-
 ## ----message=FALSE-------------------------------------------------------
 require(MASS)
+
+## ----02h-loadcc----------------------------------------------------------
+summary(Default)
 
 ## ----02h-ldacc-----------------------------------------------------------
 res <- lda(default ~ student + balance, data = Default)
@@ -84,6 +69,9 @@ legend(x = "bottomright", legend = c("w/o income", "w income"),
 	   col = c("magenta", "cyan"), lty = rep(1, 2), lwd = rep(2, 2))
 
 ## ----02h-roclogitcc------------------------------------------------------
+res_logit <- glm(default ~ student + balance, data = Default,
+				 family = binomial(link = logit))
+post_logit <- predict(res_logit, type = "response")
 roc(response = Default$default, predictor = post[, 2], auc = TRUE, ci = TRUE,
 	plot = TRUE, col = "magenta", main = "ROC comparison")
 roc(response = Default$default, predictor = post_logit, auc = TRUE,

@@ -15,11 +15,15 @@ data(kyphosis, package = "rpart")
 ## packages needed: tree, caret, rpart, ggplot2, rpart.plot, ISLR ##
 ####################################################################
 
-## ----iris_1--------------------------------------------------------------
+## ----iris_1, message=FALSE-----------------------------------------------
 require(pROC)
 require(caret)
 require(rpart)
 set.seed(123456)
+
+str(iris)
+head(iris)
+
 iris_rp <- rpart(Species ~ ., method = "class", data = iris,
 								 control = rpart.control(minsplit = 4, cp = 0.000001))
 
@@ -75,13 +79,13 @@ plotcp(iris_rp)
 ## plot(iris_rp1)
 ## text(iris_rp1)
 
-## ----bv, eval=FALSE------------------------------------------------------
-## plotcp(iris_rp)
-## with(iris_rp, {
-## 	lines(cptable[, 2] + 1, cptable[ , 3], type = "b", col = "red")
-## 	legend("topright", c("Resub. Error", "CV Error", "min(CV Error) + 1se"),
-## 				 lty = c(1, 1, 2), col = c("red", "black", "black"), bty = "n")
-## })
+## ----bv, eval=TRUE-------------------------------------------------------
+plotcp(iris_rp)
+with(iris_rp, {
+	lines(cptable[, 2] + 1, cptable[ , 3], type = "b", col = "red")
+	legend("topright", c("Resub. Error", "CV Error", "min(CV Error) + 1se"),
+				 lty = c(1, 1, 2), col = c("red", "black", "black"), bty = "n")
+})
 
 ## ----bw------------------------------------------------------------------
 iris.pruned <- prune(iris_rp, cp=0.01)
