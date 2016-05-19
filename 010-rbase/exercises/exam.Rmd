@@ -1,0 +1,190 @@
+---
+title: "Data Programming Exam"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+show_solution <- FALSE
+```
+
+Please reply to the following questions in an R script called "surname_name.R" (e.g., Mario Rossi
+will return a file named "rossi\_mario.R") and send it by mail to andrea.spano@quantide.com    
+
+Please comment your answers using the symbol: #, before the comments (e.g., # my comment).  
+
+## Exercise 1
+
+a. Create a vector, named `vec`, containing the following values:  
+1, 5, 12, 14, 6, 78, 68, 34, 34, 32, 56, 75
+
+```{r ex1_a, eval=show_solution, echo=show_solution}
+vec <- c(1, 5, 12, 14, 6, 78, 68, 34, 34, 32, 56, 75)
+```
+
+b. Select the 3-rd element of `vec`.
+
+```{r ex1_b, eval=show_solution, echo=show_solution}
+vec[3]
+```
+
+c. Select all elements of `vec` apart from the 1st.
+
+```{r ex1_c, eval=show_solution, echo=show_solution}
+vec[-1]
+```
+
+## Exercise 2
+
+a. Generate a matrix, named `mat`, with 3 rows and 5 columns containig numbers from 1 to 15. 
+
+```{r ex2_a, eval=show_solution, echo=show_solution}
+mat <- matrix(1:15, nrow = 3, ncol = 5)
+```
+
+b. Select 2-nd and 3-rd rows and 1-st and 3-rd columns of `mat`.
+
+```{r ex2_b, eval=show_solution, echo=show_solution}
+mat[c(2,3), c(1,3)]
+```
+
+## Exercise 3
+
+Given the following list, named `this_list`:
+
+```{r ex3_question1}
+this_list <- list(numbers = c(2,3,5,6,7), letters = c("z", "x", "y", "t"))
+this_list
+```
+
+a. Extract the element named `letters` of `this_list` by using the `$` operator.
+
+```{r ex3_a, eval=show_solution, echo=show_solution}
+this_list$letters
+```
+
+b. Extract the first element of `this_list` by using double square brackets.
+
+```{r ex3_b, eval=show_solution, echo=show_solution}
+this_list[[1]]
+```
+
+
+\clearpage
+
+## Exercise 4
+
+a. Generate a data frame, named `df`, corresponding to:
+
+```{r ex4_a, echo=show_solution, comment=''}
+df <- data.frame(country = c("Italy", "France", "China", "Japan", "Libya", 
+                              "Cameroon"),
+                 population = c(59801004, 64668129, 1382323332, 126323715,
+                                 6330159, 23924407),
+                 continent = c("Europe", "Europe", "Asia", "Asia", 
+                                "Africa", "Africa"
+                               ), stringsAsFactors = FALSE)
+print(df, row.names = FALSE)
+```
+
+  Use `data.frame()` function and remember to maintain character vectors as they are, specifiyng `stringsAsFactors = FALSE`.
+
+b. Convert `continent` variable of `df` as a factor with levels: "Europe", "Asia" and "Africa". Use `factor()` function.
+
+```{r ex4_b, eval=show_solution, echo=show_solution}
+df$continent <- factor(df$continent, levels = c("Europe", "Asia", "Africa"))
+```
+
+
+## Exercise 5
+
+a.  Import the file _2008.csv_ into a data frame named `flights` by using the `read.table()` command. Remember to specify `stringsAsFactors` as `FALSE` in order to avoid importing character columns as factors.  
+  Before importing be sure about:
+    - column names in the first row
+    - the field separator
+    - the decimal separator
+
+```{r ex5_a, eval=show_solution, echo=show_solution}
+flights <- read.table(file = "/home/veronica/dev/qtraining/010-rbase/data/2008.csv", header = TRUE, sep = ",", quote = "", dec = ".")
+```
+
+This dataset contains information about flight arrival and departure details for all commercial flights within the USA in 2008.
+
+Load `dplyr` library:
+
+```{r ex5_question, message=FALSE}
+require(dplyr)
+```
+
+
+b. Convert `flights` data frame to a `tbl_df` using `tbl_df()` function.
+
+```{r ex5_b, eval=show_solution, echo=show_solution}
+flights <- flights %>% tbl_df()
+```
+
+c. Starting from `flights` data frame, select `ArrDelay` and `Dest` variables and filter the records for which `ArrDelay` variable is greater than 120.
+
+```{r ex5_c, eval=show_solution, echo=show_solution}
+flights %>% select(ArrDelay, Dest) %>% filter(ArrDelay > 120)
+```
+
+d. Starting from `flights` data frame, compute the mean delay at departure (`DepDelay` variable) groupig by `Origin` variable. Remember to add `na.rm=TRUE option` to mean computation.
+
+```{r ex5_d, eval=show_solution, echo=show_solution}
+flights %>% group_by(Origin) %>% summarise(mean=mean(DepDelay, na.rm=TRUE))
+```
+
+\clearpage
+
+## Exercise 6
+
+Load `mtcars` dataset in this way:
+
+```{r ex6_question1}
+data("mtcars")
+```
+
+`mtcars` data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973–74 models).
+
+```{r ex6_question2}
+head(mtcars)
+```
+
+To achieve more information about `mtcars` dataset type `?mtcars` on R console.
+
+Load `ggplot2` library:
+
+```{r ex6_question3, message=FALSE}
+require(ggplot2)
+```
+
+a. Calculate the number of rows and columns of the `mtcars` dataset.
+
+```{r ex6_a, eval=show_solution, echo=show_solution}
+dim(mtcars) # or nrow(mtcars) and ncol(mtcars)
+```
+
+b. Build a scatterplot to analyze the relationship between `mpg` and `wt` variables. Use `ggplot()` and `geom_point()` functions.
+
+```{r ex6_b, eval=show_solution, echo=show_solution}
+ggp <- ggplot(data = mtcars, mapping = aes(x=wt, y=mpg)) + 
+  geom_point()
+print(ggp)
+```
+
+c. Represent the distribution of `mpg` variable with an histogram. Use `ggplot()` and `geom_histogram()` functions.
+
+```{r ex6_c, eval=show_solution, echo=show_solution}
+ggp <- ggplot(data = mtcars, mapping = aes(x=mpg)) + 
+  geom_histogram()
+print(ggp)
+```
+
+
+
+
+
+
+
+
