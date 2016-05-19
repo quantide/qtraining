@@ -5,7 +5,7 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-show_solution <- FALSE
+show_solution <- TRUE
 ```
 
 Please reply to the following questions in an R script called "surname_name.R" (e.g., Mario Rossi
@@ -129,7 +129,7 @@ c. Starting from `flights` data frame, select `ArrDelay` and `Dest` variables an
 flights %>% select(ArrDelay, Dest) %>% filter(ArrDelay > 120)
 ```
 
-d. Starting from `flights` data frame, compute the mean delay at departure (`DepDelay` variable) groupig by `Origin` variable. Remember to add `na.rm=TRUE option` to mean computation.
+d. Starting from `flights` data frame, compute the mean delay at departure (`DepDelay` variable) grouping by `Origin` variable. Remember to add `na.rm=TRUE option` to mean computation.
 
 ```{r ex5_d, eval=show_solution, echo=show_solution}
 flights %>% group_by(Origin) %>% summarise(mean=mean(DepDelay, na.rm=TRUE))
