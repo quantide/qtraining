@@ -129,11 +129,11 @@ More recent packages (i.e., `dplyr`) allow the researcher to develop by-group an
 ```{r dplyr_examples, warning=FALSE, message=FALSE}
 require(dplyr)
 
-wea %>% 
+(res1 <- wea %>% 
   group_by(WindGustDir, RainToday) %>% 
   summarise(count = n(),
             mean_pressure9am = mean(Pressure9am),
-            mean_pressure3pm =mean(Pressure3pm))
+            mean_pressure3pm =mean(Pressure3pm)))
 ```
 
 `table()`, as already seen, returns the absolute frequency table of a categorical variable. If you want the relative frequency table of a categorical table, you can apply the `prop.table()` function to the output of `table()`. With the `margin` option you can choose to calculate row or column relative frequencies:
