@@ -1,0 +1,234 @@
+---
+title: "Regression Examples"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr) 
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/lm-"))
+```
+
+```{r, message=FALSE}
+require(ggplot2)
+require(qdata)
+```
+
+## Example: Depressant drug and rats regression
+
+```{r,echo=FALSE}
+rm(list = ls())
+```
+
+### Data description
+
+In an experiment to investigate the effects of a depressant drug, the
+reaction times of ten male rats to a certain stimulus were measured
+after a specified dose of the drug have been administered to each rat.
+
+### Data loading
+```{r}
+data(drug)
+str(drug)
+head(drug)
+```
+
+### Descriptives
+Since we are mainly interested in relation between `dose` of drug and reaction `time`, we start the descriptive analysis plotting a graph that relates the two variables.
+
+```{r,tidy=FALSE,fig.cap="Scatterplot of time Vs. dose with fitted linear regression and loess line"}
+ggp <- ggplot(data=drug, mapping = aes(x=dose, y=time)) +
+  geom_point(color="darkblue", size=2) +
+  geom_smooth(method = "lm", colour="red", se = FALSE) +
+  geom_smooth(method = "loess", colour="green", se = FALSE, span=1) +
+  xlab("dose (mg)") + ylab("reaction time (secs)")
+print(ggp)
+```
+
+In above code, `method="lm"` of `geom_smooth()` function adds regression line to ggplot object and `method="loess"` of `geom_smooth()` function adds local regression line to ggplot object.
+
+Perhaps a simple straight linear regression is a good choice to describe the relation.
+
+### Inference and models
+
+We then fit a simple linear model $E(y_i \vert xi) = \beta_0 + \beta_1 \cdot x_i$ between reaction time and dose of drug and we produce a summary of the fitted model.
+```{r}
+fm <- lm(time ~ dose, data = drug)
+summary(fm) 
+```
+Reading the results, it appears that if we increase `dose` by one unit, `time` increases by 0.48 on average, and this growth is significant.
+
+Another way to obtain the p-value for `dose` parameter is comparing the `time ~ dose` model with `time ~ 1` model,  and testing significancy of slope via `anova()`
+```{r}
+anova(fm,update(fm,.~.-dose))
+```
+The results are the same.
+
+### Residual analysis
+```{r,fig.show='hold',fig.cap="Residual plot of simple linear model"}
+op <- par(mfrow = c(2, 2))
+plot(fm)
+par(op)
+```
+Plots do not evidence particular problems.
+
+## Example: Laboratory and on-line tools
+
+### Data description
+Two pH measurement tools are compared: one instrument is a "gold standard", 
+and is the "laboratory" tool, the other is an on-line (on the field) tool.  
+Same samples are measured by using both instruments to see if on-line tool performs as laboratory tool. 
+
+```{r,echo=FALSE}
+rm(list = ls())
+```
+
+### Data loading
+```{r}
+data(labonline)
+str(labonline)
+```
+
+### Descriptives
+Since in this example we are simply interested in the relation between `Lab` and `Online` tool readings, we perform the descriptive analysis with a scatterplot only.
+
+```{r,tidy=FALSE,fig.cap="Scatterplot of Online Vs. Lab"}
+summary(labonline)
+ggp <- ggplot(data=labonline, mapping = aes(x=Lab, y=Online)) +
+  geom_point(color="darkblue") +
+  geom_smooth(method = "lm", colour="red", se = FALSE) +
+  geom_smooth(method = "loess", colour="green", se = FALSE, span=1) +
+  xlab("Laboratory (pH)") + ylab("On-line (pH)")
+
+print(ggp)
+```
+
+### Inference and models
+Let us produce a summary of a simple linear model $E(y_i \vert xi) = \beta_0 + \beta_1 \cdot x_i$
+```{r}
+fm <- lm(Online ~ Lab, data = labonline) 
+fm1 <- summary(fm) 
+fm1
+```
+Only slope is significant.  
+Intercept not significant means that when laboratory tool returns 0, on-line tool returns a mean value that can be 0.  
+This behavior is correct.  
+Another test to perform is to verify if the slope may be equal to 1.  
+The Wald test to check this may be performed through:
+```{r,tidy=FALSE}
+2*pt(abs(fm1$coefficients[2,1]-1)/fm1$coefficients[2,2],
+     df=fm1$df[2],
+     lower.tail=FALSE)
+```
+Since the returned value (p-value) is greater than $\alpha$=0.05, the null hypothesis that $\beta_1$=1 is accepted.
+
+### Residual analysis
+```{r,fig.show='hold',fig.cap="Residual plot of Online Vs. Lab model"}
+op <- par(mfrow = c(2, 2))
+plot(fm)
+par(op)
+```
+The residuals are not really "nice", but their behavior might be due to rounding of pH values to the first decimal place only. 
+
+
+## Example: Polyesterification  regression
+```{r,echo=FALSE}
+rm(list = ls())
+```
+
+### Data description
+
+In the study of the polyesterification of fatty acids with glycols, the effect of temperature ($^◦$C) on the percentage conversion of the esterification process was investigated. Data are the results of an experiment using a catalyst of $4 \cdot 10^{−4}$ mole zinc chloride per 100 grams of fatty acid.
+
+### Data loading
+```{r}
+data(polyester)
+str(polyester)
+head(polyester)
+```
+
+### Descriptives
+Let us plot the relation between dependent and independent variables.
+
+```{r,tidy=FALSE,fig.cap="Scatterplot of conversion Vs. temperature"}
+ggp <- ggplot(data = polyester, mapping=aes(x = temperature, y=conversion)) +
+  geom_point(color="darkblue") + xlab("temperature   (°C)") +
+  ylab("percentage conversion (%)")
+
+print(ggp)
+```
+A quadratic function seems to fit the data. 
+
+### Inference and models
+Despite above results, we initially try to estimate a simple linear model, and to produce an illustrative graph of the model.
+```{r,tidy=FALSE,fig.cap="Scatterplot of conversion Vs. temperature with linear fit"}
+fm0 <- lm(conversion ~ temperature, data = polyester) 
+summary(fm0)
+
+ggp0 <- ggp + geom_smooth(method = "lm", colour="red", se = FALSE)
+
+print(ggp0)
+```
+
+Now the graph of residuals.
+```{r,fig.show='hold',fig.cap="Residual analysis of simple linear model conversion Vs. temperature "}
+op <- par(mfrow=c(2,2))
+plot(fm0)
+par(op)
+```
+
+Either graphs suggest that a curve effect may exist.  
+Another plot to check this hypothesis, is the plot of residuals Vs. independent variable:
+```{r,fig.cap="Scatterplot of residuals Vs. temperature"}
+df <- data.frame(temperature = polyester$temperature, mod_residuals =residuals(fm0))
+
+ggp <- ggplot(data = df, mapping = aes(x=temperature, y=mod_residuals)) +
+  geom_point(color="darkblue") + geom_hline(yintercept = 0, colour="darkgreen")
+
+print(ggp)
+```
+A clear curvature appears.
+
+At this point, a quadratic model can be tried:
+```{r}
+fm <- lm(conversion ~ poly(temperature, 2, raw = TRUE), data = polyester) 
+```
+or, alternatively:
+```{r}
+fm <- update(fm0,.~. + I(temperature^2))
+```
+
+Now we see the model summaries
+```{r}
+summary(fm) 
+```
+All parameters are significant, and this confirms the initial observation of a curvilinear relation.
+
+### Residual analysis
+```{r,fig.show='hold',fig.cap="Residual plot of final model"}
+op <- par(mfrow=c(2,2))
+plot(fm)
+par(op)
+```
+
+The residual plots seem "regular" enough.
+
+As an additional check, we can try also to add a term of cube of temperature.
+```{r}
+(fm1 <- update(fm,.~. + I(temperature^3)))
+summary(fm1)
+anova(fm1,fm)
+```
+This cubic model does not add any useful information with respect to quadratic one.  
+Now, let's use the quadratic model to produce a graph of predicted values:
+```{r,tidy=FALSE,fig.cap="Plot of predition from quadratic model"}
+newdata <- data.frame(temperature = seq(min(polyester$temperature), 
+  max(max(polyester$temperature)), length = 100))
+newdata$predict <- predict(fm, newdata = newdata)
+
+ggp <- ggplot(data=polyester, mapping = aes(x=temperature, y=conversion)) +
+  geom_point(colour="darkblue", size=3) + 
+  geom_line(data=newdata, mapping=aes(x=temperature, y=predict), colour="mediumvioletred") + 
+  xlab("temperature (°C)") + ylab("percentage conversion (%)")
+
+print(ggp)
+```
+
