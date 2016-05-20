@@ -5,23 +5,26 @@ title: "Introduction to Linear Models"
 ```{r setup, include=FALSE, purl=FALSE}
 require(knitr) 
 opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/lm-"))
-require(qdata)
-require(ggplot2)
 ```
 
+```{r, message=FALSE}
+require(ggplot2)
+require(qdata)
+require(dplyr)
+```
 
 Let us consider a simple relation between height and weight in a sample of young people:
 
-```{r,echo=FALSE}
-rm(list = ls())
+```{r}
 data(sample)
 str(ds)
 head(ds)
 ```
+
 Each row of above fictitious `ds` dataframe contains height (in cm) weight (in Kg), and gender of a different young person.  
 Now, one might want to find a simple (or **smooth**) numerical relation (a **regression**) between `height` and `weight` measures, where `weight` will depend on `height`.
 
-```{r,fig.cap="Relation between Weight and Height of 200 young people",echo=FALSE,fig.show='hold'}
+```{r,fig.cap="Relation between Weight and Height of 200 young people",fig.show='hold'}
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
   geom_point(colour="darkblue") +
   xlab("Height") + ylab("Weight") + 
@@ -34,11 +37,9 @@ In other words, one might want to draw a smooth line that "best approximates" th
 
 Note that the relation might be really simple, as finding a simple "central value"" (i.e., when one hypotesizes that `weight` does not change when varying the height); in this case the "best" smooth line could be the mean of `weight` values)
 
-```{r,fig.cap="Relation between Weight and Height in 200 young people with 'best constant model'",echo=FALSE,fig.show='hold'}
-ds2 <- ds[c(1,1:20*10),]
-ds2$x0 <- ds2$x1 <- ds2$height
-ds2$y0 <- ds2$weight
-ds2$y1 <- mean(ds2$weight)
+```{r,fig.cap="Relation between Weight and Height in 200 young people with 'best constant model'", fig.show='hold'}
+ds2 <- ds %>% slice(c(1,1:20*10))
+ds2 <- ds2 %>% mutate(x1=height, x0=height, y0=weight, y1=mean(weight))
 
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
   geom_point(colour="darkblue") +
@@ -55,10 +56,10 @@ $$
 y=\beta_0+ \beta_1 \cdot x
 $$ 
 
-```{r,fig.cap="Relation between Weight and Height in 200 young people with best straight line model",echo=FALSE, fig.show='hold'}
-ds1 <- ds[order(ds$height),]
+```{r,fig.cap="Relation between Weight and Height in 200 young people with best straight line model", fig.show='hold'}
+ds1 <- ds %>% arrange(height)
 md <- lm(weight~height*gender,data=ds1)
-ds2$y1 <- predict(md,newdata=ds2)
+ds2 <- ds2 %>% mutate(y1=predict(md,newdata=ds2))
 
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
   geom_point(colour="darkblue") +
@@ -93,9 +94,7 @@ However notice that least-squares method by itself does not give information abo
 
 Finally, the relation can be more complex again: for example, a different line for male and female people may be estimated (see next Figure). 
 
-```{r,fig.cap="Relation between Weight and Height in 100 male and 100 female young people",echo=FALSE}
-ds2$y1 <- predict(md,newdata=ds2)
-
+```{r,fig.cap="Relation between Weight and Height in 100 male and 100 female young people"}
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight, colour=gender)) +
   geom_point() +
   geom_smooth(mapping = aes(colour=gender), method = "lm",se = FALSE ) + 
@@ -157,11 +156,3 @@ All the functions have to be applied on objects of class `lm` or class `aov`, ob
 `predict(obj, newdata = ndat)`  predict for newdata 
 `deviance(obj)`                 residual sum of squares
 
-<!--
-
-Then, let us set the working directory in _data_ folder, in this way:
-```{r eval=FALSE}
-setwd("data")
-```
-
--->

@@ -2,6 +2,8 @@
 title: "About This Course"
 ---
 
+![](./images/flow.png)
+
 Many applications on statistical data are aimed to produce models that "describe" and try to "predict" the relationship between a set of explicative variables and one (or more) dependent variable.
 
 Also when the goal of an analysis is not focused on describing or predict phenomena (as, for example, in ANOVA applications or in $t$-test), often "behind the scenes" a statistical model is the "core" of the analysis.
