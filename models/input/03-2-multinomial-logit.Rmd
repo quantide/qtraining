@@ -1,0 +1,386 @@
+---
+title: "Multinomial Logit Examples"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr)
+
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/oth-"))
+```
+
+```{r, message=FALSE}
+require(MASS) 
+require(ggplot2)
+require(nnet)
+require(vcd) 
+require(qdata)
+```
+
+
+## Example: American National Election Study (from Faraway(2006): Extending the Linear Model with R)
+
+```{r, echo=FALSE}
+rm(list=ls())
+```
+
+### Data description
+We will consider an example drawn from a subset of the 1996 American National Election
+Study (Rosenstone, Kinder, and Miller (1997)). Only age,
+education level and income group of the respondents will be considered for the example. The response variable will be party
+identification of the respondent, as: `Democrat`, `Independent` or `Republican`. Since the original data
+involved more than three dependent variable categories, we will collapsed these to three only, again for simplicity of the
+presentation.
+
+<!--
+Data comes from `faraway` package.
+-->
+
+### Data loading
+Let us load the data
+```{r}
+data(nes96)
+head(nes96)
+str(nes96)
+summary(nes96)
+```
+
+### Descriptives
+We create a new variable that will contain recoded `PID` data  
+```{r}
+sPID <- nes96$PID
+levels(sPID) <-  c("Democrat","Democrat","Independent","Independent",
+                  "Independent","Republican","Republican")
+summary(sPID)
+nes96$sPID <- sPID
+```
+
+Now we create a new numerical `nincome` variable containing the numerical transformation of original ordered-factor `income` variable, using midpoints of each range:
+```{r}
+inca <- c(1.5,4,6,8,9.5,10.5,11.5,12.5,13.5,14.5,16,18.5,21,23.5,
+         27.5,32.5,37.5,42.5,47.5,55,67.5,82.5,97.5,115)
+nincome <- inca[unclass(nes96$income)]
+nes96$nincome <- nincome
+summary(nes96$nincome)
+```
+
+Let us start with a graphical look at the relationship between the predictors and the response.
+```{r}
+table(nes96$educ)
+
+ptb <- data.frame(prop.table(table(nes96$educ,nes96$sPID),1))
+names(ptb) <- c("Education", "Party", "Freq")
+ggp <- ggplot(data = ptb, mapping = aes(x=Education, y = Freq)) +
+  geom_line(mapping = aes(colour= Party, linetype=Party, group=Party) ) +
+  ggtitle("Proportions of Democrat, Independent, Republican Vs. Education") +
+  theme(legend.position="top")
+print(ggp)
+
+cutinc <- cut(nes96$nincome,7)
+il <- c(8,26,42,58,74,90,107)
+ptb <- data.frame(as.factor(il), prop.table(table(cutinc,nes96$sPID),1))
+names(ptb) <- c("Income", "cutinc","Party", "Freq")
+ggp <- ggplot(data = ptb, mapping = aes(x=Income, y = Freq)) +
+  geom_line(mapping = aes(colour= Party, linetype=Party, group=Party) ) +
+  ggtitle("Proportions of Democrat, Independent, Republican Vs. Income") +
+  theme(legend.position="top")
+print(ggp)
+
+cutage <- cut(nes96$age,7)
+al <- c(24,34,44,54,65,75,85)
+ptb <- data.frame(as.factor(al), prop.table(table(cutage,nes96$sPID),1))
+names(ptb) <- c("Age", "cutage","Party", "Freq")
+ggp <- ggplot(data = ptb, mapping = aes(x=Age, y = Freq)) +
+  geom_line(mapping = aes(colour= Party, linetype=Party, group=Party) ) +
+  ggtitle("Proportions of Democrat, Independent, Republican Vs. Age") +
+  theme(legend.position="top")
+print(ggp)
+
+```
+
+It seems that the percentage of `Democrat` decreases sensibly with the education level, while `Republican` and `Independent` percentages grow with education level.  
+Similar trends, a few less strong, appear for `Income` level.  
+The `Age`, indeed, seems not to impact on percentages.
+
+### Inference and models
+We might ask whether the trends we see in the observed proportions are statistically
+significant. We need to model the data to answer this question. We fit a multinomial logit
+model. We will use the `multinom()` function, which is part of the `nnet` package:
+
+```{r}
+(mmod0 <- multinom(sPID ~ age + educ + nincome, data=nes96))
+summary(mmod0)
+```
+Roughly speaking, the multinomial model is a "combination" of $k$-1 Binomial models (where, in this case, $k$=3, is the number of levels of dependent variable) which compare the probability of being `Independent` or `Republican` with respect to the probability being `Democrat`, given the values of independent variables. 
+
+As for "standard" LM-GLM models, we can use stepwise methods to analyse which variables include to/exclude from model:
+```{r}
+mmod <- step(mmod0)
+```
+`mmod` is the resulting selected model:
+```{r}
+summary(mmod)
+```
+
+The above results show the coefficients estimates for the $k$-1 models (the first matrix), with their standard errors (the second matrix).
+
+We may also use the standard likelihood methods to derive a test to compare nested
+models. For example, we can fit a model without education and then compare the
+deviances:
+```{r}
+(mmod1 <- multinom(sPID ~ age + nincome, data=nes96))
+summary(mmod1)
+```
+This is the LRT test, with relative p-value:
+```{r}
+diff <- deviance(mmod1) - deviance(mmod0)
+diff
+pchisq(diff,mmod0$edf-mmod1$edf,lower=F)
+```
+where the `edf` component of model object contains the effective degrees of freedom used by the model: 16 for `mmod0` and 4 for `mmod1`.  
+Alternatively, we can use the simpler `anova()` function, as for LMs-GLMs:
+```{r}
+anova(mmod0, mmod1, test="Chisq")
+```
+And, not surprisingly, if we want to apply a Type II test to choose which explicative variable to remove (if any), we may use `dropterm()`:
+```{r}
+dropterm(mmod0, test="Chisq")
+```
+which suggests first to drop `age`.
+Now we can also check if other variables can be removed from model, again using `dropterm()`:
+```{r}
+mmod2 <- multinom(sPID ~ educ + nincome, data=nes96)
+dropterm(mmod2, test="Chisq")
+```
+and then to drop `educ`:
+```{r}
+mmod3 <- multinom(sPID ~ nincome, data=nes96)
+dropterm(mmod3, test="Chisq")
+```
+`mmod3` is the same model as `mmod`.
+
+The non significancy of `educ` is in some manner surprising, but this may depend from the fact that the big differences in proportions between `Democrat` and `Independent` or `Republican` appear only at low educaction levels, where there are small samples; also, low education levels are probably related to low `nincome` values, and then `educ` could not add useful information, once considered `nicome`.
+
+Anyway, for tests on predictors it is better to consider likelihood ratio tests rather than
+Wald tests, since for one predictor we have $k$-1 Wald tests.
+
+We may also examine the coefficients to gain an understanding of the relationship between the predictor and the response:
+```{r}
+summary(mmod)
+```
+
+Effective degrees of freedom is equal to the number of parameters
+```{r}
+mmod$edf
+```
+
+To obtain coefficients:
+```{r}
+coef(mmod)
+```
+
+
+the deviance:
+```{r}
+mmod$deviance
+```
+ad the AIC:
+```{r}
+mmod$AIC
+```
+Both residuals and fitted values are referred to all $k$ classes of the response variable
+```{r}
+head(mmod$residuals); head(mmod$fitted.values)
+```
+
+```{r}
+summary(mmod)
+```
+Now, with the simpler model, we could try to produce some predictions (remember that `il` contains the midpoint of income):
+```{r}
+predict(mmod, data.frame(nincome=il), type="probs")
+```
+The calculations performed to obtain the predictions actually are:
+```{r}
+(predInd <- exp(-1.1749331+0.01608683*il) /
+   (1+exp(-1.1749331+0.01608683*il)+exp(-0.9503591+0.01766457*il)))
+```
+for `Indepentent`,
+```{r}
+(predRep <- exp(-0.9503591+0.01766457*il) /
+   (1+exp(-1.1749331+0.01608683*il)+exp(-0.9503591+0.01766457*il)))
+```
+for `Republican`, and
+```{r}
+(predDem <- 1-predInd-predRep)
+```
+for `Democrat`.
+
+The default form of predict (`type="class"`) just gives the most probable category:
+```{r}
+predict(mmod,data.frame(nincome=il))
+summary(mmod)
+```
+The intercept terms model the probabilities of the party identification for an income of
+zero. We can see the relationship from this calculation:
+```{r}
+cc <- c(0,-1.1749331,-0.9503591)
+exp(cc)/sum(exp(cc))
+sum(exp(cc)/sum(exp(cc)))
+```
+
+The exp() of slope terms represent the odds-ratio (~ Relative Risk ratio) of moving from the baseline category of
+Democrat to Independent or Republican, respectively, for a unit change of $1000 in
+income. We can see more explicitly what this means by predicting probabilities for
+incomes $1000 apart and then computing the odds:
+```{r}
+(pp <- predict(mmod,data.frame(nincome=c(0,1)),type="probs"))
+pp[1,1]*pp[2,2]/(pp[1,2]*pp[2,1])
+pp[1,1]*pp[2,3]/(pp[1,3]*pp[2,1])
+```
+
+Is the same of:
+```{r}
+exp(coefficients(mmod)[,2])
+```
+
+Prediction capability
+```{r}
+table(predict(mmod), sPID)
+```
+This may appear a bit strange: no Indipendent is predicted? Why?
+
+Analysis of residuals (they have to stay in two different portions): no `plot` method is available for objects from `multinom` models. We have to plot separately the residuals for each dependent variable class.  
+For example:
+
+`Independent`
+```{r}
+ds <- data.frame(residuals = mmod$residuals[,2], fitted = mmod$fitted.values[,2])
+ggp <- ggplot(data = ds, mapping = aes(x=fitted, y=residuals)) +
+  geom_point()
+print(ggp)
+```
+
+`Republican`
+```{r}
+ds <- data.frame(residuals = mmod$residuals[,3], fitted = mmod$fitted.values[,3])
+ggp <- ggplot(data = ds, mapping = aes(x=fitted, y=residuals)) +
+  geom_point()
+print(ggp)
+```
+
+`Democrat`
+```{r}
+ds <- data.frame(residuals = mmod$residuals[,1], fitted = mmod$fitted.values[,1])
+ggp <- ggplot(data = ds, mapping = aes(x=fitted, y=residuals)) +
+  geom_point()
+print(ggp)
+```
+
+
+
+## Example: Housholders in Copenhagen 
+
+### Data description
+
+1681 householders from a study of satisfaction with housing conditions in Copenhagen
+who were surveyed on:
+
+* the type (`Type`) of rental accommodation they occupied
+* the degree of contact (`Cont`) they had with other residents
+* their feeling of influence (`Infl`) on apartment management
+* their level of satisfaction (`Sat`) with their housing conditions
+
+We want to check if the satisfation level may be related to other (independent) variables.
+
+### Data loading
+```{r}
+data(housing)
+head(housing)
+str(housing)
+summary(housing)
+```
+
+### Descriptives
+A four way frequency table may help in reading the relations
+```{r}
+ftable(xtabs(Freq ~ Infl+Type+Cont+Sat, data=housing))
+prop.table(ftable(xtabs(Freq ~ Infl+Type+Cont+Sat, data=housing)),margin = 1)
+```
+A mosaic plot may improve the readability:
+```{r}
+strt <- structable(prop.table(ftable(xtabs(Freq ~ Infl+Type+Cont+Sat, data=housing)),margin = 1),
+                data=housing)
+mosaic(strt,shade=TRUE,main = "Level of satisfation Vs. Influence, Type and Contact",
+       highlighting="Sat",highlighting_fill=heat.colors(3))
+```
+
+It seems that an high influence, Tower type of accomodation, and high level of contact gives more high satisfation. 
+
+### Inference and models
+Let us start from the full model and then to remove non significant effects to confirm these readings:
+```{r}
+house_mult0 <- multinom(Sat ~ Infl*Type*Cont, weights=Freq, data=housing)
+dropterm(house_mult0, test="Chisq")
+house_mult1 <- update(house_mult0, . ~ . - Infl:Type:Cont, data=housing)
+dropterm(house_mult1, test="Chisq")
+house_mult2 <- update(house_mult1, . ~ . - Infl:Cont, data=housing)
+dropterm(house_mult2, test="Chisq")
+house_mult <- update(house_mult2, . ~ . - Type:Cont, data=housing)
+dropterm(house_mult, test="Chisq")
+```
+
+The  `Infl:Type` interaction term seems significant, but, since its exclusion form model reduces the AIC value, for sake of simplicity we remove the term and use a main effects only model.
+```{r}
+house_mult <- multinom(Sat ~ Infl+Type+Cont, weights=Freq, data=housing)
+summary(house_mult)
+
+anova(house_mult0, house_mult)
+```
+Removing the interaction terms seems not reduce the explicative power of model.
+
+```{r}
+coef(house_mult)
+```
+At first sight, it seems that the initial thoughts about relations between independent variables and Satisfation are confirmed.
+
+### Multinomial models and Poisson models
+Multinomial logit models can be analyzed also via standard GLM, using a Poisson model. This approach is also called "surrogate Poisson model".
+
+Suppose we are interested only on influence of main effects of `Infl`, `Type` and `Cont` on `Sat`. Since we are only interested in satisfaction, we need to include terms in the
+model to account for all the history variables, so the minimal model is `Infl*Type*Cont`.  
+To check effect of explicative variables main effects on `Sat`, we must also include the `Sat*(Infl+Type+Cont)` interaction in model:
+```{r}
+llmod <- glm(Freq ~ Infl*Type*Cont + Sat*(Infl+Type+Cont), data=housing, family=poisson)
+summary(llmod)
+pchisq(llmod$deviance, llmod$df.residual, lower.tail = FALSE)
+
+mlmod1 <- multinom(Sat ~ Infl+Type+Cont, weights=Freq, data=housing)
+mlmod2 <- multinom(Sat ~ Infl*Type*Cont, weights=Freq, data=housing)
+anova(mlmod2, mlmod1)
+```
+Deviance of Poisson model is the same as the difference of deviance of two multilogit models
+(main effects only and full model).  
+Also, the residual plot on model is easily produced:
+```{r}
+op <- par(mfrow=c(2,2))
+plot(llmod)
+par(op)
+```
+
+And a mosaic plot of predicted probability may be generated:
+```{r}
+hnames <- lapply(housing[, -5], levels) # omit Freq
+house_pm <- predict(llmod, expand.grid(hnames), type = "response") # poisson means
+house_pm <- matrix(house_pm, ncol = 3, byrow = T, dimnames = list(NULL, hnames[[1]]))
+house_pr <- house_pm/drop(house_pm %*% rep(1, 3))
+tb <- expand.grid(hnames[-1])
+tb$Sat <- house_pr
+
+tb <- xtabs(Sat~Infl+Type+Cont,data=tb)
+names(attr(tb,"dimnames"))[4]="Sat"
+mosaic(structable(ftable(tb)),shade=TRUE,
+       main = "Satisfation Vs. Influence, Type and Contact (model)",
+       highlighting = "Sat",highlighting_fill = heat.colors(3))
+```
+
+This is similar to previous mosaic plot of observed proportions.

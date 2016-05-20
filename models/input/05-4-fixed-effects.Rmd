@@ -1,0 +1,65 @@
+---
+title: "Fixed effects and random effects in Analysis of Variance"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr)
+
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/app-"))
+```
+
+
+In the analysis of variance a **fixed effect** is an effect whose levels cover all possible levels of the phenomenon expressed by the factor: this produces the "standard" ANOVA (in the following **ANOVA I**).
+
+A **random effect** is an effect whose levels are a random sample of all possible levels of the phenomenon expressed by the factor: this produces a random effects ANOVA (in the following **ANOVA II**)
+
+An ANOVA II in linear models follows roughly the same methods of analysis of an ANOVA I, but some differences  exist about the formulation of hypotheses, that in an one-way ANOVA II is:
+  $$ H_0: \; \sigma^{2}_B = 0 $$
+  $$ H_A: \; \sigma^{2}_B > 0 $$
+where $\sigma^{2}_B$ is the variance component of response variable, due to the difference between levels of random factor. This because the chosen levels are samples randomly extracted from the population.
+
+In ANOVA II, when $H_0$ is refused, no multiple comparison is done. They have no relevance since observed levels represent a sample from a larger population. 
+
+It is more useful, instead, to do a quantitative evaluation of the "between (groups)" $\sigma^2_B$ variance component by means of the calculation of the **variance components**.  
+Since $E(MS_E)=\sigma^{2}+n \sigma^{2}_{B}$ and $E(MS_R)=\sigma^{2}$, in order to estimate the "between" component of variance the following formula is usually used:
+  $$
+  \hat{\sigma}^{2}_{B}=\frac{MS_E-MS_R}{n}\,,
+  $$
+where $MS_E = \frac{SS_E}{df_E}$, $MS_R = \frac{SS_R}{df_R}$, $df_E = J-1$, $df_R = n-J$. $J$ is the number of observed levels in random factor, and $SS_E$ and $SS_R$ are the explained (between) and residual (within) deviances, respectively.
+
+If $H_0$ is true, that is no variability exists due to different randomly drawn levels, then:
+  $$ 
+  \sigma^{2}_{B}=0 
+  $$ 
+  $$ 
+  E(MS_E)=\sigma^{2} 
+  $$
+Then, analogously to the fixed effects case:
+  $$
+  F=\dfrac{\frac{MS_E}{\sigma^{2}}}{\frac{MS_R}{\sigma^{2}}}=\frac{MS_E}{MS_R}\sim F_{J-1,n-J}
+  $$
+
+In case the model is unbalanced, $n$ has to be corrected with:
+  $$
+  \hat{n}=\overline{n}-\frac{\sum_i{({n}_{i}-\overline{n})^2}}{(k-1)N} \mbox{,}
+  $$
+
+where:
+
+* $\overline{n}$ is the average sample size in the levels; 
+* ${n}_{i}$ is the sample size of the $i$-th level;
+* ${k}$ is the number of levels;
+* ${N}$ is the total sample size.
+
+In case of a multifactorial ANOVA, the calculation of $F$ ratios modifies, but the base logic is the same.  
+
+Finally, there exists a third type of analysis (in the following **ANOVA III**), given from both fixed and random factors.  
+The hypotheses for the calculation of $F$ ratios are the same as those seen for ANOVA I and ANOVA II, even if the ratios themselves are different with respect to these two ones.
+
+In very simple designs, results using fixed or random effects are quite similar.
+
+In more complex designs the calculation of significancy is more complex too, and is performed differently from "classic" ANOVA: the denominator of the $F$ depends from the design and it is usually made by linear combinations of different SS's, according to the type of the design. 
+
+In general, also in very simple designs, the estimates of variance components might be even negative!
+
+Different (likelihood-based) approaches to manage complex rendom effects models are also available. R packages for managing designs involving random effects are mainly `lme4` or `nlme`.

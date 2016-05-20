@@ -1,0 +1,19 @@
+---
+title: "Akaike Information Criterion"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr)
+
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/app-"))
+```
+
+
+The Akaike Information Criterion (AIC) is a measure of the relative quality of a statistical model for a given set of data.
+The AIC of a (linear or generalized linear) model with $p+1$ parameters is
+  $$
+  AIC = 2[(p+1) - \ell(\underline{\hat\theta})]
+  $$
+where $\ell(\underline{\hat\theta})$ is the maximized value of the log-likelihood function for the estimated model.
+
+Given two models `A` and `B`, not necessarly nested, if $AIC(A) < AIC(B)$ then model `A` is considered better than model `B`.
