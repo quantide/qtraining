@@ -1,0 +1,453 @@
+---
+title: 
+author: 
+date: 
+output:
+  html_document:
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+# La directory di lavoro va definita all'inizio in questo modo per non doverla ripetere in
+# ogni chunk! (con echo=F si eseguono i comandi del chunk senza mostrarli)
+#root.dir = "~/Dropbox/quantide/int/corsi/corsiR/03.rModels/v01/data/allData",
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="figure/app-"))
+```
+```{r, echo=FALSE}
+# La directory di lavoro va definita all'inizio in questo modo per non doverla ripetere in
+# ogni chunk! (con echo=F si eseguono i comandi del chunk senza mostrarli)
+opts_knit$set(root.dir = "data/allData")
+setwd("data/allData")
+```
+
+Appendices
+=============================
+
+```{r,echo=FALSE}
+rm(list=ls())
+```
+
+## Introduction
+This chapter is composed by several distinct topics on specific arguments. 
+
+The objective of this chapter is to provide some hints and basic information about different topics that should be deepen separately. The reader is then invited to delve into topics.
+
+## Diagnostics
+Even a very high "adherence" of model to observed data (for example, when $R^2 = 0.9$ or greater in linear models) is not sufficient to say that the model is correctly specified and follows the assumptions of (generalized) linear models.
+
+In order to complete the diagnostic analysis of the model, an analysis of residuals is needed too. The following plots are then crucial:
+
+* standardized (Pearson) residuals $r_i^*$ versus fitted values $\hat{y}_i$, for verifying if no relation between residuals and fitted values exists;
+* normal qq-plot of residuals, for evaluating the normality assumption (for LM) or approximate normality of pearson residuals (for GLM).
+
+The function `plot(<object>)`, where `<object>` is a LM or GLM class object, by default returns:
+
+* the two plots just described above;
+* a plot of the square root of standardized residuals (or standardized deviance residuals for GLMs) versus fitted values, useful for evaluating homoscedasticity assumptions;
+* a plot of standardized residuals versus leverage, useful for evaluating the presence of outliers (see below in this chapter).
+
+### Residuals
+
+*Basic residuals* are computed in linear and generalized linear models as:
+$$
+r_i = y_i - \hat{y}_i
+$$
+
+Other variants or transformations are:
+
+* _Pearson residuals_ ("standardized" residuals: usually used in tests of assumptions)
+* _Deviance residuals_ ($r_{Di}=\textrm{sign}(r_i) \cdot \sqrt{d_i}$, where $d_i$ is the contribution to total deviance of the $i$-th observation). This type of residual is used in GLM models
+* _Anscombe residuals_ ("normalized" and "homoscedasticized" residuals, if model assumptions are met). This type of residual is also used with Generalized Linear Models, but no functions in R base are available to calculate them.
+* _Studentized residuals_, computed by $\frac{r_i}{\hat{\sigma}_i \sqrt{1-h_{ii}}}$, (see below for a definition of $h_{ii}$) that account for greater variability of residuals at extremes of sampling space of independent variables.
+
+
+_Standardized (Pearson)_ residuals are computed by 
+      $$
+      \frac{y_i - \hat{\mu}_i}{\hat{\sigma}_i}
+      $$
+where $\hat{\mu}_i$ is the estimated expected value of $y_i$, and $\hat{\sigma}_i$ is the estimated standard deviation of $y_i$ (in case of GLM, $\hat{\sigma}_i = \sqrt{\hat{\phi} V(\hat{\mu}_i)}$). 
+
+_Anscombe_ residuals $r_{A_i}$ are calculated in the following way:
+$$
+r_{A_i} = \frac{A(y_i)-A(\hat\mu_i)}{A'(\hat\mu_i)\sqrt{V(\hat\mu_i)}}\,,
+$$
+except for binomial distribution with $n_i$ trials in the $i$-th observation, where the Anscombe residuals are:
+$$
+r_{A_i} = \sqrt{n_i}\frac{A(y_i)-A(\hat\mu_i)}{A'(\hat\mu_i)\sqrt{V(\hat\mu_i)}}
+$$
+$A(\cdot)$ is a proper function which makes the distribution of the response variable $y$ closer to the normal distribution and is given by
+$$
+A(\mu) = \int_{-\infty}^\mu V(t)^{-\frac{1}{3}}\textrm{d}t
+$$
+
+As a result, Anscombe residuals have a different formulation for each distribution.
+
+In Normal case:
+$$
+r_{A_i} = y_i - \hat\mu_i
+$$
+In  Binomial case: 
+$$
+r_{A_i} = \sqrt{n_i}\left[B\left(y_i,\frac{2}{3},\frac{2}{3}\right) - B\left(\hat\mu_i,\frac{2}{3},\frac{2}{3}\right)\right]{[\hat\mu_i(1-\hat\mu_i)]}^{-\frac{1}{6}}\,,
+$$
+where $B(z,a,b)$ is the beta function
+
+In Poisson case:
+$$
+r_{A_i} = \frac{3}{2}\frac{y_i^{\frac{2}{3}} - \hat\mu_i^{\frac{2}{3}}}{\hat\mu_i^{\frac{1}{6}}}
+$$
+
+In Gamma case: 
+$$
+r_{A_i} = 3\left[{\left(\frac{y_i}{\hat\mu_i}\right)}^{-\frac{1}{3}}-1\right]
+$$
+
+### Residual diagnostics
+Residual diagnostic tests the fulfillment of the assumptions of the (generalized) linear model:
+
+* testing the assumption of homogeneity of variance of standardized residuals;
+* testing for normality of residuals (mainly with linear models);
+* testing for outliers.
+
+#### Homogeneity of residual variance tests
+
+The assumption of _homogeneity of error variance_ in simple linear models can also be performed with the Levene's test, if data are grouped.
+
+Levene's test is performed by computing:
+      $$
+      Z_{ij} = \vert y_{ij} - E(y_{.j}) \vert
+      $$
+where $j$ represents the group and $i$ the replication within the group, and then computing an F test on the $j$ groups.
+A nonsignificant result indicates no heteroscedasticity.
+
+#### Residual normality tests
+
+The _residual normality_ can be also checked by means of normality tests, such as *Anderson-Darling test*.  
+The Anderson-Darling test computes square mean difference between the empirical cumulative distribution (computed on residuals) and theoretical cumulative distribution of the standard normal distribution, via: 
+      $$ 
+      AD = \sum_{i=1}^n {\frac{1-2i}{n}}\{\ln(F_0[Z_{(i)}])+\ln(1-F_0[Z_{(n+1-i)}])\} - n
+      $$
+where $n$ is the sample size, $Z_{(i)}$ are observed ordered and standardized residuals and $F_0$ is the cumulative distribution function of the standard normal distribution.  
+The value of $AD$ increases when the difference between residuals empirical distribution and gaussian cumulative distribution grows up.
+
+
+#### Checking for outlier presence
+
+Outliers can be detected:
+
+* By looking for standardized residuals greater than 3.5 or less than -3.5
+* and by looking for high Cook's $D_i$, greater than $4p/(n-p-1)$.  
+  For instance, if $n = 100$, $p = 5$ then high Cook's $D_i$ are high when higher than $4 \cdot 5 / (100-5-1) = 20/94$.
+
+*Cook's* $D$ are useful to recognize outliers, and are computed by
+      $$
+      \text{Cook's }D_i = \left(\frac{1}{p}\right)\left(\frac{h_{ii}}{1-h_{ii}}\right)\left(\frac{r_i^2}{\hat{\sigma}_i^2(1-h_{ii})}\right)
+      $$
+where $h_{ii}$ is the $i$-th diagonal entry of the hat matrix $\underline{H}$ (see below).
+
+Cook and Weisberg (1982) suggested that values of $D_i$ that exceed 50\% of the $F$ distribution with $p$ and $n-p$ degrees of freedom are large
+
+The *hat matrix* $\underline{H}$ transforms $\underline{Y}$ into the predicted scores. It is computed by
+      $$
+      \underline{H} = \underline{X}(\underline{X}^T \underline{X})^{-1}\underline{X}^T
+      $$
+The trace of the hat matrix is equal to the number of variables in the model.  
+
+The diagonal values of the hat matrix indicate which values could be outliers or not.
+The diagonal values are therefore measures of so-called _Leverage_.
+
+Leverage is a measure of influence of individual data point on global parameter estimates.  
+Leverage is bounded by two limits: $1/n$ and $1$. The closer the leverage is to unity, the more leverage the value has, and then the more is the influence of specific data point on model estimate.  
+In other words, if a data point has a very high leverage value, then the model estimate may change a lot using or not using that point.
+
+When the leverage is greater than $2p/n$ there is high leverage according to Belsley et al. (1980), cited in Long J.F., Modern Methods in Data Analysis (page 262). For smaller samples, Vellman and Welsch (1981) suggested that $3p/n$ is the criterion.
+
+The leverage of outliers can also be assessed:
+
+* constructing and analyzing studentized residuals;
+* constructing and analyzing the leverage of the high and low studentized residuals;
+* using Cook's $D$ to help determine how problematic outliers are.
+
+## Suggestions for enhancing a Linear model (LM)
+
+If a linear model does not satisfy the assumptions or its $R^2$ is still too low, we can try to enhance it by using several techniques:
+
+* transform the response variable with a function $t(\cdot)$ and perform the regression with $t(\underline{y})$; possible transformations: log, square root, reciprocal, Box-Cox;
+* add explanatory variables raised to some power ($x_{ij}^2, x_{ij}^3, \ldots$);
+* transform explanatory variables;
+* add other explanatory variables, if available;
+* change model, performing a GLM, a LMM or a GLMM.
+
+In order to have suggestions on possible transformations to be applied to the response variable and/or to the explanatory variables, plots of residuals on fitted values and of residuals on explanatory variables may be helpful.
+
+## Box-Cox transformation
+
+Box-Cox is a family of transformations of dependent variable that may help the statistician to enhance linear models (LM).  
+If the residuals of model are non-normal and/or heteroscedastic, a power transformation of dependent variable sometime may allow one to obtain a correct linear model on transformed variable.  
+The only requirement for the application of Box-Cox transform is that $y_i>0$. 
+
+Let us start with something simple, like a simple linear regression, i.e. 
+    $$
+    y_i=\beta_0+\beta_1x_i+\varepsilon_i
+    $$ 
+The Box-Cox transformation uses following family of (power) transformations 
+    $$
+    y_i^{(\lambda)}=\begin{cases}
+     & \dfrac{y_i^\lambda-1}{\lambda} \text{    } (\lambda\neq0)\\ 
+     & \log(Y_i) \text{    }(\lambda=0)
+    \end{cases}
+    $$
+
+The log-likelihood of this model (assuming that transformed observations are independent, with distribution $\varepsilon_i\sim\mathcal{N}(0,\sigma^2)$) depends also on the parameter $\lambda$:  
+
+$\ell(\lambda)=-\frac{n}{2}\log(2\pi)-\frac{n}{2}\log(\sigma^2)-\frac{1}{2\sigma^2}\sum_{i=1}^n\left[Y_i^{(\lambda)}-(\beta_0+\beta_1 X_i)\right]^2+$  
+     $\phantom{\ell(\lambda)=}+(\lambda-1)\sum_{i=1}^n\log(Y_i)$
+
+The $\lambda$ value that maximizes the above formula is the value that "best approximates" the distribution of regression residuals on transformed data to a Normal one.
+
+## Akaike Information Criterion
+The Akaike Information Criterion (AIC) is a measure of the relative quality of a statistical model for a given set of data.
+The AIC of a (linear or generalized linear) model with $p+1$ parameters is
+  $$
+  AIC = 2[(p+1) - \ell(\underline{\hat\theta})]
+  $$
+where $\ell(\underline{\hat\theta})$ is the maximized value of the log-likelihood function for the estimated model.
+
+Given two models `A` and `B`, not necessarly nested, if $AIC(A) < AIC(B)$ then model `A` is considered better than model `B`.
+
+## Prediction in linear models (LM)
+
+Linear regression can be used to fit a predictive model to an observed data set of $\underline{y}$ and $\underline{X}$ values. After developing such a model, if an additional vector of independent variable values $\underline{x}$, say $\underline{x}_{n+1}$, is given without its accompanying value of $y_{n+1}$, the fitted model can be used to make a prediction of the value of $y_{n+1}$.
+
+It can be shown that the $(1-\alpha)$ confidence interval for the regression for a given value of $\underline{x}_*$ is limited by the following lower and upper confidence limits (_LCL_ and _UCL_):
+$$
+LCL: g(\underline{x}_*;\hat{\underline{\beta}})-t_{n-p-1;\,\frac{\alpha}{2}}\cdot \hat{\sigma} \cdot \sqrt{\underline{x}_*^T(\underline{X}^T\underline{X})^{-1}\underline{x}_*}
+$$   
+
+$$
+UCL: g(\underline{x}_*;\hat{\underline{\beta}})+t_{n-p-1;\,\frac{\alpha}{2}}\cdot \hat{\sigma} \cdot \sqrt{\underline{x}_*^T(\underline{X}^T\underline{X})^{-1}\underline{x}_*}
+$$ 
+
+where $g(\underline{x}_*;\hat{\underline{\beta}})$ is the regression function evaluated in $\underline{x}_*$, $\hat\sigma$ is the estimated standard deviation of residuals, $\hat{\underline{\beta}}$ is the vector of $p+1$ parameters estimated in model (intercept included), and $t_{n-p-1;\,\frac{\alpha}{2}}$ is the value of the $t_{n-p-1}$ distribution that has a probability of having values greater than it equal to $\frac{\alpha}{2}$.
+
+The confidence interval may be thought as the interval containing the "true" regression line (the "true" mean, given $\underline{x}$) with a given confidence level.
+
+Instead, the prediction interval will contain, with a given confidence level, the true (and "future") $y_{n+1}$ value, given $\underline{x}_{n+1}$ values.
+
+The $(1-\alpha)$ prediction interval for a given value of $\underline{x}_{n+1} = \underline{x}_*$ is limited by the following lower and upper prediction limits (_LPL_ and _UPL_):
+$$
+LPL: g(\underline{x}_*;\hat{\underline{\beta}})-t_{n-p-1;\,\frac{\alpha}{2}}\cdot \hat{\sigma} \cdot \sqrt{\underline{x}_*^T(\underline{X}^T\underline{X})^{-1}\underline{x}_*+1}
+$$ 
+
+$$
+UPL: g(\underline{x}_*;\hat{\underline{\beta}})+t_{n-p-1;\,\frac{\alpha}{2}}\cdot \hat{\sigma}  \cdot \sqrt{\underline{x}_*^T(\underline{X}^T\underline{X})^{-1}\underline{x}_*+1}
+$$ 
+
+![](figure/CLPL.png)
+<!--- Visualizzato solo in PDF, non HTML --->
+
+
+## Types of Sum of Squares
+
+When data from an experiment are unbalanced, there are different ways to calculate the sums of squares for the Analysis of Variance. At least three approaches, commonly called **Type I**, **Type II** and **Type III** Sum of Squares (SS) are available.
+
+Which type to use has led to an ongoing controversy in the field of statistics. Each type os SS leads to testing different hypotheses about the data.  
+
+Consider a model that includes two factors `A` and `B`; there are therefore two main effects, and an interaction, `AB`.   
+Full model may be represented by `SS(A,B, AB)`, whereas `SS(A,B)` represents the model without interaction, etc..  
+Influence of particular factor may be tested by using difference of SS. Therefore, to test influence of interaction factor, F-test of model `SS(A,B,AB)` and `SS(A,B)` may be used.
+
+Given that, incremental Sum of Squares may be defined; for example:
+
+* SS(AB $\vert$ A, B) = SS(A, B, AB) - SS(A, B)
+* SS(A $\vert$ B, AB) = SS(A, B, AB) - SS(B, AB)
+* SS(A $\vert$ B) = SS(A, B) - SS(B)
+ * ...
+
+Underlining the incremental differences in sum of squares
+
+Different types of sums of squares depend on the stage of model reduction at which they are carried out
+
+**Type I** (Sequential) Sum of Squares uses: 
+
+1. SS(A) for factor A
+2. SS(B $\vert$ A)  for factor B
+3. SS(AB $\vert$ B, A) for interaction AB
+
+This type of sums of squares will give different results for unbalanced data depending on which main effect is considered first; this is often not the hypothesis that is of interest when dealing with unbalanced data.
+
+**Type II** Sum of Squares uses: 
+1. SS(A $\vert$ B) for factor A
+2. SS(B $\vert$ A)  for factor B
+3. SS(AB $\vert$ B, A) for interaction AB
+
+Computationally, this is equivalent to running a Type I analysis with different orders of the factors, and taking the appropriate output (the second, where one main effect is run after the other).
+
+**Type III** Sum of Squares uses: 
+1. SS(A $\vert$ B, AB)  for factor A
+2. SS(B $\vert$ A, AB) for factor B
+3. SS(AB $\vert$ B, A) for interaction AB
+
+This type tests for the presence of a main effect after the other main effect and interaction.
+
+**NOTES:**
+
+* When data is balanced, the effects are orthogonal, and types I, II and III all give the same results.
+* `anova()` and `aov()` R functions either in LM or in GLM implement a **sequential Sum of Squares (Type I)**. 
+* Function `Anova()` in `car` package allows tests based on Type II or Type III sum of squares.
+
+## Fixed effects and random effects in Analysis of Variance
+In the analysis of variance a **fixed effect** is an effect whose levels cover all possible levels of the phenomenon expressed by the factor: this produces the "standard" ANOVA (in the following **ANOVA I**).
+
+A **random effect** is an effect whose levels are a random sample of all possible levels of the phenomenon expressed by the factor: this produces a random effects ANOVA (in the following **ANOVA II**)
+
+An ANOVA II in linear models follows roughly the same methods of analysis of an ANOVA I, but some differences  exist about the formulation of hypotheses, that in an one-way ANOVA II is:
+  $$ H_0: \; \sigma^{2}_B = 0 $$
+  $$ H_A: \; \sigma^{2}_B > 0 $$
+where $\sigma^{2}_B$ is the variance component of response variable, due to the difference between levels of random factor. This because the chosen levels are samples randomly extracted from the population.
+
+In ANOVA II, when $H_0$ is refused, no multiple comparison is done. They have no relevance since observed levels represent a sample from a larger population. 
+
+It is more useful, instead, to do a quantitative evaluation of the "between (groups)" $\sigma^2_B$ variance component by means of the calculation of the **variance components**.  
+Since $E(MS_E)=\sigma^{2}+n \sigma^{2}_{B}$ and $E(MS_R)=\sigma^{2}$, in order to estimate the "between" component of variance the following formula is usually used:
+  $$
+  \hat{\sigma}^{2}_{B}=\frac{MS_E-MS_R}{n}\,,
+  $$
+where $MS_E = \frac{SS_E}{df_E}$, $MS_R = \frac{SS_R}{df_R}$, $df_E = J-1$, $df_R = n-J$. $J$ is the number of observed levels in random factor, and $SS_E$ and $SS_R$ are the explained (between) and residual (within) deviances, respectively.
+
+If $H_0$ is true, that is no variability exists due to different randomly drawn levels, then:
+  $$ 
+  \sigma^{2}_{B}=0 
+  $$ 
+  $$ 
+  E(MS_E)=\sigma^{2} 
+  $$
+Then, analogously to the fixed effects case:
+  $$
+  F=\dfrac{\frac{MS_E}{\sigma^{2}}}{\frac{MS_R}{\sigma^{2}}}=\frac{MS_E}{MS_R}\sim F_{J-1,n-J}
+  $$
+
+In case the model is unbalanced, $n$ has to be corrected with:
+  $$
+  \hat{n}=\overline{n}-\frac{\sum_i{({n}_{i}-\overline{n})^2}}{(k-1)N} \mbox{,}
+  $$
+
+where:
+
+* $\overline{n}$ is the average sample size in the levels; 
+* ${n}_{i}$ is the sample size of the $i$-th level;
+* ${k}$ is the number of levels;
+* ${N}$ is the total sample size.
+
+In case of a multifactorial ANOVA, the calculation of $F$ ratios modifies, but the base logic is the same.  
+
+Finally, there exists a third type of analysis (in the following **ANOVA III**), given from both fixed and random factors.  
+The hypotheses for the calculation of $F$ ratios are the same as those seen for ANOVA I and ANOVA II, even if the ratios themselves are different with respect to these two ones.
+
+In very simple designs, results using fixed or random effects are quite similar.
+
+In more complex designs the calculation of significancy is more complex too, and is performed differently from "classic" ANOVA: the denominator of the $F$ depends from the design and it is usually made by linear combinations of different SS's, according to the type of the design. 
+
+In general, also in very simple designs, the estimates of variance components might be even negative!
+
+Different (likelihood-based) approaches to manage complex rendom effects models are also available. R packages for managing designs involving random effects are mainly `lme4` or `nlme`.
+
+## Nested ANOVA
+The analysis of variance, as it has been presented up to now, assumes that, during the experiment, each level of each factor crosses with all levels of all other factors.
+
+If the number of times that a level of a factor crosses all levels of all other factors is constant for all the combinations of levels, then the experiment is called *balanced crossed*.
+
+If, instead, the same number is not equal for all the combinations, then the experiment is said *unbalanced crossed*.
+
+Another type of experiment is the one defined as **nested**.
+
+Consider a plant where two different machines, A and B, produces the same type of output.
+
+Since the plant runs 24 hours a day, there are three shifts for each machine. Each shift has its hown operator. 
+Then:
+
+In machine A three operators $O_{A1}$, $O_{A2}$ and $O_{A3}$ are working.
+
+In machine B three other operators $O_{B1}$, $O_{B2}$ and $O_{B3}$ are working.
+
+With the aim to compare production levels, two sample surveys for each operator within machine have been measured.
+
+The situation can be summed up by the following diagram:
+
+\setlength{\unitlength}{.5cm}
+  \begin{picture}(50,10)
+    \put(5,8){A}
+    \put(18,8){B}
+    \put(4.75,7.75){\vector(-2,-1){2}}
+    \put(5.25,7.75){\vector(0,-1){1}}
+    \put(5.75,7.75){\vector(2,-1){2}}
+    \put(17.75,7.75){\vector(-2,-1){2}}
+    \put(18.25,7.75){\vector(0,-1){1}}
+    \put(18.75,7.75){\vector(2,-1){2}}
+    \put(2,5.75){$O_{A_1}$}
+    \put(5,5.75){$O_{A_2}$}
+    \put(8,5.75){$O_{A_3}$}
+    \put(15,5.75){$O_{B_1}$}
+    \put(18,5.75){$O_{B_2}$}
+    \put(21,5.75){$O_{B_3}$}
+    \put(2,5.5){\vector(-1,-2){.5}}
+    \put(2.75,5.5){\vector(1,-2){.5}}
+    \put(5,5.5){\vector(-1,-2){.5}}
+    \put(5.75,5.5){\vector(1,-2){.5}}
+    \put(8,5.5){\vector(-1,-2){.5}}
+    \put(8.75,5.5){\vector(1,-2){.5}}
+    \put(15,5.5){\vector(-1,-2){.5}}
+    \put(15.75,5.5){\vector(1,-2){.5}}
+    \put(18,5.5){\vector(-1,-2){.5}}
+    \put(18.75,5.5){\vector(1,-2){.5}}
+    \put(21,5.5){\vector(-1,-2){.5}}
+    \put(21.75,5.5){\vector(1,-2){.5}}
+    \put(.75,3.75){\begin{small}$R_{A_{11}}$\end{small}}
+    \put(2.3,3.75){\begin{small}$R_{A_{12}}$\end{small}}
+    \put(4,3.75){\begin{small}$R_{A_{21}}$\end{small}}
+    \put(5.5,3.75){\begin{small}$R_{A_{22}}$\end{small}}
+    \put(7.2,3.75){\begin{small}$R_{A_{31}}$\end{small}}
+    \put(9,3.75){\begin{small}$R_{A_{32}}$\end{small}}
+    \put(13.75,3.75){\begin{small}$R_{A_{11}}$\end{small}}
+    \put(15.3,3.75){\begin{small}$R_{A_{12}}$\end{small}}
+    \put(17,3.75){\begin{small}$R_{A_{21}}$\end{small}}
+    \put(18.5,3.75){\begin{small}$R_{A_{22}}$\end{small}}
+   \put(20.2,3.75){\begin{small}$R_{A_{31}}$\end{small}}
+   \put(22,3.75){\begin{small}$R_{A_{32}}$\end{small}}
+  \end{picture}
+
+For the analysis of this type of experiment a nested or hierarchical classification for factors has to be used, commonly known as **nested anova**.
+
+The main interest is usually on the difference between operators inside (nested) the machines (but this is not an "axiom").  
+In other words, we want to verify if there exists a statistically significant difference between operators, without the effect of the machine, and also to check if a difference exists between machines.
+
+A case like this corresponds to the statistical model
+  $$
+  X_{ijk}=\mu+\alpha_k+\beta_{j(k)}+\varepsilon_{i(jk)}
+  $$
+
+where:
+
+* $\mu$ is the general mean;
+* $\alpha_{k}$ is the effect of $k$-th level of machine factor ($\alpha$);
+* $\beta_{j(k)}$ is the effect of $j$-th level of operator factor ($\beta$) nested in the $k$-th level of machine factor ($\alpha$); 
+* $\varepsilon_{i(jk)}$ is the $i$-th error nested in the $j$-th level of the operator factor ($\beta$) nested in turn in the $k$-th level of the machine factor ($\alpha$).
+
+Two main concepts are implicit:
+
+* __the choice of an upper level influences its lower levels__;
+* __a lower level has meaning only if analyzed within the upper one__.
+
+Even in nested experiments, the effects may be fixed or random (the formulation of the hypotheses is different according as the effects are fixed or random).
+
+As a consequence, also the analysis of variance for nested experiments may be split into:
+
+* NESTED ANOVA I, where all factors are fixed;
+* NESTED ANOVA II, where all factors are random;
+* NESTED ANOVA III, where some factors are fixed and some are random, in general those which belong to lower levels.
+
+The choice of the type of ANOVA and of the type of hypotheses to be tested depends on the formulation of the problem.
+
+The calculation of $F$ ratios varies in function of the type of the considered NESTED ANOVA.
+
