@@ -12,8 +12,8 @@ source("options.R")
 
 ## Datasets from packages
 require(qdata)
-data(uscrime)
-
+require(dplyr)
+data(utilities)
 ## Other datasets used
 # iris
 
@@ -66,15 +66,16 @@ require(GGally)
 ```
 
 ```{r 02e-loadandsummaryuc}
-uscrime_tmp <- uscrime[, 4:10]
-ggpairs(uscrime_tmp)
+set.seed(10)
+utilities_tmp <- utilities[, 1:8]
+ggpairs(utilities_tmp)
 ```
 
 If we first calculate the variances of the crime rates for the different
 types of crimes we find the following:
 
 ```{r 02e-sapplyuc}
-sapply(uscrime_tmp, var)
+sapply(utilities_tmp, var)
 ```
 
 The variances are very different, and using K-means on the raw data would not
@@ -83,9 +84,9 @@ choose to standardize each variable by its range. After such standardization,
 the variances become
 
 ```{r 02e-applyandsweepuc}
-rge <- sapply(uscrime_tmp, function(x) diff(range(x)))
-uscrime_s <- sweep(x = uscrime_tmp, MARGIN = 2, STATS = rge, FUN = "/")
-sapply(uscrime_s, var)
+rge <- sapply(utilities_tmp, function(x) diff(range(x)))
+utilities_s <- sweep(x = utilities_tmp, MARGIN = 2, STATS = rge, FUN = "/")
+sapply(utilities_s, var)
 ```
 
 We can now proceed with clustering the data. First we plot the WGSS for one-
@@ -93,42 +94,45 @@ to six-group solutions to see if we can get any indication of the number of
 groups. The plot is obtained as follows:
 
 ```{r 02e-scree1uc}
-k_max <- 6
+k_max <- 8
 wss <- rep(0, k_max)
 for (k in 1:k_max) {
-	wss[k] <- kmeans(uscrime_s, centers = k)$tot.withinss
+	wss[k] <- kmeans(utilities_s, centers = k)$tot.withinss
 }
-ggp <- ggplot(data = data.frame(x=1:6, y=wss), mapping = aes(x=x,y=y)) +
+ggp <- ggplot(data = data.frame(x=1:k_max, y=wss), mapping = aes(x=x,y=y)) +
   geom_point() +
   geom_line() +
   xlab("Number of groups") + 
   ylab("Within groups sum of squares")
 print(ggp)
+
 ```
 
 As the number of groups increases, the sum of squares will necessarily
 decrease, but an obvious "elbow" in the plot may be indicative of the most
 useful solution for the investigator to look at in detail. In our case there
-are two possible "elbows" in the plot, at two and four groups, and we now
-look at these solutions. The group means for these solutions are computed by
+is only one possible "elbow" in the plot, at four groups, and we now
+look at this solution. The group means for this solutions is computed by
 
 ```{r 02e-plotsuc1}
-km_2 <- kmeans(uscrime_s, centers = 2)
-km_2$centers * rge
-km_4 <- kmeans(uscrime_s, centers = 4)
+km_4 <- kmeans(utilities_s, centers = 4)
 km_4$centers * rge
 
-uscrime_pca <- princomp(uscrime[, 4:10], cor = TRUE)
-summary(uscrime_pca)
-plot(uscrime_pca, type = "l")
+utilities_pca <- princomp(utilities_tmp, cor = TRUE)
+summary(utilities_pca, loadings=TRUE)
+plot(utilities_pca, type = "l")
 abline(h = 1, lty = 2)
 ```
+
+If we apply the "proportion of explained variance" criterion, the number of components to retain should be at least 4.  
+Anyway, for this example, we will retain the first two components only.
+
 ```{r 02e-plotsuc1a}
-biplot(uscrime_pca)
-ggcorr(cbind(uscrime_s, uscrime_pca$scores), label = TRUE, cex = 2.5)
+biplot(utilities_pca)
+ggcorr(cbind(utilities_s, utilities_pca$scores), label = TRUE, cex = 2.5)
 ```
 
-The first component seems related to general "intensity" of crime phenomenon, while the second component seems to oppose brute crimes with "milder" ones.  
+The first principal component seems to oppose technical measures (`fuel`, `load`, `cost`) with financial ones (`coverage` and `return`), while the second principal component seems to oppose sales (`sales`) and costs (`fuel`) .  
 Now we can try using the Calinski-Harabasz index to help us in finding the optimal number of clusters to "combine" with PCA analysis results:
 ```{r 02d-chfuncut,warning=FALSE}
 require(clusterSim)
@@ -136,7 +140,7 @@ minC <- 2
 maxC <- 10
 res <- numeric(maxC - minC)
 for (nc in minC:maxC) {
-	res[nc - minC + 1] <- index.G1(uscrime_s, kmeans(uscrime_s,centers = nc)$cluster)
+	res[nc - minC + 1] <- index.G1(utilities_s, kmeans(utilities_s,centers = nc)$cluster)
 }
 ggp <- ggplot(data=data.frame(x=2:(length(res)+1), y= res), mapping = aes(x=x,y=y)) + 
   geom_point() + 
@@ -146,15 +150,15 @@ ggp <- ggplot(data=data.frame(x=2:(length(res)+1), y= res), mapping = aes(x=x,y=
 print(ggp)
 ```
 
-Also this index, does not give a really clear indication on the number of clusters to choose.
+This index gives an almost clear indication on the number of clusters to choose, i.e., 4.
 
 Since many variables are available, we will try to plot the grouing information on the plot of scores of 
 a simple 2-dimensions PCA analysis
 
 ```{r 02e-plotsuc2, fig.width=plot_with_legend_fig_width_short}
-Cluster <- as.character(km_2$cluster)
-uscrime_scores <- cbind(data.frame(uscrime_pca$scores[, c("Comp.1", "Comp.2")]), state=uscrime$state, Cluster=Cluster)
-ggp <- ggplot(data= uscrime_scores, mapping = aes(x = Comp.1, y=Comp.2, label=state, colour=Cluster)) +
+Cluster <- as.character(km_4$cluster)
+utilities_scores <- cbind(data.frame(utilities_pca$scores[, c("Comp.1", "Comp.2")]), company=utilities$comp_short, Cluster=Cluster)
+ggp <- ggplot(data= utilities_scores, mapping = aes(x = Comp.1, y=Comp.2, label=company, colour=Cluster)) +
   geom_point() +
   xlab("1st PCA dimension") +
   ylab("2nd PCA dimension") +
@@ -162,24 +166,28 @@ ggp <- ggplot(data= uscrime_scores, mapping = aes(x = Comp.1, y=Comp.2, label=st
 print(ggp)
 ```
 
-This graph show how the 2 groups are related with the first component of PCA.
+This graph show how the 4 groups are related with the first 2 components of PCA. It shows that the group 1 and 3 are clearly separated.  
+The other two groups are somehow confused; maybe, they could be better separated by using a third PC.
+
+Without using 3D graphs, the next graph can help to find some differences between the remaining two groups:
 ```{r 02e-plotsuc3}
-pairs(uscrime[, 4:10], col = Cluster, pch = Cluster, cex = .75)
+pairs(utilities_tmp, col = Cluster, pch = Cluster, cex = .75)
 ```
+
+<!---
 
 ```{r 02e-plotsuc4, fig.width=plot_with_legend_fig_width_short}
-Cluster <- as.character(km_4$cluster)
-ggp <- ggplot(data=data.frame(x = uscrime_scores[, 1], y = uscrime_scores[, 2], Cluster=Cluster, state=uscrime$state), mapping = aes(x=x,y=y, colour=Cluster))+
-  geom_point() +
-  xlab("1st PCA dimension") +
-  ylab("2nd PCA dimension") +
-  geom_text(mapping = aes(label=state), hjust = 0.5, vjust = -0.5, size = 3)
-print(ggp)
+# Cluster <- as.character(km_4$cluster)
+# ggp <- ggplot(data=data.frame(x = uscrime_scores[, 1], y = uscrime_scores[, 2], Cluster=Cluster, state=uscrime$state), mapping = aes(x=x,y=y, colour=Cluster))+
+#   geom_point() +
+#   xlab("1st PCA dimension") +
+#   ylab("2nd PCA dimension") +
+#   geom_text(mapping = aes(label=state), hjust = 0.5, vjust = -0.5, size = 3)
+# print(ggp)
 ```
 
-The graph above, show how the 4 groups are related to crossing of "intensity" and "cruelty" of crimes.
 ```{r 02e-plotsuc5}
-pairs(uscrime[, 4:10], col = Cluster, pch = Cluster, cex = .75)
+# pairs(utilities_tmp, col = Cluster, pch = Cluster, cex = .75)
 ```
 
 The previous plots together with the next ones suggest that the two groups
@@ -187,14 +195,37 @@ solution seems to be more interpretable. Anyway, we can also cross ths informati
 with the geographic areas:
 
 ```{r 02e-levelplotsuc}
-uscrime$reg <- as.factor(uscrime$reg)
-levels(uscrime$reg) <- c("Northeast", "Midwest", "South", "West")
+# uscrime$reg <- as.factor(uscrime$reg)
+# levels(uscrime$reg) <- c("Northeast", "Midwest", "South", "West")
+# 
+# plot(table(uscrime$reg, km_2$cluster), main = "Clusters vs. US States region",
+# 			xlab = "Region of US", ylab = "2 groups solution")
+# 
+# plot(table(uscrime$reg, km_4$cluster), main = "Clusters vs. US States region",
+# 			xlab = "Region of US", ylab = "4 groups solution")
+```
+--->
 
-plot(table(uscrime$reg, km_2$cluster), main = "Clusters vs. US States region",
-			xlab = "Region of US", ylab = "2 groups solution")
+The next grph will help to "identify" groups as for hierarchical clustering:
 
-plot(table(uscrime$reg, km_4$cluster), main = "Clusters vs. US States region",
-			xlab = "Region of US", ylab = "4 groups solution")
+```{r 02d-membsplotut3, fig.width=7}
+utilities$member <-  Cluster
+util.summ <- summarise(group_by(utilities, member),
+                       coverage = mean(coverage),
+                       return   = mean(return),
+                       cost     = mean(cost),
+                       load     = mean(load),
+                       peak     = mean(peak),
+                       sales    = mean(sales),
+                       nuclear  = mean(nuclear),
+                       fuel     = mean(fuel))
+palette(rainbow(8))
+to.draw <- apply(util.summ[, -1], 2, function(x) x/max(x))
+stars(to.draw, draw.segments = TRUE, scale = FALSE, key.loc = c(4.6,2.0), nrow=3, ncol=2,
+      labels = c("CLUSTER 1", "CLUSTER 2","CLUSTER 3", "CLUSTER 4"),
+      main = "Utilities data (cluster profiling)", cex = .75, ylim=c(0,8),
+      flip.labels = TRUE)
+palette("default")
 ```
 
 Thus, it seems that the cluster are also associated with geographic areas of US states.

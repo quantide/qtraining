@@ -1021,11 +1021,11 @@ With the <code>aggregate()</code> function you can get the same results of <code
 <p>More recent packages (i.e., <code>dplyr</code>) allow the researcher to develop by-group analyses in very simple and clear form:</p>
 <pre class="r"><code>require(dplyr)
 
-wea %&gt;% 
+(res1 &lt;- wea %&gt;% 
   group_by(WindGustDir, RainToday) %&gt;% 
   summarise(count = n(),
             mean_pressure9am = mean(Pressure9am),
-            mean_pressure3pm =mean(Pressure3pm))</code></pre>
+            mean_pressure3pm =mean(Pressure3pm)))</code></pre>
 <pre><code>## Source: local data frame [29 x 5]
 ## Groups: WindGustDir [?]
 ## 
