@@ -89,15 +89,15 @@ for (k in 1:kmax) {
 	cm <- confusionMatrix(data = knn_pred, reference = test_Y, positive = "Up")
 	test_error[k] <- 1 - cm$overall[1]
 }
-k_cv <- which.min(test_error)
-knn_pred_cv <- knn3Train(train_X, test_X, train_Y, k = k_cv, prob = FALSE,
+k_min <- which.min(test_error)
+knn_pred_min <- knn3Train(train_X, test_X, train_Y, k = k_min, prob = FALSE,
 						 use.all = FALSE)
-cm <- confusionMatrix(data = knn_pred_cv, reference = test_Y, positive = "Up")
+cm <- confusionMatrix(data = knn_pred_min, reference = test_Y, positive = "Up")
 ggp <- ggplot(data.frame(test_error), aes(x = 1:kmax, y = test_error)) +
 	geom_line() +
   geom_point() +
   xlab("K (#neighbors)") + ylab("Test error") +
-	ggtitle(paste0("KNN best K value = ", k_cv,
+	ggtitle(paste0("KNN best K value = ", k_min,
 				   " (min error = ",
 				   format((1 - cm$overall[1])*100, digits = 4), "%)"))
 print(ggp)

@@ -64,11 +64,11 @@ by(data = wea[,c("Sunshine","Pressure9am","Pressure3pm")],
 ## ----dplyr_examples, warning=FALSE, message=FALSE------------------------
 require(dplyr)
 
-wea %>% 
+(res1 <- wea %>% 
   group_by(WindGustDir, RainToday) %>% 
   summarise(count = n(),
             mean_pressure9am = mean(Pressure9am),
-            mean_pressure3pm =mean(Pressure3pm))
+            mean_pressure3pm =mean(Pressure3pm)))
 
 ## ----prop.table, warning=FALSE, message=FALSE----------------------------
 (tbl <- table(wea$WindGustDir, wea$RainToday))

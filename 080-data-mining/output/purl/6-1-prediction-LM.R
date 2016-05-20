@@ -53,8 +53,8 @@ ols_fit <- lm(y ~ ., data = dt_train)
 summary(ols_fit)
 
 ## ----c2------------------------------------------------------------------
-rmse <- summary((predict(ols_fit, newdata = dt_test) - dt_test$y)^2)
-print(rmse)
+mse <- summary((predict(ols_fit, newdata = dt_test) - dt_test$y)^2)
+print(mse)
 ggp <- ggplot(data = data.frame(fit=predict(ols_fit, newdata = dt_test), obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
   geom_point() +
   ggtitle("OLS: Observed Vs. Predicted") +
@@ -82,9 +82,9 @@ ggp <- ggplot(data = data.frame(fit=predict(forw_fit, newdata = dt_test), obs=dt
 print(ggp)
 
 y_pred_forw <- predict(forw_fit, newdata = dt_test)
-rmse <- rbind(rmse, summary((y_pred_forw - dt_test$y)^2))
-rownames(rmse)[nrow(rmse)] <- "Forward"
-rmse
+mse <- rbind(mse, summary((y_pred_forw - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "Forward"
+mse
 
 ## ----h, cache=cacheTF----------------------------------------------------
 m_init <- lm(y ~ ., data = dt_train)
@@ -102,9 +102,9 @@ ggp <- ggplot(data = data.frame(fit=predict(back_fit, newdata = dt_test), obs=dt
 print(ggp)
 
 y_pred_back <- predict(back_fit, newdata = dt_test)
-rmse <- rbind(rmse, summary((y_pred_back - dt_test$y)^2))
-rownames(rmse)[nrow(rmse)] <- "Backward"
-rmse
+mse <- rbind(mse, summary((y_pred_back - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "Backward"
+mse
 
 ## ----message=FALSE-------------------------------------------------------
 require(leaps)
@@ -144,10 +144,10 @@ ggp <- ggplot(data = data.frame(fit=predict(m_bestsubset, newdata = dt_test), ob
 print(ggp)
 
 y_pred_bestsubset <- predict(m_bestsubset, dt_test[, bestfeat])
-rmse <- rbind(rmse, summary((y_pred_bestsubset - dt_test$y)^2))
-rownames(rmse)[1] <- "OLS"
-rownames(rmse)[nrow(rmse)] <- "Best subset"
-rmse
+mse <- rbind(mse, summary((y_pred_bestsubset - dt_test$y)^2))
+rownames(mse)[1] <- "OLS"
+rownames(mse)[nrow(mse)] <- "Best subset"
+mse
 
 dt_train <- dt_t
 rm(dt_t)
@@ -179,9 +179,9 @@ ggp <- ggplot(data = data.frame(fit=y_pred_ridge, obs=dt_test$y), mapping = aes(
 print(ggp)
 
 ## ----l-------------------------------------------------------------------
-rmse <- rbind(rmse, summary((y_pred_ridge - dt_test$y)^2))
-rownames(rmse)[nrow(rmse)] <- "Ridge"
-rmse
+mse <- rbind(mse, summary((y_pred_ridge - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "Ridge"
+mse
 
 ## ----m-------------------------------------------------------------------
 coef(ridge_fit)
@@ -204,9 +204,9 @@ print(ggp)
 
 ## ----q-------------------------------------------------------------------
 y_pred_pcr <- as.vector(predict(pcr_fit, dt_test, ncomp = ncomp))
-rmse <- rbind(rmse, summary((y_pred_pcr - dt_test$y)^2))
-rownames(rmse)[nrow(rmse)] <- "PCR"
-rmse
+mse <- rbind(mse, summary((y_pred_pcr - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "PCR"
+mse
 
 ## ----q1------------------------------------------------------------------
 # Plots Observed Vs. Predicted values
@@ -227,9 +227,9 @@ print(ggp)
 
 (ncomp <- which.min(pls_fit$validation$PRESS))
 y_pred_pls <- predict(pls_fit, dt_test, ncomp = ncomp)
-rmse <- rbind(rmse, summary((y_pred_pls - dt_test$y)^2))
-rownames(rmse)[nrow(rmse)] <- "PLS"
-rmse
+mse <- rbind(mse, summary((y_pred_pls - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "PLS"
+mse
 
 ## ----message=FALSE-------------------------------------------------------
 require(glmnet)
@@ -247,9 +247,9 @@ plot(cv)
 glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = cv$lambda.min, alpha = 0.9)
 coef(glmnet_fit)
 y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
-rmse <- rbind(rmse, summary((y_pred_glmnet - dt_test$y)^2))
-rownames(rmse)[nrow(rmse)] <- "glmnet"
-rmse
+mse <- rbind(mse, summary((y_pred_glmnet - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "glmnet"
+mse
 
 ## ----v-------------------------------------------------------------------
 glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, alpha=1) # default alpha (LASSO)
@@ -302,8 +302,8 @@ glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = 
 coef(glmnet_fit, label = TRUE)
 y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
 
-rmse <- rbind(rmse, summary((y_pred_glmnet - dt_test$y)^2))
-rownames(rmse)[nrow(rmse)] <- "best-glmnet"
-rmse
+mse <- rbind(mse, summary((y_pred_glmnet - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "best-glmnet"
+mse
 
 
