@@ -1040,7 +1040,7 @@ NULL
 #' 
 #' @description The \code{wwiileaders} data contains a distance matrix among 12 country leaders during II World War,
 #' which is based on the judgments of the dissimilarities in ideology. The subjects made judgments on a nine-point scale,
-#' with the extreme points of the scale, 1 and 9, being described as indicating “very similar” and “very dissimilar”, respectively.
+#' with the extreme points of the scale, 1 and 9, being described as indicating "very similar" and "very dissimilar", respectively.
 #' 
 #'  
 #' @usage data(wwiileaders)
@@ -1103,11 +1103,11 @@ NULL
 #' 
 #' 
 #' @details 
-#' The 7 variables of the \code{banknotes} tbl data frame are the following ones:
+#' The 7 variables of the \code{bwt} tbl data frame are the following ones:
 #' \itemize{
 #' \item \code{low}  indicator of birth weight less than 2.5 kg. (numeric)
-#' \item \code{age}  mother’s age in years (numeric)
-#' \item \code{lwt}  mother’s weight in pounds at last menstrual period (numeric)
+#' \item \code{age}  mother's age in years (numeric)
+#' \item \code{lwt}  mother's weight in pounds at last menstrual period (numeric)
 #' \item \code{smoke} smoking status during pregnancy (factor)
 #' }
 #' 
@@ -1490,7 +1490,7 @@ NULL
 #' @name labonline
 #' 
 #' 
-#' @description  Two pH measurement tools are compared: one instrument is a “gold standard”, and is the “laboratory” tool, the other is an on-line (on the field) tool.
+#' @description  Two pH measurement tools are compared: one instrument is a "gold standard", and is the "laboratory" tool, the other is an on-line (on the field) tool.
 #'  Same samples are measured by using both instruments to see if on-line tool performs as laboratory tool.
 #' 
 #' @usage data(labonline)
@@ -1502,7 +1502,7 @@ NULL
 #' @details 
 #' The 2 variables of the \code{labonline} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{Lab} measuments collected with the “laboratory” tool (numeric)
+#' \item \code{Lab} measuments collected with the "laboratory" tool (numeric)
 #' \item \code{Online} measuments collected with the on-line tool (numeric)
 #' }
 #' 
@@ -1640,7 +1640,7 @@ NULL
 #' @name oxidant
 #' 
 #' 
-#' @description \code{oxidant} dataset contains data on levels of an air pollutant, “Oxidant”, 
+#' @description \code{oxidant} dataset contains data on levels of an air pollutant, "Oxidant", 
 #' together with levels of four meteorological variables recorded on 30 days during one summer.  
 #' 
 #' @usage data(oxidant)
@@ -1702,7 +1702,7 @@ NULL
 #' 
 #' 
 #' @description \code{istat} data contain weight, height, gender and geographical area 
-#' (“Nord”, “Centro”, “Sud” and “Isole”) from 1806 Italian people.
+#' ("Nord", "Centro", "Sud" and "Isole") from 1806 Italian people.
 #' 
 #'  
 #' @usage data(istat)
