@@ -1,10 +1,14 @@
-## ----echo=FALSE----------------------------------------------------------
-rm(list = ls())
+## ---- message=FALSE------------------------------------------------------
+require(ggplot2)
+require(qdata)
+require(dplyr)
+
+## ------------------------------------------------------------------------
 data(sample)
 str(ds)
 head(ds)
 
-## ----fig.cap="Relation between Weight and Height of 200 young people",echo=FALSE,fig.show='hold'----
+## ----fig.cap="Relation between Weight and Height of 200 young people",fig.show='hold'----
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
   geom_point(colour="darkblue") +
   xlab("Height") + ylab("Weight") + 
@@ -12,11 +16,9 @@ ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
 
 print(ggp)
 
-## ----fig.cap="Relation between Weight and Height in 200 young people with 'best constant model'",echo=FALSE,fig.show='hold'----
-ds2 <- ds[c(1,1:20*10),]
-ds2$x0 <- ds2$x1 <- ds2$height
-ds2$y0 <- ds2$weight
-ds2$y1 <- mean(ds2$weight)
+## ----fig.cap="Relation between Weight and Height in 200 young people with 'best constant model'", fig.show='hold'----
+ds2 <- ds %>% slice(c(1,1:20*10))
+ds2 <- ds2 %>% mutate(x1=height, x0=height, y0=weight, y1=mean(weight))
 
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
   geom_point(colour="darkblue") +
@@ -27,10 +29,10 @@ ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
 
 print(ggp)
 
-## ----fig.cap="Relation between Weight and Height in 200 young people with best straight line model",echo=FALSE, fig.show='hold'----
-ds1 <- ds[order(ds$height),]
+## ----fig.cap="Relation between Weight and Height in 200 young people with best straight line model", fig.show='hold'----
+ds1 <- ds %>% arrange(height)
 md <- lm(weight~height*gender,data=ds1)
-ds2$y1 <- predict(md,newdata=ds2)
+ds2 <- ds2 %>% mutate(y1=predict(md,newdata=ds2))
 
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
   geom_point(colour="darkblue") +
@@ -41,9 +43,7 @@ ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
 
 print(ggp)
 
-## ----fig.cap="Relation between Weight and Height in 100 male and 100 female young people",echo=FALSE----
-ds2$y1 <- predict(md,newdata=ds2)
-
+## ----fig.cap="Relation between Weight and Height in 100 male and 100 female young people"----
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight, colour=gender)) +
   geom_point() +
   geom_smooth(mapping = aes(colour=gender), method = "lm",se = FALSE ) + 
@@ -53,7 +53,4 @@ ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight, colour=gender)) +
   theme(legend.position="top")
 
 print(ggp)
-
-## ----eval=FALSE----------------------------------------------------------
-## setwd("data")
 
