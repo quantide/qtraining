@@ -1,0 +1,260 @@
+---
+title: "Gamma Examples"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr)
+
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/glm-"))
+```
+
+```{r,  message=FALSE }
+require(ggplot2)
+require(dplyr)
+require(qdata)
+```
+
+## Example: Boiling time
+
+### Data description
+
+In an attempt to resolve a domestic dispute about which of two `pan`s was the quicker pan for cooking, the following data were obtained.
+Various measured `volume`s (pints) of cold water were put into each pan and geared using the same setting of the cooker.
+The response variable was the `time` in minutes until the water boiled.
+
+`time` is a non-negative variable; the gamma distribution is then probabily more appropriate than gaussian distribution.
+Finally, keep in mind that with glm 6 observations are few, since most of statistical results about GLM are asymptotic.
+
+```{r,echo=FALSE}
+rm(list=ls())
+```
+
+### Data loading
+```{r}
+data(boiling)
+boiling
+```
+
+### Descriptives
+```{r,tidy=FALSE,fig.cap="time Vs. volume plot for the 2 pans"}
+ggp <- ggplot(data = boiling,mapping = aes(x = volume, y = time)) +
+  geom_point(mapping = aes(colour=pan)) + 
+  geom_line(mapping = aes(colour=pan))
+print(ggp)
+```
+A difference in slope appears between the two lines, but the difference is not too big. We want to test if the difference is really significant.
+
+### Models and inference
+Initially, a simple linear model is tried; only main effects are estimated. Note that a general linear model with Gaussian error and Identity link is actually a simple linear model. 
+```{r}
+fm1 <- glm(time ~ volume + pan - 1, data = boiling, family = gaussian)
+summary(fm1)
+```
+All parameters are clearly significant. We may want to check for a difference in slope between pots.
+
+Now we then estimate a model with an additional parameter to model difference in slopes:
+```{r}
+fm2 <- glm(time ~ pan + volume:pan - 1, data = boiling, family = gaussian)
+summary(fm2)
+```
+Actually, the model contains two distinct linear models: one for `panA`, and one for `panB`.  
+Now a test on significancy of difference is performed (note that the test distribution in this case is F, because $\phi$, dispersion parameter, is estimated).
+```{r}
+anova(fm1,fm2,test="F")
+```
+Note that in this case of normal model, the `test=F` option is perfectly appropriate with theory of linear models (LM).
+
+A difference in slope only marginally exists.  
+However, this model could be unsatisfactory in two respects:
+
+* boiling time cannot be negative 
+* the variance of boiling time might be expected to increase with its expectation;
+
+The natural candidate for these problems is the gamma distibution, as it respects the increasing relation between mean and variance as shown in the next graphical example.
+
+Next plot produce a comparison between Gaussian and Gamma means and variances while means vary.
+```{r,fig.cap="How dispersion varies with means for Gaussian models and Gamma models"}
+set.seed(2000)
+means <- (1:300)/100
+x1 <- apply(as.matrix(means),MARGIN=1,FUN=function(x){rnorm(1,mean=x)})
+x2 <- apply(as.matrix(means),MARGIN=1,FUN=function(x){rgamma(1,shape=x, scale = 1)})
+ds <- data.frame(means=rep(means, 2), values=c(x1,x2), distribution=rep(c("Gaussian","Gamma"), each=300))
+
+ggp <- ggplot(data = ds, mapping = aes(x=means, y = values)) +
+  geom_point(colour="blue") +
+  facet_wrap(facets = ~distribution) 
+print(ggp)
+
+rm(means,x1,x2,ds)
+```
+
+The plot just created compare points arising from linear models with the same deterministic component, but the former with Gaussian error distribution, while the latter with Gamma error distribution and identity link.
+Two things are evident:
+
+* Gaussian linear model can return values less than zero, whereas Gamma model does not.
+* Gaussian linear model has a substantially constant variability while Gamma linear model is clearly heteroscedastic.
+
+Now, a model from Gamma family and identity link will be estimated on data:
+```{r,tidy=FALSE}
+fm3 <- glm(time ~ pan + volume:pan - 1, data = boiling,
+          family = Gamma(link = "identity"))
+summary(fm3)
+```
+Comparing AIC stats
+```{r}
+fm2$aic ; fm3$aic
+```
+Gamma model results slightly better than Gaussian one. 
+
+Now let us check on significancy of differences between the two pans:
+```{r,tidy=FALSE}
+fm3a <- glm(time ~ pan + volume + volume:pan, data = boiling, 
+         family = Gamma(link = "identity"))
+summary(fm3a)
+fm4 <- glm(time ~ pan + volume, data = boiling, family = Gamma(link = "identity"))
+summary(fm4)
+
+anova(fm3a,fm4,test="F")
+```
+The above test checks if the difference in slope between the two pans is significant. The test distribution is F, because the dispersion parameter $\phi$ is estimated from data.  
+The difference in slope has a p-value a few less than in Gaussian model. Anyway, this difference is actually not significant.  
+If one wants to check if the use of `pan` as independent variable is useful to explain difference in means, given that interaction is not significant, he/she may produce the following:
+```{r}
+fm5 <- glm(time ~ volume, data = boiling, family = Gamma(link = "identity"))
+anova(fm4, fm5, test="F")
+```
+And A and B seem not different.
+
+Alternatively, same results can be obtained using the following:
+```{r}
+anova(fm4,update(fm4,.~.-pan),test="F")
+fm6 <- update(fm4, . ~ . -pan)
+summary(fm6)
+
+```
+However, if a researcher wants to check global significancy of `pan`, he/she may compare the model that uses volume only with the complete model, obtaining:
+```{r}
+anova(fm3a,glm(time~volume, family=Gamma(link="identity"),data=boiling), test="F")
+```
+Significancy of "global" contribution of `pan` seems barely significant.
+
+
+## Example: Clotting time
+
+### Data description
+
+From McCullagh and Nelder (1989, pp. 300-302).  
+Hurn et al. (1945) published data on the clotting time of blood,
+giving clotting times in seconds (`y`) for normal plasma diluted
+to nine different percentage concentration with prothrombin-free
+plasma (`u`); clotting was induce by two lots of thromboplastin.
+Data are analyzed using gamma errors and inverse link.
+
+```{r,echo=FALSE}
+rm(list=ls())
+```
+
+### Data loading
+```{r}
+data(clotting)
+head(clotting)
+str(clotting)
+```
+
+### Descriptives
+```{r,fig.cap="Clotting time (y) Vs. percentage concentration (u) by lot"}
+ggp <- ggplot(data = clotting, mapping = aes(x = u,y = y)) +
+  geom_point(colour="red") +
+  facet_wrap(facets = ~lot)
+print(ggp)
+```
+```{r,fig.cap="Clotting time (y) Vs. log of percentage concentration log(u) by lot"}
+ggp <- ggplot(data = clotting, mapping = aes(x = log(u),y = y)) +
+  geom_point(colour="red") +
+  facet_wrap(facets = ~lot)
+print(ggp)
+```
+
+A clear relation between `y` and the inverse of `u` or `log(u)` exists.  
+Consequently, a model with Gamma dependent variable and default
+link function ("inverse", for Gamma distribution) could be effective.  
+Since the analysis on the concentration of active ingredient is
+usuallly performed on the log of concentration, and since the relation
+seem more regular in `log(u)` then the model with `log(u)` will be tested
+
+### Inference and models
+Now let's try a model with intercept only
+```{r}
+fm0 <- glm(y ~ 1, data = clotting, family = Gamma())
+summary(fm0)
+```
+
+And now the model with `log(u)` as independent variable
+```{r}
+fm1 <- glm(y ~ log(u), data = clotting, family = Gamma())
+summary(fm1)
+```
+
+Follows the model with `log(u)` and `lot`, without interaction
+```{r}
+fm2 <- glm(y ~ log(u) + lot, data = clotting, family = Gamma())
+summary(fm2)
+```
+
+Finally, the model with `log(u)`, `lot` and their interaction
+```{r}
+fm3 <- glm(y ~ lot + log(u) + lot:log(u), data = clotting, family = Gamma())
+summary(fm3)
+```
+
+Now a test to see if the interaction between `lot` and `log(u)` can be considered significant:
+```{r}
+anova(fm2,fm3,test="F")
+```
+The interaction term is significant, and then the full model is retained.  
+From this model, it appears that the lot `b` (with respect lot `a`) produces an lower intercept, and then a higher value of clotting time when `log(u)` is zero, while the clotting time seems to decrease more rapidly (when `log(u)` increases) with lot `b` instead of lot `a`.
+
+Now the plot of diagnostic graphs
+```{r,fig.cap="Residual plot of last model"}
+op <- par(mfrow = c(2, 2))
+plot(fm3)
+par(op)
+```
+
+Some little heteroscedasticity seems to appear, but globally the model seems almost good.
+
+Now a couple of graphs to plot the estimates.
+
+The first graph shows separately the measured data points and the estimated values of clotting time.
+
+```{r final_graphs,fig.cap="Fitted and observed by lot"}
+clotting$pred <- predict(fm3, type = "response") 
+clotting <- clotting %>% arrange(lot, u)
+ggp <- ggplot(data=clotting, mapping = aes(x=u, y=y)) +
+  geom_point(colour="blue") +
+  geom_line(mapping = aes(y=pred), colour="red") +
+  facet_wrap(facets = ~lot, ncol = 1)
+print(ggp)
+```
+The second graph shows the measured data points and the estimated values of clotting time in only one plot.
+```{r final_graphs1,fig.cap="Fitted and observed by lot (colours)"}
+ggp <- ggplot(data=clotting, mapping = aes(x=u, y=y, colour=lot)) +
+  geom_point() +
+  geom_line(mapping = aes(y=pred))
+print(ggp)
+```
+
+Previous graphs seem to "say" something different with repect to the estimated parameters, because the lot `b`
+curve is always less than the lot `a` one. This may be explained producing a graph on the linear scale, and
+"extending" the x-axis scale to values less that the current minimum (i.e., `log(5)`):
+
+```{r final_graphs_1,fig.cap="Linear component of model with extended range of x values"}
+clotting <- clotting %>% bind_rows(data.frame(u=c(.5,.5), lot=c("a","b"), y=c(NA,NA), pred=c(NA,NA)))
+clotting$pred <- predict(fm3,newdata=clotting)
+ggp <- ggplot(data=clotting, mapping = aes(x=log(u), y=pred, colour=lot)) +
+  geom_line()
+print(ggp)
+```
+
+As we can see, the linear component of model shows two crossing lines, with lot `a` one having an higher 
+intercept and a lower slope than the lot `b` one.

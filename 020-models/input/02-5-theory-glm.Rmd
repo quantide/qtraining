@@ -1,0 +1,344 @@
+---
+title: "Some Theory on Generalized Linear Models"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr)
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/glm-"))
+```
+
+Generalized Linear Models (**GLM**) are extensions of fixed-effects linear models to cases where standard linear model assumptions are violated.  
+The standard linear model states that:
+    $$
+    y_i = \beta_0 + \beta_1 \cdot x_{i1} + \beta_2 \cdot x_{i2} + \dots + \beta_p \cdot x_{ip} + \varepsilon_i
+    $$
+
+The above formula can be written in a matrix format:
+    $$
+    \underline{y} = \underline{X} \underline{\beta} + \underline{\varepsilon}
+    $$
+
+or, in terms of expected values:
+    $$
+    E(\underline{y}) = \underline{X} \underline{\beta}
+    $$
+
+Estimation is done by least squares, or maximum likelihood, based on the assumption of normal errors. 
+
+GLM uses a likelihood-based procedure to fit $\underline{X} \underline{\beta}$ to a function of $E(\underline{y})$, usually suggested by the distribution of data.
+
+$\underline{y} = (y_1, \ldots, y_n)^T$ is a vector of indipendent observations, where $y_i$, $i=1,\ldots,n$, is drawn from a probability distribution, not necessarly Gaussian.  
+$\underline{y}$ could be described in GLM, as in LM, as an additive function of **systematic** and **random** components. The first corresponds to $E(\underline{y})$, the later to error.
+    $$
+    \underline{y} = \underline{\mu} + \underline{\varepsilon}
+    $$
+Also, for the variance of $\underline{y}$ the following holds:
+
+$Var(\underline{y}) = Var(\underline{\varepsilon}) = \underline{R}$
+
+where $\underline{R}$ is a diagonal matrix.
+
+Also, for systematic component of model, the following assumptions hold:
+
+$\underline{\eta} = \underline{X} \underline{\beta}$, where $\underline{\eta} = g(\underline{\mu})$.
+
+And where $g(\underline{\mu})$ is called the **link function**, because it links the linear model to the mean of $\underline{y}$.
+
+Nelder and Wedderburn (1972) showed that the Maximum Likelihood Estimates (MLEs) for $\underline{\beta}$ can be obtained iteratively solving:
+    $$
+    \underline{X}^T \underline{W} \underline{X} \underline{\beta} =  \underline{X}^T \underline{W} \underline{y}^*
+    $$
+with
+$\underline{W} = \underline{D} \underline{R}^{-1} \underline{D}$
+
+* $\underline{y}^* = \underline{\hat{\eta}} + (\underline{y} - \underline{\tilde{\mu}}) \underline{D}^{-1}$
+* $\underline{D} = \partial \underline{\mu} / \partial \underline{\eta}$
+* $\underline{R} = Var(\underline{\varepsilon})$
+* $\underline{\mu} = E(\underline{y})$
+
+Estimates of $\underline{D}$ and $\underline{R}$ are used in place of $\underline{D}$ and $\underline{R}$.  
+In the case of standard linear model, $\underline{\eta} = E(\underline{y}) = \underline{\mu}$, $\underline{R} = \underline{I}\cdot \sigma^2$, and $\underline{D} = \underline{I}$.  
+Thus, $\underline{X}^T \underline{X} \underline{\beta} =  \underline{X}^T \underline{y}$, is the normal equation.
+
+
+### Probability distribution
+The elements for estimating $\underline{\beta}$ are:
+
+* __link function__, which determines $\underline{\eta}$ and $\underline{D}$;
+* __probability function__, which determines $\underline{\mu}$ and $\underline{R}$.
+
+The process for selecting a link function and the structure of the mean and variance can be understood by looking at the probability distribution, or, better said, at the likelihood function.
+
+Four cases will be here considered: the Binomial, the Poisson, the Gamma and the Normal. Notice that GLM's can be applied to other distribution families, such as, for example, Inverse Gaussian, Multinomial, and others.
+
+### The Binomial case
+
+<!--- VERIFICARE L'USO DI m, SOPRATTUTTO VISTO L'ESEMPIO INIZIALE! --->
+$m$ Bernoulli trials are hypothesized, each trial with success probability $\pi$:
+    $$
+    f(y_{m}) = \binom{m}{y_{m}} \pi^{y_m} (1-\pi)^{m-y_{m}}, \phantom{spazi} y_m \in 0,\, 1,\, 2,\, \cdots,\, m-1, \, m
+    $$
+
+The log-likelihood function, then, is:
+    $$
+    \ell(\pi; y_{m}) = y_{m} \log \left(\frac{\pi}{1-\pi}\right) + m \log(1-\pi) + \log \binom{m}{y_{m}}
+    $$
+And a sample proportion, $y = y_{m}/m$, thus has the following log-likelihood function:
+    $$
+    \ell(\pi; y) = m y \log \left(\frac{\pi}{1-\pi}\right) + m \log(1-\pi) + \log \binom{m}{my}
+    $$
+And mean and variance of a sample proportion are:
+      $$
+      E(y) = \pi \hspace{2cm} Var(y) = \frac{\pi (1-\pi)}{m}
+      $$
+
+### The Poisson case
+The probability function of the Poisson distribution is:
+    $$
+    f(y) = \frac{\lambda^y e^{-\lambda}}{y!} , \phantom{spazi} y \in 0,\, 1,\, 2,\, 3,\, \cdots
+    $$
+The log-likelihood function is (one-observation sample):
+$$
+\ell(\lambda; y) = y \log(\lambda) - \lambda - \log(y!)
+$$
+
+And mean and variance are:
+      $$
+      E(y) = \lambda \hspace{2cm} Var(y) = \lambda
+      $$
+
+
+### The Gamma case
+The probability density function of the Gamma distribution is:
+      $$
+      f(y) = \frac{1}{\lambda^\nu \Gamma(\nu)} y^{\nu-1}e^{-\frac{y}{\lambda}}, \phantom{spazi} y \in \Re^+
+      $$
+
+The log-likelihood function is (one-observation sample):
+      $$
+      \ell(\nu,\lambda; y) = -\nu \log(\lambda) -\frac{y}{\lambda} + (\nu-1)\log(y) - \log(\Gamma(\nu))
+      $$
+
+And mean and variance  are:
+      $$
+      E(y) = \nu \lambda\hspace{2cm} Var(y) = \nu \lambda^2
+      $$
+
+### The Normal case
+The probability density function of the Normal distribution is:
+      $$
+      f(y) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp{\left(-\frac{1}{2\sigma^2}(y-\mu)^2\right)}, \phantom{spazi} y \in \Re
+      $$
+The log-likelihood function is (one-observation sample):
+      $$
+      \ell(\mu, \sigma^2; y) = -\frac{1}{2\sigma^2} (y-\mu)^2 - \frac{1}{2} \log(2\pi\sigma^2)
+      $$
+And mean and variance  are:
+      $$
+      E(y) = \mu \hspace{2cm} Var(y) = \sigma^2
+      $$
+
+### Common features
+The log-likelihood functions for these four distributions can be expressed in a common form,
+      $$
+      \ell(\theta, \phi; y) = \frac{y\theta - b(\theta)}{\phi} + c(y, \phi)
+      $$
+where
+
+* $\theta$ is the so-called natural parameter,
+* $\phi$ is the scale parameter.
+
+Note that $\theta$ is a function of the mean, $\theta(\mu)$. 
+
+It is also possible to express the variance of dependent variable ($y$) as a function of the mean and $\phi$:
+$$
+Var(y) = \phi V(\mu)
+$$
+where $V(\mu)$ is the so-called **variance function**.
+
+
+                 **Sample proportion**     **Poisson**           **Gamma**                                 **Normal**
+--------------  ------------------------  -----------------    -----------------------------------------  ------------
+$E(y)$           $\pi$                     $\lambda$            $\lambda \nu$                              $\mu$ 
+$\theta(\mu)$    $\log(\pi/(1-\pi))$       $\log(\lambda)$      $-\frac{1}{\lambda \nu}=-\frac{1}{\mu}$    $\mu$
+$\phi$           $1$ *                     $1$                  $\frac{1}{\nu}$                            $\sigma^2$
+$V(\mu)$         $\pi(1-\pi)$              $\lambda$            $\lambda^2 \nu^2 =\mu^2$                   $1$
+$Var(y)$         $\pi(1-\pi)/m$            $\lambda$            $\lambda^2 \nu$                            $\sigma^2$
+
+
+**Note**: Actually, to be coherent with formulas, $\phi$ for Binomial case for sample proportion should be $1/m$. However $m$ is not a parameter to be estimated and can be included simply as a weight using weighted Likelihoods. In such manner, $\phi$ may be considered equal to $1$.
+
+### Exponential family of distributions
+
+A distribution whose log-likelihood has the general form
+    $$
+    \ell(\theta, \phi; y) = \frac{y\theta - b(\theta)}{\phi} + c(y, \phi)
+    $$
+is a member of the **exponential family**.
+
+The GLM can be applied to data distributed according to the exponential family.
+
+If $y_1, \dots, y_n$ is a random sample from such a family, the log-likelihood of $y_i$ is
+    $$
+    \ell(\theta_i, \phi; y_i) = \frac{y_i\theta_i - b(\theta_i)}{\phi} + c(y_i, \phi)
+    $$
+The joint log-likelihood of $y_1, \dots, y_n$ is
+
+$$
+\ell(\underline{\theta}, \phi; y_1, \dots, y_n) = \sum_i \left(\frac{y_i\theta_i - b(\theta_i)}{\phi} + c(y_i, \phi)\right)
+$$
+
+### Link functions
+Observations are linear in the **natural parameter** $\theta$, and:
+
+* For normally distributed data: $\theta = \mu$.
+* For Poisson distributed data: $\theta = \log(\lambda)$.
+* For Binomial distributed data: $\theta = \log(\pi/(1-\pi))$.
+* For Gamma distributed data: $\theta = -\frac{1}{\mu} = -\frac{1}{\lambda \nu}$.
+
+In these examples, $\theta(\mu)$ is used as a link function, and the resulting link functions are called **canonical link functions**.
+
+### Variance structure
+
+The structure of the variance-covariance matrix of $\underline{y}$ can be described in terms of the scale parameter and variance function. Specifically,
+    $$
+    Var(\underline{y}) = \underline{R} = \underline{R}_\mu^{1/2} \underline{A} \, \underline{R}_\mu^{1/2}
+    $$
+where
+
+* $\underline{R}_\mu$ is the diagonal matrix whose $i$-th diagonal element is $V(\mu_i)$, the variance function for the $i$-th observation;
+* $\underline{R}_\mu^{1/2}$ is the diagonal matrix of square roots of the corresponding elements of $R_\mu$;
+* $\underline{A}$ is the scale parameter matrix.
+
+
+**Distribution**          $\underline{\mathbf{R}}_\mu$      $\underline{\mathbf{A}}$
+-------------------  -----------------------------------   --------------------------
+Normal                $\underline{I}$                       $\underline{I}_{\sigma^2}$
+Poisson               $\text{diag}(\lambda_i)$              $\underline{I}$
+Sample proportion     $\text{diag}(\pi_i/(1-\pi_i))$        $\text{diag}(1/m_i)$
+Gamma                 $\text{diag}(\lambda_i^2 \nu^2)$      $\underline{I}_{1/\nu}$
+
+
+### Predicting means
+
+The **inverse link function** (sometimes referred to as the **mean function**) is defined as $h(\underline\eta) = \underline{\mu}$.  
+The inverse link function can be used to predict $\underline{\mu}$ from $\underline{\hat{\beta}}$.
+
+In general, the relationship between $\underline{\eta}$ and $\underline{\mu}$ is assumed one-to-one, and thus $h(\underline\eta) = g^{-1}(\underline\eta)$. However, for some complex GLMs, this may be false.
+
+Since $\underline{\eta}$ is estimated by $\underline{X}\underline{\hat{\beta}}$, then $\underline{\hat{\mu}} = h(\underline{X}\underline{\hat{\beta}})$.
+
+* Normal:  
+          $\eta = \mu \Rightarrow \underline{\hat\mu} = h(\underline{X}\underline{\hat{\beta}}) = \underline{X}\underline{\hat{\beta}}$
+* Poisson:  
+          $\eta = \log{\lambda} \Rightarrow \underline{\hat\lambda} = h(\underline{X}\underline{\hat{\beta}}) = \exp({\underline{X}\underline{\hat{\beta}}})$
+* Sample proportion:   
+          $\eta = \log{(\pi/(1-\pi))} \Rightarrow \underline{\hat\pi} = h(\underline{X}\underline{\hat{\beta}}) = \exp({\underline{X}\underline{\hat{\beta}}})/(1+\exp({\underline{X}\underline{\hat{\beta}}}))$ 
+<!--- Aggiungere Gamma? --->
+
+### Deviance
+We will begin defining the __Scaled deviance__:
+$$
+Dev^*(\underline{\hat{\mu}};\underline{y}) = 2\left(\ell(\underline{y};\underline{y}) - \ell(\underline{\hat{\mu}};\underline{y})\right)
+$$
+
+Now the __Deviance__ can thus be defined starting from the following:
+$$
+Dev(\underline{\hat{\mu}};\underline{y})/\phi = Dev^*(\underline{\hat{\mu}};\underline{y}) 
+$$
+
+In above formulas:
+
+* $\ell(\underline{y};\underline{y})$ is the value of the maximum log-likelihood achievable in a full model; i.e., it is the value of the log-likelihood for which $\underline{\theta}$ is expressed as a function of $\underline{y}$;
+* $\ell(\underline{\hat{\mu}};\underline{y})$ is the value of the log-likelihood over $\underline{\hat\beta}$, i.e., it is the value of the log-likelihood for which $\underline{\theta}$ is expressed as a function of $\underline{\hat{\mu}}$, the (Maximum Likelihood) estimate of $\underline{\mu}$.
+* $\phi$ is the scale parameter
+
+The deviance is a generalization of the Sum of Squares of Residuals in the Analysis of Variance and the likelihood ratio $\chi^2$ in contingency tables:
+
+Deviance and scaled deviance can be used to __test hypotheses__ and/or to evaluate __goodness-of-fit__ of models.
+
+### Hypothesis testing
+
+If $\underline{\beta}$ is partitioned in $\underline{\beta}_1$ and $\underline{\beta}_2$ then
+    $$
+    \underline{X}\underline{\beta} = \underline{X}_1\underline{\beta}_1 + \underline{X}_2\underline{\beta}_2
+    $$
+
+When $\phi$ is known, the difference between the deviance of the full model and that of the model fitting $\underline{X}_1\underline{\beta}_1$ can be used as likelihood ratio (LR) to test
+      $$
+      \begin{cases}
+        H_0: \underline{\beta}_2 = \underline{0}\\ 
+        H_A: \overline{H}_0
+       \end{cases}
+      $$
+with
+$$
+LRT = \left[ Dev^*_0(\underline{\hat{\mu}}_0;\underline{y}) - Dev^*_A(\underline{\hat{\mu}}_A;\underline{y})\right] \sim \chi^2_{(p-p_1)} \text{ under } H_0
+$$ 
+
+where $p_1$ is the number of parameters in $\underline{\beta}_1$.
+
+When $\phi$ is unknown, it must be estimated, and the same test may be performed assuming a different distribution:
+$$
+LRT \sim F_{p-p_1;n-p} \text{ under } H_0
+$$ 
+<!---
+ = \dfrac{\left[ Dev_0(\underline{\hat{\mu}}_0;\underline{y}) - Dev_A(\underline{\hat{\mu}}_A;\underline{y})\right]/(p-p1)}{Dev_A(\underline{\hat{\mu}}_A;\underline{y})/(n-p)}
+--->
+Where, also in this case, $p$ is the number of full model parameters, intercept included.  
+Note also that the two above distributional results are asymptotic in nature, i.e., they are valid for $n$ large enough.
+
+### Inference using estimable functions
+It can be shown that 
+      $$
+      Var(\underline{\hat\beta}) = {\left( \underline{X}^T \underline{W} \underline{X} \right)}^{-1}
+      $$ 
+then
+      $$
+      Var \left( \underline{K}^T \underline{\hat\beta} \right) = \underline{K}^T {\left( \underline{X}^T \underline{W} \underline{X} \right)}^{-1} \underline{K}
+      $$
+where $\underline{K}^T \underline{\hat\beta}$ is an estimable function.  
+The statistic for $H_0: \underline{K}^T \underline{\beta} = \underline{K}^T \underline{\beta}_0$ is
+      $$
+      \left( \underline{K}^T \underline{\hat\beta} - \underline{K}^T \underline{\beta}_0 \right)^T \left[ \underline{K}^T \left( \underline{X}^T \underline{W} \underline{X} \right)^{-1} \underline{K} \right] \left( \underline{K}^T \underline{\hat\beta} - \underline{K}^T \underline{\beta}_0 \right) 
+      $$
+
+The Wald test for an individual parameter is a particular case of above formula:
+      $$
+      \frac{(\hat\beta - \beta_0)^2}{Var(\hat\beta - \beta_0)}
+      $$
+
+The statistic is aspymptotically distributed as a $\chi^2_{\nu}$ where $\nu = \text{rank}(\underline{K})$.
+
+
+### Goodness-of-fit test
+
+<!-- $Dev$ is a function of $\theta$ and $\phi$.
+-->
+When $\phi$ is known then:
+
+* If the model is correctly specified, $Dev^*(\underline{\hat{\mu}};\underline{y}) \sim \chi^2_{(n-p)}$ where $n$ is the number of observations and $p$ is the number of parameters in $\underline{\beta}$ (including intercept, if any);
+* therefore, $Dev$ can be used as a $\chi^2$-type statistics to test the goodness-of-fit (GoF) of the model.
+
+When $\phi$ is unknown (for example with the gamma distribution), the GoF test is in general not applicable but it is possible to estimate $\phi$ as:
+    $$
+    \hat\phi = \frac{1}{n-p}\sum_i \frac{{(y_i - \hat\mu_i)}^2}{V(\hat\mu_i)}\,,\quad \hat\mu_i=h(\underline{x}_i^T\underline{\hat\beta})
+    $$
+(where $p$ is the number of parameters of model, intercept included) and then to calculate an estimate of scaled deviance:
+    $$
+    Dev^*(\underline{\hat{\mu}};\underline{y}) = Dev(\underline{\hat{\mu}};\underline{y})/\hat{\phi}\,, 
+    $$
+
+(Notice that $\phi$ might be estimated also as $\tilde\phi=Dev(\underline{\hat{\mu}};\underline{y})/(n-p)$, but this estimate of $\phi$ is generally less preferred, and it does not allow a "sensical" evaluation of $Dev^*$). 
+
+
+### A possibility when Binomial or Poisson models fail
+
+Sometimes the data $y_i$ should tipically follow a Binomial (sample proportion) or Poisson distribution, but Binomial or Poisson GLMs fail to perform well because of overdispersion or underdispersion in $y_i$.   
+In fact, binomial or Poisson models are such that $\phi = 1$, but sometines data may suggest that $\phi > 1$ (overdispersion) or $\phi < 1$ (underdispersion).  
+
+After trying to transform variables, adding raised-power terms to explanatory variables, adding other variables if available, etc., another option to fit such data is by using **quasi-likelihood** models; in particular, **quasi-binomial** or **quasi-poisson** ones.
+
+Quasi-models, and particularly, quasi-binomial or quasi-poisson, estimate the dispersion parameter $\phi$, without assuming that it is equal to $1$.
+
+As a result, the $\hat{\beta}$ parameter estimates remain usually unchanged, with respect to the "standard" GLM approach, but the variability of estimates, and then the significancy of tests, change with the value of $\hat{\phi}$, producing different inferential results.

@@ -1,0 +1,15 @@
+html_document:
+  course_title: Introduction to Statistics for Data Scientists
+  toc: true
+  fig_width: 6.5
+  fig_height: 3.5
+  self_contained: true
+  theme: flatly
+  highlight: textmate
+  mathjax: "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+  lib_dir: include/libs
+  includes:
+    in_header: ../../include/html/in-header.html
+    before_body: ../../include/html/before-body.html
+    after_body: ../../include/html/after-body.html
+

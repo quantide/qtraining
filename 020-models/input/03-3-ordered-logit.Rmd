@@ -1,0 +1,327 @@
+---
+title: "Ordered Logit Examples"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr)
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/oth-"))
+```
+
+```{r, message=FALSE}
+require(lattice)
+require(nnet)
+require(vcd)
+require(faraway)
+require(ggplot2)
+require(MASS) # for housing data
+require(qdata)
+```
+
+## Example: National Election Study
+
+### Data description
+
+For this example we sill use the same data one above examples, but we will consider the `sPID` dependent variable as ordered, with `Democrat` < `Independent` < `Republican` (an ordering "from left to right" in political affiliation).  
+A function that we may use to fit ordered logit models is `polr()`, which is part of the recommended `MASS` package.
+
+### Data loading
+```{r}
+data(nes96)
+
+# We create a new variabile that will contain recoded `PID` data  [*]
+sPID <- nes96$PID
+levels(sPID) <-  c("Democrat","Democrat","Independent","Independent",
+                  "Independent","Republican","Republican")
+summary(sPID)
+nes96$sPID=sPID
+```
+
+### Inference and models
+```{r}
+# Now we create a new numerical `nincome` variable containing the numerical transformation of original ordered-factor `income` variable, using midpoints of each range: [*]
+inca <- c(1.5,4,6,8,9.5,10.5,11.5,12.5,13.5,14.5,16,18.5,21,23.5,
+         27.5,32.5,37.5,42.5,47.5,55,67.5,82.5,97.5,115)
+nincome <- inca[unclass(nes96$income)]
+nes96$nincome=nincome
+summary(nes96$nincome)
+
+(pomod0 <- polr(sPID ~ age + educ + nincome, data=nes96))
+summary(pomod0)
+
+
+(mmod0 <- multinom(sPID ~ age + educ + nincome, data=nes96)) 
+mmod <- step(mmod0)
+il <- c(8,26,42,58,74,90,107)
+```
+As in previous examples, since `educ` is an ordered factor, the contrasts used to fit the data are the polynomial ones.   
+Notice also that there is only one coefficient for each independent variable (or level of independent variable) of model, and a set of intercepts: one intercept for each level of dependent variable. Each intercept is related to the "jump in probability" having when going from a level of dependent variable to the next one.
+
+Also, as stated in theoretical paragraphs, there are several other link functions, related to the underliyng latent variable: "probit", "cloglog", and "cauchit". The parameter that assesses the type of distribution with `polr()` is `method`.
+
+Anyway, if we want to find automatically a "good" model that fits the data, we can use the `step()` function, as in previous examples:
+```{r}
+pomod <- step(pomod0)
+summary(pomod)
+```
+
+The difference of deviance between complete and reduced model allows the researcher to assess the significancy of removed terms:
+```{r}
+(diff <- deviance(pomod)-deviance(pomod0))
+pchisq(diff, pomod0$edf-pomod$edf,lower=F)
+```
+This is also the same of using `anova()`:
+```{r}
+anova(pomod,pomod0,test="Chisq")
+```
+
+However, to reduce the model it is possible also to use `dropterm()`:
+```{r}
+dropterm(pomod0, test="Chisq")
+pomod1 <- polr(sPID ~ educ + nincome, data=nes96)
+dropterm(pomod1, test="Chisq")
+pomod2 <- polr(sPID ~ nincome, data=nes96)
+dropterm(pomod2, test="Chisq")
+summary(pomod2)
+```
+`pomod2` is the same as `pomod`, obtained by using the `step()` function.
+
+An important check for this kind of model is on the proportionality assumption.  
+To do this, we can create a contingency table for different values of independent variables (rows in table shown below) and levels of dependent variable (columns in table).  
+The row percentages represent estimates of probability of level of dependent variable at different levels of independent variable.  
+In the propotional odd assumption is met, then the graph of calulated logits of empirical probabilities of first level Vs. the logits of empirical probabilities of other levels should roughly follow a straight line parallel to first quadrant bisector.
+
+```{r}
+(pim <- prop.table(table(nincome,sPID),1))
+ds <- data.frame(logit1 = logit(pim[,1]), logit2 = logit(pim[,1]+pim[,2])) # note: logit() from package faraway
+ggp <- ggplot(data = ds, mapping = aes(x=logit1, y=logit2)) +
+  geom_point()
+print(ggp)
+```
+
+Alternatively, the difference of above logits should follow a line parallel to abscissa:
+```{r}
+ds$num <- 1:nrow(ds)
+ds$ll <- ds$logit1-ds$logit2 
+
+ggp <- ggplot(data = ds, mapping = aes(x=num, y=ll)) +
+  geom_point() + 
+  geom_hline(mapping = aes(yintercept = mean(ll)))
+print(ggp)
+```
+
+It is questionable whether these can be considered sufficiently constant, but at least there
+is no trend.
+
+To obatin the coefficients, we can use:
+```{r}
+pomod$coefficients
+```
+or
+```{r}
+coef(pomod)
+```
+And then, to calculate the odds-ratios for independent variables, we can use:
+```{r}
+exp(pomod$coefficients)
+```
+We can say that the odds of moving from Democrat to Independent/Republican category
+(or from Democrat/Independent to Republican) increase by a factor of exp(0.013120) =
+1.0132 as income increases by one unit ($1000).
+<!--- For more details on interpretation of coefficients:
+http://stats.stackexchange.com/questions/38087/negative-coefficient-in-ordered-logistic-regression
+--->
+
+There are also ($k$-1) intercepts, where $k$ is the number of levels of the response variable. The inverse of link function of interceps returns the "baseline" probability of levels of dependent variable when predictors are set to 0 or to their reference level (if the predictors are factors).
+```{r}
+pomod$zeta
+ilogit(pomod$zeta) # Note: ilogit==inverse logit
+```
+From the above result we may say that when `nincome` is 0, the estimated probability of being `Democrat` is 0.5521, the probability of being `Independent` is 0.7844-0.5521 = 0.2323, and the probability of being `Republican` is 1-0.7844 = 0.2156, as shown in following lines of code.
+
+The estimated probability of being a Democrat, when income is 0, is:
+```{r}
+ilogit(pomod$zeta)[1]
+```
+The estimated probability of being an Indipendent, when income is 0, is:
+```{r}
+ilogit(pomod$zeta)[2] - ilogit(pomod$zeta)[1]
+```
+The estimated probability of being a Republican when, income is 0, is:
+```{r}
+1 - ilogit(pomod$zeta)[2]
+```
+
+The summary of final model is:
+```{r}
+summary(pomod)
+```
+
+Deviances and number of parameters of multilogit and ordered logit
+for complete and reduced (final) models, and for Multinomial Logit model are:
+```{r}
+c(deviance(pomod0), pomod0$edf)
+c(deviance(mmod0), mmod0$edf)
+c(deviance(pomod), pomod$edf)
+c(deviance(mmod), mmod$edf)
+```
+
+To know the number of residual degrees of freedom:
+```{r}
+pomod$df.residual
+```
+
+Whereas to produce predictions we can use, as usual, the `predict()` function:
+```{r}
+predict(pomod,data.frame(nincome=il,row.names=il), type="probs")
+predict(pomod,data.frame(nincome=il,row.names=il))
+```
+To obtain the probabilities, we can use the following:
+```{r}
+ilogit(pomod$zeta[1] - pomod$coefficients*il)
+ilogit(pomod$zeta[2] - pomod$coefficients*il) - ilogit(pomod$zeta[1] - pomod$coefficients*il)
+1 - ilogit(pomod$zeta[2] - pomod$coefficients*il)
+
+summary(pomod)
+```
+Finally, to illustrate the latent variable interpretation of proportional odds by computing
+the cutpoints for incomes of \$0, \$100,000 and \$200,000:  
+```{r}
+x <- seq(-4,4,by=0.05)
+par(mfrow=c(3,1))
+plot(x,dlogis(x),type="l",main="Probabilites for income=$0")
+minx=-4
+maxx=.2091
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "blue", angle=45) 
+minx=.2091
+maxx=1.2916
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "red",angle=-45) 
+minx=1.2916
+maxx=4
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "green",angle=45) 
+legend(x = "topleft",legend = c("Democrat","Independent","Republican"),
+       fill = c("blue","red","green"),angle = c(45,-45,45),density = 40,
+       border = c("blue","red","green"),bty = "n")
+#abline(v=c(0.2091,1.2916),col="blue")
+
+plot(x,dlogis(x),type="l",main="Probabilites for income=$100,000")
+minx <- -4
+maxx <- .2091-50*0.013120
+x1 <- c(seq(minx,maxx,by=.01))
+y1 <- dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "blue", angle=45) 
+minx <- .2091-50*0.013120
+maxx <- 1.2916-50*0.013120
+x1 <- c(seq(minx,maxx,by=.01))
+y1 <- dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "red",angle=-45) 
+minx <- 1.2916-50*0.013120
+maxx <- 4
+x1 <- c(seq(minx,maxx,by=.01))
+y1 <- dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "green",angle=45) 
+legend(x = "topleft",legend = c("Democrat","Independent","Republican"),
+       fill = c("blue","red","green"),angle = c(45,-45,45),density = 40,
+       border = c("blue","red","green"),bty = "n")
+#abline(v=c(0.2091,1.2916)-50*0.013120,lty=2,col="red")
+
+plot(x,dlogis(x),type="l",main="Probabilites for income=$200,000")
+minx <- -4
+maxx <- .2091-100*0.013120
+x1 <- c(seq(minx,maxx,by=.01))
+y1 <- dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "blue", angle=45) 
+minx <- .2091-100*0.013120
+maxx <- 1.2916-100*0.013120
+x1 <- c(seq(minx,maxx,by=.01))
+y1 <- dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "red",angle=-45) 
+minx <- 1.2916-100*0.013120
+maxx <- 4
+x1 <- c(seq(minx,maxx,by=.01))
+y1 <- dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "green",angle=45) 
+legend(x = "topleft",legend = c("Democrat","Independent","Republican"),fill = c("blue","red","green"),angle = c(45,-45,45),density = 40,border = c("blue","red","green"),bty = "n")
+#abline(v=c(0.2091,1.2916)-100*0.013120,lty=5,col="green")
+```
+
+Probability of being a `Democrat` is given by the area lying to the left of the leftmost
+of each pair of lines, while the probability of being a `Republican` is given by the area
+to the right of the rightmost of the pair. `Independent` probabilities are represented by the area in between.
+
+
+## Example: Housholders in Copenhagen
+
+Let us work again with the above example data on householders in Copenhagen, and we let consider the `Sat` dependent variable as an ordered factor (as actually is).
+
+### Data description
+
+1681 householders from a study of satisfaction with housing conditions in Copenhagen
+who were surveyed on:
+
+* the type (`Type`) of rental accommodation they occupied
+* the degree of contact (`Cont`) they had with other residents
+* their feeling of influence (`Infl`) on apartment management
+* their level of satisfaction (`Sat`) with their housing conditions
+
+We want to check if the satisfation level may be related to other (independent) variables.
+
+### Data loading
+```{r}
+data(housing)
+head(housing)
+str(housing)
+summary(housing)
+```
+
+### Inference and models
+Let us fit a first full model with `polr()`:
+```{r}
+(ord_hous0 <- polr(Sat ~ Infl*Type*Cont, weights=Freq, data=housing))
+summary(ord_hous0)
+```
+
+Let us reduce the model
+```{r}
+dropterm(ord_hous0, test="Chisq")
+ord_hous1 <- update(ord_hous0, . ~ . -Infl:Type:Cont)
+dropterm(ord_hous1, test="Chisq")
+ord_hous <- update(ord_hous1, . ~ . -Infl:Cont)
+dropterm(ord_hous, test="Chisq")
+```
+
+We retain the main effects, `Infl:Type` and `Type:Cont`. In multilogit model, the first interaction was "less significant" than here, whereas the second interaction was not significant at all.
+```{r}
+summary(ord_hous)
+```
+We use `anova()` to see if the reduced model lost important information with respect to the full model:
+```{r}
+anova(ord_hous0, ord_hous)
+```
+The reduced model is ok.
+
+As in previous example, now we check the proportionality of odds:
+```{r}
+tbl <- ftable(xtabs(Freq ~ Infl+Type+Cont+Sat, data=housing))
+
+logit1 <- log(tbl[,1]/(tbl[,2]+tbl[,3]))
+logit2 <- log((tbl[,1]+tbl[,2])/tbl[,3])
+
+ds <- data.frame(logit1 = logit1, logit2 = logit2, ll = logit1-logit2, num = 1:length(logit1))
+
+ggp <- ggplot(data = ds, mapping = aes(x=logit1, y=logit2)) +
+  geom_point()
+print(ggp)
+
+ggp <- ggplot(data = ds, mapping = aes(x=num, y=ll)) +
+  geom_point() +
+  geom_hline(mapping = aes(yintercept=mean(ll)))
+print(ggp)
+```
+
+In this case the ordered logit model seems clearly more adequate than non ordered one. 
