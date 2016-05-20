@@ -1,0 +1,892 @@
+---
+title:
+author:
+date:
+output:
+  html_document:
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+# La directory di lavoro va definita all'inizio in questo modo per non doverla ripetere in
+# ogni chunk! (con echo=F si eseguono i comandi del chunk senza mostrarli)
+#root.dir = "~/Dropbox/quantide/int/corsi/corsiR/03.rModels/v01/data/allData",
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="figure/oth-"))
+```
+```{r, echo=FALSE}
+# La directory di lavoro va definita all'inizio in questo modo per non doverla ripetere in
+# ogni chunk! (con echo=F si eseguono i comandi del chunk senza mostrarli)
+opts_knit$set(root.dir = "../data/allData")
+```
+
+Other GLMs: Multilogit, Ordered logit and Negative Binomial Models
+========================================================================
+\chaptermark{Other GLMs: Multilogit, Ordered logit and \ldots}
+
+```{r,echo=FALSE}
+rm(list=ls())
+```
+```{r,eval=FALSE,echo=FALSE}
+setwd("data/allData")
+```
+## Introduction
+In this chapter other options to analyze more complex problems are presented.  
+Some of these options could be considered simple variations on GLM models (e.g., Multinomial models), while other might be considered true extensions of GLMs.
+
+<!--- Let us clean our workspace
+```{r,eval=FALSE}
+rm(list=ls())
+```
+--->
+
+Let us start by loading useful libraries for next analyses.
+```{r, message=FALSE}
+library(MASS)
+library(lattice)
+library(faraway)
+library(nnet)
+```
+
+Set up of general options, such as reading strings as character
+```{r}
+options(stringsAsFactors = FALSE)
+```
+
+## Examples
+
+### Multinomial Logistic Model: American National Election Study (from Faraway(2006): Extending the Linear Model with R)
+<!---
+Cleanup workspace:
+```{r}
+rm(list=ls())
+```
+--->
+#### Data description
+We will consider an example drawn from a subset of the 1996 American National Election
+Study (Rosenstone, Kinder, and Miller (1997)). Only age,
+education level and income group of the respondents will be considered for the example. The response variable will be party
+identification of the respondent, as: `Democrat`, `Independent` or `Republican`. Since the original data
+involved more than three dependent variable categories, we will collapsed these to three only, again for simplicity of the
+presentation.
+
+Data comes from `faraway` package.
+<!---
+Multinomial model via "multinomial"
+--->
+Let us load the data
+```{r}
+data(nes96)
+head(nes96)
+str(nes96)
+summary(nes96)
+```
+We create a new variabile that will contain recoded `PID` data  
+```{r}
+sPID = nes96$PID
+levels(sPID) =  c("Democrat","Democrat","Independent","Independent",
+                  "Independent","Republican","Republican")
+summary(sPID)
+nes96$sPID=sPID
+```
+
+Now we create a new numerical `nincome` variable containing the numerical transformation of original ordered-factor `income` variable, using midpoints of each range:
+```{r}
+inca = c(1.5,4,6,8,9.5,10.5,11.5,12.5,13.5,14.5,16,18.5,21,23.5,
+         27.5,32.5,37.5,42.5,47.5,55,67.5,82.5,97.5,115)
+nincome = inca[unclass(nes96$income)]
+nes96$nincome=nincome
+summary(nes96$nincome)
+```
+
+Let us start with a graphical look at the relationship between the predictors and the response.
+```{r}
+table(nes96$educ)
+
+matplot(prop.table(table(nes96$educ,nes96$sPID),1),type="l",
+        main="Proportions of Democrat, Independent, Republican Vs. Education",
+        xlab="Education",ylab="Proportion",lty=c(1,2,5),xaxt="n")
+axis(1, at=1:7, labels=levels(nes96$educ))
+grid()
+legend("topright", legend=c("Democrat", "Independent", "Republican"), lty=c(1,2,5), col=c(1,2,3))
+
+cutinc = cut(nes96$nincome,7)
+il = c(8,26,42,58,74,90,107)
+matplot(il,prop.table(table(cutinc,nes96$sPID),1),lty=c(1,2,5),
+        main="Proportions of Democrat, Independent, Republican Vs. Income",
+        type="l",ylab="Proportion",xlab="Income")
+grid()
+legend("topright", legend=c("Democrat", "Independent", "Republican"), lty=c(1,2,5), col=c(1,2,3))
+
+cutage = cut(nes96$age,7)
+al = c(24,34,44,54,65,75,85)
+matplot(al,prop.table(table(cutage,nes96$sPID),1),lty=c(1,2,5),
+        main="Proportions of Democrat, Independent, Republican Vs. Age",
+        type="l",ylab="Proportion",xlab="Age")
+grid()
+legend("topright", legend=c("Democrat", "Independent", "Republican"),
+       lty=c(1,2,5), col=c(1,2,3))
+```
+It seems that the percentage of `Democrat` decreases sensibly with the education level, while `Republican` and `Independent` percentages grow with education level.  
+Similar trends, a few less strong, appear for `Income` level.  
+The `Age`, indeed, seems not to impact on percentages.
+
+We might ask whether the trends we see in the observed proportions are statistically
+significant. We need to model the data to answer this question. We fit a multinomial logit
+model. We will use the `multinom()` function, which is part of the `nnet` package:
+
+```{r}
+(mmod0 = multinom(sPID ~ age + educ + nincome, data=nes96))
+summary(mmod0)
+```
+Roughly speaking, the multinomial model is a "combination" of $k$-1 Binomial models (where, in this case, $k$=3, is the number of levels of dependent variable) which compare the probability of being `Independent` or `Republican` with respect to the probability being `Democrat`, given the values of independent variables. 
+
+As for "standard" LM-GLM models, we can use stepwise methods to analyse which variables include to/exclude from model:
+```{r}
+mmod = step(mmod0)
+```
+`mmod` is the resulting selected model:
+```{r}
+summary(mmod)
+```
+
+The above results show the coefficients estimates for the $k$-1 models (the first matrix), with their standard errors (the second matrix).
+
+We may also use the standard likelihood methods to derive a test to compare nested
+models. For example, we can fit a model without education and then compare the
+deviances:
+```{r}
+(mmod1 = multinom(sPID ~ age + nincome, data=nes96))
+summary(mmod1)
+```
+This is the LRT test, with relative p-value:
+```{r}
+diff = deviance(mmod1) - deviance(mmod0)
+diff
+pchisq(diff,mmod0$edf-mmod1$edf,lower=F)
+```
+where the `edf` component of model object contains the effective degrees of freedom used by the model: 16 for `mmod0` and 4 for `mmod1`.  
+Alternatively, we can use the simpler `anova()` function, as for LMs-GLMs:
+```{r}
+anova(mmod0, mmod1, test="Chisq")
+```
+And, not surprisingly, if we want to apply a Type II test to choose which explicative variable to remove (if any), we may use `dropterm()`:
+```{r}
+dropterm(mmod0, test="Chisq")
+```
+which suggests first to drop `age`.
+Now we can also check if other variables can be removed from model, again using `dropterm()`:
+```{r}
+mmod2 = multinom(sPID ~ educ + nincome, data=nes96)
+dropterm(mmod2, test="Chisq")
+```
+and then to drop `educ`:
+```{r}
+mmod3 = multinom(sPID ~ nincome, data=nes96)
+dropterm(mmod3, test="Chisq")
+```
+`mmod3` is the same model as `mmod`.
+
+The non significancy of `educ` is in some manner surprising, but this may depend from the fact that the big differences in proportions between `Democrat` and `Independent` or `Republican` appear only at low educaction levels, where there are small samples; also, low education levels are probably related to low `nincome` values, and then `educ` could not add useful information, once considered `nicome`.
+
+Anyway, for tests on predictors it is better to consider likelihood ratio tests rather than
+Wald tests, since for one predictor we have $k$-1 Wald tests.
+
+We may also examine the coefficients to gain an understanding of the relationship between the predictor and the response:
+```{r}
+summary(mmod)
+```
+<!---
+effective degrees of freedom: equal to the number of parameters
+```{r}
+mmod$edf
+```
+--->
+To obtain coefficients:
+```{r}
+coef(mmod)
+```
+<!---
+mmod$wts
+--->
+the deviance:
+```{r}
+mmod$deviance
+```
+ad the AIC:
+```{r}
+mmod$AIC
+```
+Both residuals and fitted values are referred to all $k$ classes of the response variable
+```{r}
+head(mmod$residuals); head(mmod$fitted.values)
+```
+
+```{r}
+summary(mmod)
+```
+Now, with the simpler model, we could try to produce some predictions (remember that `il` contains the midpoint of income):
+```{r}
+predict(mmod, data.frame(nincome=il), type="probs")
+```
+The calculations performed to obtain the predictions actually are:
+```{r}
+(predInd = exp(-1.1749331+0.01608683*il) /
+   (1+exp(-1.1749331+0.01608683*il)+exp(-0.9503591+0.01766457*il)))
+```
+for `Indepentent`,
+```{r}
+(predRep = exp(-0.9503591+0.01766457*il) /
+   (1+exp(-1.1749331+0.01608683*il)+exp(-0.9503591+0.01766457*il)))
+```
+for `Republican`, and
+```{r}
+(predDem = 1-predInd-predRep)
+```
+for `Democrat`.
+
+The default form of predict (`type="class"`) just gives the most probable category:
+```{r}
+predict(mmod,data.frame(nincome=il))
+summary(mmod)
+```
+The intercept terms model the probabilities of the party identification for an income of
+zero. We can see the relationship from this calculation:
+```{r}
+cc = c(0,-1.1749331,-0.9503591)
+exp(cc)/sum(exp(cc))
+sum(exp(cc)/sum(exp(cc)))
+```
+
+The exp() of slope terms represent the odds-ratio (~ Relative Risk ratio) of moving from the baseline category of
+Democrat to Independent or Republican, respectively, for a unit change of $1000 in
+income. We can see more explicitly what this means by predicting probabilities for
+incomes $1000 apart and then computing the odds:
+```{r}
+(pp = predict(mmod,data.frame(nincome=c(0,1)),type="probs"))
+pp[1,1]*pp[2,2]/(pp[1,2]*pp[2,1])
+pp[1,1]*pp[2,3]/(pp[1,3]*pp[2,1])
+```
+
+Is the same of:
+```{r}
+exp(coefficients(mmod)[,2])
+```
+
+Prediction capability
+```{r}
+table(predict(mmod), sPID)
+```
+This may appear a bit strange: no Indipendent is predicted? Why?
+
+Analysis of residuals (they have to stay in two different portions): no `plot` method is available for objects from `multinom` models. We have to plot separately the residuals for each dependent variable class.  
+For example:
+
+`Independent`
+```{r}
+plot(mmod$residuals[,2] ~ mmod$fitted.values[,2])
+```
+`Republican`
+```{r}
+plot(mmod$residuals[,3] ~ mmod$fitted.values[,3])
+```
+`Democrat`
+```{r}
+plot(mmod$residuals[,1] ~ mmod$fitted.values[,1])
+```
+
+
+
+## Multinomial logit: housholders in Copenhagen example (housing)
+
+### Data description
+
+1681 householders from a study of satisfaction with housing conditions in Copenhagen
+who were surveyed on:
+
+* the type (`Type`) of rental accommodation they occupied
+* the degree of contact (`Cont`) they had with other residents
+* their feeling of influence (`Infl`) on apartment management
+* their level of satisfaction (`Sat`) with their housing conditions
+
+We want to check if the satisfation level may be related to other (independent) variables.
+
+```{r}
+data(housing)
+head(housing)
+str(housing)
+summary(housing)
+```
+
+A four way frequency table may help in reading the relations
+```{r}
+ftable(xtabs(Freq ~ Infl+Type+Cont+Sat, data=housing))
+prop.table(ftable(xtabs(Freq ~ Infl+Type+Cont+Sat, data=housing)),margin = 1)
+```
+A mosaic plot may improve the readability:
+```{r}
+library(vcd,quietly = TRUE)
+strt=structable(prop.table(ftable(xtabs(Freq ~ Infl+Type+Cont+Sat, data=housing)),margin = 1),
+                data=housing)
+mosaic(strt,shade=TRUE,main = "Level of satisfation Vs. Influence, Type and Contact",
+       highlighting="Sat",highlighting_fill=heat.colors(3))
+```
+
+It seems that an high influence, Tower type of accomodation, and high level of contact gives more high satisfation. 
+
+Let us start from the full model and then to remove non significant effects to confirm these readings:
+```{r}
+house.mult0 = multinom(Sat ~ Infl*Type*Cont, weights=Freq, data=housing)
+dropterm(house.mult0, test="Chisq")
+house.mult1 = update(house.mult0, . ~ . - Infl:Type:Cont, data=housing)
+dropterm(house.mult1, test="Chisq")
+house.mult2 = update(house.mult1, . ~ . - Infl:Cont, data=housing)
+dropterm(house.mult2, test="Chisq")
+house.mult = update(house.mult2, . ~ . - Type:Cont, data=housing)
+dropterm(house.mult, test="Chisq")
+```
+
+The  `Infl:Type` interaction term seems significant, but, since its exclusion form model reduces the AIC value, for sake of simplicity we remove the term and use a main effects only model.
+```{r}
+house.mult=multinom(Sat ~ Infl+Type+Cont, weights=Freq, data=housing)
+summary(house.mult)
+
+anova(house.mult0, house.mult)
+```
+Removing the interaction terms seems not reduce the explicative power of model.
+
+```{r}
+coef(house.mult)
+```
+At first sight, it seems that the initial thoughts about relations between independent variables and Satisfation are confirmed.
+
+Multinomial logit models can be analyzed also via standard GLM, using a Poisson model. 
+<!--- This approach is also called "surrogate Poisson model". --->
+
+Suppose we are interested only on influence of main effects of `Infl`, `Type` and `Cont` on `Sat`. Since we are only interested in satisfaction, we need to include terms in the
+model to account for all the history variables, so the minimal model is `Infl*Type*Cont`.  
+To check effect of explicative variables main effects on `Sat`, we must also include the `Sat*(Infl+Type+Cont)` interaction in model:
+```{r}
+llmod = glm(Freq ~ Infl*Type*Cont + Sat*(Infl+Type+Cont), data=housing, family=poisson)
+summary(llmod)
+1-pchisq(llmod$deviance, llmod$df.residual)
+
+mlmod1 = multinom(Sat ~ Infl+Type+Cont, weights=Freq, data=housing)
+mlmod2 = multinom(Sat ~ Infl*Type*Cont, weights=Freq, data=housing)
+anova(mlmod2, mlmod1)
+```
+Deviance of Poisson model is the same as the difference of deviance of two multilogit models
+(main effects only and full model).  
+Also, the residual plot on model is easily produced:
+```{r}
+op=par(mfrow=c(2,2))
+plot(llmod)
+par(op)
+```
+And a mosaic plot of predicted probability may be generated:
+```{r}
+hnames <- lapply(housing[, -5], levels) # omit Freq
+house.pm <- predict(llmod, expand.grid(hnames),
+type = "response") # poisson means
+house.pm <- matrix(house.pm, ncol = 3, byrow = T,
+dimnames = list(NULL, hnames[[1]]))
+house.pr <- house.pm/drop(house.pm %*% rep(1, 3))
+#dimnames(house.pr)[1]=c("Low","Medium","High")
+tb=expand.grid(hnames[-1])
+tb$Sat=house.pr
+
+tb=xtabs(Sat~Infl+Type+Cont,data=tb)
+names(attr(tb,"dimnames"))[4]="Sat"
+mosaic(structable(ftable(tb)),shade=TRUE,
+       main = "Satisfation Vs. Influence, Type and Contact (model)",
+       highlighting = "Sat",highlighting_fill = heat.colors(3))
+```
+This is similar to previous mosaic plot of observed proportions.
+
+## Orderer Logit model: nes96 example
+
+### Data description
+
+For this example we sill use the same data of above example, but we will consider the sPID dependent variable as ordered, with `Democrat` < `Independent` < `Republican` (an ordering "from left to right" in political affiliation).  
+A function that we may use to fit ordered logit models is `polr()`, which is part of the recommended `MASS` package.
+```{r}
+(pomod0 = polr(sPID ~ age + educ + nincome, data=nes96))
+summary(pomod0)
+```
+As in previous examples, since `educ` is an ordered factor, the contrasts used to fit the data are the polynomial ones.   
+Notice also that there is only one coefficient for each independent variable (or level of independent variable) of model, and a set of intercepts: one intercept for each level of dependent variable. Each intercept is related to the "jump in probability" having when going from a level of dependent variable to the next one.
+
+Also, as stated in theoretical paragraphs, there are several other link functions, related to the underliyng latent variable: "probit", "cloglog", and "cauchit". The parameter that assesses the type of distribution with `polr()` is `method`.
+
+Anyway, if we want to find automatically a "good" model that fits the data, we can use the `step()` function, as in previous examples:
+```{r}
+pomod = step(pomod0)
+summary(pomod)
+```
+
+The difference of deviance between complete and reduced model allows the researcher to assess the significancy of removed terms:
+```{r}
+(diff = deviance(pomod)-deviance(pomod0))
+pchisq(diff, pomod0$edf-pomod$edf,lower=F)
+```
+This is also the same of using `anova()`:
+```{r}
+anova(pomod,pomod0,test="Chisq")
+```
+
+However, to reduce the model it is possible also to use `dropterm()`:
+```{r}
+dropterm(pomod0, test="Chisq")
+pomod1 = polr(sPID ~ educ + nincome, data=nes96)
+dropterm(pomod1, test="Chisq")
+pomod2 = polr(sPID ~ nincome, data=nes96)
+dropterm(pomod2, test="Chisq")
+summary(pomod2)
+```
+`pomod2` is the same as `pomod`, obtained by using the `step()` function.
+
+An important check for this kind of model is on the proportionality assumption.  
+To do this, we can create a contingency table for different values of independent variables (rows in table shown below) and levels of dependent variable (columns in table).  
+The row percentages represent estimates of probability of level of dependent variable at different levels of independent variable.  
+In the propotional odd assumption is met, then the graph of calulated logits of empirical probabilities of first level Vs. the logits of empirical probabilities of other levels should roughly follow a straight line parallel to first quadrant bisector.
+
+```{r}
+(pim = prop.table(table(nincome,sPID),1))
+plot(logit(pim[,1]),logit(pim[,1]+pim[,2]))
+grid()
+```
+Alternatively, the difference of above logits should follow a line parallel to abscissa:
+```{r}
+ll = logit(pim[,1])-logit(pim[,1]+pim[,2])
+plot(ll)
+grid()
+abline(h = mean(ll))
+```
+It is questionable whether these can be considered sufficiently constant, but at least there
+is no trend.
+
+To obatin the coefficients, we can use:
+```{r}
+pomod$coefficients
+```
+or
+```{r}
+coef(pomod)
+```
+And then, to calculate the odds-ratios for independent variables, we can use:
+```{r}
+exp(pomod$coefficients)
+```
+We can say that the odds of moving from Democrat to Independent/Republican category
+(or from Democrat/Independent to Republican) increase by a factor of exp(0.013120) =
+1.0132 as income increases by one unit ($1000).
+<!--- For more details on interpretation of coefficients:
+http://stats.stackexchange.com/questions/38087/negative-coefficient-in-ordered-logistic-regression
+--->
+
+There are also ($k$-1) intercepts, where $k$ is the number of levels of the response variable. The inverse of link function of interceps returns the "baseline" probability of levels of dependent variable when predictors are set to 0 or to their reference level (if the predictors are factors).
+```{r}
+pomod$zeta
+ilogit(pomod$zeta) # Note: ilogit==inverse logit
+```
+From the above result we may say that when `nincome` is 0, the estimated probability of being `Democrat` is 0.5521, the probability of being `Independent` is 0.7844-0.5521 = 0.2323, and the probability of being `Republican` is 1-0.7844 = 0.2156, as shown in following lines of code.
+
+The estimated probability of being a Democrat, when income is 0, is:
+```{r}
+ilogit(pomod$zeta)[1]
+```
+The estimated probability of being an Indipendent, when income is 0, is:
+```{r}
+ilogit(pomod$zeta)[2] - ilogit(pomod$zeta)[1]
+```
+The estimated probability of being a Republican when, income is 0, is:
+```{r}
+1 - ilogit(pomod$zeta)[2]
+```
+
+The summary of final model is:
+```{r}
+summary(pomod)
+```
+
+Deviances and number of parameters of multilogit and ordered logit
+for complete and reduced (final) models, and for Multinomial Logit model are:
+```{r}
+c(deviance(pomod0), pomod0$edf)
+c(deviance(mmod0), mmod0$edf)
+c(deviance(pomod), pomod$edf)
+c(deviance(mmod), mmod$edf)
+```
+
+To know the number of residual degrees of freedom:
+```{r}
+pomod$df.residual
+```
+
+Whereas to produce predictions we can use, as usual, the `predict()` function:
+```{r}
+predict(pomod,data.frame(nincome=il,row.names=il), type="probs")
+predict(pomod,data.frame(nincome=il,row.names=il))
+```
+To obtain the probabilities, we can use the following:
+```{r}
+ilogit(pomod$zeta[1] - pomod$coefficients*il)
+ilogit(pomod$zeta[2] - pomod$coefficients*il) - ilogit(pomod$zeta[1] - pomod$coefficients*il)
+1 - ilogit(pomod$zeta[2] - pomod$coefficients*il)
+
+summary(pomod)
+```
+Finally, to illustrate the latent variable interpretation of proportional odds by computing
+the cutpoints for incomes of \$0, \$100,000 and \$200,000:  
+```{r}
+x = seq(-4,4,by=0.05)
+par(mfrow=c(3,1))
+plot(x,dlogis(x),type="l",main="Probabilites for income=$0")
+minx=-4
+maxx=.2091
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "blue", angle=45) 
+minx=.2091
+maxx=1.2916
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "red",angle=-45) 
+minx=1.2916
+maxx=4
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "green",angle=45) 
+legend(x = "topleft",legend = c("Democrat","Independent","Republican"),
+       fill = c("blue","red","green"),angle = c(45,-45,45),density = 40,
+       border = c("blue","red","green"),bty = "n")
+#abline(v=c(0.2091,1.2916),col="blue")
+
+plot(x,dlogis(x),type="l",main="Probabilites for income=$100,000")
+minx=-4
+maxx=.2091-50*0.013120
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "blue", angle=45) 
+minx=.2091-50*0.013120
+maxx=1.2916-50*0.013120
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "red",angle=-45) 
+minx=1.2916-50*0.013120
+maxx=4
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "green",angle=45) 
+legend(x = "topleft",legend = c("Democrat","Independent","Republican"),
+       fill = c("blue","red","green"),angle = c(45,-45,45),density = 40,
+       border = c("blue","red","green"),bty = "n")
+#abline(v=c(0.2091,1.2916)-50*0.013120,lty=2,col="red")
+
+plot(x,dlogis(x),type="l",main="Probabilites for income=$200,000")
+minx=-4
+maxx=.2091-100*0.013120
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "blue", angle=45) 
+minx=.2091-100*0.013120
+maxx=1.2916-100*0.013120
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "red",angle=-45) 
+minx=1.2916-100*0.013120
+maxx=4
+x1=c(seq(minx,maxx,by=.01))
+y1=dlogis(x1)
+polygon(c(minx,x1,maxx), c(0,y1,0), density=20, col = "green",angle=45) 
+legend(x = "topleft",legend = c("Democrat","Independent","Republican"),fill = c("blue","red","green"),angle = c(45,-45,45),density = 40,border = c("blue","red","green"),bty = "n")
+#abline(v=c(0.2091,1.2916)-100*0.013120,lty=5,col="green")
+```
+Probability of being a `Democrat` is given by the area lying to the left of the leftmost
+of each pair of lines, while the probability of being a `Republican` is given by the area
+to the right of the rightmost of the pair. `Independent` probabilities are represented by the area in between.
+
+
+
+## Ordered Logit model: housholders in Copenhagen example
+
+Let us work again with the above example data on householders in Copenhagen, and we let consider the `Sat` dependent variable as an ordered factor (as actually is).
+
+Let us fit a first full model with `polr()`:
+```{r}
+(ord.hous0 = polr(Sat ~ Infl*Type*Cont, weights=Freq, data=housing))
+summary(ord.hous0)
+```
+
+Let us reduce the model
+```{r}
+dropterm(ord.hous0, test="Chisq")
+ord.hous1 = update(ord.hous0, . ~ . -Infl:Type:Cont)
+dropterm(ord.hous1, test="Chisq")
+ord.hous = update(ord.hous1, . ~ . -Infl:Cont)
+dropterm(ord.hous, test="Chisq")
+```
+
+We retain the main effects, `Infl:Type` and `Type:Cont`. In multilogit model, the first interaction was "less significant" than here, whereas the second interaction was not significant at all.
+```{r}
+summary(ord.hous)
+```
+We use `anova()` to see if the reduced model lost important information with respect to the full model:
+```{r}
+anova(ord.hous0, ord.hous)
+```
+The reduced model is ok.
+
+As in previous example, now we check the proportionality of odds:
+```{r}
+tbl=ftable(xtabs(Freq ~ Infl+Type+Cont+Sat, data=housing))
+p1=log(tbl[,1]/(tbl[,2]+tbl[,3]))
+p2=log((tbl[,1]+tbl[,2])/tbl[,3])
+
+plot(p1,p2)
+plot(p1-p2)
+abline(h=mean(p1-p2))
+```
+
+In this case the ordered logit model seems clearly more adequate than non ordered one. 
+
+
+## Negative Binomial model: quine example
+
+### Data description
+
+Data is of 146 children from a large town in rural New South Wales, Australia.  
+Five variables were collected:
+
+* `Days`: number of days absent from school in a year
+* `Age`: age in 4 levels
+* `Eth`: aboriginal or non-aboriginal
+* `Lrn`: slow learner (SL) or average learner (AL)
+* `Sex`: sex of subject
+
+The main aim of analysis is to model the number of absences in a year with the other variables.
+```{r}
+data(quine)
+head(quine)
+str(quine)
+summary(quine)
+```
+
+We can start modeling the number of days of absence by using a classical GLM Poisson model:
+```{r}
+quine.pois = glm(Days ~ (Sex+Age+Eth+Lrn)^4, data = quine, family=poisson)
+summary(quine.pois)
+```
+For simplicity, we try to reduce we don't go in details on the final model structure, and we analyze the residual plot.
+```{r}
+op = par(mfrow=c(2,2))
+plot(quine.pois)
+par(op)
+```
+Residuals are not satisfactory, since the variability of standardized residuals clearly increases as response increases (upper-left subgraph).
+
+Then, we will try a negative binomial model with the `glm.nb()` function of the MASS package:
+```{r}
+quine.nb0 = glm.nb(Days ~ Sex*Age*Eth*Lrn, data = quine)
+```
+
+The default link for Negative Binomial family is "`log`". Other available link functions are `link="sqrt"` or `link="identity"`.
+
+Now, let us quickly reduce the model
+```{r, message=FALSE}
+dropterm(quine.nb0, test="Chisq")
+quine.nb1 = update(quine.nb0, . ~ . - Sex:Age:Eth:Lrn, data=quine)
+dropterm(quine.nb1, test="Chisq")
+quine.nb2 = update(quine.nb1, . ~ . - Sex:Age:Eth, data=quine)
+dropterm(quine.nb2, test="Chisq")
+quine.nb3 = update(quine.nb2, . ~ . - Sex:Age:Lrn, data=quine)
+dropterm(quine.nb3, test="Chisq")
+quine.nb4 = update(quine.nb3, . ~ . - Age:Eth:Lrn, data=quine)
+dropterm(quine.nb4, test="Chisq")
+quine.nb5 = update(quine.nb4, . ~ . - Age:Lrn, data=quine)
+dropterm(quine.nb5, test="Chisq")
+quine.nb = update(quine.nb5, . ~ . - Age:Eth, data=quine)
+dropterm(quine.nb, test="Chisq")
+```
+
+```{r}
+summary(quine.nb)
+c(quine.nb$theta, quine.nb$SE.theta)
+```
+Notice that the size `theta` ($\theta$) is also estimated. Theta is the $r$ parameter in our theoretical description (see last paragraph of this chapter).
+
+The comparison between full model (`quine.nb0`) and last model (`quine.nb`) returns:
+```{r}
+anova(quine.nb, quine.nb0, test="Chisq")
+```
+which is marginally significant.
+
+If we want to compare this last model with an equivalent Poisson model (`quine.pois`) we obtain:
+```{r}
+quine.pois=glm(Days~Sex*(Age+Eth*Lrn),family = poisson(),data=quine)
+summary(quine.pois)
+pchisq(2*(logLik(quine.nb)-logLik(quine.pois)), df=1, lower.tail=F)
+```
+Anyway, this test is not really adequate, since theta=+Inf is on the boundary of parameter space,
+and thus the LRT is not applicable.
+
+We could reduce the model also with the `step()` function, as for LM and GLM models:
+```{r}
+quine.nb.step = step(quine.nb0)
+summary(quine.nb.step)
+```
+step() provides a different model in this case, with two 3-way interactions more
+
+```{r}
+anova(quine.nb.step, quine.nb)
+```
+3-way interactions added are significant with alpha=0.05 but not with alpha=0.01
+They have also some missing cells: it is arguable whether keep quine.nb.step or quine.nb
+
+```{r}
+par(mfrow=c(2,2))
+plot(quine.nb)
+```
+Residuals now are surely much better than in Poisson model.
+
+
+### Negative Binomial vs Poisson example
+
+We can see what happens when we fit a negative binomial model when a Poisson model actually works.  
+Let us create a fictitious dataset with Poisson dependent variable and a simple linear model that relates independent variable and dependent variable:
+```{r}
+set.seed(123)
+x = runif(n=300, min=10, max=40)
+set.seed(123)
+y = sapply(x, function(xx) rpois(n=1, lambda=exp(.5+.05*xx)))
+```
+
+Let us plot the data:
+```{r}
+plot(x,y)
+```
+
+And then we estimate the Poisson model:
+```{r}
+fit = glm(y ~ x, family=poisson)
+summary(fit)
+1-pchisq(fit$deviance, fit$df.residual)
+```
+And the Negative Binomial model:
+```{r}
+fit.nb = glm.nb(y ~ x)
+summary(fit.nb)
+```
+<!---
+fit.nb = glm.nb(y ~ x,maxit=100)
+summary(fit.nb)
+--->
+The estimate of theta is large and with a very large standard error. This may be an indication that the Negative Binomial model is an over-parameterized model to fit data, and Poisson model is better. 
+
+<!---
+## Some theory on Multinomial Logit, Ordered Logit and Negative Binomial regression
+--->
+\section[Some theory on Multinomial Logit, Ordered Logit and Neg. Bin. regression]{Some theory on Multinomial Logit, Ordered Logit and Negative Binomial regression}
+\sectionmark{Some theory on Multinomial Logit, Ordered Logit and \ldots}
+
+### Multinomial distribution models
+When a categorical dependent variable with more than two mutually exclusive outcomes is analyzed, a Multinomial Logistic regression model can be used.
+
+Suppose for example that one does an experiment of extracting $n$ balls of $k$ different categories from a bag, replacing the extracted ball after each draw. Balls from the same category are equivalent. Denote the variable which is the number of extracted balls of category $i (i = 1, ..., k)$ as $X_i$, and denote as $p_i$ the probability that a given extraction will be in category $i$.   Let there be $n$ balls extracted. The probability function of this **multinomial** distribution is:  
+
+   $f(x_1,\cdots,x_k;n,p_1,\cdots, p_k)=Pr\{ X_1=x_1 \text{and} \cdots \text{and} X_k=x_k\}=$ \newline
+   $$=\begin{cases}
+     \\
+    \dfrac{n!}{x_1! \cdots x_k!} p_1^{x_1} \cdots p_k^{x_k}, \text{when       } \sum_{j=1}^k x_i=n \\
+     \phantom{a} \\
+    0 \text{ otherwise} \\
+    \end{cases}
+   $$
+
+The regression model used to fit Mutinomial data is similar to one used to analyze Binomial data.  
+The model will need a class (without loss of generality, the first) of the dependent variable as "reference class", and will calculate logits for the other classes with reference to this class.
+
+A linear model will be then calculated for each logit.
+
+Then, given $Y_{ij}$ ($i=1,\cdots,n$, $j=1, \cdots,k$), the $n$ realizations from a Multinomial distribution, let indicate with $p_{i,j}=Pr\{Y_i=j\}$.  The following holds:  
+   $\eta_{i,j}=g(p_{i,j})=\log\left(\dfrac{p_{i,j}}{p_{i,1}}\right)=\underline{x}_i^T\underline\beta_j   \phantom{sp} (j=2,\cdots, k)$
+
+And the following properties apply  
+
+  * $p_{i,j}=\dfrac{\exp(\eta_{i,j})}{1+\sum_{j=2}^k\exp(\eta_{i,j})} \phantom{sp} (j=2,\cdots, k)$
+  * $\sum_{j=1}^k p_{i,j}=1$
+  * $p_{i,1}=1-\sum_{j=2}^k p_{i,j}$
+
+Then, a set of $k-1$ equations will be estimated:  
+
+  $\hat\eta_{i,2}=\log\left(\dfrac{\hat{p}_{i,2}}{1-\sum_{j=2}^k \hat{p}_{i,j}}\right)=\hat\beta_{0,2}+\hat\beta_{1,2}x_{i,1}+\cdots+\hat\beta_{p,2}x_{i,p}$  
+
+   $\cdots$  
+
+  $\hat\eta_{i,k}=\log\left(\dfrac{\hat{p}_{i,k}}{1-\sum_{j=2}^k \hat{p}_{i,j}}\right)=\hat\beta_{0,k}+\hat\beta_{1,k}x_{i,1}+\cdots+\hat\beta_{p,k}x_{i,p}$
+
+
+The "standard" estimation process tries to estimate jointly all equations parameters.  
+However it is possibile (but less efficient) to estimate each equation separately.  
+The only available link for multinomial models is the *Logit* (at least, in `nnet` recommended package).  
+Anyway, another approach to analyze Multinomial dependent variables could be using log-linear models with Poisson dependent variable (as shown in examples).  
+
+
+### Ordinal Multinomial distribution models
+When the categories for a multinomial response variable can be ordered, then the distribution of that variable is referred to as **Ordinal Multinomial**.  
+For example, if in a survey the responses to a question are recorded such that respondents have to choose from the pre-arranged categories "Strongly agree", "Agree", "Neither agree nor disagree", "Disagree", and "Strongly disagree", then the counts (number of respondents) that endorsed the different categories would follow an Ordinal Multinomial distribution.  
+When the dependent variable follows an Ordinal Multinomial distribution, then an **Ordinal Logit Model** may be used to fit it.
+
+Let 
+    $\gamma_{i,j}=Pr\{Y_i\leqslant j\} \phantom{space} (j=1,\cdots, k-1)$  
+    
+Then  
+    $\gamma_{i,k}=1$  
+    
+And let  
+    $\eta_{i,j}=g(\gamma_{i,j})=\log\left(\dfrac{\gamma_{i,j}}{1-\gamma_{i,j}}\right)=\theta_j-\underline{x}^T_i\underline{\beta}$  
+Then  
+    $\gamma_{i,j}=\dfrac{e^{\eta_{i,j}}}{1+e^{\eta_{i,j}}}$  
+
+Then, a set of $k-1$ equations have to be estimated:  
+    $\hat\eta_{i,1}=\log\left(\dfrac{\hat\gamma_{i,1}}{1-\hat\gamma_{i,1}}\right)=\log\left(\dfrac{\widehat{Pr\{Y_i\leqslant 1\}} }{1-\widehat{Pr\{Y_i\leqslant 1\}} }\right)=$  
+    $=\hat\theta_1 - \hat\beta_1 x_{i,1} - \cdots - \hat\beta_p x_{i,p}$  
+
+  $\cdots$
+
+  $\hat\eta_{i,k-1}=\log\left(\dfrac{\hat\gamma_{i,k-1}}{1-\hat\gamma_{i,k-1}}\right)=\log\left(\dfrac{\widehat{Pr\{Y_i\leqslant k-1\}} }{1-\widehat{Pr\{Y_i\leqslant k-1\}} }\right)=$  
+  $=\hat\theta_{k-1} - \hat\beta_1 x_{i,1} - \cdots - \hat\beta_p x_{i,p}$  
+
+Where the $\underline\beta$ vector is constant at all levels of dependent variable, and where the $\theta_j$ (intercepts) parameter values change with levels of dependent variable.
+
+This model usually uses less parameters than the "standard" Multinomial one.  
+Since only the intercept of linear equation varies with levels of dependent variable, this model is said "proportional odds" model.  
+
+The basic interpretation of model is as a *coarsened* version of a latent variable $Z$ which has a logistic or normal or extreme-value or Cauchy distribution with scale parameter $1$ and a linear model for the mean.  
+Consequently, the link functions for Ordinal Multinomial model available in **R** are `logit` (Logistic latent variable), `probit` (Normal latent variable), `cloglog` (Extreme-value latent variable) and `cauchit` (Cauchy latent variable).  
+
+### Negative Binomial models
+In above chapters, we showed some example of quasi-Poisson models.
+
+Quasi-likelihood models hypothesize that the variance increases uniformly by a constant factor (see next two figures about Poisson distribution and overdispersed Poisson distribution):
+![Example of Pearson residuals from Poisson model for Poisson data](./figure/PoisPois.png)
+
+![Example of Pearson residuals from Poisson model for overdispersed Poisson data](./figure/PoisPoisOverdisp.png)
+
+**Negative Binomial** distribution is a discrete probability distribution of the number of failures in a sequence of Bernoulli trials before a specified (non-random) number of successes (denoted $r$) occurs.  
+The formula that expresses its distribution is:  
+
+$f(x;r,p)=Pr\{X=x\}=\dfrac{\Gamma(k+x)}{x! \Gamma(r)}(1-p)^r p^x$  
+and  
+$E\{X\}=\dfrac{pr}{(1-p)}$; $V\{X\}=\dfrac{pr}{(1-p)^2}$  
+
+For GLM purposes, the Negative Binomial distribution should be reformulated by placing more highlights on mean and variance, so the following formulation is used:  
+$f(x;r,p)=Pr\{X=x\}=\dfrac{\Gamma(r+x)}{x! \cdot \Gamma(r)} \left(\dfrac{r}{r+m}\right)^r \left(\dfrac{m}{r+m}\right)^x$;  
+$E\{X\}=m > 0$ and $V\{X\}=m+\dfrac{m^2}{r}$
+
+Given above results, the Negative Binomial distribution is overdispersed with respect to Poisson distribution.  
+Also, when $r\rightarrow\infty \Rightarrow E\{X\}=V\{X\}$ and the Poisson distribution becomes a particular case of Negative Binomial distribution.  
+Note that the Negative Binomial distribution variance increases along with the mean, but it increases "more" than the variance of Poisson distribution:
+
+![Example of Pearson residuals from Poisson model for Negative Binomial data](./figure/POisNegBin.png)
+
