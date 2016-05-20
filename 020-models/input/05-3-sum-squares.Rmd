@@ -1,0 +1,59 @@
+---
+title: "Types of Sum of Squares"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr)
+
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/app-"))
+```
+
+When data from an experiment are unbalanced, there are different ways to calculate the sums of squares for the Analysis of Variance. At least three approaches, commonly called **Type I**, **Type II** and **Type III** Sum of Squares (SS) are available.
+
+Which type to use has led to an ongoing controversy in the field of statistics. Each type os SS leads to testing different hypotheses about the data.  
+
+Consider a model that includes two factors `A` and `B`; there are therefore two main effects, and an interaction, `AB`.   
+Full model may be represented by `SS(A,B, AB)`, whereas `SS(A,B)` represents the model without interaction, etc..  
+Influence of particular factor may be tested by using difference of SS. Therefore, to test influence of interaction factor, F-test of model `SS(A,B,AB)` and `SS(A,B)` may be used.
+
+Given that, incremental Sum of Squares may be defined; for example:
+
+* SS(AB $\vert$ A, B) = SS(A, B, AB) - SS(A, B)
+* SS(A $\vert$ B, AB) = SS(A, B, AB) - SS(B, AB)
+* SS(A $\vert$ B) = SS(A, B) - SS(B)
+ * ...
+
+Underlining the incremental differences in sum of squares
+
+Different types of sums of squares depend on the stage of model reduction at which they are carried out
+
+**Type I** (Sequential) Sum of Squares uses: 
+
+1. SS(A) for factor A
+2. SS(B $\vert$ A)  for factor B
+3. SS(AB $\vert$ B, A) for interaction AB
+
+This type of sums of squares will give different results for unbalanced data depending on which main effect is considered first; this is often not the hypothesis that is of interest when dealing with unbalanced data.
+
+**Type II** Sum of Squares uses: 
+
+1. SS(A $\vert$ B) for factor A
+2. SS(B $\vert$ A)  for factor B
+3. SS(AB $\vert$ B, A) for interaction AB
+
+Computationally, this is equivalent to running a Type I analysis with different orders of the factors, and taking the appropriate output (the second, where one main effect is run after the other).
+
+**Type III** Sum of Squares uses: 
+
+1. SS(A $\vert$ B, AB)  for factor A
+2. SS(B $\vert$ A, AB) for factor B
+3. SS(AB $\vert$ B, A) for interaction AB
+
+This type tests for the presence of a main effect after the other main effect and interaction.
+
+**NOTES:**
+
+* When data is balanced, the effects are orthogonal, and types I, II and III all give the same results.
+* `anova()` and `aov()` R functions either in LM or in GLM implement a **sequential Sum of Squares (Type I)**. 
+* Function `Anova()` in `car` package allows tests based on Type II or Type III sum of squares.
+

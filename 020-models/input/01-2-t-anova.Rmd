@@ -1,0 +1,1000 @@
+---
+title: "t-test and ANOVA Examples"
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr) 
+opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, fig.height=7,fig.pos='H!',fig.path="images/lm-"))
+```
+
+```{r, message=FALSE}
+require(nortest)
+require(car)
+require(ggplot2)
+require(dplyr)
+require(gridExtra)
+require(tidyr)
+require(qdata)
+```
+
+## Example: Reaction temperature (1-sample t-test)
+
+```{r, echo=FALSE, message=FALSE}
+rm(list=ls())
+```
+
+### Data description
+A chemical theory suggests that the temperature at which a certain chemical reaction occurs is 180 °C.
+`reaction` contains the results of 10 independent measurements.  
+
+### Data loading
+Let us load and have a look at the data
+```{r,split=TRUE}
+data(reaction)
+head(reaction)
+str(reaction)
+```
+
+### Descriptives
+First of all, let us calculate the main descriptive statistics on `reaction`:
+```{r}
+# Add an index variable to reaction 
+reaction <- data.frame(reaction=reaction, index=1:10)
+
+summary_stat <- reaction %>%  summarise(n=n(),
+  min=min(reaction),
+  first_qu=quantile(reaction, 0.25),
+  mean=mean(reaction),
+  median=median(reaction),
+  third_qu=quantile(reaction, 0.75),
+  max=max(reaction),
+  sd=sd(reaction))
+
+print(summary_stat)
+```
+
+Sample mean and median are close to the hypothesized value of 180, and the data point values are close to 180 too.  
+Let us plot data (with collection time if meaningful) and add, with `geom_hline()` a reference line for temperature of 180 °C (red) and for the mean temperature (179.36 °C, green) 
+
+```{r,fig.cap="Plot of reaction values",tidy=FALSE,comment='tidy=FALSE forza a-capo nel punto in cui si trova', message=FALSE, warning=FALSE} 
+ggp <- ggplot(data = reaction, mapping=aes(x=index, y=reaction)) + 
+  geom_point() + 
+  ylim(c(177,183)) +
+  geom_hline(yintercept = 180, color="red") +
+  geom_hline(yintercept = mean(reaction$reaction), color="darkgreen")
+
+print(ggp)
+```
+
+The plot shows the temperature (y-axis) on the index of observations (x-axis).
+Our objective is to verify if the distance between the two lines (red and green) may be due to chance or if it is unlikely from a statistical point of view. Remember that the main objective of a statistical test is not to accept the null hypothesis, but to find if enough evidence appear to refuse it.  
+Now let us plot data without time (no index) by building a stripchart, which directly shows the points and is a good alternative to the boxplot:
+```{r,fig.cap="Stripchart of reaction values",tidy=FALSE}
+reaction$index <- rep(0, times=10)
+ggp <- ggplot(data = reaction, mapping=aes(x=reaction, y=index)) + 
+  geom_point() + ylim(c(-2,2)) +
+  geom_vline(xintercept = 180, color="red") +
+  geom_vline(xintercept = mean(reaction$reaction), color="darkgreen") +
+  ylab("") +
+  theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
+  annotate("text", label = "reaction mean", x = 178.8, y = 2, size = 4, colour = "darkgreen") +
+  annotate("text", label = "target", x = 180.3, y = 2, size = 4, colour = "red")
+
+print(ggp)     
+```
+
+### Inference and models
+
+#### One-sample Student's $t$-test
+
+Standard instruments, as one-sample Student's $t$-test, do not use linear models at appearance. Is it true?  
+First let us check if the normality assumption of the $t$-test are plausible: let us check if data does not depart too much from normality by using the R function `ad.test` of the `nortest` require: 
+```{r}
+ad.test(reaction$reaction)
+```
+Anderson-Darling's test tests the normality vs. the non-normality of data distribution. The p-value of the test is fully larger than 0.05, the usual standard for the first type $\alpha$ error probability: therefore there is no evidence of non-normality.  
+The _Normal Probability Plot_ confirms the Anderson-Darling's test result:
+```{r,fig.cap="Normal probability plot of reaction"}
+ggp <- ggplot(data = reaction, mapping = aes(sample = reaction)) + 
+  stat_qq(color="darkblue", size=2) +
+  geom_abline(mapping = aes(intercept=mean(reaction),slope=sd(reaction)), color="red", linetype=2)
+
+print(ggp)
+```
+
+The plot compares the observed quantiles with the corresponding quantiles of a standard Normal distribution.  
+If data points come from a Normal distribution, then they will tend to follow a straight line.  
+In this case this plot is "nice".  
+Now, let us test the hypothesis $H_0$ that the "true mean is equal to 180 °C".
+```{r}
+t.test(reaction$reaction, mu = 180)
+```
+We cannot refuse $H_0$ since the p-value is `r round(t.test(reaction$reaction, mu = 180)$p.value,4)`.  
+
+#### Linear models
+
+How can we think to an alternative which uses a model? Since normality assumption seems satisfied, we could fit a linear model with reaction as response variable and the only intercept as parameter (the model will then report only the mean):
+```{r}
+mod <- lm(formula = reaction~1, data = reaction)
+```
+In above line of code, the `formula` argument of `lm` function gives the "structure" of the relation between dependent and independent variables: the `~` symbol separates the dependent variable from the model formulation, and the `reaction ~ 1` formula means that the dependent variable `reaction` is modeled by the intercept term only (the `1`) , or, equivalently in this case, by the mean.  
+The output of linear model `mod` is
+```{r}
+mod
+```
+By applying the `summary()` R function to `lm`-type objects we get more information:
+```{r}
+summary(mod)
+```
+The very small p-value ($<2^{-16}$) tells us that the intercept is not 0; also, the intercept estimate (i.e., the mean) is close to 180.  
+A way to check if the mean can be considered equal to 180 by using linear models is:
+```{r}
+reaction_z <- reaction$reaction-180
+fm <- lm(reaction_z~1)
+```
+or, equivalently:
+```{r}
+fm <- lm(I(reaction-180)~1, data=reaction)
+```
+If the null hypothesis is true, then `reaction-180` has 0 mean.  
+The output of the linear model `fm` is
+```{r}
+summary(fm)
+```
+The estimated coefficient of the model, in this case the mean of reaction minus 180, is `r coefficients(fm)`, indeed
+```{r}
+mean(reaction$reaction) - 180
+```
+The p-value, `r round(summary(fm)$coefficients[4],3)`, is the same of the $t$-test: in this case it means that the intercept is not significantly different from 0 (that is the mean of original data can be 180).  
+This particularly simple regression model is then equivalent to one-sample $t$-test.  
+Let us check for normality of residuals, even if in this particular case is redundant, since it is equivalent to check the normality of `reaction`.
+```{r,fig.cap="Normal probability plot of residuals"}
+res <- data.frame(res=fm$residuals)
+ad.test(res$res)
+
+ggp <- ggplot(data = res, mapping = aes(sample = res)) + 
+  stat_qq(color="darkblue", size=2) +
+  geom_abline(mapping = aes(intercept=mean(res),slope=sd(res)), color="red", linetype=2)
+
+print(ggp)
+```
+
+Indeed, the p-value of Anderson-Darling's test is the same as before. The q-q plot also confirms that the normality assumption is plausible.
+
+
+
+## Example: Chicken hormones (2-sample $t$-test)
+
+```{r,echo=FALSE}
+rm(list = ls())
+```
+
+### Data description
+To compare two growth hormones, 18 chicken were tested: 10 being assigned to hormone A and 8 to hormone B. The gains in weights (grams) over the period of experiment were measured.
+
+### Data loading
+Let us load and have a look at the data
+```{r load2}
+data(hormones)
+head(hormones)
+str(hormones)
+```
+
+### Descriptives
+We begin by calculating some descriptive statistics:
+```{r,tidy=FALSE}
+hormones %>% group_by(hormone) %>%
+  summarise(min = min(gain), 
+    first_qu = quantile(gain, 0.25),
+    median = median(gain),
+    mean = mean(gain),
+    third_qu = quantile(gain, 0.75),
+    max = max(gain),
+    sd = sd(gain))
+```
+
+And now we draw a boxplot and a stripchart (in this case in vertical) of the data:
+```{r preplot2a,tidy=FALSE,fig.cap="Box-and-whiskers plot of gain by hormone"}
+ggp <- ggplot(data = hormones, mapping = aes(x=hormone, y=gain, fill=hormone)) +
+  geom_boxplot()
+
+print(ggp)
+```
+
+```{r preplot2b,tidy=FALSE,fig.cap="Stripchart with connect line of gain by hormone", message=FALSE, warning=FALSE}
+hormones_mean <- hormones %>% group_by(hormone) %>% summarise(gain=mean(gain))
+
+ggp <- ggplot(data = hormones, mapping = aes(x=hormone, y=gain)) +
+  geom_jitter(position = "dodge", color="darkblue") +
+  geom_point(data=hormones_mean, mapping = aes(x=hormone,y=gain), colour="red", group=1) +
+  geom_line(data=hormones_mean, mapping = aes(x=hormone,y=gain), colour="red", group=1) 
+  
+print(ggp)   
+```
+
+The `geom_point()` function and `geom_line()` functions add the red points of two group averages to second graph and then link them with a segment.  
+`group_by()` and `summarise()` functions applies separately the `mean()` function to values of `gain` corresponding to `hormone` variable levels. In this case, if the segment is near to parallel to the x-axis, then the two means are probably equal. 
+Anyway, both graphs and statistics show that hormone B tends to generate heavier chickens.  
+
+### Inference and models
+Let us check the normality of `gain` in the two groups through q-q plots  
+```{r qqmath2,fig.cap="",tidy=FALSE,fig.cap="Normal probability plot of gain by hormone"}
+hormones_a <- hormones %>% filter(hormone =="A") 
+hormones_b <- hormones %>% filter(hormone =="B")
+
+ggp1 <- ggplot(data = hormones_a, mapping = aes(sample = gain)) + 
+  stat_qq(color="#F8766D", size=2) +
+  geom_abline(intercept=mean(hormones_a$gain),slope=sd(hormones_a$gain), color="red", linetype=2) +
+  ylab("hormone A") + ggtitle("q-q plot of hormone A")
+
+ggp2 <- ggplot(data = hormones_b, mapping = aes(sample = gain)) + 
+  stat_qq(color="#00C094", size=2) +
+  geom_abline(mapping = aes(intercept=mean(hormones_b$gain),slope=sd(hormones_b$gain)), color="red", linetype=2) +
+  ylab("hormone B") + ggtitle("q-q plot of hormone B")
+
+grid.arrange(ggp1, ggp2, nrow = 2)
+```
+
+From graph, no evidence of non-normality is evident. Now let us perform Anderson-Darling's test for `gain` in the two groups, exploiting the function `tapply`:
+
+```{r}
+tapply(hormones$gain, hormones$hormone, ad.test)
+```
+
+The last line of above code, returns a 2-element list, with AD test for each sub-group. There is no evidence to reject the normality hypothesis within the two groups.  
+The next line of code tests the homoscedasticity assumption, that is if the variances within the two groups are equal:
+```{r}
+var.test(gain ~ hormone, data = hormones)
+bartlett.test(gain ~ hormone,data=hormones)
+leveneTest(gain ~ hormone,data=hormones)
+```
+All three previous tests accept $H_0$, i.e., there is no evidence to say that the variability changes across levels.
+
+Now the $t$-test compares the two group means.  
+
+The null hypothesis is $H_0: \beta_1 = \beta_2$, where $\beta_1$ and $\beta_2$ are the expectations of dependent variable for hormones A and B, respectively.
+Since the results obtained from above tests on homoscedasticity, the variance in subgroups will be considered equal.
+```{r}
+t.test(gain ~ hormone, data = hormones, var.equal = TRUE) 
+```
+The $t$-test rejects the null hypothesis.  
+
+Now the same test may be conducted using a model approach.  
+The following lines of code perform the model fitting and print the main results.
+```{r}
+mod <- lm(gain ~ hormone, data = hormones) 
+mod
+```
+The parameters shown are the model intercept and the "slope" coefficient for hormone `B`. The intercept in this case is the estimate of mean growth for `A` hormone, whereas the slope in this case is the estimate of difference between the mean growth obtained with hormon `B` and the mean growth obtained with hormone `A`.  
+In other words, the mean growth estimate for `hormoneA` is `619.1`, while the mean growth estimate for `hormoneB` is `619.1 + 203.5 = 822.6`. We will return to parameterization issue later.
+
+Using `summary` the significancy of parameters is also shown:
+```{r}
+summary(mod)
+```
+The test results are equal to the ones of $t$-test, and the $t$-test value is equal to minus $t$-test value of `hormoneB` coefficient. 
+
+Why these results? "Behind the scene", the model has been built using the following **model matrix** ($\underline{X}$)
+```{r}
+model.matrix(mod)
+```
+What this matrix means?  
+For modeling purposes, the independent variable `hormone` has been "split" in two dummy variables: `hormoneA` and `hormoneB`:
+
+* `hormoneA` is `1` when data contain measures relative to hormone `A`, and is `0` when data contain measures relative to hormone `B` 
+* `hormoneB` is `1` when data contain measures relative to hormone `B`, and is `0` when data contain measures relative to hormone `A` 
+
+Obviously, when `hormoneA` is `0`, `hormoneB` is `1` and vice versa. Then, one dummy variable (in this case, `hormoneA`), can be removed from the model, because it does not add any useful information, and makes the model mathematically non-manageable. Consequently, the model matrix will contains only the "all 1s" intercept column (that refers to the case when hormone `A` is used) and the "displacement" `hormoneB` column which represents the constant added to mean growth when using hormone `B` instead of hormone `A`.
+
+In other words, the model actually estimated is the following:
+
+$$
+  growth_i = \beta_0 + \beta_1 \cdot \delta_B(hormone_i) + \varepsilon_i
+$$
+
+Where $\delta_B(hormone_i)$ represents the function that returns 1 only when the hormone of $i$-th unit is `B`, otherwise, returns 0.  
+$\beta_0$ in this manner is the value of mean growth when using hormone `A` (i.e., when $\delta_B(hormone_i)==0$), while $\beta_1$ is the "jump" in mean of growth when using hormone `B` instead of hormone `A`.
+
+Another approach available to manage such type of test is through the analysis of variance model, i.e. by using the `aov()` function, that directly performs one analysis of variance:
+```{r}
+fm <- aov(mod) 
+```
+Printing a summary method for analysis of variance objects reflects the different approach
+to what is essentially the same information as returned by `lm()`. While a printed linear-model
+object shows individual coefficients, printed `aov` objects show terms, which may correspond
+to several coefficients. However, methods for linear models can always be applied explicitly
+on `aov` objects, such as those for the coefficients or residuals.
+```{r}
+summary(fm)
+```
+Above output shows that `hormone`, with all its levels, is globally significant (p=0.012) in explaining the dependent variable variability. 
+
+In this case, since the independent variable (factor) contains two levels only, the resulting p-value for `hormone` 
+obtained from `aov` is identical to the p-value of hormone `B` obtained using `lm()` (actually, in this example they are the same test). 
+
+If the independent variable (factor) contains more than two levels, then `aov()` returns the global significancy (not the "by level significancy") 
+of independent variable effect on dependent variable.
+
+A few more concise code to obtain the same results as above is
+```{r}
+fm <- aov(gain ~ hormone, data = hormones) 
+summary(fm) 
+```
+
+Next lines of code show that actually `aov` objects are `lm` objects with also analysis of variance results added.
+```{r}
+class(mod)
+class(fm)
+```
+
+The following commands are useful to read/define the type of contrasts (i.e., the type of coding of regressors matrix $\underline{X}$) used when unordered or ordered factors are used.
+
+```{r}
+options("contrasts")
+options(contrasts = c("contr.treatment", "contr.poly"))
+```
+The first line of code simply shows the current predefined type of contrasts for unordered and ordered factors, while the second line of code sets the predefined contrasts.
+
+To extract coefficients from an already calculated (`lm` or `aov`) model, one must use the `coefficients` method:
+```{r}
+coefficients(fm)
+```
+Next line of code shows that the `hormoneB` coefficient is simply the difference between average growths for `hormoneA` and `hormoneB` chickens.
+```{r}
+diff(tapply(hormones$gain, hormones$hormone, mean))
+```
+
+R can use several types of contrasts: `contr.treatment` sets to zero the coefficient of first factor level, that becomes the intercept,
+and consequently all the means of other levels are relative to the first level. Another option is `contr.sum`, that sets to zero the sum of coefficients, and then the reference value of coefficients becomes the gran mean, calculated on all factor levels. R uses `contr.treatment` as default.
+
+Let's try to change type of contrasts:
+```{r}
+options(contrasts = c("contr.sum", "contr.poly"))
+```
+```{r}
+fm <- aov(gain~hormone, data = hormones)
+```
+The `aov()` results are the same: 
+```{r}
+summary(fm)
+```
+but, on the whole, the results are changed:
+```{r}
+coefficients(fm)
+```
+
+The values of the coefficients are not the same because with `contr.treatment` the intercept represents the mean in
+the first group (hormone A) and the "slope" represents the difference between the mean in the second group (hormone B) and
+the mean in the first group; conversely, with `contr.sum` the intercept represents the grand mean, and the slope represents the difference
+between the mean in the first group and the grand mean.  
+The differences in coefficients are perhaps more perceptible looking at the model matrix: 
+```{r}
+model.matrix(fm)
+```
+
+Now, firstly we will restore predefined contrasts
+
+```{r}
+options(contrasts = c("contr.treatment", "contr.poly"))
+```
+
+and then we will fit a model without intercept to data. In general, removing the intercept is a discouraged practice, but sometimes no intercept models can help to enhance coefficients meaning:
+```{r}
+mod <- lm(gain ~ hormone-1, data = hormones)
+coefficients(mod)
+```
+The above coefficients represent, respectively, the mean in the group `hormoneA` and in the group `hormoneB`.
+
+The model matrix can be useful to understand the meaning of the coefficients:
+```{r}
+model.matrix(mod)
+```
+
+Next code shows what can happen when one uses a no-intercept model and does not address for that in analysis of variance:
+```{r}
+fm <- aov(mod) 
+summary(fm)
+coefficients(fm)
+```
+The significancy of factor is much more strong than in previous calculations, but this is wrong, because this result actually compares the model with `0` intercept with the model that uses one mean for `hormoneA` and one mean for `hormoneB`.
+
+Using the following code gives results equivalent to t-test:
+```{r}
+anova(mod,lm(gain ~ 1, data = hormones))
+```
+`anova()` performs an analysis of variance to compare two nested models (see the paragraph on _Comparing two nested models_ in _Some Theory on Linear Models_ chapter).  
+In this case we are comparing a model with the group variable `hormone` against the model with grand mean only.  
+The result is the same as seen individually in `lm()` and `aov()` outputs.
+
+### Model diagnostics
+Since the assumpions on linear models, the residuals should arise from a gaussian distribution; then, a Normal Probability Plot of residuals will be plotted to check this assumption.
+
+```{r,fig.cap="",tidy=FALSE,fig.cap="Overlaid Normal probability plots of residuals"}
+res <- cbind(hormones,res=fm$residuals)
+
+ad.test(res$res)
+
+ggp <- ggplot(data = res, mapping = aes(sample = res, color=hormone)) + 
+  stat_qq(size=2) +
+  geom_abline(mapping = aes(intercept=mean(res), slope=sd(res)), colour="red", linetype=2)
+
+print(ggp)
+```
+
+The two colors correspond to two groups.  
+Residuals seem gaussian, irrespective of group.
+
+The Anderson-Darling (AD) test confirms that:
+```{r}
+ad.test(fm$residuals) 
+```
+This confirms that the analysis and its results may be considered correct.
+
+
+## Example: Park assistant (paired $t$)
+
+```{r,echo=FALSE}
+rm(list = ls())
+```
+
+### Data description
+
+In an experiment to investigate if an optional equipment of cars may help
+to park the cars themselves, 20 drivers were asked to park the car with and 
+without the equipment. The parking time (secs) for each driver and equipment
+is recorded.
+
+### Data loading
+```{r}
+data(carctl)
+str(carctl)
+```
+
+### Descriptives
+
+A simple boxplot:
+```{r,fig.cap="Box-and-whiskers plot of parking times for the two cars"}
+carctl2 <- carctl %>% gather(car, value, Car_A, Car_B)
+
+ggp <- ggplot(data = carctl2, mapping = aes(x=car, y=value, fill=car)) +
+  geom_boxplot()
+
+print(ggp)
+```
+
+A stripchart with mean points and mean line:
+```{r,fig.cap="Stripchart with connect line of parking times for the two cars",tidy=FALSE, message=FALSE, warning=FALSE}
+carctl_mean <- carctl2 %>% group_by(car) %>% summarise(value=mean(value))
+
+ggp <- ggplot(data = carctl2, mapping = aes(x=car, y=value)) +
+  geom_jitter(position = "dodge", color="darkblue") +
+  geom_point(data=carctl_mean, mapping = aes(x=car,y=value), colour="red", group=1) +
+  geom_line(data=carctl_mean, mapping = aes(x=car,y=value), colour="red", group=1) 
+  
+print(ggp)   
+```
+
+And now the $t$-test. 
+
+Before testing the means, a check for normality is made by using qq-plot and Anderson-Darling test
+```{r,fig.cap="Normal probability plot of parking times of two cars", tidy=FALSE}
+ggp <- ggplot(data = carctl2, mapping = aes(sample = value, color=car)) + 
+  stat_qq() +
+  geom_abline(data= carctl2 %>% filter(car=="Car_A"), mapping=aes(intercept=mean(value), 
+    slope=sd(value), color=car), size=1) +
+  geom_abline(data= carctl2 %>% filter(car=="Car_B"), mapping=aes(intercept=mean(value),
+    slope=sd(value), color=car), size=1)
+
+print(ggp)
+```
+
+There is not evidence of non-normality within groups, and the AD tests confirm above results:
+```{r}
+lapply(X=carctl, FUN=ad.test) 
+```
+and finally the two independent samples $t$-test:
+```{r}
+t.test(x=carctl$Car_A, y=carctl$Car_B) 
+```
+Following this result, the null hypothesis is not rejected (at a 5% level).
+
+But if we produce a scatterplot of `Car_A` Vs `Car_B`,
+```{r,fig.cap="Scattrplot of parking times of Car_A Vs. Car_B"}
+ggp <- ggplot(data = carctl, mapping = aes(x=Car_A, y=Car_B)) + 
+  geom_point(col="darkblue")
+
+print(ggp)
+```
+
+we can see that data of two cars are clearly NOT independent!!  
+Measures on `Car_A` are strongly related to measures on `Car_B`, because each driver drove either cars.
+
+Then the correct test for such as data is:
+```{r}
+carctl <- carctl %>% mutate(car_diff = Car_A - Car_B)
+t.test(x=carctl$car_diff, mu=0)
+```
+or, equivalently, a paired $t$:
+```{r}
+t.test(x=carctl$Car_A, y=carctl$Car_B, paired=TRUE)
+```
+
+In either cases the results are the same: a difference statistically significant exists between mean parking times of two cars.
+
+In this case the Normality test must be performed on differences between measures within same driver.
+
+Check of normality by Normal probability plot:
+```{r,fig.cap="Normal probability plot of difference of parking times of two cars"}
+ggp <- ggplot(data = carctl, mapping = aes(sample = car_diff)) + 
+  stat_qq(color="darkblue", size=2) +
+  geom_abline(mapping = aes(intercept=mean(car_diff), slope=sd(car_diff)), colour="red", linetype=2)
+
+print(ggp)
+```
+
+And the Anderson-Darling test:
+```{r}
+ad.test(x=carctl$car_diff)  
+```
+For either tests, the Normality assumption is not rejected.
+
+Now we try the model approach to the same test. The model approach in this case follows the same procedure seen for the one-sample t-test, but using the differences between times as dependent variable.
+
+Fitting of model:
+```{r}
+mod <- lm(car_diff ~ 1, data = carctl) 
+mod
+summary(mod)
+```
+or, equivalently one may use also:
+```{r}
+mod <- lm(I(Car_A-Car_B)~1, data=carctl)
+summary(mod)
+```
+
+q-q plot (or Normal probability plot) of residuals shall be identical to previous one.  
+The Anderson-Darling test too is identical to previuosly made test:
+```{r}
+ad.test(mod$residuals) 
+```
+equivalently:
+```{r}
+ad.test(residuals(mod))
+```
+
+Note that for repeated measures experiments, several analytical options are also available: for example through the `Error()` function in formula specification, or using mixed-model methods (`lme4` or `nlme` packages are the most used and known).  
+In this manual we won't deep these arguments, because they would require a distinct section for each of them.
+
+## Example: Tissues (1-way ANOVA)
+```{r,echo=FALSE}
+rm(list = ls())
+```
+
+### Data description
+
+Three quality inspectors of a plant, Henry, Anne, and Andrew (operators) measure the strenght of car seat tissues.
+The company managers want to test the reproducibility, between operators, of company's measurement system.  
+The main goal of study is then to verify if operators' measures are confrontable.  
+Each operator measured 25 pieces of car seat tissues.  
+Globally, 75 samples of tissue randomly chosen from the same production batch were measured.
+
+### Data loading
+```{r}
+data(tissue)
+head(tissue)
+str(tissue)
+```
+Data is already ordered by operator (`Anne`, `Henry`, and `Andrew`)
+
+### Descriptives
+Plot of `Strengt` with `Operator` factor variable in abscissa:
+```{r,fig.cap="Stripchart of Strenght by Operator with connect line"}
+tissue_mean <- tissue %>% group_by(Operator) %>% summarise(Strength=mean(Strength))
+
+ggp <- ggplot() +
+  geom_point(data = tissue, mapping = aes(x=Operator, y=Strength), colour="darkblue") + 
+  geom_line(data=tissue_mean, mapping = aes(x=Operator,y=Strength), colour="red", group=1)
+
+print(ggp)
+```
+
+A different way to show similar information is through a plot of univariate effects:
+```{r,fig.cap="Plot of univariate effects of Operator on Strenght"}
+plot.design(Strength ~ Operator, data = tissue)
+```
+This plot shows the mean for each level of grouping factor compared to the grand mean (the center wider line).
+
+### Inference and models
+Now we will try models with different contrast types.  
+Initially the model with default contrasts will be fitted to data, then the `contr.sum` and the `contr.helmert` contrast models will be shown.
+
+Default contrasts:
+```{r}
+options("contrasts")
+options(contrasts = c("contr.treatment", "contr.poly"))
+fm_treatment <- aov(Strength~Operator, data = tissue)
+summary(fm_treatment)
+summary.lm(fm_treatment)
+```
+`aov()`'s predefined output gives a global p-value of 0.0258 on `Operator` effect.  
+
+Note that `summary.lm()` shows the `aov` resulting object `fm_treatment` as if it simply were an `lm`-type object.
+
+From its output, Andrew's mean appears significantly different from 0 ($\beta_0$ = 10.4364, p = 2e-16), 
+Henry seems significantly different from Andrew (0.7076 lesser, p-value=0.00868), whereas Anne's seem not significantly different from Andrew (0.2064 lesser, p-value=0.43384).  
+
+Instead of `summary(<aov object>)` and `summary.lm(<aov object>)`, `summary.aov(<lm object>)` and
+`summary(<aov object>)` may be used, obtaining the same outputs:
+```{r}
+fm_treatment <- lm(Strength~Operator, data = tissue)
+summary.aov(fm_treatment)
+summary(fm_treatment)
+```
+In this sense, `aov()`,`lm()` and their resulting objects are substantially interchangeable.
+
+Now let's see what changes if constrasts settings are modified. The first contrast setting is `contr.sum`:
+```{r}
+options(contrasts = c("contr.sum", "contr.poly"))
+fm_sum <- aov(Strength~Operator, data = tissue)
+summary(fm_sum)
+summary.lm(fm_sum)
+```
+The interpretation of the `contr.sum` coefficients is not very simple: contrasts are the $k-1$ differences (where $k$ is the number of factor levels) between each level and a reference level; the resulting estimated coefficients contain the differences of each level mean (excluded the reference level) with respect to the grand mean; in fact, the model intercept is equal to grand mean.  
+`aov()`, however, gives the same results obtained with default contrasts.
+
+Now let's change contrast settings by selecting Helmert contrasts
+```{r}
+options(contrasts = c("contr.helmert", "contr.poly"))
+fm_helm <- aov(Strength~Operator, data = tissue)
+summary(fm_helm)
+summary.lm(fm_helm)
+```
+
+Helmert's contrasts are even more complex than the others; they analyze:  
+
+1. Initially, the difference between first level mean and the second level mean
+2. Then, the difference between the mean of first two (pooled) levels and the third level mean
+3. Then, the difference between the mean of first three (pooled) levels and the fourth level mean
+4. And so on for $k-1$ contrasts ..
+
+The main advantage of using Helmert contrasts is that they are orthogonal; the tests on linear model coefficients are then stocastically independent: the Type I and Type II error rate for the tests on Helmert coefficients are unrelated. The main disavantage, of course, is their complexity in coefficients explanations.
+
+Now, let's restore predefined contrasts:
+```{r}
+options(contrasts = c("contr.treatment", "contr.poly"))
+```
+
+Summarizing the results just seen about contrasts:
+
+* `contr.treatment` makes easier to read results, but the tests on _coefficients_ are NOT independent
+* `contr.sum` makes NO independent tests on _coefficients_, but compares pairs of means; also, the coefficients represent the distance of level's mean with respect to grand mean, however they are not always easily interpretable
+* `contr.helmert` makes independent tests on _coefficients_, but the coefficients are more difficult to interpret
+* anyway, until now, the global ANOVA (`aov()`)results are always the same: `aov()` analyzes effects globally, not single means
+
+### Residuals analysis
+By plotting a model object (`lm` or `aov`) up to six residuals diagnostic plots may be shown.
+
+By default, the `plot()` method applied on a model object shows four graphs:
+
+1. A plot of raw residuals against fitted values
+2. A Normal Q-Q plot on standardized residuals
+3. A scale-Location plot of $\sqrt{\vert std. residuals \vert}$ against fitted values. Here, $std. residuals$ means raw residuals divided by $\hat\sigma \cdot \sqrt{1-h_{ii}}$, where $h_{ii}$ are the diagonal entries of the "hat" matrix (see Appendices chapter).
+4. A plot of standardized Pearson residuals against leverages. If the leverages are constant (as is the case in the balanced design of this example) the plot uses factor level combinations instead of the leverages for the x-axis.
+
+The next lines of code split the graphical device in 4 areas (2 x 2) and plot diagnostic graphs in only one display
+```{r,fig.show='hold',fig.cap="Compound diagnostic residual plot of Strenght Vs. Operator ANOVA model"}
+op <- par(mfrow = c(2, 2))
+plot(fm_treatment)
+par(op)
+```
+The last line of above code restores the graphical device.
+
+The residual plots confirm that normality and homoscedasticity assumptions are met, and no outliers appear. This confirms the model results.
+
+
+## Example: Brake distances (2-way ANOVA)
+
+### Data description
+Distance data contain measurements of brake distances on the same car equipped with several configurations of:
+
+* `Tire`: Factor with 3 levels `GT`, `LS`, `MX`
+* `Tread`: Factor with 2 levels `1.5`, `10`
+* `ABS`: Factor with levels `disabled`,`enabled`
+
+For each combination of three factor levels, 2 measurements of brake distance have been taken.
+
+The objective of experiment is to find which factor(s) influence the brake distance, and in which direction.
+
+```{r,echo=FALSE}
+rm(list = ls())
+```
+
+### Data loading
+```{r}
+data(distance)
+head(distance)
+str(distance)
+```
+
+### Descriptives
+Plot univariate effects
+```{r,fig.cap="Plot of univariate factors effects on Distance response variable"}
+plot.design(Distance ~ ., data = distance)
+```
+The means seem to change mainly with `Tire` type and `ABS` levels. `Tread` seems to not influence mean brake distance. 
+
+Plot two-way interaction plot
+```{r,fig.cap="Plots of two-way interaction effects of factors on Distance response variable"}
+op <- par(mfrow = c(3, 1))
+with(distance, {
+  interaction.plot(ABS, Tire, Distance)
+  interaction.plot(ABS, Tread, Distance)
+  interaction.plot(Tread, Tire, Distance)
+  }
+)
+par(op)
+```
+The distance seems to decrease from ABS disabled to enabled independently of the tire type (no interaction). Perhaps, an interaction between `Tread` and `Tire` or between `ABS` and `Tire` might exist.
+...
+
+### Inference and models
+
+Now let's build a full model with all interactions:
+```{r}
+fm <- aov(Distance ~ ABS * Tire * Tread, data = distance)
+```
+It is equivalent to:
+```{r}
+fm <- aov(Distance ~ ABS + Tire + Tread + ABS:Tire + ABS:Tread + Tire:Tread
+         + ABS:Tire:Tread, data = distance)
+summary(fm)
+```
+Actually, only main effects `ABS` and `Tire` seem to influence the mean of brake distance.
+Interactions seem not significant: we can start to drop them from the three-way interaction.
+
+In general we are interested to find the most provident model which better explains the data, 
+and in general we start to drop first higher-level interactions, because we "move" within the hierarchical models paradigm.
+
+To obtain the model without three-way interaction, we can use `update()`:
+```{r}
+fm <- update(fm, . ~ . -ABS:Tire:Tread)
+summary(fm)
+```
+Since two ways interactions seem to not influence mean brake distance, we could try to remove all two-way interactions, always using `update()` function:
+```{r}
+fm1 <- update(fm, .~ABS+Tire+Tread)
+summary(fm1)
+```
+The result seems not surprising. It is better to check if the three removed effects together are still not
+significant using `anova()`:
+```{r}
+anova(fm, fm1)
+```
+The combined effect of the tree two-way interactions is not significant.  
+The tables of effects from model follow below
+```{r}
+model.tables(fm1,type="effects")
+```
+And now the table of means from model
+```{r}
+model.tables(fm1,type="means")
+```
+Finally, we remove the `Tread` effect to obtain the final model with significant effects only:
+```{r}
+fm <- aov(Distance ~ ABS + Tire, data = distance)
+summary(fm)
+```
+
+### Residual analysis
+
+```{r,fig.cap="Compound residual plot for final brake distance model"}
+op <-  par(mfrow = c(2, 2))
+plot(fm)
+par(op)
+```
+Since the leverages are constant (as is typically the case in a balanced `aov` situation) the 4th plot draws factor level combinations instead of the leverages for the x-axis.
+(The factor levels are ordered by mean fitted value.)
+
+Distance means for each `ABS` and `Tire` category follow:
+```{r}
+distance %>% group_by(ABS, Tire) %>% summarise(mean(Distance))
+```
+
+The table of grand means from model:
+```{r}
+model.tables(fm, type="means")
+```
+
+And some predicted values from ANOVA model:
+```{r}
+df_pred <- data.frame(ABS=c("enabled","disabled"),Tire=c("GT","LS"))
+predict(object=fm,newdata=df_pred)
+```
+Question: predicted values are different from the above calculated sampling averages. Why?
+
+
+## Example: Brake distance 1 (unbalanced anova with one obs dropped)
+
+### Data description 
+Same example as above, but with one observation (row) removed
+
+```{r,echo=FALSE}
+rm(list = ls())
+```
+
+### Data loading
+```{r}
+data(distance)
+head(distance)
+str(distance)
+```
+
+Drop one observation for dealing with an unbalanced anova with one obs dropped (one "LS 10 enabled")
+```{r}
+distance1 <- distance[-24,]
+```
+
+### Descriptives
+Plot of univariate effects
+```{r,fig.cap="Univariate effects plot of unbalanced model"}
+plot.design(Distance ~ ., data = distance1)
+```
+Plot two-way interaction plot
+```{r,fig.cap="Two-way interaction effects plots of unbalanced model"}
+op <- par(mfrow = c(3, 1))
+with(distance1, {
+  interaction.plot(ABS, Tire, Distance)
+  interaction.plot(ABS, Tread, Distance)
+  interaction.plot(Tread, Tire, Distance)
+  }
+)
+par(op)
+```
+All the effects do not seem to change with respect to previous example
+
+### Inference and models
+
+Model with all interactions
+```{r}
+fm <- aov(Distance ~ ABS * Tire * Tread, data = distance1)
+summary(fm)
+```
+
+Model without three-way interaction
+```{r}
+fm <- update(fm, . ~ . -ABS:Tire:Tread)
+summary(fm)
+```
+
+Model without two-way interactions
+```{r}
+fm1 <- update(fm, .~ABS+Tire+Tread)
+summary(fm1)
+```
+
+Check significancy of two-way interactions:
+```{r}
+anova(fm, fm1)
+```
+They are not significant
+
+The final model with significant effects is the same of model of previous example, but:
+```{r}
+fm <- aov(Distance ~ ABS + Tire, data = distance1)
+summary(fm)
+fminv <- aov(Distance ~ Tire + ABS, data = distance1)
+summary(fminv)
+```
+Since `aov()` performs Type I SS ANOVA (see *Types of Sum of Squares* in the Appendices) and this example uses data from unbalanced design, the previous 2 models give different results in terms of SS and respective p-values.
+
+`fm` returns SS(ABS) and SS(Tire | ABS), whereas `fminv` returns SS(Tire) and SS(ABS | Tire).  
+
+In order to get Type II ANOVA SSs and p-values, one can consider SS(Tire | ABS) and SS(ABS | Tire).  
+Otherwise, `drop1()` function can also be used.
+
+```{r}
+drop1(object=fm,test="F")
+drop1(object=fminv,test="F")
+```
+In this case, the results are obviously equal to those of Type II SS
+
+Alternatively, the function `Anova()` of the package `car` is available. `Anova()` allows Type II and III Sum of Squares too.  
+
+Notice that, until now, at least six types of sum of squares have been introduced in literature.  
+However, there are open discussions among statisticians about the use and pros/cons of different Types of SS.
+
+### Residual analysis
+
+```{r,fig.show='hold',fig.cap="Residual plots of unbalanced model"}
+op <- par(mfrow = c(2, 2))
+plot(fm)
+par(op)
+```
+In this case, since the leverages are not constant (unbalanced design) 4th plot draws the leverages in x-axis.
+
+
+## Example: Pin diameters (Fixed effects Nested ANOVA)
+
+### Data description
+
+The dataframe contains data collected from five different lathes, 
+each of these used by two different operators.  
+The goal of study is to evaluate if differences appear in mean diameter of pins between lathes and/or operators.  
+Notice that here we are concerned with the 
+effect of operators, so the layout of experiment is nested. If we were concerned with 
+shift instead of operator, the layout would be crossed. The measurement is the diameter of turned pins.
+
+```{r, echo=FALSE}
+rm(list = ls())
+```
+### Data loading
+
+```{r}
+data(diameters)
+str(diameters)
+```
+
+### Descriptives
+Next lines of code show descriptives for each variable and the mean for each crossing of `Lathe` and `Operator` factor levels.
+```{r}
+summary(diameters)
+xtabs(formula=Pin.Diam~Lathe+Operator,data=diameters)
+```
+
+Above statistics are not completely well-advised, since the operators working in the same
+part of the day (day or night) are different (nested anova) for different lathes.
+
+Let us draw a box-plot for each combination of `Late` and `Operator` factor levels.
+```{r,fig.cap="Boxplot of Pin.Diam by Lathe x Operator"}
+ggp <- ggplot(data = diameters, mapping = aes(x=Lathe, y=Pin.Diam, fill=Operator)) + 
+  geom_boxplot()
+
+print(ggp)
+```
+
+And now we try a first (incorrect) ANOVA to analyze diameters Vs. `Lathe` and `Shift` (i.e., considering `Operator` levels as equivalent to different shifts of working days) in a classical factorial layout.
+```{r}
+fm1 <- aov(formula = Pin.Diam~Lathe*Operator, data = diameters)
+summary(fm1)
+```
+As previously said, the above result is incorrect. 
+
+Actually, the data structure is the following:
+```{r}
+diameters$Lathe_op <- factor(diameters$Lathe:diameters$Operator)
+xtabs(formula=Pin.Diam~Lathe+Lathe_op,data=diameters)
+```
+
+And then, correct ANOVA is:
+```{r}
+fm1 <- aov(formula=Pin.Diam~Lathe+Lathe/Operator,data=diameters)
+summary(fm1)
+```
+
+The `/` formula operator means that the levels of `Operator` factor are nested within the levels of `Lathe` factor.
+Using this model, lathes seem produce different products (in mean), whereas no significant difference between operators appears.  
+
+Nested anova is useful for reducing the general variability of the plan and getting more important
+differences among the levels of the main factors.
+
+Equivalent model formulations for nested ANOVAs are:
+```{r}
+fm1a <- aov(formula=Pin.Diam~Lathe+Operator:Lathe,data=diameters)
+summary(fm1a)
+```
+
+or 
+
+```{r}
+#alternative correct model
+fm1b <- aov(formula=Pin.Diam~Lathe+Operator:Lathe_op,data=diameters)
+summary(fm1b)
+```
+
+### Residuals analysis
+```{r,fig.cap="Residual plot of Late by Operator nested model"}
+op <-  par(mfrow = c(2, 2))
+plot(fm1)
+par(op)
+```
+
