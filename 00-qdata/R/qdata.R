@@ -10,7 +10,9 @@
 #'
 #' @author
 #' Enrico Tonini \email{enrico.tonini@@quantide.com} \cr
-#' Nicola Sturaro \email{nicola.sturaro@@quantide.com}
+#' Nicola Sturaro \email{nicola.sturaro@@quantide.com} \cr
+#' Enrico Pegoraro \email{enrico.pegoraro@@quantide.com} \cr
+#' Veronica Giro \email{veronica.giro@@quantide.com} 
 #'
 #' Maintainer: Nicola Sturaro \email{nicola.sturaro@@quantide.com}
 #' 
