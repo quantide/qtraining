@@ -234,7 +234,7 @@ save(german, germanstring, germannumeric, file = "data/german.RData", compress =
 ############################################################
 rm(list = ls())
 ### Import data
-ds <- read.table("./rowdata/italia/codstat.csv", sep = ";", head = F , stringsAsFactors = FALSE, skip = 1, quote = "\"")
+ds <- read.table("./rowdata/italia/codstat-1.csv", sep = ";", head = F , stringsAsFactors = FALSE, skip = 1, quote = "\"")
 
 ### Remove rows with all NA's
 ds <- ds %>% mutate(na = apply(X = ds, MARGIN = 1, FUN = function(x) all(is.na(x))))
