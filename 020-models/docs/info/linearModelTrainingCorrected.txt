@@ -1,0 +1,36 @@
+"Statistical Models with R" Course
+The course scheduled for XX-XX-XXXX. If you are interested in this course, please contact training@quantide.com.
+
+Course description
+This two days course shows a wide variety of statistical models with R ranging from Linear Models (LM) to Generalized Linear Models (GLM) modelling, in order to provide an exhaustive overview of statistical linear models with R.
+The course will follow a step-by-step approach from simplest to more complex models to illustrate the R capabilities on modeling. Some theoretical introductions are given in course materials.
+Brief introductions to modeling with Mixed Effects, GAM, Neural Networks and Trees are also provided.
+
+Who should attend this course
+Anyone who is already using R and wants to get an overview of statistical models with R. Some background in theoretical statistics and probability is required.
+
+Course outline
+Classical Linear Models:
+	- t-test
+	- ANOVA
+	- Simple Linear Regression
+	- Polynomial Regression
+	- Multiple Regression
+	- More Complex Models
+Generalized Linear Models:
+	- Logistic Regression
+	- Poisson Dep. Var. Regression
+	- Gamma Dep. Var. Regression
+	- Quasi-likelihood Regression 
+Check of models assumptions
+Brief outlines of:
+	- Generalized Additive Models (GAM)
+	- Mixed Models
+	- Neural Networks
+	- Tree-based Modelling
+
+Course language
+Course will be held in Italian. Course material will be in English.
+
+Course material
+The course material will be provided during the course.

@@ -1,0 +1,1225 @@
+
+<!-- saved from url=(0051)http://plantecology.syr.edu/fridley/bio793/gam.html -->
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 11">
+<meta name="Originator" content="Microsoft Word 11">
+<link rel="File-List" href="http://plantecology.syr.edu/fridley/bio793/R_feb15_notes_files/filelist.xml">
+<title>Generalized Additive Models in R</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Jason Fridley</o:Author>
+  <o:LastAuthor>Jason Fridley</o:LastAuthor>
+  <o:Revision>4</o:Revision>
+  <o:TotalTime>305</o:TotalTime>
+  <o:Created>2010-02-15T16:37:00Z</o:Created>
+  <o:LastSaved>2010-02-15T16:50:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>3210</o:Words>
+  <o:Characters>18301</o:Characters>
+  <o:Company>Biology @ Syracuse U.</o:Company>
+  <o:Lines>152</o:Lines>
+  <o:Paragraphs>42</o:Paragraphs>
+  <o:CharactersWithSpaces>21469</o:CharactersWithSpaces>
+  <o:Version>11.9999</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:PunctuationKerning/>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:Compatibility>
+   <w:SelectEntireFieldWithStartOrEnd/>
+   <w:UseWord2002TableStyleRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{margin:0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 216.0pt right 432.0pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.apple-style-span
+	{mso-style-name:apple-style-span;}
+ /* Page Definitions */
+ @page
+	{mso-footnote-separator:url("R_feb15_notes_files/header.htm") fs;
+	mso-footnote-continuation-separator:url("R_feb15_notes_files/header.htm") fcs;
+	mso-endnote-separator:url("R_feb15_notes_files/header.htm") es;
+	mso-endnote-continuation-separator:url("R_feb15_notes_files/header.htm") ecs;}
+@page Section1
+	{size:792.0pt 612.0pt;
+	mso-page-orientation:landscape;
+	margin:90.0pt 72.0pt 90.0pt 72.0pt;
+	mso-header-margin:36.0pt;
+	mso-footer-margin:36.0pt;
+	mso-even-footer:url("R_feb15_notes_files/header.htm") ef1;
+	mso-footer:url("R_feb15_notes_files/header.htm") f1;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0pt 5.4pt 0pt 5.4pt;
+	mso-para-margin:0pt;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+</style>
+<![endif]-->
+</head>
+
+<body lang="EN-US" link="blue" vlink="purple" style="tab-interval:36.0pt">
+
+<div class="Section1">
+
+<p class="MsoNormal">
+ 
+  <b style="mso-bidi-font-weight:normal">Generalized additive
+models
+  <o:p></o:p>
+  in R 
+  </b></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">GAMs in R are a nonparametric extension of GLMs, used often
+for the case when you have no a priori reason for choosing a particular
+response function (such as linear, quadratic, etc.) and want the data to 'speak
+for themselves'.<span style="mso-spacerun:yes">&nbsp; </span>GAMs do this via a
+smoothing function, similar to what you may already know about locally weighted
+regressions.<span style="mso-spacerun:yes">&nbsp; </span>GAMs take each predictor
+variable in the model and separate it into sections (delimited by 'knots'), and
+then fit polynomial functions to each section separately, with the constraint
+that there are no kinks at the knots (second derivatives of the separate
+functions are equal at the knots).<span style="mso-spacerun:yes">&nbsp; </span>The
+number of parameters used for such fitting is obviously more than what would be
+necessary for a simpler parametric fit to the same data, but computational
+shortcuts mean the model degrees of freedom is usually lower than what you
+might expect from a line with so much 'wiggliness'.<span style="mso-spacerun:yes">&nbsp; </span>Indeed this is the principal statistical
+issue associated with GAM modeling: minimizing residual deviance (goodness of
+fit) while maximizing parsimony (lowest possible degrees of freedom).<span style="mso-spacerun:yes">&nbsp; </span>Since the model fit is based on
+deviance/likelihood, fitted models are directly comparable with GLMs using
+likelihood techniques (like AIC) or classical tests based on model deviance
+(Chi-squared or F tests, depending on the error structure).<span style="mso-spacerun:yes">&nbsp; </span>Even better, all the error and link
+structures of GLMs are available in GAMs (including poisson and binomial), as
+are the standard suite of <b style="mso-bidi-font-weight:normal">lm</b> or <b style="mso-bidi-font-weight:normal">glm</b> attributes (resid, fitted, summary,
+coef, etc.).<span style="mso-spacerun:yes">&nbsp; </span>A principal reason why GAMs
+are often less preferred than GLMs is that the results are often difficult to
+interpret because no parameter values are returned (although significance tests
+of each term are).<span style="mso-spacerun:yes">&nbsp; </span>They can be very good
+for prediction/interpolation, as well as exploratory analyses about the
+functional nature of a response.<span style="mso-spacerun:yes">&nbsp; </span>Some
+researchers examine the shape of a curve with GAMs, then reconstruct the curve
+shape parametrically with GLMs for model building.</p>
+
+<p class="MsoNormal"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>There are
+two common implementations of GAMs in R.<span style="mso-spacerun:yes">&nbsp;
+</span>The older version (originally made for S-PLUS) is available as the 'gam'
+package by Hastie and Tibshirani.<span style="mso-spacerun:yes">&nbsp; </span>The
+newer version that we will use below is the 'mgcv' package from Simon
+Wood.<span style="mso-spacerun:yes">&nbsp; </span>The basic modeling procedure for
+both packages is similar (the function is <b style="mso-bidi-font-weight:normal">gam</b>
+for both; be wary of having both libraries loaded at the same time), but the
+behind-the-scenes computational approaches differ, as do the arguments for
+optimization and the model output.<span style="mso-spacerun:yes">&nbsp;
+</span>Expect the results to be slightly different when used with the same
+model structure on the same dataset.</p>
+
+<p class="MsoNormal" style="text-indent:36.0pt">Let's first examine output from
+the built-in function <b>loess</b>, which is a locally weighted polynomial
+regression.<b><span style="mso-spacerun:yes">&nbsp; </span></b>This time we'll try
+modeling yellow birch, and we'll include plots of birch absences.</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">dat = read.csv(file.choose())<span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp; </span>#grab the <a href="http://plantecology.syr.edu/fridley/bio793/treedata.csv">treedata.csv</a> file
+  <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">dat2 = subset(dat,dat$species=="Betula
+alleghaniensis")<span style="mso-tab-count:1">&nbsp;&nbsp; </span>#a yellow birch
+subset</span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">b.plots = unique(as.character(dat2$plotID))<span style="mso-tab-count:1"> </span>#plots with birch</span><span style="color:
+black"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">u.plots = unique(as.character(dat$plotID))<span style="mso-tab-count:1"> </span>#all plots</span><span style="color:black"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">nob.plots =
+u.plots[is.element(u.plots,b.plots)==F] #plots without birch</span><span style="color:black"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">dat3 =
+subset(dat,is.element(as.character(dat$plotID),nob.plots)) #datast of no birch</span><span style="color:black"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">dat4 = subset(dat3,duplicated(dat3$plotID)==F)<span style="mso-tab-count:1">&nbsp; </span>#one row per plot</span><span style="color:black"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">dat4$cover = 0<span style="mso-tab-count:2">&nbsp;&nbsp;&nbsp;&nbsp; </span>#cover
+of birch is zero in these plots</span><span style="color:black"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">dat5 = rbind(dat2,dat4)<span style="mso-tab-count:
+1"> </span>#new dataframe of presences and absences</span><span style="color:black"><o:p></o:p></span></p>
+
+<p class="MsoNormal">As from last time, dat5 is our new data frame with both
+presences and absences, this time for yellow birch. </p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">ls1 = loess(cover&gt;0~elev,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">summary(ls1)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Call:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">loess(formula = as.numeric(cover &gt; 0) ~ elev,
+data = dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Number of Observations: 1009 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Equivalent Number of Parameters: 4.69 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Residual Standard Error: 0.3931 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Trace of smoother matrix: 5.11 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Control settings:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;
+</span>normalize:<span style="mso-spacerun:yes">&nbsp; </span>TRUE <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp; </span>span<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>:<span style="mso-spacerun:yes">&nbsp;
+</span>0.75 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;
+</span>degree<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>:<span style="mso-spacerun:yes">&nbsp; </span>2 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;
+</span>family<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>:<span style="mso-spacerun:yes">&nbsp; </span>gaussian<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;
+</span>surface<span style="mso-spacerun:yes">&nbsp; </span>:<span style="mso-spacerun:yes">&nbsp; </span>interpolate<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>cell = 0.2</span><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:&quot;Times New Roman&quot;;
+color:red"><o:p></o:p></span></p>
+
+<p class="MsoNormal">The summary of the loess model gives the precision (SE) of
+the fit and the (default) arguments used.<span style="mso-spacerun:yes">&nbsp;
+</span>We can plot the result using predict. (Note predict with loess requires
+newdata to be entered as a data.frame rather than a list.)</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">with(dat5,plot(elev,cover&gt;0))</span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">x = seq(0,2000)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">lines(x,predict(ls1,newdata=data.frame(elev=x)),col="tomato",lwd=2)</span></p>
+
+<p class="MsoNormal">The curve looks oddly classical-niche-like.<span style="mso-spacerun:yes">&nbsp; </span>The loess function gives a straightforward
+way to create smooth responses for simple regressions, but its utility ends
+there: the fit is not based on likelihood and there is no easy way to compare
+whether this model fits better than other (e.g., parametric) models, nor is
+there a way to accommodate non-Gaussian error functions.<span style="mso-spacerun:yes">&nbsp; </span>The older <b>lowess</b> function (ported from
+S-PLUS) does essentially the same thing, used for plotting trendlines (rather
+than creating models).</p>
+
+<p class="MsoNormal"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Now we can
+examine what <b>gam</b> can do.<span style="mso-spacerun:yes">&nbsp; </span>The
+formulation of a gam model is nearly exactly the same as for <b>glm</b>; all
+the same families and link functions apply.<span style="mso-spacerun:yes">&nbsp;
+</span>The only difference is wrapping the predictors in a non-parametric
+smoother function, s().</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">install.packages("mgcv")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">library(mgcv)</span><span style="font-family:&quot;Courier New&quot;;
+mso-bidi-font-family:&quot;Times New Roman&quot;"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">gam1 =
+gam(cover&gt;0~s(elev),family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">summary(gam1)</span><span style="font-family:&quot;Courier New&quot;;
+mso-bidi-font-family:&quot;Times New Roman&quot;"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Family: binomial <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Link function: logit <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Formula:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">cover &gt; 0 ~ s(elev)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Parametric coefficients:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Estimate Std. Error z value Pr(&gt;|z|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">(Intercept) -0.37157<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>0.08805<span style="mso-spacerun:yes">&nbsp;&nbsp;
+</span>-4.22 2.44e-05 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">Signif. codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ </span><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:&quot;Times New Roman&quot;;
+color:blue">0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Approximate significance of smooth terms:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>edf Ref.df Chi.sq p-value<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">s(elev) 8.266<span style="mso-spacerun:yes">&nbsp;&nbsp;
+</span>8.85<span style="mso-spacerun:yes">&nbsp; </span>298.6<span style="mso-spacerun:yes">&nbsp; </span>&lt;2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Signif. codes:<span style="mso-spacerun:yes">&nbsp;
+</span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">R-sq.(adj) =<span style="mso-spacerun:yes">&nbsp;
+</span>0.396<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>Deviance explained = 32.5%<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">UBRE score = -0.056009<span style="mso-spacerun:yes">&nbsp; </span>Scale est. = 1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>n = 1009</span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">points(dat5$elev,fitted(gam1),col="springgreen",lwd=2)<o:p></o:p></span></p>
+
+<p class="MsoNormal">You can see right away that the <b>gam</b> fit here was more
+sensitive to minimizing deviance (higher wiggliness) than the default fit of
+the <b>loess</b> function.<span style="mso-spacerun:yes">&nbsp; </span>The gam was
+also able to minimize deviance based on the logit transformation.<span style="mso-spacerun:yes">&nbsp; </span>The model output shows that an overall
+(parametric) intercept was fit (the mean), -0.37157.<span style="mso-spacerun:yes">&nbsp; </span>But this is on the scale of the logit
+transformation.<span style="mso-spacerun:yes">&nbsp; </span>To get the value on the
+scale of actual probability we use the inverse of the logit function:</p>
+
+<p class="MsoNormal"><span class="apple-style-span"><span style="font-family:&quot;Courier New&quot;;
+mso-bidi-font-family:&quot;Times New Roman&quot;;color:red">1/(1+1/exp(coef(gam1)[1]))</span></span><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:&quot;Times New Roman&quot;;
+color:red"><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">(Intercept) <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp; </span>0.4081611</span></p>
+
+<p class="MsoNormal">The parametric estimates are listed with tests of
+significance against a null of zero.<span style="mso-spacerun:yes">&nbsp; </span>A
+summary of the smoothed terms are listed next, which here is only s(elev).<span style="mso-spacerun:yes">&nbsp; </span>Reported statistics include the estimated
+degrees of freedom (edf) and a test of whether the smoothed function
+significantly reduces model deviance.<span style="mso-spacerun:yes">&nbsp;
+</span>Finally, a pseudo-R2 is available using deviance explained (here 32.5%);
+this statistic is just 1 – (residual deviance/null deviance).<span style="mso-spacerun:yes">&nbsp; </span></p>
+
+<p class="MsoNormal"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Let's
+compare the fit of this model against a simpler parametric binary regression
+using <b>glm</b>:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">glm1 =
+glm(cover&gt;0~elev,family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">lines(x,predict(glm1,newdata=list(elev=x),type="response"),lwd=3,col="turquoise")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">summary(glm1)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Call:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">glm(formula = cover &gt; 0 ~ elev, family =
+binomial, data = dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Deviance Residuals: <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>Min<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1Q<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>Median<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>3Q<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Max<span style="mso-spacerun:yes">&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">-2.4790<span style="mso-spacerun:yes">&nbsp;
+</span>-0.7775<span style="mso-spacerun:yes">&nbsp; </span>-0.4832<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>0.8654<span style="mso-spacerun:yes">&nbsp;&nbsp;
+</span>2.3320<span style="mso-spacerun:yes">&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Coefficients:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Estimate Std. Error z value Pr(&gt;|z|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">(Intercept) -3.9132171<span style="mso-spacerun:yes">&nbsp; </span>0.2558538<span style="mso-spacerun:yes">&nbsp;
+</span>-15.29<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>&lt;2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">elev<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0.0034832<span style="mso-spacerun:yes">&nbsp; </span>0.0002306<span style="mso-spacerun:yes">&nbsp;&nbsp;
+</span>15.11<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>&lt;2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">Signif. codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ </span><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:&quot;Times New Roman&quot;;
+color:blue">0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">(Dispersion parameter for binomial family taken
+to be 1)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>Null
+deviance: 1382.7<span style="mso-spacerun:yes">&nbsp; </span>on 1008<span style="mso-spacerun:yes">&nbsp; </span>degrees of freedom<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Residual deviance: 1057.5<span style="mso-spacerun:yes">&nbsp; </span>on 1007<span style="mso-spacerun:yes">&nbsp;
+</span>degrees of freedom<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">AIC: 1061.5<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Number of Fisher Scoring iterations: 4</span></p>
+
+<p class="MsoNormal">There are several ways to compare the gam1 and glm1
+models.<span style="mso-spacerun:yes">&nbsp; </span>First, we can take the easy way
+out and compare the AICs:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">AIC(gam1,glm1)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>df<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>AIC<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">gam1 9.266309<span style="mso-spacerun:yes">&nbsp;
+</span>952.4866<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">glm1 2.000000 1061.4910</span></p>
+
+<p class="MsoNormal">Although the gam1 model faces a stiffer penalty due to the
+need for many more df, the lower residual deviance more than makes up for it
+and the AIC is substantially lower.<span style="mso-spacerun:yes">&nbsp; </span>What
+is the difference in explained deviance?</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">1-(glm1$dev/glm1$null)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">[1] 0.2352225</span><span style="color:blue"><o:p></o:p></span></p>
+
+<p class="MsoNormal">The gam1 explained deviance was 32.5%, but that for glm1 is
+only 23.5%.<span style="mso-spacerun:yes">&nbsp; </span>Finally, the residual
+deviance and df for both models means we can compare them via a Chi-square test
+using <b>anova</b>:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">anova(gam1,glm1,test="Chi")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Analysis of Deviance Table<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Model 1: cover &gt; 0 ~ s(elev)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Model 2: cover &gt; 0 ~ elev<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp; </span>Resid. Df
+Resid. Dev<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Df Deviance
+P(&gt;|Chi|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>999.73<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>933.95<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">2<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>1007.00<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>1057.49 -7.2663<span style="mso-spacerun:yes">&nbsp; </span>-123.54 &lt;
+2.2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">Signif. codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ </span><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:&quot;Times New Roman&quot;;
+color:blue">0.1 ‘ ’ 1</span></p>
+
+<p class="MsoNormal">The clear winner is gam1.<span style="mso-spacerun:yes">&nbsp;
+</span>Looking at the plot, we suspect it is due to the apparently hump-shaped
+(or even bimodal) distribution of yellow birch along the elevation gradient:
+our glm1 model is strictly monotonic.<span style="mso-spacerun:yes">&nbsp; </span>Of
+course, we can allow for a unimodal possibility in the glm by adding a
+quadratic term:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">glm2 =
+glm(cover&gt;0~elev+I(elev^2),family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">lines(x,predict(glm2,newdata=list(elev=x),type="response"),lwd=3,col="purple")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">anova(gam1,glm1,glm2,test="Chi")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Analysis of Deviance Table<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Model 1: cover &gt; 0 ~ s(elev)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Model 2: cover &gt; 0 ~ elev<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue">Model 3: cover &gt; 0 ~ elev + I(elev^2)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp; </span>Resid. Df
+Resid. Dev<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Df Deviance
+P(&gt;|Chi|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>999.73<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>933.95<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">2<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>1007.00<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>1057.49 -7.2663 -123.537 &lt; 2.2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">3<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>1006.00<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>1011.99<span style="mso-spacerun:yes">&nbsp; </span>1.0000<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>45.505 1.523e-11 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:blue;mso-ansi-language:DE">Signif. codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ </span><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:&quot;Times New Roman&quot;;
+color:blue">0.1 ‘ ’ 1</span></p>
+
+<p class="MsoNormal">It's better, but it still doesn't come close to the goodness
+of fit of the gam1.<span style="mso-spacerun:yes">&nbsp; </span>You can create a
+simple plot of the fitted gam with <b style="mso-bidi-font-weight:normal">plot</b>,
+including residuals.<span style="mso-spacerun:yes">&nbsp; </span>Unless you tell it
+otherwise, the fit is shown on the scale of the link function.<span style="mso-spacerun:yes">&nbsp; </span>The trans argument can be given the inverse
+link function (here the inverse logit) to scale the y axis for the desired
+probabilities like this:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">windows()<span style="mso-tab-count:1"> </span>#this creates a new (second) plot window<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">plot(gam1,residuals=T,trans=function(x)exp(x)/(1+exp(x)),shade=T)<o:p></o:p></span></p>
+
+<p class="MsoNormal">The handy part of these plots is the display of error (2*SE,
+roughly 95% of the predicted values fall within the gray area, or have these
+drawn as dashed lines using shade=F).<span style="mso-spacerun:yes">&nbsp;
+</span>Also note what R calls the 'rug': the dashes on the x axis that show the
+distribution of x values (elevation).<span style="mso-spacerun:yes">&nbsp;
+</span>Here the areas of few plots have the highest associated error.<span style="mso-spacerun:yes">&nbsp; </span></p>
+
+<p class="MsoNormal"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>The
+specification of terms within GAMs can a complicated assortment of smoothed,
+parametric, 'isotropic' smoothing of two or more parameters, and 'overlapping'
+smoothing.<span style="mso-spacerun:yes">&nbsp; </span>Let's take a second
+continuous variable like transformed aspect (Beers index: from zero [SW, or
+hottest] to 2 [NE, coolest]) and model yellow birch with respect to elevation
+and the heat-load index in several different ways:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">gam2 =
+gam(cover&gt;0~s(elev)+s(beers),family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">gam3 =
+gam(cover&gt;0~s(elev)+beers,family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">gam4 = gam(cover&gt;0~s(elev)+s(beers)+s(elev,by=beers),family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">gam5 =
+gam(cover&gt;0~s(elev)+s(beers)+te(elev,beers),family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal">The first model fits both predictor variables with their own
+independent smoothing functions.<span style="mso-spacerun:yes">&nbsp; </span>We get
+back a parametric intercept and two tests of significance for the smoothed
+variables:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">summary(gam2)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Family:
+binomial <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Link
+function: logit <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Formula:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">cover
+&gt; 0 ~ s(elev) + s(beers)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Parametric
+coefficients:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Estimate Std. Error z value
+Pr(&gt;|z|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">(Intercept) -0.39007<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>0.08954<span style="mso-spacerun:yes">&nbsp; </span>-4.357 1.32e-05 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">Signif. codes:<span style="mso-spacerun:yes">&nbsp; </span>0
+‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ </span><span style="font-family:&quot;Courier New&quot;;
+color:blue">0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Approximate
+significance of smooth terms:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>edf Ref.df Chi.sq<span style="mso-spacerun:yes">&nbsp; </span>p-value<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">s(elev)<span style="mso-spacerun:yes">&nbsp; </span>8.299<span style="mso-spacerun:yes">&nbsp;
+</span>8.863 294.83<span style="mso-spacerun:yes">&nbsp; </span>&lt; 2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">s(beers)
+1.952<span style="mso-spacerun:yes">&nbsp; </span>2.418<span style="mso-spacerun:yes">&nbsp; </span>26.30 3.69e-06 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Signif.
+codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05
+‘.’ 0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">R-sq.(adj)
+=<span style="mso-spacerun:yes">&nbsp; </span>0.421<span style="mso-spacerun:yes">&nbsp;&nbsp;
+</span>Deviance explained = 34.6%<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">UBRE
+score = -0.081485<span style="mso-spacerun:yes">&nbsp; </span>Scale est. = 1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>n = 1009<o:p></o:p></span></p>
+
+<p class="MsoNormal">Both variables appear to be significant, and the explained
+deviance has gone up to 34.6% (from 32.5%).<span style="mso-spacerun:yes">&nbsp;
+</span>We can test this model against gam1 specifically by using <b style="mso-bidi-font-weight:normal">anova</b>:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">anova(gam1,gam2,test="Chi")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Analysis
+of Deviance Table<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 1:
+cover &gt; 0 ~ s(elev)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 2:
+cover &gt; 0 ~ s(elev) + s(beers)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp; </span>Resid. Df Resid. Dev<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>Df Deviance P(&gt;|Chi|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>999.73<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>933.95<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">2<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>997.75<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>904.28 1.9849<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>29.675<span style="mso-spacerun:yes">&nbsp; </span>3.51e-07 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Signif.
+codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05
+‘.’ 0.1 ‘ ’ 1<o:p></o:p></span></p>
+
+<p class="MsoNormal">The lower deviance with very little cost in model df (basically
+2) leads to a much better model.<span style="mso-spacerun:yes">&nbsp; </span>What do
+the predicted responses look like?</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">plot(gam2,trans=function(x)exp(x)/(1+exp(x)),shade=T,pages=1)<o:p></o:p></span></p>
+
+<p class="MsoNormal">Yellow birch appears to prefer cooler and shadier spots in
+addition to mid-high elevation.<span style="mso-spacerun:yes">&nbsp; </span>But the
+response to the Beers-transformed aspect looks basically linear: should this
+term just be a (non-smoothed) parametric fit?<span style="mso-spacerun:yes">&nbsp;
+</span>Our gam3 model is a GAM-GLM hybrid that has a smoothed elevation term
+and a parametric beers term:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">anova(gam2,gam3,test="Chi")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Analysis
+of Deviance Table<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 1:
+cover &gt; 0 ~ s(elev) + s(beers)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 2:
+cover &gt; 0 ~ s(elev) + beers<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp; </span>Resid. Df Resid. Dev<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>Df Deviance P(&gt;|Chi|)<span style="mso-spacerun:yes">&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>997.75<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>904.28<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">2<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>998.68<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>909.39 -0.936<span style="mso-spacerun:yes">&nbsp; </span>-5.1077<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>0.02146 *<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Signif.
+codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05
+‘.’ 0.1 ‘ ’ 1<o:p></o:p></span></p>
+
+<p class="MsoNormal">Surprisingly, gam2 is actually the better model (lower
+residual deviance) even though it is more highly parameterized.<span style="mso-spacerun:yes">&nbsp; </span>You can check AIC to see if the
+likelihood-based assessment agrees.</p>
+
+<p class="MsoNormal"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>The next
+two models are two different ways to assess interaction terms in a GAM
+model.<span style="mso-spacerun:yes">&nbsp; </span>Unfortunately, assessing
+interactions in GAMs is anything but straightforward.<span style="mso-spacerun:yes">&nbsp; </span>The first thing to understand is that this
+model structure is not usually what you want:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">summary(gam(cover&gt;0~s(elev)+s(beers)+s(elev,beers),family=binomial,data=dat5))<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Family:
+binomial <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Link
+function: logit <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Formula:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">cover
+&gt; 0 ~ s(elev) + s(beers) + s(elev, beers)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Parametric
+coefficients:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Estimate Std. Error z value
+Pr(&gt;|z|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">(Intercept) -0.39008<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>0.08954<span style="mso-spacerun:yes">&nbsp; </span>-4.357 1.32e-05 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">Signif. codes:<span style="mso-spacerun:yes">&nbsp; </span>0
+‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ </span><span style="font-family:&quot;Courier New&quot;;
+color:blue">0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Approximate
+significance of smooth terms:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>edf<span style="mso-spacerun:yes">&nbsp; </span>Ref.df<span style="mso-spacerun:yes">&nbsp;
+</span>Chi.sq<span style="mso-spacerun:yes">&nbsp; </span>p-value<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="NL" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:NL">s(elev)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>8.298849 8.86203<span style="mso-spacerun:yes">&nbsp; </span>275.49<span style="mso-spacerun:yes">&nbsp; </span>&lt; 2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="NL" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:NL">s(beers)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>1.951841 2.41812<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>26.30 3.69e-06
+***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="NL" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:NL">s(elev,beers) 0.002208 0.00384 3.4e-08<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>NA<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Signif.
+codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05
+‘.’ 0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">R-sq.(adj)
+=<span style="mso-spacerun:yes">&nbsp; </span>0.421<span style="mso-spacerun:yes">&nbsp;&nbsp;
+</span>Deviance explained = 34.6%<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">UBRE
+score = -0.081484<span style="mso-spacerun:yes">&nbsp; </span>Scale est. = 1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>n = 1009<o:p></o:p></span></p>
+
+<p class="MsoNormal">In fact the fit here is equal to the fit of gam2 (the df and
+residual deviance is identical), and the 'interaction' term is not tested.<span style="mso-spacerun:yes">&nbsp; </span>What the third term does is scale the
+smoothing functions equally for the two variables (isotropic smoothing).<span style="mso-spacerun:yes">&nbsp; </span>This may come in handy for truly isotrophic
+variables (e.g., modeling with spatial distances in 2D or 3D), but otherwise
+doesn't get you closer to understanding whether the significance of one
+variable in the model depends on values of another.<span style="mso-spacerun:yes">&nbsp; </span>Instead, you can use the form of either gam4
+(interaction fit isotropically; note the "by" argument here) or gam5
+(interaction fit non-isotropically using the "tensor product"
+smoothing function, te).<span style="mso-spacerun:yes">&nbsp; </span>The mgcv
+developer, Simon Wood, suggests "t<span class="apple-style-span"><span style="color:black">ensor product smooths often perform better than isotropic
+smooths when the covariates of a smooth are not naturally on the same scale, so
+that their relative scaling is arbitrary"—in other words, if the variables
+are not in the same units, you're probably better off using the structure of
+gam5.<span style="mso-spacerun:yes">&nbsp; </span></span></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">summary(gam5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Family:
+binomial <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Link
+function: logit <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Formula:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">cover
+&gt; 0 ~ s(elev) + s(beers) + te(elev, beers)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Parametric
+coefficients:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Estimate Std. Error z value
+Pr(&gt;|z|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">(Intercept) -0.35987<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>0.09143<span style="mso-spacerun:yes">&nbsp; </span>-3.936 8.29e-05 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="DE" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:DE">Signif. codes:<span style="mso-spacerun:yes">&nbsp; </span>0
+‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ </span><span style="font-family:&quot;Courier New&quot;;
+color:blue">0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Approximate
+significance of smooth terms:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>edf Ref.df<span style="mso-spacerun:yes">&nbsp; </span>Chi.sq p-value<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="NL" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:NL">s(elev)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>8.311<span style="mso-spacerun:yes">&nbsp; </span>8.868 243.283<span style="mso-spacerun:yes">&nbsp; </span>&lt;2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="NL" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:NL">s(beers)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>1.915<span style="mso-spacerun:yes">&nbsp; </span>2.373<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>7.361<span style="mso-spacerun:yes">&nbsp;
+</span>0.0364 *<span style="mso-spacerun:yes">&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span lang="NL" style="font-family:&quot;Courier New&quot;;color:blue;
+mso-ansi-language:NL">te(elev,beers) 1.001<span style="mso-spacerun:yes">&nbsp;
+</span>1.002<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>2.053<span style="mso-spacerun:yes">&nbsp; </span>0.1523<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Signif.
+codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05
+‘.’ 0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">R-sq.(adj)
+=<span style="mso-spacerun:yes">&nbsp; </span>0.422<span style="mso-spacerun:yes">&nbsp;&nbsp;
+</span>Deviance explained = 34.8%<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">UBRE
+score = -0.081586<span style="mso-spacerun:yes">&nbsp; </span>Scale est. = 1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>n = 1009<o:p></o:p></span></p>
+
+<p class="MsoNormal">Now we have a significance test associated with the
+interaction, which is here not significant.<span style="mso-spacerun:yes">&nbsp;
+</span>A plot of this model:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">plot(gam5,trans=function(x)exp(x)/(1+exp(x)),shade=T,pages=1)<o:p></o:p></span></p>
+
+<p class="MsoNormal">shows the smoothed response of cover to each variable, plus
+contour lines of smoothed cover against both elevation and beers
+variables.<span style="mso-spacerun:yes">&nbsp; </span></p>
+
+<p class="MsoNormal"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>The
+"by" formulation is also appropriate for an ANCOVA structure, where
+we want to assess whether the smoothed fit varies according to different
+classes of some factor variable.<span style="mso-spacerun:yes">&nbsp; </span>Here's
+an example using the distribution of yellow birch with respect to elevation and
+disturbance history:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">gam6 =
+gam(cover&gt;0~s(elev)+disturb+te(elev,by=disturb,k=4),family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">plot(gam6,trans=function(x)exp(x)/(1+exp(x)),shade=T,pages=1)<o:p></o:p></span></p>
+
+<p class="MsoNormal">The model was fit as a hybrid of a smoothed response to
+elevation, a parametric (ANOVA-type) response to disturbance class (see the
+standard contrasts below), and a tensor-product smoothed response to elevation
+separated by disturbance class (here not significant).<span style="mso-spacerun:yes">&nbsp; </span>The graph shows the overall elevation
+response and elevation responses restricted to disturbance classes.<span style="mso-spacerun:yes">&nbsp; </span>The large error associated with most of these
+is consistent with the interaction being insignificant.<span style="mso-spacerun:yes">&nbsp; </span>The "k=4" argument limits the
+number of knots in each smoothing of elevation within disturbance classes; I
+did this because this is maximum number the 5-class disturbance variable can
+support (try it without the k specified: you should get an error).</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">summary(gam6)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Family:
+binomial <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Link
+function: logit <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Formula:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">cover
+&gt; 0 ~ s(elev) + disturb + te(elev, disturb, k = 4)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Parametric
+coefficients:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Estimate Std. Error z value
+Pr(&gt;|z|)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">(Intercept)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>0.04427<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>0.37272<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>0.119<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>0.905<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">disturbLT-SEL
+-0.49432<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>0.45897<span style="mso-spacerun:yes">&nbsp; </span>-1.077<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>0.281<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">disturbSETTLE
+-0.25341<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>0.60576<span style="mso-spacerun:yes">&nbsp; </span>-0.418<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>0.676<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">disturbVIRGIN
+-0.75584<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>0.68266<span style="mso-spacerun:yes">&nbsp; </span>-1.107<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>0.268<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Approximate
+significance of smooth terms:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>edf Ref.df Chi.sq<span style="mso-spacerun:yes">&nbsp; </span>p-value<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">s(elev)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>8.203<span style="mso-spacerun:yes">&nbsp;
+</span>8.816<span style="mso-spacerun:yes">&nbsp; </span>80.45 1.06e-13 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">te(elev,disturb)
+2.792<span style="mso-spacerun:yes">&nbsp; </span>3.633<span style="mso-spacerun:yes">&nbsp; </span><span style="mso-spacerun:yes">&nbsp;</span>2.02<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>0.678<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Signif.
+codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05
+‘.’ 0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">R-sq.(adj)
+=<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>0.4<span style="mso-spacerun:yes">&nbsp;&nbsp;
+</span>Deviance explained = 33.1%<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">UBRE
+score = -0.054127<span style="mso-spacerun:yes">&nbsp; </span>Scale est. = 1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>n = 1009<o:p></o:p></span></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Here's an
+example of the procedure used by Bio et al. (1998, JVS 9:5-16) to compare
+models fit by GLMs and GAMs, using the <b style="mso-bidi-font-weight:normal">gam</b>
+function in the gam package.<span style="mso-spacerun:yes">&nbsp; </span>Using our
+yellow birch dataset:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">install.packages("gam")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">library(gam)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">m0 = glm(cover&gt;0~1,family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">m1 = glm(cover&gt;0~elev,family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">m2 =
+glm(cover&gt;0~elev+I(elev^2),family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">m3 = gam(cover&gt;0~s(elev,3),family=binomial,data=dat5)<span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp; </span>#smoother with 3 df<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">m4 =
+gam(cover&gt;0~s(elev,4),family=binomial,data=dat5)<span style="mso-tab-count:
+1">&nbsp;&nbsp;&nbsp;&nbsp; </span>#smoother with 4 df<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">anova(m0,m1,m2,m3,m4,test="Chi")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Analysis
+of Deviance Table<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 1:
+cover &gt; 0 ~ 1<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 2:
+cover &gt; 0 ~ elev<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 3:
+cover &gt; 0 ~ elev + I(elev^2)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 4:
+cover &gt; 0 ~ s(elev, 3)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 5:
+cover &gt; 0 ~ s(elev, 4)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp; </span>Resid. Df Resid. Dev<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp; </span>Df Deviance P(&gt;|Chi|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1008<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>1382.74<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">2<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1007<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>1057.49 1.0000<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>325.25 &lt;
+2.2e-16 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">3<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1006<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;
+</span>1011.99 1.0000<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>45.50 1.523e-11
+***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">4<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1005<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>978.88 1.0000<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>33.11 8.712e-09
+***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">5<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1004<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>965.93 1.0002<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span>12.95<span style="mso-spacerun:yes">&nbsp;&nbsp; </span>0.00032 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Signif.
+codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05
+‘.’ 0.1 ‘ ’ 1 <o:p></o:p></span></p>
+
+<p class="MsoNormal">All the models are better than the null model (intercept
+only), and the lowest deviance is model 4 (the 4-df smoother).<span style="mso-spacerun:yes">&nbsp; </span>This term would this be included in the model
+(s(elev,4)) and the next environmental variable would be test using the current
+model 4 as the null model.<span style="mso-spacerun:yes">&nbsp; </span>Like Bio et
+al., we can also compare the 4-df smoother fit with a 4<sup>th</sup>-degree
+polynomial fit in a GLM:</p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;color:red">m5 =
+glm(cover&gt;0~elev+I(elev^2)+I(elev^3)+I(elev^4),family=binomial,data=dat5)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">plot(x,predict(m4,newdata=list(elev=x),type="response"),pch=19,col="steelblue",<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp; </span>ylim=c(0,1),ylab="Probability",xlab="Elevation")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">points(x,predict(m5,newdata=list(elev=x),type="response"),pch=19,col="orchid")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:red">anova(m4,m5,test="Chi")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Analysis
+of Deviance Table<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 1:
+cover &gt; 0 ~ s(elev, 4)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Model 2:
+cover &gt; 0 ~ elev + I(elev^2) + I(elev^3) + I(elev^4)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue"><span style="mso-spacerun:yes">&nbsp; </span>Resid. Df Resid. Dev<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Df Deviance P(&gt;|Chi|)<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">1<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1004<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>965.93<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">2<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1004<span style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;
+</span>973.77 -0.00025783<span style="mso-spacerun:yes">&nbsp; </span>-7.8438
+5.358e-07 ***<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">---<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span style="font-family:&quot;Courier New&quot;;color:blue">Signif.
+codes:<span style="mso-spacerun:yes">&nbsp; </span>0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05
+‘.’ 0.1 ‘ ’ 1<o:p></o:p></span></p>
+
+<p class="MsoNormal">Like that of Bio et al., we conclude that using high-order
+polynomial functions leads to much greater residual variance than the
+nonparametric equivalent GAM.<span style="mso-spacerun:yes">&nbsp; </span></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Finally,
+you may wish to experiment with a GAM called BRUTO, or flexible discriminant
+analysis, available as the <b style="mso-bidi-font-weight:normal">bruto</b>
+function in the "mda" package.<span style="mso-spacerun:yes">&nbsp;
+</span>Elith et al. (Ecography 29: 129-151) suggest this method often works
+faster than the traditional GAM approach and has some convenient options for
+term selection.<span style="mso-spacerun:yes">&nbsp; </span>However, it only takes
+Gaussian error, so working with binary data is difficult.<span style="mso-spacerun:yes">&nbsp; </span>Unfortunately I was unable to get the <b style="mso-bidi-font-weight:normal">bruto</b> function to work with the above
+Smokies data; Elith et al. also had problems with the R implementation and used
+S-PLUS instead.</p>
+
+</div>
+
+
+
+
+</body></html>
