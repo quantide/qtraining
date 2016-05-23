@@ -710,9 +710,8 @@ ml2</code></pre>
 <p>Vectors, matrices and lists contain numerical data, characters or logics and are basic objects in R. Factors, on the other hand, are a more complex structure, as they contain both the numerical data vector and the labels associated with each level.</p>
 <p>To create a factor variable the <code>factor()</code> function is used. The only required argument is a vector of values which can be either string or numeric. Optional arguments include the <code>levels</code> argument, which determines the categories of the factor variable, and the default is the sorted list of all the distinct values of the data vector. The <code>labels</code> argument is another optional argument which is a vector of values that will be the labels of the categories in the <code>levels</code> argument. The <code>exclude</code> argument is also optional; it defines which levels will be classified as NA in any output using the factor variable.</p>
 <pre class="r"><code>grade &lt;- c(3, 4, 2, 2, 4, 1, 1, 4, 2, 2)
-grade &lt;- c(grade, 3)
 factor(grade)  </code></pre>
-<pre><code>##  [1] 3 4 2 2 4 1 1 4 2 2 3
+<pre><code>##  [1] 3 4 2 2 4 1 1 4 2 2
 ## Levels: 1 2 3 4</code></pre>
 <pre class="r"><code>gender &lt;- c(rep(&quot;male&quot;, 3), rep(&quot;female&quot;, 4))
 gender &lt;- factor(gender, levels=c(&quot;male&quot;, &quot;female&quot;, &quot;trans&quot;))
@@ -772,7 +771,7 @@ size</code></pre>
 <p>In the second case, the data frame is a list completely made of either vectors (of any kind) or factors, all with the same length.</p>
 <p>From a formal point of view, data frames are not a new type of objects. They are objects of list type and data frame class. From a practical point of view, a data frame is a very well-know structure in statistics. Its different kinds of information are organized in columns, whereas rows represent different types of observational units.</p>
 <p>Furthermore, data imported in R from external sources, such as text files, Excel files or databases, is saved in R as data frame-like objects.</p>
-<p>To sum up, unless there are have specific needs, data frames in R are the ideal tool for data filing and management.</p>
+<p>To sum up, unless we have specific needs, data frames in R are the ideal tool for data filing and management.</p>
 <p>Data frames are usually imported from external sources but the creation of a data frame object in R might sometimes be needed. The most widespread method to define a data frame is the <code>data.frame()</code> function. Its inputs are a series of vectors or factors of the same length. The generated object is made of as many columns as input elements.</p>
 <pre class="r"><code>name &lt;- c(&quot;James&quot;, &quot;Stevie&quot;, &quot;Otis&quot;, &quot;Bob&quot;, &quot;Levon&quot;, &quot;Patti&quot;, &quot;Karen&quot;)
 height &lt;- c(180, 170, 175, 190, 168, 160, 165)
@@ -791,7 +790,8 @@ df</code></pre>
 <pre class="r"><code>df &lt;- data.frame(
   height = c(180, 170, 175, 190, 168, 160, 165),
   name = c(&quot;James&quot;, &quot;Stevie&quot;, &quot;Otis&quot;, &quot;Bob&quot;, &quot;Levon&quot;, &quot;Patti&quot;, &quot;Karen&quot;),
-  gender = factor(c(&quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, &quot;F&quot;))
+  gender = factor(c(&quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, &quot;F&quot;)),
+  stringsAsFactors = FALSE
 )
 df</code></pre>
 <pre><code>##   height   name gender
@@ -869,7 +869,7 @@ df</code></pre>
 <pre class="r"><code>str(df)</code></pre>
 <pre><code>## 'data.frame':    7 obs. of  3 variables:
 ##  $ height: num  180 170 175 190 168 160 165
-##  $ name  : Factor w/ 7 levels &quot;Bob&quot;,&quot;James&quot;,..: 2 7 5 1 4 6 3
+##  $ name  : chr  &quot;James&quot; &quot;Stevie&quot; &quot;Otis&quot; &quot;Bob&quot; ...
 ##  $ gender: Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 2 2 2 2 2 1 1</code></pre>
 <p>The <code>head()</code> function show the first rows of a data frame. Its use is particularly convenient when data sets are long. <code>iris</code> is a built in R data set. It contains the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris.</p>
 <pre class="r"><code>nrow(iris)</code></pre>

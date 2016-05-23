@@ -363,18 +363,18 @@ dff</code></pre>
 ## 6     6     2</code></pre>
 <pre class="r"><code>class(dff)</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
-<pre class="r"><code>dffn &lt;- mutate(dff, n = row_number())
+<pre class="r"><code>dffn &lt;- mutate(dff, n = n())
 dffn</code></pre>
 <pre><code>## Source: local data frame [6 x 3]
 ## Groups: f [2]
 ## 
 ##       x     f     n
 ##   (int) (int) (int)
-## 1     1     1     1
-## 2     2     1     2
+## 1     1     1     3
+## 2     2     1     3
 ## 3     3     1     3
-## 4     4     2     1
-## 5     5     2     2
+## 4     4     2     3
+## 5     5     2     3
 ## 6     6     2     3</code></pre>
 <pre class="r"><code>class(dffn)</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>

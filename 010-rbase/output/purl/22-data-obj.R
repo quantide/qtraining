@@ -161,7 +161,6 @@ my_list$lis$a
 
 ## ---- factors------------------------------------------------------------
 grade <- c(3, 4, 2, 2, 4, 1, 1, 4, 2, 2)
-grade <- c(grade, 3)
 factor(grade)  
 gender <- c(rep("male", 3), rep("female", 4))
 gender <- factor(gender, levels=c("male", "female", "trans"))
@@ -205,7 +204,8 @@ df
 df <- data.frame(
   height = c(180, 170, 175, 190, 168, 160, 165),
   name = c("James", "Stevie", "Otis", "Bob", "Levon", "Patti", "Karen"),
-  gender = factor(c("M", "M", "M", "M", "M", "F", "F"))
+  gender = factor(c("M", "M", "M", "M", "M", "F", "F")),
+  stringsAsFactors = FALSE
 )
 df
 
