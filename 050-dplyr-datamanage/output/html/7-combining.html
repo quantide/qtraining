@@ -48,7 +48,7 @@ a:hover {
 }
 
 li.nav-header{
-  margin-top: 20px;
+  margin-top: 7px;
 }
 
 li.nav-header:first-child{
@@ -432,11 +432,11 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 <p>You can use a join to add “provincia” and “regione” to the Italian “comuni”:</p>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
 <pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
-<pre><code>## Source: local data frame [8,021 x 8]
+<pre><code>## Source: local data frame [8,003 x 8]
 ## 
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
 ##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001        Agli\xe8           FALSE          2             1
+## 1        1001           Agliè           FALSE          2             1
 ## 2        1002         Airasca           FALSE          3             1
 ## 3        1003    Ala di Stura           FALSE        462             1
 ## 4        1004 Albiano d'Ivrea           FALSE          1             1
@@ -450,11 +450,11 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 ## Variables not shown: cod_regione (int), provincia (chr), sigla_auto (chr)</code></pre>
 <pre class="r"><code>comuni %&gt;% left_join(regioni)</code></pre>
 <pre><code>## Joining by: &quot;cod_regione&quot;</code></pre>
-<pre><code>## Source: local data frame [8,021 x 7]
+<pre><code>## Source: local data frame [8,003 x 7]
 ## 
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
 ##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001        Agli\xe8           FALSE          2             1
+## 1        1001           Agliè           FALSE          2             1
 ## 2        1002         Airasca           FALSE          3             1
 ## 3        1003    Ala di Stura           FALSE        462             1
 ## 4        1004 Albiano d'Ivrea           FALSE          1             1
@@ -469,11 +469,11 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 <pre class="r"><code>comuni %&gt;% left_join(province) %&gt;% left_join(regioni)</code></pre>
 <pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
 <pre><code>## Joining by: &quot;cod_regione&quot;</code></pre>
-<pre><code>## Source: local data frame [8,021 x 9]
+<pre><code>## Source: local data frame [8,003 x 9]
 ## 
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
 ##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001        Agli\xe8           FALSE          2             1
+## 1        1001           Agliè           FALSE          2             1
 ## 2        1002         Airasca           FALSE          3             1
 ## 3        1003    Ala di Stura           FALSE        462             1
 ## 4        1004 Albiano d'Ivrea           FALSE          1             1
@@ -492,11 +492,11 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 </ul>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
 <pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
-<pre><code>## Source: local data frame [8,021 x 8]
+<pre><code>## Source: local data frame [8,003 x 8]
 ## 
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
 ##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001        Agli\xe8           FALSE          2             1
+## 1        1001           Agliè           FALSE          2             1
 ## 2        1002         Airasca           FALSE          3             1
 ## 3        1003    Ala di Stura           FALSE        462             1
 ## 4        1004 Albiano d'Ivrea           FALSE          1             1
@@ -513,11 +513,11 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 </ul>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
 <pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
-<pre><code>## Source: local data frame [8,021 x 8]
+<pre><code>## Source: local data frame [8,003 x 8]
 ## 
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
 ##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001        Agli\xe8           FALSE          2             1
+## 1        1001           Agliè           FALSE          2             1
 ## 2        1002         Airasca           FALSE          3             1
 ## 3        1003    Ala di Stura           FALSE        462             1
 ## 4        1004 Albiano d'Ivrea           FALSE          1             1
@@ -531,11 +531,11 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 ## Variables not shown: cod_regione (int), provincia (chr), sigla_auto (chr)</code></pre>
 <p>But we only want to join by <code>cod_provincia</code> not by <code>cod_citta_metro</code>. As only some of the “province” have a “città metropolitana” (9 of them: Torino, Milano, Venezia, Genova, Bologna, Firenze, Roma, Napoli, Bari):</p>
 <pre class="r"><code>comuni %&gt;% left_join(province, by = &quot;cod_provincia&quot;)</code></pre>
-<pre><code>## Source: local data frame [8,021 x 8]
+<pre><code>## Source: local data frame [8,003 x 8]
 ## 
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
 ##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001        Agli\xe8           FALSE          2             1
+## 1        1001           Agliè           FALSE          2             1
 ## 2        1002         Airasca           FALSE          3             1
 ## 3        1003    Ala di Stura           FALSE        462             1
 ## 4        1004 Albiano d'Ivrea           FALSE          1             1
@@ -554,11 +554,11 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 <pre class="r"><code>regioni2 &lt;- regioni %&gt;% rename(id_regione = cod_regione)</code></pre>
 <p>Then, in this case</p>
 <pre class="r"><code>comuni %&gt;% left_join(regioni2, c(&quot;cod_regione&quot; = &quot;id_regione&quot;))</code></pre>
-<pre><code>## Source: local data frame [8,021 x 7]
+<pre><code>## Source: local data frame [8,003 x 7]
 ## 
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
 ##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001        Agli\xe8           FALSE          2             1
+## 1        1001           Agliè           FALSE          2             1
 ## 2        1002         Airasca           FALSE          3             1
 ## 3        1003    Ala di Stura           FALSE        462             1
 ## 4        1004 Albiano d'Ivrea           FALSE          1             1
@@ -582,7 +582,7 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
   summarise(pop_legale = sum(pop_legale)) %&gt;% 
   arrange(desc(pop_legale))</code></pre>
 <pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
-<pre><code>## Source: local data frame [111 x 2]
+<pre><code>## Source: local data frame [110 x 2]
 ## 
 ##      provincia pop_legale
 ##          (chr)      (int)
@@ -606,21 +606,30 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
   summarise(pop_legale = sum(pop_legale)) %&gt;%
   arrange(desc(pop_legale))</code></pre>
 <pre><code>## Joining by: &quot;cod_regione&quot;</code></pre>
-<pre><code>## Source: local data frame [21 x 2]
+<pre><code>## Source: local data frame [20 x 2]
 ## 
-##                            regione pop_legale
-##                              (chr)      (int)
-## 1                         Piemonte     282640
-## 2                         Sardegna      71532
-## 3                          Abruzzo      59121
-## 4  Trentino-Alto Adige/S\xfcdtirol      52505
-## 5                         Calabria      52190
-## 6                          Liguria      52055
-## 7                         Campania      51706
-## 8                           Molise      40710
-## 9                           Veneto      29462
-## 10           Friuli-Venezia Giulia      28836
-## ..                             ...        ...</code></pre>
+##                         regione pop_legale
+##                           (chr)      (int)
+## 1                      Piemonte     282640
+## 2                      Sardegna      71532
+## 3                       Abruzzo      59121
+## 4  Trentino-Alto Adige/Südtirol      52505
+## 5                      Calabria      52190
+## 6                       Liguria      52055
+## 7                      Campania      51706
+## 8                        Molise      40710
+## 9                        Veneto      29462
+## 10        Friuli-Venezia Giulia      28836
+## 11                      Sicilia      27704
+## 12                       Marche      27376
+## 13 Valle d'Aosta/Vallée d'Aoste      19325
+## 14                   Basilicata      17411
+## 15               Emilia-Romagna      16217
+## 16                      Toscana      14546
+## 17                       Puglia       7298
+## 18                       Umbria       6235
+## 19                        Lazio         NA
+## 20                    Lombardia         NA</code></pre>
 <ul>
 <li>calculate the population living in the “comuni” which are administrative centers of their “province” * and sort by <code>pop_legale</code>:</li>
 </ul>
@@ -870,7 +879,7 @@ ripartizioni
 ```
 
 ```
-## Source: local data frame [6 x 2]
+## Source: local data frame [5 x 2]
 ## 
 ##   cod_rip_geo    rip_geo
 ##         (chr)      (chr)
@@ -879,7 +888,6 @@ ripartizioni
 ## 3           3     Centro
 ## 4           4        Sud
 ## 5           5      Isole
-## 6          NA
 ```
 
 ```r
@@ -916,18 +924,17 @@ union(ripartizioni, ripartizioni3) # Note that we get 7 rows, not 8
 ```
 
 ```
-## Source: local data frame [8 x 2]
+## Source: local data frame [7 x 2]
 ## 
 ##   cod_rip_geo     rip_geo
 ##         (chr)       (chr)
 ## 1           4 Mezzogiorno
 ## 2           1        Nord
-## 3          NA            
-## 4           5       Isole
-## 5           4         Sud
-## 6           3      Centro
-## 7           2    Nord-est
-## 8           1  Nord-ovest
+## 3           5       Isole
+## 4           4         Sud
+## 5           3      Centro
+## 6           2    Nord-est
+## 7           1  Nord-ovest
 ```
 
 ```r
@@ -935,7 +942,7 @@ setdiff(ripartizioni, ripartizioni3)
 ```
 
 ```
-## Source: local data frame [5 x 2]
+## Source: local data frame [4 x 2]
 ## 
 ##   cod_rip_geo    rip_geo
 ##         (chr)      (chr)
@@ -943,7 +950,6 @@ setdiff(ripartizioni, ripartizioni3)
 ## 2           2   Nord-est
 ## 3           4        Sud
 ## 4           5      Isole
-## 5          NA
 ```
 
 ```r
@@ -976,7 +982,7 @@ ripartizioni4
 ```
 
 ```
-## Source: local data frame [6 x 2]
+## Source: local data frame [5 x 2]
 ## 
 ##   cod_rip_geo    rip_geo
 ##         (chr)     (fctr)
@@ -985,7 +991,6 @@ ripartizioni4
 ## 3           3     Centro
 ## 4           4        Sud
 ## 5           5      Isole
-## 6          NA
 ```
 
 ```r
@@ -993,9 +998,9 @@ ripartizioni4 %>% str
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    6 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    5 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
-##  $ rip_geo    : Factor w/ 6 levels "","Centro","Isole",..: 5 4 2 6 3 1
+##  $ rip_geo    : Factor w/ 5 levels "Centro","Isole",..: 4 3 1 5 2
 ```
 
 ```r
@@ -1040,7 +1045,7 @@ ripartizioni5 %>% str
 ```
 
 ```
-## Source: local data frame [8 x 2]
+## Source: local data frame [7 x 2]
 ## 
 ##   cod_rip_geo     rip_geo
 ##         (chr)       (chr)
@@ -1049,9 +1054,8 @@ ripartizioni5 %>% str
 ## 3           3      Centro
 ## 4           4         Sud
 ## 5           5       Isole
-## 6          NA            
-## 7           1        Nord
-## 8           4 Mezzogiorno
+## 6           1        Nord
+## 7           4 Mezzogiorno
 ```
 
 ```r
@@ -1059,7 +1063,7 @@ joined_df %>% str()
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    8 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    7 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
 ##  $ rip_geo    : chr  "Nord-ovest" "Nord-est" "Centro" "Sud" ...
 ```
@@ -1076,7 +1080,7 @@ ripartizioni4
 ```
 
 ```
-## Source: local data frame [6 x 2]
+## Source: local data frame [5 x 2]
 ## 
 ##   cod_rip_geo    rip_geo
 ##         (chr)     (fctr)
@@ -1085,7 +1089,6 @@ ripartizioni4
 ## 3           3     Centro
 ## 4           4        Sud
 ## 5           5      Isole
-## 6          NA         NA
 ```
 
 ```r
@@ -1093,9 +1096,9 @@ ripartizioni4 %>% str
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    6 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    5 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
-##  $ rip_geo    : Factor w/ 7 levels "Centro","Isole",..: 4 3 1 5 2 NA
+##  $ rip_geo    : Factor w/ 7 levels "Centro","Isole",..: 4 3 1 5 2
 ```
 
 ```r
@@ -1141,7 +1144,7 @@ ripartizioni5 %>% str
 ```
 
 ```
-## Source: local data frame [8 x 2]
+## Source: local data frame [7 x 2]
 ## 
 ##   cod_rip_geo     rip_geo
 ##         (chr)       (chr)
@@ -1150,9 +1153,8 @@ ripartizioni5 %>% str
 ## 3           3      Centro
 ## 4           4         Sud
 ## 5           5       Isole
-## 6          NA          NA
-## 7           1        Nord
-## 8           4 Mezzogiorno
+## 6           1        Nord
+## 7           4 Mezzogiorno
 ```
 
 ```r
@@ -1160,7 +1162,7 @@ joined_df %>% str()
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    8 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    7 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
 ##  $ rip_geo    : chr  "Nord-ovest" "Nord-est" "Centro" "Sud" ...
 ```
@@ -1177,7 +1179,7 @@ ripartizioni4
 ```
 
 ```
-## Source: local data frame [6 x 2]
+## Source: local data frame [5 x 2]
 ## 
 ##   cod_rip_geo    rip_geo
 ##         (chr)     (fctr)
@@ -1186,7 +1188,6 @@ ripartizioni4
 ## 3           3     Centro
 ## 4           4        Sud
 ## 5           5      Isole
-## 6          NA         NA
 ```
 
 ```r
@@ -1194,9 +1195,9 @@ ripartizioni4 %>% str
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    6 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    5 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
-##  $ rip_geo    : Factor w/ 7 levels "Nord","Centro",..: 5 4 2 6 7 NA
+##  $ rip_geo    : Factor w/ 7 levels "Nord","Centro",..: 5 4 2 6 7
 ```
 
 ```r
@@ -1237,7 +1238,7 @@ ripartizioni5 %>% str
 ```
 
 ```
-## Source: local data frame [8 x 2]
+## Source: local data frame [7 x 2]
 ## 
 ##   cod_rip_geo     rip_geo
 ##         (chr)      (fctr)
@@ -1246,9 +1247,8 @@ ripartizioni5 %>% str
 ## 3           3      Centro
 ## 4           4         Sud
 ## 5           5       Isole
-## 6          NA          NA
-## 7           1        Nord
-## 8           4 Mezzogiorno
+## 6           1        Nord
+## 7           4 Mezzogiorno
 ```
 
 ```r
@@ -1256,9 +1256,9 @@ joined_df %>% str()
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    8 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    7 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
-##  $ rip_geo    : Factor w/ 7 levels "Nord","Centro",..: 5 4 2 6 7 NA 1 3
+##  $ rip_geo    : Factor w/ 7 levels "Nord","Centro",..: 5 4 2 6 7 1 3
 ```
 
 * A factor and a character are coerced to character with a warning:
@@ -1270,7 +1270,7 @@ ripartizioni
 ```
 
 ```
-## Source: local data frame [6 x 2]
+## Source: local data frame [5 x 2]
 ## 
 ##   cod_rip_geo    rip_geo
 ##         (chr)      (chr)
@@ -1279,7 +1279,6 @@ ripartizioni
 ## 3           3     Centro
 ## 4           4        Sud
 ## 5           5      Isole
-## 6          NA
 ```
 
 ```r
@@ -1287,7 +1286,7 @@ ripartizioni %>% str
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    6 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    5 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
 ##  $ rip_geo    : chr  "Nord-ovest" "Nord-est" "Centro" "Sud" ...
 ```
@@ -1298,7 +1297,7 @@ ripartizioni4
 ```
 
 ```
-## Source: local data frame [6 x 2]
+## Source: local data frame [5 x 2]
 ## 
 ##   cod_rip_geo    rip_geo
 ##         (chr)     (fctr)
@@ -1307,7 +1306,6 @@ ripartizioni4
 ## 3           3     Centro
 ## 4           4        Sud
 ## 5           5      Isole
-## 6          NA         NA
 ```
 
 ```r
@@ -1315,9 +1313,9 @@ ripartizioni4 %>% str
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    6 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    5 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
-##  $ rip_geo    : Factor w/ 7 levels "Nord","Centro",..: 5 4 2 6 7 NA
+##  $ rip_geo    : Factor w/ 7 levels "Nord","Centro",..: 5 4 2 6 7
 ```
 
 ```r
@@ -1335,7 +1333,7 @@ ripartizioni4 %>% str
 ```
 
 ```
-## Source: local data frame [7 x 2]
+## Source: local data frame [5 x 2]
 ## 
 ##   cod_rip_geo    rip_geo
 ##         (chr)      (chr)
@@ -1344,8 +1342,6 @@ ripartizioni4 %>% str
 ## 3           3     Centro
 ## 4           4        Sud
 ## 5           5      Isole
-## 6          NA           
-## 7          NA         NA
 ```
 
 ```r
@@ -1353,7 +1349,7 @@ joined_df %>% str()
 ```
 
 ```
-## Classes 'tbl_df', 'tbl' and 'data.frame':    7 obs. of  2 variables:
+## Classes 'tbl_df', 'tbl' and 'data.frame':    5 obs. of  2 variables:
 ##  $ cod_rip_geo: chr  "1" "2" "3" "4" ...
 ##  $ rip_geo    : chr  "Nord-ovest" "Nord-est" "Centro" "Sud" ...
 ```
