@@ -256,13 +256,13 @@ NULL
 
 
 ##################################################################################################################################
-#' Default
+#' Default of credit card clients
 #' 
 #' 
 #' @name default
 #' 
 #' 
-#' @description The \code{default} data contains information about default of credit card clients.
+#' @description The \code{default} data contains information about customers default payments in Taiwan.
 #' 
 #'  
 #' @usage data(default)
@@ -275,31 +275,33 @@ NULL
 #' The 25 variables of the \code{default} tbl data frame are the following ones:
 #' \itemize{
 #' \item \code{ID} (numeric);
-#' \item \code{LIMIT_BAL} (numeric)
-#' \item \code{SEX} (character);
-#' \item \code{EDUCATION} (numeric);
-#' \item \code{MARRIAGE} (numeric);
-#' \item \code{AGE} (numeric);
-#' \item \code{PAY_0} (numeric);
-#' \item \code{PAY_2} (numeric);
-#' \item \code{PAY_3} (numeric);
-#' \item \code{PAY_4} (numeric);
-#' \item \code{PAY_5} (numeric);
-#' \item \code{PAY_6} (numeric);
-#' \item \code{BILL_AMT1} (numeric);
-#' \item \code{BILL_AMT2} (numeric);
-#' \item \code{BILL_AMT3} (numeric);
-#' \item \code{BILL_AMT4} (numeric);
-#' \item \code{BILL_AMT5} (numeric);
-#' \item \code{BILL_AMT6} (numeric);
-#' \item \code{PAY_AMT1} (numeric);
-#' \item \code{PAY_AMT2} (numeric);
-#' \item \code{PAY_AMT3} (numeric);
-#' \item \code{PAY_AMT4} (numeric);
-#' \item \code{PAY_AMT5} (numeric);
-#' \item \code{PAY_AMT6} (numeric);
-#' \item \code{default payment next month} (numeric);
+#' \item \code{LIMIT_BAL} Amount of the given credit (NT dollar): it includes both the individual consumer credit and his/her family (supplementary) credit (numeric)
+#' \item \code{SEX} Gender (factor with 2 levels: \code{1} (Male) and \code{2}(Female));
+#' \item \code{EDUCATION} Education (factor with 7 levels: \code{0}, \code{1}, \code{2}, \code{3}, \code{4}, \code{5} and \code{6});
+#' \item \code{MARRIAGE} Marital status (factor with 4 levels: \code{0}, \code{1}, \code{2} and \code{3});
+#' \item \code{AGE} Age (year) (numeric);
+#' \item \code{PAY_0} History of past payment: the repayment status in September, 2005 (numeric);
+#' \item \code{PAY_2} History of past payment: the repayment status in August, 2005 (numeric);
+#' \item \code{PAY_3} History of past payment: the repayment status in July, 2005 (numeric);
+#' \item \code{PAY_4} History of past payment: the repayment status in June, 2005 (numeric);
+#' \item \code{PAY_5} History of past payment: the repayment status in May, 2005 (numeric);
+#' \item \code{PAY_6} History of past payment: the repayment status in April, 2005 (numeric);
+#' \item \code{BILL_AMT1} Amount of bill statement (NT dollar): amount of bill statement in September, 2005 (numeric);
+#' \item \code{BILL_AMT2} Amount of bill statement (NT dollar): amount of bill statement in August, 2005(numeric);
+#' \item \code{BILL_AMT3} Amount of bill statement (NT dollar): amount of bill statement in July, 2005 (numeric);
+#' \item \code{BILL_AMT4} Amount of bill statement (NT dollar): amount of bill statement in June, 2005 (numeric);
+#' \item \code{BILL_AMT5} Amount of bill statement (NT dollar): amount of bill statement in May, 2005 (numeric);
+#' \item \code{BILL_AMT6} Amount of bill statement (NT dollar): amount of bill statement in April, 2005 (numeric);
+#' \item \code{PAY_AMT1} Amount of previous payment (NT dollar): amount paid in September (numeric);
+#' \item \code{PAY_AMT2} Amount of previous payment (NT dollar): amount paid in August (numeric);
+#' \item \code{PAY_AMT3} Amount of previous payment (NT dollar): amount paid in July (numeric);
+#' \item \code{PAY_AMT4} Amount of previous payment (NT dollar): amount paid in June (numeric);
+#' \item \code{PAY_AMT5} Amount of previous payment (NT dollar): amount paid in May (numeric);
+#' \item \code{PAY_AMT6} Amount of previous payment (NT dollar): amount paid in April (numeric);
+#' \item \code{default_payment} default payment next month (factor with 2 levels: \code{0} (No) and \code{1} (Yes));
 #' }
+#' 
+#' @source I-Cheng Yeh, Department of Information Management, Chung Hua University, Taiwan. (2) Department of Civil Engineering, Tamkang University, Taiwan.
 NULL
 ##################################################################################################################################
 
@@ -728,28 +730,30 @@ NULL
 #' @details 
 #' The 9 variables of the \code{pimaindiansdiabetes2} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{pregnant} (numeric);
-#' \item \code{glucose} (numeric);
-#' \item \code{pressure} (numeric);
-#' \item \code{triceps} (numeric);
-#' \item \code{insulin} (numeric);
-#' \item \code{mass} (numeric);
-#' \item \code{pedigree} (numeric);
-#' \item \code{age} (numeric);
-#' \item \code{diabetes} (factor with 2 levels: \code{neg} and \code{pos});
+#' \item \code{pregnant} Number of times pregnant (numeric);
+#' \item \code{glucose} Plasma glucose concentration a 2 hours in an oral glucose tolerance test (numeric);
+#' \item \code{pressure} Diastolic blood pressure (mm Hg) (numeric);
+#' \item \code{triceps} Triceps skin fold thickness (mm) (numeric);
+#' \item \code{insulin} 2-Hour serum insulin (mu U/ml)(numeric);
+#' \item \code{mass} Body mass index (weight in kg/(height in m)^2) (numeric);
+#' \item \code{pedigree} Diabetes pedigree function (numeric);
+#' \item \code{age} Age (years) (numeric);
+#' \item \code{diabetes} class variable: diabetic or not (factor with 2 levels: \code{neg} and \code{pos});
 #' }
+#' 
+#' @source National Institute of Diabetes and Digestive and Kidney Diseases 
 NULL
 ##################################################################################################################################
 
 
 ##################################################################################################################################
-#' Prostate 
+#' Prostate Cancer
 #' 
 #' 
 #' @name prostate
 #' 
 #' 
-#' @description The \code{prostate} data was ......
+#' @description The \code{prostate} data come from a study that examined the correlation between the level of prostate specific antigen and a number of clinical measures in men who were about to receive a radical prostatectomy
 #' 
 #'  
 #' @usage data(prostate)
@@ -761,16 +765,19 @@ NULL
 #' @details 
 #' The 9 variables of the \code{prostate} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{lcavol} (numeric);
-#' \item \code{lweight} (numeric);
-#' \item \code{age} (numeric);
-#' \item \code{lbph} (numeric);
-#' \item \code{svi} (numeric);
-#' \item \code{lcp} (numeric);
-#' \item \code{gleason} (numeric);
-#' \item \code{pgg45} (numeric);
-#' \item \code{lpsa} (numeric);
+#' \item \code{lcavol} log(cancer volume) (numeric);
+#' \item \code{lweight} log(prostate weight) (numeric);
+#' \item \code{age} age (numeric);
+#' \item \code{lbph} log(benign prostatic hyperplasia amount) (numeric);
+#' \item \code{svi} seminal vesicle invasion (numeric);
+#' \item \code{lcp} log(capsular penetration) (numeric);
+#' \item \code{gleason} Gleason score (numeric);
+#' \item \code{pgg45} percentage Gleason scores 4 or 5 (numeric);
+#' \item \code{lpsa} log(prostate specific antigen) (numeric);
 #' }
+#' 
+#' @source Stamey, T.A., Kabalin, J.N., McNeal, J.E., Johnstone, I.M., Freiha, F., Redwine, E.A. and Yang, N. (1989)
+#' Prostate specific antigen in the diagnosis and treatment of adenocarcinoma of the prostate: II. radical prostatectomy treated patients, Journal of Urology 141(5), 1076–1083.
 NULL
 ##################################################################################################################################
 
