@@ -186,6 +186,7 @@ pairs(x = X_final, pch = rownames(mds))
 or: (this is a 3D plot: try it in your `R`)
 
 ```{r 02a-plotfinalfk_alternative_plot, echo=TRUE, eval=FALSE}
+require(rgl)
 open3d()
 with(data.frame(X_final),
      plot3d(x = X1, y = X2, z = X3,
@@ -482,7 +483,6 @@ pairs(x = WWII_final, panel = panel.txt, xlim = c(-5, 5), ylim = c(-5, 5))
 The code to represent the 3D graph for the 3 dimensions follows:
 
 ```{r 3dplot, eval=FALSE}
-require(rgl)
 WWII_final$Leader <- row.names(WWII_final)
 open3d()
 with(WWII_final,
