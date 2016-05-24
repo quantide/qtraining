@@ -347,9 +347,8 @@ $(document).ready(function () {
 </ul>
 </div>
 
-<!-- AS: "questa roba deve sparire perche' se la dai a qualcuno non funziona."
-
--->
+<pre class="r"><code>require(dplyr)
+require(qdata)</code></pre>
 <p><code>dplyr</code> aims to provide a function for each basic verb of data manipulating.</p>
 <p>All these functions are very similar:</p>
 <ul>
@@ -413,22 +412,20 @@ select(bank, year:day)</code></pre>
 select(bank, -(year:day))</code></pre>
 <pre><code>## Source: local data frame [45,211 x 17]
 ## 
-##       id   age          job  marital education default balance housing
-##    (int) (int)       (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr)
-## 1      1    58   management  married  tertiary      no    2143     yes
-## 2      2    44   technician   single secondary      no      29     yes
-## 3      3    33 entrepreneur  married secondary      no       2     yes
-## 4      4    47  blue-collar  married   unknown      no    1506     yes
-## 5      5    33      unknown   single   unknown      no       1      no
-## 6      6    35   management  married  tertiary      no     231     yes
-## 7      7    28   management   single  tertiary      no     447     yes
-## 8      8    42 entrepreneur divorced  tertiary     yes       2     yes
-## 9      9    58      retired  married   primary      no     121     yes
-## 10    10    43   technician   single secondary      no     593     yes
-## ..   ...   ...          ...      ...       ...     ...     ...     ...
-## Variables not shown: loan (fctr), contact (fctr), date (time), duration
-##   (int), campaign (int), pdays (int), previous (int), poutcome (fctr), y
-##   (fctr)</code></pre>
+##       id   age          job  marital education default balance housing   loan contact       date duration
+##    (int) (int)       (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)  (fctr)     (time)    (int)
+## 1      1    58   management  married  tertiary      no    2143     yes     no unknown 2008-05-05      261
+## 2      2    44   technician   single secondary      no      29     yes     no unknown 2008-05-05      151
+## 3      3    33 entrepreneur  married secondary      no       2     yes    yes unknown 2008-05-05       76
+## 4      4    47  blue-collar  married   unknown      no    1506     yes     no unknown 2008-05-05       92
+## 5      5    33      unknown   single   unknown      no       1      no     no unknown 2008-05-05      198
+## 6      6    35   management  married  tertiary      no     231     yes     no unknown 2008-05-05      139
+## 7      7    28   management   single  tertiary      no     447     yes    yes unknown 2008-05-05      217
+## 8      8    42 entrepreneur divorced  tertiary     yes       2     yes     no unknown 2008-05-05      380
+## 9      9    58      retired  married   primary      no     121     yes     no unknown 2008-05-05       50
+## 10    10    43   technician   single secondary      no     593     yes     no unknown 2008-05-05       55
+## ..   ...   ...          ...      ...       ...     ...     ...     ...    ...     ...        ...      ...
+## Variables not shown: campaign (int), pdays (int), previous (int), poutcome (fctr), y (fctr)</code></pre>
 <p>You can rename variables with <code>select()</code> by using named arguments:</p>
 <pre class="r"><code># Rename id variable as ID
 select(bank, ID = id)</code></pre>
@@ -457,124 +454,118 @@ select(bank, ID = id)</code></pre>
 <pre class="r"><code>filter(bank, job == &quot;student&quot;, balance &gt; 20000)</code></pre>
 <pre><code>## Source: local data frame [3 x 20]
 ## 
-##      id   age     job marital education default balance housing   loan
-##   (int) (int)  (fctr)  (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)
-## 1 31125    24 student  single secondary      no   23878      no     no
-## 2 39536    24 student  single secondary      no   23878      no     no
-## 3 41923    27 student  single  tertiary      no   24025      no     no
-## Variables not shown: contact (fctr), day (int), month (fctr), year (int),
-##   date (time), duration (int), campaign (int), pdays (int), previous
-##   (int), poutcome (fctr), y (fctr)</code></pre>
+##      id   age     job marital education default balance housing   loan  contact   day  month  year
+##   (int) (int)  (fctr)  (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)   (fctr) (int) (fctr) (int)
+## 1 31125    24 student  single secondary      no   23878      no     no cellular    18    feb  2009
+## 2 39536    24 student  single secondary      no   23878      no     no cellular    26    may  2009
+## 3 41923    27 student  single  tertiary      no   24025      no     no cellular    21    oct  2009
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 <p><code>filter()</code> allows you to give it any number of filtering conditions which are joined together with <code>&amp;</code> and/or the other operators.</p>
 <pre class="r"><code># Select all calls made to student of 18 years 
 filter(bank, age == 18 &amp; job == &quot;student&quot;)</code></pre>
 <pre><code>## Source: local data frame [12 x 20]
 ## 
-##       id   age     job marital education default balance housing   loan
-##    (int) (int)  (fctr)  (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)
-## 1  40737    18 student  single   primary      no    1944      no     no
-## 2  40745    18 student  single   unknown      no     108      no     no
-## 3  40888    18 student  single   primary      no     608      no     no
-## 4  41223    18 student  single   unknown      no      35      no     no
-## 5  41253    18 student  single secondary      no       5      no     no
-## 6  41274    18 student  single   unknown      no       3      no     no
-## 7  41488    18 student  single   unknown      no     108      no     no
-## 8  42147    18 student  single secondary      no     156      no     no
-## 9  42275    18 student  single   primary      no     608      no     no
-## 10 42955    18 student  single   unknown      no     108      no     no
-## 11 43638    18 student  single   unknown      no     348      no     no
-## 12 44645    18 student  single   unknown      no     438      no     no
-## Variables not shown: contact (fctr), day (int), month (fctr), year (int),
-##   date (time), duration (int), campaign (int), pdays (int), previous
-##   (int), poutcome (fctr), y (fctr)</code></pre>
+##       id   age     job marital education default balance housing   loan   contact   day  month  year
+##    (int) (int)  (fctr)  (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)    (fctr) (int) (fctr) (int)
+## 1  40737    18 student  single   primary      no    1944      no     no telephone    10    aug  2009
+## 2  40745    18 student  single   unknown      no     108      no     no  cellular    10    aug  2009
+## 3  40888    18 student  single   primary      no     608      no     no  cellular    12    aug  2009
+## 4  41223    18 student  single   unknown      no      35      no     no telephone    21    aug  2009
+## 5  41253    18 student  single secondary      no       5      no     no  cellular    24    aug  2009
+## 6  41274    18 student  single   unknown      no       3      no     no  cellular    25    aug  2009
+## 7  41488    18 student  single   unknown      no     108      no     no  cellular     8    sep  2009
+## 8  42147    18 student  single secondary      no     156      no     no  cellular     4    nov  2009
+## 9  42275    18 student  single   primary      no     608      no     no  cellular    13    nov  2009
+## 10 42955    18 student  single   unknown      no     108      no     no  cellular     9    feb  2010
+## 11 43638    18 student  single   unknown      no     348      no     no  cellular     5    may  2010
+## 12 44645    18 student  single   unknown      no     438      no     no  cellular     1    sep  2010
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 <pre class="r"><code># Select all calls made to people of 18 or years
 filter(bank, age == 18 | age == 95)</code></pre>
 <pre><code>## Source: local data frame [14 x 20]
 ## 
-##       id   age     job  marital education default balance housing   loan
-##    (int) (int)  (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)
-## 1  33700    95 retired divorced   primary      no    2282      no     no
-## 2  40737    18 student   single   primary      no    1944      no     no
-## 3  40745    18 student   single   unknown      no     108      no     no
-## 4  40888    18 student   single   primary      no     608      no     no
-## 5  41223    18 student   single   unknown      no      35      no     no
-## 6  41253    18 student   single secondary      no       5      no     no
-## 7  41274    18 student   single   unknown      no       3      no     no
-## 8  41488    18 student   single   unknown      no     108      no     no
-## 9  41664    95 retired  married secondary      no       0      no     no
-## 10 42147    18 student   single secondary      no     156      no     no
-## 11 42275    18 student   single   primary      no     608      no     no
-## 12 42955    18 student   single   unknown      no     108      no     no
-## 13 43638    18 student   single   unknown      no     348      no     no
-## 14 44645    18 student   single   unknown      no     438      no     no
-## Variables not shown: contact (fctr), day (int), month (fctr), year (int),
-##   date (time), duration (int), campaign (int), pdays (int), previous
-##   (int), poutcome (fctr), y (fctr)</code></pre>
+##       id   age     job  marital education default balance housing   loan   contact   day  month  year
+##    (int) (int)  (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)    (fctr) (int) (fctr) (int)
+## 1  33700    95 retired divorced   primary      no    2282      no     no telephone    21    apr  2009
+## 2  40737    18 student   single   primary      no    1944      no     no telephone    10    aug  2009
+## 3  40745    18 student   single   unknown      no     108      no     no  cellular    10    aug  2009
+## 4  40888    18 student   single   primary      no     608      no     no  cellular    12    aug  2009
+## 5  41223    18 student   single   unknown      no      35      no     no telephone    21    aug  2009
+## 6  41253    18 student   single secondary      no       5      no     no  cellular    24    aug  2009
+## 7  41274    18 student   single   unknown      no       3      no     no  cellular    25    aug  2009
+## 8  41488    18 student   single   unknown      no     108      no     no  cellular     8    sep  2009
+## 9  41664    95 retired  married secondary      no       0      no     no telephone     1    oct  2009
+## 10 42147    18 student   single secondary      no     156      no     no  cellular     4    nov  2009
+## 11 42275    18 student   single   primary      no     608      no     no  cellular    13    nov  2009
+## 12 42955    18 student   single   unknown      no     108      no     no  cellular     9    feb  2010
+## 13 43638    18 student   single   unknown      no     348      no     no  cellular     5    may  2010
+## 14 44645    18 student   single   unknown      no     438      no     no  cellular     1    sep  2010
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 <p><code>filter()</code> can be used also with <code>%in%</code> to establish conditions under which filter:</p>
 <pre class="r"><code># Select all calls made to people of 18 or years
 filter(bank, age %in% c(18,95))</code></pre>
 <pre><code>## Source: local data frame [14 x 20]
 ## 
-##       id   age     job  marital education default balance housing   loan
-##    (int) (int)  (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)
-## 1  33700    95 retired divorced   primary      no    2282      no     no
-## 2  40737    18 student   single   primary      no    1944      no     no
-## 3  40745    18 student   single   unknown      no     108      no     no
-## 4  40888    18 student   single   primary      no     608      no     no
-## 5  41223    18 student   single   unknown      no      35      no     no
-## 6  41253    18 student   single secondary      no       5      no     no
-## 7  41274    18 student   single   unknown      no       3      no     no
-## 8  41488    18 student   single   unknown      no     108      no     no
-## 9  41664    95 retired  married secondary      no       0      no     no
-## 10 42147    18 student   single secondary      no     156      no     no
-## 11 42275    18 student   single   primary      no     608      no     no
-## 12 42955    18 student   single   unknown      no     108      no     no
-## 13 43638    18 student   single   unknown      no     348      no     no
-## 14 44645    18 student   single   unknown      no     438      no     no
-## Variables not shown: contact (fctr), day (int), month (fctr), year (int),
-##   date (time), duration (int), campaign (int), pdays (int), previous
-##   (int), poutcome (fctr), y (fctr)</code></pre>
+##       id   age     job  marital education default balance housing   loan   contact   day  month  year
+##    (int) (int)  (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)    (fctr) (int) (fctr) (int)
+## 1  33700    95 retired divorced   primary      no    2282      no     no telephone    21    apr  2009
+## 2  40737    18 student   single   primary      no    1944      no     no telephone    10    aug  2009
+## 3  40745    18 student   single   unknown      no     108      no     no  cellular    10    aug  2009
+## 4  40888    18 student   single   primary      no     608      no     no  cellular    12    aug  2009
+## 5  41223    18 student   single   unknown      no      35      no     no telephone    21    aug  2009
+## 6  41253    18 student   single secondary      no       5      no     no  cellular    24    aug  2009
+## 7  41274    18 student   single   unknown      no       3      no     no  cellular    25    aug  2009
+## 8  41488    18 student   single   unknown      no     108      no     no  cellular     8    sep  2009
+## 9  41664    95 retired  married secondary      no       0      no     no telephone     1    oct  2009
+## 10 42147    18 student   single secondary      no     156      no     no  cellular     4    nov  2009
+## 11 42275    18 student   single   primary      no     608      no     no  cellular    13    nov  2009
+## 12 42955    18 student   single   unknown      no     108      no     no  cellular     9    feb  2010
+## 13 43638    18 student   single   unknown      no     348      no     no  cellular     5    may  2010
+## 14 44645    18 student   single   unknown      no     438      no     no  cellular     1    sep  2010
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 <p>An other example is:</p>
 <pre class="r"><code># Select all calls made to people whose jos is admin. or technician 
 filter(bank, job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
 <pre><code>## Source: local data frame [12,768 x 20]
 ## 
-##       id   age        job  marital education default balance housing
-##    (int) (int)     (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr)
-## 1      2    44 technician   single secondary      no      29     yes
-## 2     10    43 technician   single secondary      no     593     yes
-## 3     11    41     admin. divorced secondary      no     270     yes
-## 4     12    29     admin.   single secondary      no     390     yes
-## 5     13    53 technician  married secondary      no       6     yes
-## 6     14    58 technician  married   unknown      no      71     yes
-## 7     17    45     admin.   single   unknown      no      13     yes
-## 8     26    44     admin.  married secondary      no    -372     yes
-## 9     30    36 technician   single secondary      no     265     yes
-## 10    31    57 technician  married secondary      no     839      no
-## ..   ...   ...        ...      ...       ...     ...     ...     ...
-## Variables not shown: loan (fctr), contact (fctr), day (int), month (fctr),
-##   year (int), date (time), duration (int), campaign (int), pdays (int),
-##   previous (int), poutcome (fctr), y (fctr)</code></pre>
+##       id   age        job  marital education default balance housing   loan contact   day  month  year
+##    (int) (int)     (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)  (fctr) (int) (fctr) (int)
+## 1      2    44 technician   single secondary      no      29     yes     no unknown     5    may  2008
+## 2     10    43 technician   single secondary      no     593     yes     no unknown     5    may  2008
+## 3     11    41     admin. divorced secondary      no     270     yes     no unknown     5    may  2008
+## 4     12    29     admin.   single secondary      no     390     yes     no unknown     5    may  2008
+## 5     13    53 technician  married secondary      no       6     yes     no unknown     5    may  2008
+## 6     14    58 technician  married   unknown      no      71     yes     no unknown     5    may  2008
+## 7     17    45     admin.   single   unknown      no      13     yes     no unknown     5    may  2008
+## 8     26    44     admin.  married secondary      no    -372     yes     no unknown     5    may  2008
+## 9     30    36 technician   single secondary      no     265     yes    yes unknown     5    may  2008
+## 10    31    57 technician  married secondary      no     839      no    yes unknown     5    may  2008
+## ..   ...   ...        ...      ...       ...     ...     ...     ...    ...     ...   ...    ...   ...
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 <pre class="r"><code># Select all calls made to people whose jos is admin. or technician 
 filter(bank, job == &quot;admin.&quot; | job == &quot;technician&quot;)</code></pre>
 <pre><code>## Source: local data frame [12,768 x 20]
 ## 
-##       id   age        job  marital education default balance housing
-##    (int) (int)     (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr)
-## 1      2    44 technician   single secondary      no      29     yes
-## 2     10    43 technician   single secondary      no     593     yes
-## 3     11    41     admin. divorced secondary      no     270     yes
-## 4     12    29     admin.   single secondary      no     390     yes
-## 5     13    53 technician  married secondary      no       6     yes
-## 6     14    58 technician  married   unknown      no      71     yes
-## 7     17    45     admin.   single   unknown      no      13     yes
-## 8     26    44     admin.  married secondary      no    -372     yes
-## 9     30    36 technician   single secondary      no     265     yes
-## 10    31    57 technician  married secondary      no     839      no
-## ..   ...   ...        ...      ...       ...     ...     ...     ...
-## Variables not shown: loan (fctr), contact (fctr), day (int), month (fctr),
-##   year (int), date (time), duration (int), campaign (int), pdays (int),
-##   previous (int), poutcome (fctr), y (fctr)</code></pre>
+##       id   age        job  marital education default balance housing   loan contact   day  month  year
+##    (int) (int)     (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)  (fctr) (int) (fctr) (int)
+## 1      2    44 technician   single secondary      no      29     yes     no unknown     5    may  2008
+## 2     10    43 technician   single secondary      no     593     yes     no unknown     5    may  2008
+## 3     11    41     admin. divorced secondary      no     270     yes     no unknown     5    may  2008
+## 4     12    29     admin.   single secondary      no     390     yes     no unknown     5    may  2008
+## 5     13    53 technician  married secondary      no       6     yes     no unknown     5    may  2008
+## 6     14    58 technician  married   unknown      no      71     yes     no unknown     5    may  2008
+## 7     17    45     admin.   single   unknown      no      13     yes     no unknown     5    may  2008
+## 8     26    44     admin.  married secondary      no    -372     yes     no unknown     5    may  2008
+## 9     30    36 technician   single secondary      no     265     yes    yes unknown     5    may  2008
+## 10    31    57 technician  married secondary      no     839      no    yes unknown     5    may  2008
+## ..   ...   ...        ...      ...       ...     ...     ...     ...    ...     ...   ...    ...   ...
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 </div>
 <div id="arrange" class="section level1">
 <h1><code>arrange()</code></h1>
@@ -585,63 +576,60 @@ You may want to order the <code>bank</code> data frame by the balance of the acc
 <pre class="r"><code>arrange(bank, balance)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 20]
 ## 
-##       id   age           job  marital education default balance housing
-##    (int) (int)        (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr)
-## 1  12910    26   blue-collar   single secondary     yes   -8019      no
-## 2  15683    49    management  married  tertiary     yes   -6847      no
-## 3  38737    60    management divorced  tertiary      no   -4057     yes
-## 4   7414    43    management  married  tertiary     yes   -3372     yes
-## 5   1897    57 self-employed  married  tertiary     yes   -3313     yes
-## 6  32714    39 self-employed  married  tertiary      no   -3058     yes
-## 7  18574    40    technician  married  tertiary     yes   -2827     yes
-## 8  31510    52    management  married  tertiary      no   -2712     yes
-## 9  25120    49   blue-collar   single   primary     yes   -2604     yes
-## 10 14435    51    management divorced  tertiary      no   -2282     yes
-## ..   ...   ...           ...      ...       ...     ...     ...     ...
-## Variables not shown: loan (fctr), contact (fctr), day (int), month (fctr),
-##   year (int), date (time), duration (int), campaign (int), pdays (int),
-##   previous (int), poutcome (fctr), y (fctr)</code></pre>
+##       id   age           job  marital education default balance housing   loan  contact   day  month  year
+##    (int) (int)        (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)   (fctr) (int) (fctr) (int)
+## 1  12910    26   blue-collar   single secondary     yes   -8019      no    yes cellular     7    jul  2008
+## 2  15683    49    management  married  tertiary     yes   -6847      no    yes cellular    21    jul  2008
+## 3  38737    60    management divorced  tertiary      no   -4057     yes     no cellular    18    may  2009
+## 4   7414    43    management  married  tertiary     yes   -3372     yes     no  unknown    29    may  2008
+## 5   1897    57 self-employed  married  tertiary     yes   -3313     yes    yes  unknown     9    may  2008
+## 6  32714    39 self-employed  married  tertiary      no   -3058     yes    yes cellular    17    apr  2009
+## 7  18574    40    technician  married  tertiary     yes   -2827     yes    yes cellular    31    jul  2008
+## 8  31510    52    management  married  tertiary      no   -2712     yes    yes cellular     2    apr  2009
+## 9  25120    49   blue-collar   single   primary     yes   -2604     yes     no cellular    18    nov  2008
+## 10 14435    51    management divorced  tertiary      no   -2282     yes    yes cellular    14    jul  2008
+## ..   ...   ...           ...      ...       ...     ...     ...     ...    ...      ...   ...    ...   ...
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 <p>or in descending order by using function <code>desc()</code> within <code>arrange()</code>:</p>
 <pre class="r"><code>arrange(bank, desc(balance))</code></pre>
 <pre><code>## Source: local data frame [45,211 x 20]
 ## 
-##       id   age          job  marital education default balance housing
-##    (int) (int)       (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr)
-## 1  39990    51   management   single  tertiary      no  102127      no
-## 2  26228    59   management  married  tertiary      no   98417      no
-## 3  42559    84      retired  married secondary      no   81204      no
-## 4  43394    84      retired  married secondary      no   81204      no
-## 5  41694    60      retired  married   primary      no   71188      no
-## 6  19786    56   management divorced  tertiary      no   66721      no
-## 7  21193    52  blue-collar  married   primary      no   66653      no
-## 8  19421    59       admin.  married   unknown      no   64343      no
-## 9  41375    32 entrepreneur   single  tertiary      no   59649      no
-## 10 12927    56  blue-collar  married secondary      no   58932      no
-## ..   ...   ...          ...      ...       ...     ...     ...     ...
-## Variables not shown: loan (fctr), contact (fctr), day (int), month (fctr),
-##   year (int), date (time), duration (int), campaign (int), pdays (int),
-##   previous (int), poutcome (fctr), y (fctr)</code></pre>
+##       id   age          job  marital education default balance housing   loan   contact   day  month  year
+##    (int) (int)       (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)    (fctr) (int) (fctr) (int)
+## 1  39990    51   management   single  tertiary      no  102127      no     no  cellular     3    jun  2009
+## 2  26228    59   management  married  tertiary      no   98417      no     no telephone    20    nov  2008
+## 3  42559    84      retired  married secondary      no   81204      no     no telephone    28    dec  2009
+## 4  43394    84      retired  married secondary      no   81204      no     no telephone     1    apr  2010
+## 5  41694    60      retired  married   primary      no   71188      no     no  cellular     6    oct  2009
+## 6  19786    56   management divorced  tertiary      no   66721      no     no  cellular     8    aug  2008
+## 7  21193    52  blue-collar  married   primary      no   66653      no     no  cellular    14    aug  2008
+## 8  19421    59       admin.  married   unknown      no   64343      no     no  cellular     6    aug  2008
+## 9  41375    32 entrepreneur   single  tertiary      no   59649      no     no  cellular     1    sep  2009
+## 10 12927    56  blue-collar  married secondary      no   58932      no     no telephone     7    jul  2008
+## ..   ...   ...          ...      ...       ...     ...     ...     ...    ...       ...   ...    ...   ...
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 <p>You can order a data frame by one or more than one variables.</p>
 <p>Ordering data frame bank by <code>age</code> first and descending <code>ballance</code> afterward requires:</p>
 <pre class="r"><code>arrange(bank, age , desc(balance))</code></pre>
 <pre><code>## Source: local data frame [45,211 x 20]
 ## 
-##       id   age     job marital education default balance housing   loan
-##    (int) (int)  (fctr)  (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)
-## 1  40737    18 student  single   primary      no    1944      no     no
-## 2  40888    18 student  single   primary      no     608      no     no
-## 3  42275    18 student  single   primary      no     608      no     no
-## 4  44645    18 student  single   unknown      no     438      no     no
-## 5  43638    18 student  single   unknown      no     348      no     no
-## 6  42147    18 student  single secondary      no     156      no     no
-## 7  40745    18 student  single   unknown      no     108      no     no
-## 8  41488    18 student  single   unknown      no     108      no     no
-## 9  42955    18 student  single   unknown      no     108      no     no
-## 10 41223    18 student  single   unknown      no      35      no     no
-## ..   ...   ...     ...     ...       ...     ...     ...     ...    ...
-## Variables not shown: contact (fctr), day (int), month (fctr), year (int),
-##   date (time), duration (int), campaign (int), pdays (int), previous
-##   (int), poutcome (fctr), y (fctr)</code></pre>
+##       id   age     job marital education default balance housing   loan   contact   day  month  year
+##    (int) (int)  (fctr)  (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)    (fctr) (int) (fctr) (int)
+## 1  40737    18 student  single   primary      no    1944      no     no telephone    10    aug  2009
+## 2  40888    18 student  single   primary      no     608      no     no  cellular    12    aug  2009
+## 3  42275    18 student  single   primary      no     608      no     no  cellular    13    nov  2009
+## 4  44645    18 student  single   unknown      no     438      no     no  cellular     1    sep  2010
+## 5  43638    18 student  single   unknown      no     348      no     no  cellular     5    may  2010
+## 6  42147    18 student  single secondary      no     156      no     no  cellular     4    nov  2009
+## 7  40745    18 student  single   unknown      no     108      no     no  cellular    10    aug  2009
+## 8  41488    18 student  single   unknown      no     108      no     no  cellular     8    sep  2009
+## 9  42955    18 student  single   unknown      no     108      no     no  cellular     9    feb  2010
+## 10 41223    18 student  single   unknown      no      35      no     no telephone    21    aug  2009
+## ..   ...   ...     ...     ...       ...     ...     ...     ...    ...       ...   ...    ...   ...
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 </div>
 <div id="mutate" class="section level1">
 <h1><code>mutate()</code></h1>
@@ -684,23 +672,21 @@ mutate(df, x1 = x+1)</code></pre>
 <pre class="r"><code>mutate(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 22]
 ## 
-##       id   age          job  marital education default balance housing
-##    (int) (int)       (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr)
-## 1      1    58   management  married  tertiary      no    2143     yes
-## 2      2    44   technician   single secondary      no      29     yes
-## 3      3    33 entrepreneur  married secondary      no       2     yes
-## 4      4    47  blue-collar  married   unknown      no    1506     yes
-## 5      5    33      unknown   single   unknown      no       1      no
-## 6      6    35   management  married  tertiary      no     231     yes
-## 7      7    28   management   single  tertiary      no     447     yes
-## 8      8    42 entrepreneur divorced  tertiary     yes       2     yes
-## 9      9    58      retired  married   primary      no     121     yes
-## 10    10    43   technician   single secondary      no     593     yes
-## ..   ...   ...          ...      ...       ...     ...     ...     ...
-## Variables not shown: loan (fctr), contact (fctr), day (int), month (fctr),
-##   year (int), date (time), duration (int), campaign (int), pdays (int),
-##   previous (int), poutcome (fctr), y (fctr), year_of_birth (int),
-##   year_of_birth_no_century (dbl)</code></pre>
+##       id   age          job  marital education default balance housing   loan contact   day  month  year
+##    (int) (int)       (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)  (fctr) (int) (fctr) (int)
+## 1      1    58   management  married  tertiary      no    2143     yes     no unknown     5    may  2008
+## 2      2    44   technician   single secondary      no      29     yes     no unknown     5    may  2008
+## 3      3    33 entrepreneur  married secondary      no       2     yes    yes unknown     5    may  2008
+## 4      4    47  blue-collar  married   unknown      no    1506     yes     no unknown     5    may  2008
+## 5      5    33      unknown   single   unknown      no       1      no     no unknown     5    may  2008
+## 6      6    35   management  married  tertiary      no     231     yes     no unknown     5    may  2008
+## 7      7    28   management   single  tertiary      no     447     yes    yes unknown     5    may  2008
+## 8      8    42 entrepreneur divorced  tertiary     yes       2     yes     no unknown     5    may  2008
+## 9      9    58      retired  married   primary      no     121     yes     no unknown     5    may  2008
+## 10    10    43   technician   single secondary      no     593     yes     no unknown     5    may  2008
+## ..   ...   ...          ...      ...       ...     ...     ...     ...    ...     ...   ...    ...   ...
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr), year_of_birth (int), year_of_birth_no_century (dbl)</code></pre>
 </div>
 <div id="summarise" class="section level1">
 <h1><code>summarise()</code></h1>

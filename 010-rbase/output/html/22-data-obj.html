@@ -400,8 +400,8 @@ seqby</code></pre>
 <pre><code>## [1] 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0</code></pre>
 <pre class="r"><code>seqlength &lt;- seq(from = 1, to = 5, length.out = 13) 
 seqlength</code></pre>
-<pre><code>##  [1] 1.000000 1.333333 1.666667 2.000000 2.333333 2.666667 3.000000
-##  [8] 3.333333 3.666667 4.000000 4.333333 4.666667 5.000000</code></pre>
+<pre><code>##  [1] 1.000000 1.333333 1.666667 2.000000 2.333333 2.666667 3.000000 3.333333 3.666667 4.000000 4.333333
+## [12] 4.666667 5.000000</code></pre>
 <p>Finally, vectors can be created with the <code>rep()</code> function which repeats the elements of a vector. The first parameter of the <code>rep()</code> function, <code>x</code>, is the value or vector to be repeated and the second parameter, <code>times</code>, represents the number of repetitions to be made. Alternatively, the <code>each</code> parameter enables the repetition of each element of the vector as many times as indicated by the number.</p>
 <pre class="r"><code>rep(x = 1 , times = 10)</code></pre>
 <pre><code>##  [1] 1 1 1 1 1 1 1 1 1 1</code></pre>
@@ -410,8 +410,7 @@ seqlength</code></pre>
 <pre class="r"><code>rep(x = 1:5 , each = 3)</code></pre>
 <pre><code>##  [1] 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5</code></pre>
 <pre class="r"><code>rep(c(&quot;ALI&quot;, &quot;IPERLANDO&quot;), times=4)</code></pre>
-<pre><code>## [1] &quot;ALI&quot;       &quot;IPERLANDO&quot; &quot;ALI&quot;       &quot;IPERLANDO&quot; &quot;ALI&quot;       &quot;IPERLANDO&quot;
-## [7] &quot;ALI&quot;       &quot;IPERLANDO&quot;</code></pre>
+<pre><code>## [1] &quot;ALI&quot;       &quot;IPERLANDO&quot; &quot;ALI&quot;       &quot;IPERLANDO&quot; &quot;ALI&quot;       &quot;IPERLANDO&quot; &quot;ALI&quot;       &quot;IPERLANDO&quot;</code></pre>
 <pre class="r"><code>rep(x = 1:5 , times = 2 , each = 3)</code></pre>
 <pre><code>##  [1] 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5</code></pre>
 <pre class="r"><code>rep(x = &quot;no&quot;,  times = 5)</code></pre>

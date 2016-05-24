@@ -399,9 +399,9 @@ z &lt;- x + y</code></pre>
 <h2>The R Workspace</h2>
 <p>Objects created during an R session are hold in memory. The collection of objects currently avalaible is called the workspace. To list the objects in the current R session, the function <code>ls()</code> or the function <code>objects()</code> may be used.</p>
 <pre class="r"><code>ls()</code></pre>
-<pre><code>## [1] &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
+<pre><code>## [1] &quot;str&quot; &quot;x&quot;   &quot;y&quot;   &quot;z&quot;</code></pre>
 <pre class="r"><code>objects()</code></pre>
-<pre><code>## [1] &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
+<pre><code>## [1] &quot;str&quot; &quot;x&quot;   &quot;y&quot;   &quot;z&quot;</code></pre>
 <p>So to run the function <code>ls</code> the name followed by an opening and a closing bracket must be entered. Entering only <code>ls</code> will just print the object, i.e. the underlying R code of the function.</p>
 <p>Most functions in R accept certain arguments. For example, one of the arguments of the function <code>ls()</code> is pattern. To list all objects starting with the letter <code>x</code>:</p>
 <pre class="r"><code>x2 &lt;- log(9)
@@ -410,7 +410,7 @@ ls(pattern = &quot;x&quot;)</code></pre>
 <p>If a value to an object that already exists is assigned then the contents of the object will be overwritten with the new value (without a warning!). The function <code>rm()</code> ought be used to remove one or more objects from your session.</p>
 <pre class="r"><code>rm(x2)
 ls()</code></pre>
-<pre><code>## [1] &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
+<pre><code>## [1] &quot;str&quot; &quot;x&quot;   &quot;y&quot;   &quot;z&quot;</code></pre>
 </div>
 <div id="the-working-directory" class="section level2">
 <h2>The Working Directory</h2>

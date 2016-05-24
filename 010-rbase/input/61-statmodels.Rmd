@@ -3,15 +3,16 @@ title: "Models with R"
 output: html_document
 ---
 
-```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=TRUE}
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+source("options.R")
 require(knitr)
 opts_knit$set(root.dir = "../data")
-if(! "ggplot2" %in% installed.packages()) {install.packages("ggplot2")}
-require(ggplot2)
-if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
-require(dplyr)
 ```
 
+```{r first, message=FALSE}
+require(ggplot2)
+require(dplyr)
+```
 
 ![](./images/flow-dtanal.png)
 

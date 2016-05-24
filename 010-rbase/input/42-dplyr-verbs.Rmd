@@ -4,17 +4,14 @@ title: "Verb Functions"
 
 
 ```{r options, include=FALSE, purl=FALSE}
-#source("options.R")
+source("options.R")
 ```
 
-<!-- AS: "questa roba deve sparire perche' se la dai a qualcuno non funziona."
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
+
+```{r first, message=FALSE}
 require(dplyr)
-if(! "qdata" %in% installed.packages()) {install.packages("~/gdrive/quantide/int/corsi/corsiR/00-qdata/pkgs/qdata_0.16.tar.gz", repos = NULL, type = "source")}
 require(qdata)
 ```
--->
 
 `dplyr` aims to provide a function for each basic verb of data manipulating.
 

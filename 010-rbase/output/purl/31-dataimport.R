@@ -1,12 +1,3 @@
-## ----date-requirePackages, echo=FALSE, message=FALSE, warning=FALSE, results='hide'----
-# Install required packages
-if(! "XLConnect" %in% installed.packages()) {install.packages("XLConnect")}
-if(! "RSQLite" %in% installed.packages()) {install.packages("RSQLite")}
-if(! "ggplot2" %in% installed.packages()) {install.packages("ggplot2")}
-###################################################################
-require(XLConnect)
-require(RSQLite)
-
 ## ----read.table, error=TRUE----------------------------------------------
 df <- read.table("C:/Users/UserName/Documents/dati/tennis.txt", header = TRUE, sep = "", dec = ".")
 
@@ -48,8 +39,8 @@ head(df)
 ## df <- data.frame(a1 = rnorm(10), a2 = rnorm(10), a3 = rnorm(10))
 ## write.table(df, file = "df_write.txt")
 
-## ----use.text, eval=FALSE------------------------------------------------
-## require(XLConnect)
+## ----use.text, message=FALSE---------------------------------------------
+require(XLConnect)
 
 ## ----outDir_set_up, eval=FALSE-------------------------------------------
 ## # Set up output directory and output file name
@@ -163,8 +154,8 @@ include_graphics("images/excel-ozonePlot.png")
 ## sqlQuery(conn, "select * from tbl where gender = 'F'")
 ## odbcClose(conn)
 
-## ----require_pkg, eval=FALSE---------------------------------------------
-## require(RSQLite)
+## ----require_pkg, message=FALSE------------------------------------------
+require(RSQLite)
 
 ## ----connect_to_db-------------------------------------------------------
 con <- dbConnect(RSQLite::SQLite(), "mtcars.sqlite")

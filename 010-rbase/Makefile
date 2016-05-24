@@ -29,8 +29,12 @@ zip:
 	zip -9 -r $(PROJECT).zip $(OUTPUT_DIR)/
 	mv $(PROJECT).zip $(OUTPUT_DIR)/
 	mv $(INPUT_DIR)/*.R $(PURL_DIR)/
+	mv $(PURL_DIR)/packages_to_install.R $(INPUT_DIR)/.
 	mv $(PURL_DIR)/options.R $(INPUT_DIR)/.
 	zip -9 -r $(PURL_DIR)/R.zip $(PURL_DIR)/
+
+#install:
+#	Rscript input/packages_to_install.R
 
 toc:
 	R --slave -e "source('../include/r/build-toc-html.R'); build_toc_html(path='$(INPUT_DIR)/',download_file='$(PROJECT).zip')"

@@ -2,8 +2,8 @@
 title: "Reports with R Markdown"
 ---
 
-```{r, echo=FALSE, message=FALSE}  
-if(! "rmarkdown" %in% installed.packages()) {install.packages("rmarkdown")}
+```{r, echo=FALSE, message=FALSE, include=FALSE, purl=FALSE}  
+source("options.R")
 show_chunk <- function(x){
   cat(x)
 }

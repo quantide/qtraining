@@ -3,14 +3,7 @@ title: "Introduction to `dplyr`"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-#source("options.R")
-```
-
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
-if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
-require(dplyr)
+source("options.R")
 ```
 
 
@@ -24,7 +17,7 @@ The `dplyr` package for `R` is very powerful for data management since:
 * it provides simple “verbs”, functions that correspond to the most common data manipulation tasks;
 * it uses efficient data storage backends, so you spend less time waiting for the computer.
 
-```{r eval=FALSE}
+```{r message=FALSE}
 require(dplyr)
 ```
 

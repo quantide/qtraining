@@ -3,6 +3,9 @@ title: "Writing R functions"
 output: html_document
 ---
 
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
 
 One of the great strengths of R is the user's ability to add functions. Indeed, each one of us can write his/her own functions following simple rules.  
 A function in R can be defined with the `function()` function. Its use can be summed up as follows:

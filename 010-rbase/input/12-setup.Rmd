@@ -2,6 +2,10 @@
 title: "R and RStudio Set Up"
 ---
 
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
 
 ## Installing and Updating R
 

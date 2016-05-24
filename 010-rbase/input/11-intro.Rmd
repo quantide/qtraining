@@ -3,6 +3,9 @@ title: "About R"
 output: html_document
 ---
 
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
 
 ## R History
 

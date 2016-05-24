@@ -1,7 +1,5 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
+## ----first, message=FALSE------------------------------------------------
 require(dplyr)
-if(! "qdata" %in% installed.packages()) {install.packages("~/gdrive/quantide/int/corsi/corsiR/00-qdata/pkgs/qdata_0.16.tar.gz", repos = NULL, type = "source")}
 require(qdata)
 
 ## ----bank_tbl_df---------------------------------------------------------

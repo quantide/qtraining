@@ -1,9 +1,3 @@
-## ---- echo=FALSE, message=FALSE------------------------------------------
-if(! "rmarkdown" %in% installed.packages()) {install.packages("rmarkdown")}
-show_chunk <- function(x){
-  cat(x)
-}
-
 ## ---- eval=FALSE---------------------------------------------------------
 ## install.packages("rmarkdown")
 

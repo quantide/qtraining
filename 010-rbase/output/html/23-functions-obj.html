@@ -348,7 +348,7 @@ $(document).ready(function () {
 <p>A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.</p>
 <p>The function <code>ls()</code> doesn’t require any input and returns an output.</p>
 <pre class="r"><code>ls()</code></pre>
-<pre><code>## character(0)</code></pre>
+<pre><code>## [1] &quot;str&quot;</code></pre>
 <p>The function <code>rm()</code> requires an input and doesn’t return an output.</p>
 <pre class="r"><code>foo &lt;- 3
 rm(foo)</code></pre>
@@ -368,9 +368,8 @@ quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = TRUE)</code></pre>
 <pre><code>##        25%        50%        75% 
 ## -0.6088466 -0.0594199  0.6558911</code></pre>
 <pre class="r"><code>quantile(rdata, TRUE, c(0.25, 0.50, 0.75))</code></pre>
-<pre><code>## Warning in if (na.rm) x &lt;- x[!is.na(x)] else if (anyNA(x)) stop(&quot;missing
-## values and NaN's not allowed if 'na.rm' is FALSE&quot;): the condition has
-## length &gt; 1 and only the first element will be used</code></pre>
+<pre><code>## Warning in if (na.rm) x &lt;- x[!is.na(x)] else if (anyNA(x)) stop(&quot;missing values and NaN's not allowed if
+## 'na.rm' is FALSE&quot;): the condition has length &gt; 1 and only the first element will be used</code></pre>
 <pre><code>##     100% 
 ## 2.581959</code></pre>
 <pre class="r"><code># When arguments are called explicitely, you can change arguments order 
@@ -392,17 +391,15 @@ z &lt;- -4:5
 x + y + z</code></pre>
 <pre><code>##  [1]  8 11 14 17 20 23 26 29 32 35</code></pre>
 <pre class="r"><code>exp(x)</code></pre>
-<pre><code>##  [1]     2.718282     7.389056    20.085537    54.598150   148.413159
-##  [6]   403.428793  1096.633158  2980.957987  8103.083928 22026.465795</code></pre>
+<pre><code>##  [1]     2.718282     7.389056    20.085537    54.598150   148.413159   403.428793  1096.633158  2980.957987
+##  [9]  8103.083928 22026.465795</code></pre>
 <pre class="r"><code>log(z)</code></pre>
 <pre><code>## Warning in log(z): NaNs produced</code></pre>
-<pre><code>##  [1]       NaN       NaN       NaN       NaN      -Inf 0.0000000 0.6931472
-##  [8] 1.0986123 1.3862944 1.6094379</code></pre>
+<pre><code>##  [1]       NaN       NaN       NaN       NaN      -Inf 0.0000000 0.6931472 1.0986123 1.3862944 1.6094379</code></pre>
 <pre class="r"><code>abs(z)</code></pre>
 <pre><code>##  [1] 4 3 2 1 0 1 2 3 4 5</code></pre>
 <pre class="r"><code>sqrt(x)</code></pre>
-<pre><code>##  [1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490 2.645751
-##  [8] 2.828427 3.000000 3.162278</code></pre>
+<pre><code>##  [1] 1.000000 1.414214 1.732051 2.000000 2.236068 2.449490 2.645751 2.828427 3.000000 3.162278</code></pre>
 <p>The <code>sum()</code> function calculates the sum of all the elements of a vector.</p>
 <pre class="r"><code>sum(x)</code></pre>
 <pre><code>## [1] 55</code></pre>

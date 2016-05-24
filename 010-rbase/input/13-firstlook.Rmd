@@ -3,6 +3,11 @@ title: "A First Look to R Session"
 output: html_document
 ---
 
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+
 ## The First R Session
 
 Start the R system, the cursor is waiting for you to type in some R commands. For example, use R as a simple calculator:

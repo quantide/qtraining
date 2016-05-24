@@ -3,6 +3,11 @@ title: "Data Objects"
 output: html_document
 ---
 
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+
 ## Vectors
 
 In R the simplest data structure is a vector. A vector is defined as an ordered sequence of elements of the same kind.

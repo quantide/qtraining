@@ -1,17 +1,9 @@
 ---
 title: "Data Import and Export"
 ---
-```{r date-requirePackages, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
-# Install required packages
-if(! "XLConnect" %in% installed.packages()) {install.packages("XLConnect")}
-if(! "RSQLite" %in% installed.packages()) {install.packages("RSQLite")}
-if(! "ggplot2" %in% installed.packages()) {install.packages("ggplot2")}
-###################################################################
-require(XLConnect)
-require(RSQLite)
-```
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
+source("options.R")
 require(knitr)
 opts_knit$set(root.dir = "./../data")
 outDir <- "."
@@ -111,7 +103,7 @@ write.table(df, file = "df_write.txt")
 The R package `XLConnect` permits to create a formatted spreadsheet usable as a dynamic report of the R analisys and it allows one to read existing xlsx files and to modify them from R.  
 Let us see how `XLConnect` works.
 
-```{r use.text, eval=FALSE}
+```{r use.text, message=FALSE}
 require(XLConnect)
 ```
 
@@ -323,7 +315,7 @@ odbcClose(conn)
 
 `RSQLite` package embeds the SQLite database engine in R, providing a DBI-compliant interface. SQLite is a public-domain, single-user, very light-weight database engine that implements a decent subset of the SQL 92 standard, including the core table creation, updating, insertion, and selection operations, plus transaction management.  
 
-```{r require_pkg, eval=FALSE}
+```{r require_pkg, message=FALSE}
 require(RSQLite)
 ```
 

@@ -3,6 +3,9 @@ title: "Git and github.com"
 output: html_document
 ---
 
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
 
 ## What a versioning system do
 

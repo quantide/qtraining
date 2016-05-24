@@ -1,9 +1,10 @@
-## ---- options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=TRUE----
+## ---- options, echo=FALSE, results='hide', message=FALSE, warning=FALSE----
+source("options.R")
 require(knitr)
 opts_knit$set(root.dir = "../data")
-if(! "ggplot2" %in% installed.packages()) {install.packages("ggplot2")}
+
+## ----first, message=FALSE------------------------------------------------
 require(ggplot2)
-if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
 require(dplyr)
 
 ## ----model, eval=FALSE---------------------------------------------------

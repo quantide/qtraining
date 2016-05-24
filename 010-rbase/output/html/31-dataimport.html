@@ -371,8 +371,8 @@ $(document).ready(function () {
 <p>The <code>read.table()</code> function imports a text file (ASCII) with a table structure where each row represents a case.</p>
 <p>A full path can be provided, but it must be modified by each user, otherwise it fails:</p>
 <pre class="r"><code>df &lt;- read.table(&quot;C:/Users/UserName/Documents/dati/tennis.txt&quot;, header = TRUE, sep = &quot;&quot;, dec = &quot;.&quot;)</code></pre>
-<pre><code>## Warning in file(file, &quot;rt&quot;): cannot open file 'C:/Users/UserName/Documents/
-## dati/tennis.txt': No such file or directory</code></pre>
+<pre><code>## Warning in file(file, &quot;rt&quot;): cannot open file 'C:/Users/UserName/Documents/dati/tennis.txt': No such file or
+## directory</code></pre>
 <pre><code>## Error in file(file, &quot;rt&quot;): cannot open the connection</code></pre>
 <p>The path uses the slash (“<code>/</code>”) as delimiting character, in the UNIX-like style. Under Windows, can be used both a slash character or a doubled backslash character (“<code>\\</code>”).</p>
 <p>Relative paths starts from the current working directory. The current working directory can be viewed with <code>getwd()</code>.</p>
@@ -614,9 +614,8 @@ odbcClose(conn)</code></pre>
 <pre><code>## [1] &quot;mtcars&quot;</code></pre>
 <p>or a list of fields in specified table:</p>
 <pre class="r"><code>dbListFields(con, &quot;mtcars&quot;)</code></pre>
-<pre><code>##  [1] &quot;row_names&quot; &quot;mpg&quot;       &quot;cyl&quot;       &quot;disp&quot;      &quot;hp&quot;       
-##  [6] &quot;drat&quot;      &quot;wt&quot;        &quot;qsec&quot;      &quot;vs&quot;        &quot;am&quot;       
-## [11] &quot;gear&quot;      &quot;carb&quot;</code></pre>
+<pre><code>##  [1] &quot;row_names&quot; &quot;mpg&quot;       &quot;cyl&quot;       &quot;disp&quot;      &quot;hp&quot;        &quot;drat&quot;      &quot;wt&quot;        &quot;qsec&quot;     
+##  [9] &quot;vs&quot;        &quot;am&quot;        &quot;gear&quot;      &quot;carb&quot;</code></pre>
 <p>The next function mimic their R/S-Plus counterpart get, assign, exists, remove, and objects, except that they generate code that gets remotely executed in a database engine:</p>
 <pre class="r"><code>dbReadTable(con, &quot;mtcars&quot;)</code></pre>
 <pre><code>##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb

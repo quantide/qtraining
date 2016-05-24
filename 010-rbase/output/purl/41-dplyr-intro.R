@@ -1,11 +1,5 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
-if(! "dplyr" %in% installed.packages()) {install.packages("dplyr")}
+## ----message=FALSE-------------------------------------------------------
 require(dplyr)
-
-## ----eval=FALSE----------------------------------------------------------
-## require(dplyr)
 
 ## ----tbl_df--------------------------------------------------------------
 # Example of data frame
