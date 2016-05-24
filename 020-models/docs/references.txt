@@ -1,0 +1,5 @@
+http://mcfromnz.wordpress.com/2011/03/02/anova-type-iiiiii-ss-explained/   ## interessante per le SS di R!
+https://mailman.ucsd.edu/pipermail/ling-r-lang-l/2011-January/000186.html  ## Significatività lmer
+http://www.dmi.units.it/~borelli/cbm/  ## Un po' di esempi..
+http://personality-project.org/r/r.anova.html  ## MOLTO UTILE per capire come strutturare una ANOVA con effetti fissi e random between e within
+http://zoonek2.free.fr/UNIX/48_R/12.html  # non c'entra molto ma è interessante

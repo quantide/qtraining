@@ -1,6 +1,8 @@
 # This makefile builds courses material and exercise book in pdf format
 # The first part builds courses materal, the second the exercise book. 
-# If you want to build only one of the two parts, you must comment the other one.
+# If you want to build only one of the two parts, change building settings on RStudio build-tab:
+# Build/More/Configure Build Tools.../Additional Arguments
+# Write here the targets of the part you want to build
 
 ########################## COURSES MATERIAL ##########################  
 ### PARAMETERS DEFINITION
@@ -34,10 +36,6 @@ toc:
 
 html: $(HTML_FILES)
 
-.PHONY: change_dir
-
-change_dir:
-	$(MAKE) -C $(INPUT_DIR)
  
 %.html: %.Rmd
 	R --slave -e "set.seed(100);rmarkdown::render('$<',output_dir='$(OUTPUT_DIR)/');setwd('$(INPUT_DIR)/');knitr::purl('../$<')"
@@ -102,13 +100,7 @@ PANDOC_PDF_OPTIONS = \
 ### COMPILE
 # all: by default perform all actions
 
-all: knitr purl pdf
-
-#.PHONY: change_dir
-
-#change_dir:
-#	$(MAKE) -C $(INPUT_PDF_DIR)
-	
+all: knitr pdf clean
 
 
 # build md files from rmd
@@ -122,8 +114,8 @@ all: knitr purl pdf
 	#sed -i -e '1,/<body>/d' -e '/^<\/body>/,$$d' $*.html
 
 # build R files from rmd and upload
-%.R: %.Rmd
-	Rscript -e "require(knitr);  purl('$<'); getwd()"
+#%.R: %.Rmd
+#	Rscript -e "require(knitr);  purl('$<'); getwd()"
 
 
 
@@ -134,15 +126,14 @@ $(PDF_OUT): $(MD_LIST)
 # single actions
 knitr: $(MD)
 #html: $(addsuffix .html,$(MD_PATH))
-purl: $(addsuffix .R,$(MD_PATH))
+#purl: $(addsuffix .R,$(MD_PATH))
 pdf: $(PDF_OUT)
 
 
 .PHONY: clean
 clean: 
-	rm -f *.md 	
-#	mv 	*.R $(PURL_DIR)/
-
-#	rm -f *.md *.html *.R	
+	rm -f $(MD_LIST)	
 ###################################################################
+
+
 

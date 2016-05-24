@@ -1,0 +1,49 @@
+year,champion_country,champion,runner_up_country,runner_up,s1,s2,s3,s4,s5
+1968, USA,Arthur Ashe[b], NED,Tom Okker,14–12, 5–7, 6–3, 3–6, 6–3
+1969, AUS,Rod Laver, AUS,Tony Roche,7–9, 6–1, 6–2, 6–2,
+1970, AUS,Ken Rosewall, AUS,Tony Roche,2–6, 6–4, 7–6(5–2), 6–3[f],
+1971, USA,Stan Smith, TCH,Jan Kodeš,3–6, 6–3, 6–2, 7–6(5–3),
+1972, ROU,Ilie Năstase, USA,Arthur Ashe,3–6, 6–3, 6–7(1–5), 6–4, 6–3
+1973, AUS,John Newcombe, TCH,Jan Kodeš,6–4, 1–6, 4–6, 6–2, 6–3
+1974, USA,Jimmy Connors, AUS,Ken Rosewall,6–1, 6–0, 6–1,,
+1975, ESP,Manuel Orantes, USA,Jimmy Connors,6–4, 6–3, 6–3,,
+1976, USA,Jimmy Connors, SWE,Björn Borg,6–4, 3–6, 7–6(11–9), 6–4,
+1977, ARG,Guillermo Vilas, USA,Jimmy Connors,2–6, 6–3, 7–6(7–4), 6–0,
+1978, USA,Jimmy Connors, SWE,Björn Borg,6–4, 6–2, 6–2,,
+1979, USA,John McEnroe, USA,Vitas Gerulaitis,7–5, 6–3, 6–3,,
+1980, USA,John McEnroe, SWE,Björn Borg,7–6(7–4), 6–1, 6–7(5–7), 5–7, 6–4
+1981, USA,John McEnroe, SWE,Björn Borg,4–6, 6–2, 6–4, 6–3,
+1982, USA,Jimmy Connors, TCH,Ivan Lendl,6–3, 6–2, 4–6, 6–4,
+1983, USA,Jimmy Connors, TCH,Ivan Lendl,6–3, 6–7(2–7), 7–5, 6–0,
+1984, USA,John McEnroe, TCH,Ivan Lendl,6–3, 6–4, 6–1,,
+1985, TCH,Ivan Lendl, USA,John McEnroe,7–6(7–1), 6–3, 6–4,,
+1986, TCH,Ivan Lendl, TCH,Miloslav Mečíř,6–4, 6–2, 6–0,,
+1987, TCH,Ivan Lendl, SWE,Mats Wilander,6–7(7–9), 6–0, 7–6(7–4), 6–4,
+1988, SWE,Mats Wilander, TCH,Ivan Lendl,6–4, 4–6, 6–3, 5–7, 6–4
+1989, FRG,Boris Becker, TCH,Ivan Lendl,7–6(7–2), 1–6, 6–3, 7–6(7–4),
+1990, USA,Pete Sampras, USA,Andre Agassi,6–4, 6–3, 6–2,,
+1991, SWE,Stefan Edberg, USA,Jim Courier,6–2, 6–4, 6–0,,
+1992, SWE,Stefan Edberg, USA,Pete Sampras,3–6, 6–4, 7–6(7–5), 6–2,
+1993, USA,Pete Sampras, FRA,Cédric Pioline,6–4, 6–4, 6–3,,
+1994, USA,Andre Agassi, GER,Michael Stich,6–1, 7–6(7–5), 7–5,,
+1995, USA,Pete Sampras, USA,Andre Agassi,6–4, 6–3, 4–6, 7–5,
+1996, USA,Pete Sampras, USA,Michael Chang,6–1, 6–4, 7–6(7–3),,
+1997, AUS,Patrick Rafter, GBR,Greg Rusedski,6–3, 6–2, 4–6, 7–5,
+1998, AUS,Patrick Rafter, AUS,Mark Philippoussis,6–3, 3–6, 6–2, 6–0,
+1999, USA,Andre Agassi, USA,Todd Martin,6–4, 6–7(5–7), 6–7(2–7), 6–3, 6–2
+2000, RUS,Marat Safin, USA,Pete Sampras,6–4, 6–3, 6–3,,
+2001, AUS,Lleyton Hewitt, USA,Pete Sampras,7–6(7–4), 6–1, 6–1,,
+2002, USA,Pete Sampras, USA,Andre Agassi,6–3, 6–4, 5–7, 6–4,
+2003, USA,Andy Roddick, ESP,Juan Carlos Ferrero,6–3, 7–6(7–2), 6–3,,
+2004,  SUI,Roger Federer, AUS,Lleyton Hewitt,6–0, 7–6(7–3), 6–0,,
+2005,  SUI,Roger Federer, USA,Andre Agassi,6–3, 2–6, 7–6(7–1), 6–1,
+2006,  SUI,Roger Federer, USA,Andy Roddick,6–2, 4–6, 7–5, 6–1,
+2007,  SUI,Roger Federer, SRB,Novak Djokovic,7–6(7–4), 7–6(7–2), 6–4,,
+2008,  SUI,Roger Federer, GBR,Andy Murray,6–2, 7–5, 6–2,,
+2009, ARG,Juan Martín del Potro,  SUI,Roger Federer,3–6, 7–6(7–5), 4–6, 7–6(7–4), 6–2
+2010, ESP,Rafael Nadal, SRB,Novak Djokovic,6–4, 5–7, 6–4, 6–2,
+2011, SRB,Novak Djokovic, ESP,Rafael Nadal,6–2, 6–4, 6–7(3–7), 6–1,
+2012, GBR,Andy Murray, SRB,Novak Djokovic,7–6(12–10), 7–5, 2–6, 3–6, 6–2
+2013, ESP,Rafael Nadal, SRB,Novak Djokovic,6–2, 3–6, 6–4, 6–1,
+2014, CRO,Marin Čilić, JPN,Kei Nishikori,6–3, 6–3, 6–3,,
+2015, SRB,Novak Djokovic,  SUI,Roger Federer,6–4, 5–7, 6–4, 6–4,

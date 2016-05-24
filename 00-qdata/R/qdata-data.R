@@ -262,7 +262,7 @@ NULL
 #' @name default
 #' 
 #' 
-#' @description The \code{default} data was extracted from ...........
+#' @description The \code{default} data contains information about default of credit card clients.
 #' 
 #'  
 #' @usage data(default)
@@ -274,8 +274,31 @@ NULL
 #' @details 
 #' The 25 variables of the \code{default} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{car} car model (character);
-#' \item \code{disp} displacement (cu.in.) (numeric).
+#' \item \code{ID} (numeric);
+#' \item \code{LIMIT_BAL} (numeric)
+#' \item \code{SEX} (character);
+#' \item \code{EDUCATION} (numeric);
+#' \item \code{MARRIAGE} (numeric);
+#' \item \code{AGE} (numeric);
+#' \item \code{PAY_0} (numeric);
+#' \item \code{PAY_2} (numeric);
+#' \item \code{PAY_3} (numeric);
+#' \item \code{PAY_4} (numeric);
+#' \item \code{PAY_5} (numeric);
+#' \item \code{PAY_6} (numeric);
+#' \item \code{BILL_AMT1} (numeric);
+#' \item \code{BILL_AMT2} (numeric);
+#' \item \code{BILL_AMT3} (numeric);
+#' \item \code{BILL_AMT4} (numeric);
+#' \item \code{BILL_AMT5} (numeric);
+#' \item \code{BILL_AMT6} (numeric);
+#' \item \code{PAY_AMT1} (numeric);
+#' \item \code{PAY_AMT2} (numeric);
+#' \item \code{PAY_AMT3} (numeric);
+#' \item \code{PAY_AMT4} (numeric);
+#' \item \code{PAY_AMT5} (numeric);
+#' \item \code{PAY_AMT6} (numeric);
+#' \item \code{default payment next month} (numeric);
 #' }
 NULL
 ##################################################################################################################################
@@ -452,8 +475,9 @@ NULL
 #' @details 
 #' The 3 variables of the \code{g1res} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{car} car model (character);
-#' \item \code{disp} displacement (cu.in.) (numeric).
+#' \item \code{V1} (numeric);
+#' \item \code{V2} (numeric);
+#' \item \code{V3} (numeric).
 #' }
 NULL
 ##################################################################################################################################
@@ -692,7 +716,7 @@ NULL
 #' @name pimaindiansdiabetes2
 #' 
 #' 
-#' @description The \code{pimaindiansdiabetes2} data was ...
+#' @description The \code{pimaindiansdiabetes2} data contain information about diabetes of indian people.
 #' 
 #'  
 #' @usage data(pimaindiansdiabetes2)
@@ -704,8 +728,15 @@ NULL
 #' @details 
 #' The 9 variables of the \code{pimaindiansdiabetes2} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{car} car model (character);
-#' \item \code{disp} displacement (cu.in.) (numeric).
+#' \item \code{pregnant} (numeric);
+#' \item \code{glucose} (numeric);
+#' \item \code{pressure} (numeric);
+#' \item \code{triceps} (numeric);
+#' \item \code{insulin} (numeric);
+#' \item \code{mass} (numeric);
+#' \item \code{pedigree} (numeric);
+#' \item \code{age} (numeric);
+#' \item \code{diabetes} (factor with 2 levels: \code{neg} and \code{pos});
 #' }
 NULL
 ##################################################################################################################################
@@ -730,8 +761,15 @@ NULL
 #' @details 
 #' The 9 variables of the \code{prostate} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{car} car model (character);
-#' \item \code{disp} displacement (cu.in.) (numeric).
+#' \item \code{lcavol} (numeric);
+#' \item \code{lweight} (numeric);
+#' \item \code{age} (numeric);
+#' \item \code{lbph} (numeric);
+#' \item \code{svi} (numeric);
+#' \item \code{lcp} (numeric);
+#' \item \code{gleason} (numeric);
+#' \item \code{pgg45} (numeric);
+#' \item \code{lpsa} (numeric);
 #' }
 NULL
 ##################################################################################################################################
@@ -756,8 +794,9 @@ NULL
 #' @details 
 #' The 3 variables of the \code{sres} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{car} car model (character);
-#' \item \code{disp} displacement (cu.in.) (numeric).
+#' \item \code{V1} (numeric);
+#' \item \code{V2} (numeric);
+#' \item \code{V3} (numeric).
 #' }
 NULL
 ##################################################################################################################################
@@ -1040,7 +1079,7 @@ NULL
 #' 
 #' @description The \code{wwiileaders} data contains a distance matrix among 12 country leaders during II World War,
 #' which is based on the judgments of the dissimilarities in ideology. The subjects made judgments on a nine-point scale,
-#' with the extreme points of the scale, 1 and 9, being described as indicating “very similar” and “very dissimilar”, respectively.
+#' with the extreme points of the scale, 1 and 9, being described as indicating "very similar" and "very dissimilar", respectively.
 #' 
 #'  
 #' @usage data(wwiileaders)
@@ -1061,7 +1100,7 @@ NULL
 #' @name smoke
 #' 
 #' 
-#' @description The \code{soke} dataset contain information about the smoking habits in several employees of a company. 
+#' @description The \code{smoke} dataset contain information about the smoking habits in several employees of a company. 
 #' The data frame is actually a contingency table of smoking habit (None, Light, Medium, Heavy) Vs. level of employee 
 #' (Senior Manager, Junior Manager, Senior Employee, Junior Employee, Secretary). Data from Greenacre (1984, p. 55)
 #'  
@@ -1103,11 +1142,11 @@ NULL
 #' 
 #' 
 #' @details 
-#' The 7 variables of the \code{banknotes} tbl data frame are the following ones:
+#' The 7 variables of the \code{bwt} tbl data frame are the following ones:
 #' \itemize{
 #' \item \code{low}  indicator of birth weight less than 2.5 kg. (numeric)
-#' \item \code{age}  mother’s age in years (numeric)
-#' \item \code{lwt}  mother’s weight in pounds at last menstrual period (numeric)
+#' \item \code{age}  mother's age in years (numeric)
+#' \item \code{lwt}  mother's weight in pounds at last menstrual period (numeric)
 #' \item \code{smoke} smoking status during pregnancy (factor)
 #' }
 #' 
@@ -1490,7 +1529,7 @@ NULL
 #' @name labonline
 #' 
 #' 
-#' @description  Two pH measurement tools are compared: one instrument is a “gold standard”, and is the “laboratory” tool, the other is an on-line (on the field) tool.
+#' @description  Two pH measurement tools are compared: one instrument is a "gold standard", and is the "laboratory" tool, the other is an on-line (on the field) tool.
 #'  Same samples are measured by using both instruments to see if on-line tool performs as laboratory tool.
 #' 
 #' @usage data(labonline)
@@ -1502,7 +1541,7 @@ NULL
 #' @details 
 #' The 2 variables of the \code{labonline} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{Lab} measuments collected with the “laboratory” tool (numeric)
+#' \item \code{Lab} measuments collected with the "laboratory" tool (numeric)
 #' \item \code{Online} measuments collected with the on-line tool (numeric)
 #' }
 #' 
@@ -1640,7 +1679,7 @@ NULL
 #' @name oxidant
 #' 
 #' 
-#' @description \code{oxidant} dataset contains data on levels of an air pollutant, “Oxidant”, 
+#' @description \code{oxidant} dataset contains data on levels of an air pollutant, "Oxidant", 
 #' together with levels of four meteorological variables recorded on 30 days during one summer.  
 #' 
 #' @usage data(oxidant)
@@ -1702,7 +1741,7 @@ NULL
 #' 
 #' 
 #' @description \code{istat} data contain weight, height, gender and geographical area 
-#' (“Nord”, “Centro”, “Sud” and “Isole”) from 1806 Italian people.
+#' ("Nord", "Centro", "Sud" and "Isole") from 1806 Italian people.
 #' 
 #'  
 #' @usage data(istat)

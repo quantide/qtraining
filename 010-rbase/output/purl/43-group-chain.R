@@ -14,7 +14,7 @@ dff
 class(dff)
 
 
-dffn <- mutate(dff, n = row_number())
+dffn <- mutate(dff, n = n())
 dffn
 class(dffn)
 

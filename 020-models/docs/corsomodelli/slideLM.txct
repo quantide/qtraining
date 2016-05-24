@@ -1,0 +1,24 @@
+- Spostare R^2 dopo il test F?
+- Invece di "Comparing two models:.." usare "Comparing two nested models:.."?
+- Slide 15: rimuovere il secondo punto?
+- Slide 15: invece di "father" usare "parent"?
+- "Types of sum of squares" e "t test and ANOVA are regression!" li metterei dopo gli esempi: non si capisce altrimenti come si lega il modello di regressione con l'ANOVA. Oppure metterei semplicemente una nota: "see next examples"
+- I file degli esempi non hanno estensione .dat ma .Rda
+- Struttura della matrice di disegno almeno nell'esempio della regressione lineare semplice e nella regressione quadratica.
+- Toglierei quindi le slide 36 e 37 e lascerei però la nota relativa al modello lineare della slide 37.
+- Nella slide 37 la dimensione del vettore dei parametri è sbagliata: 5x1, non 3x1
+- Numererei gli esempi: "Example 1: 1-sample...", "Example 2: 2-sample...", ...
+- L'esempio "Regression: example 6" lo chiamerei "Example 8: hotdogs"
+- Slide 31: i caratteri sono piccoli?
+- Slide 42: "\varepsilon_1, \cdots, \varepsilon_{54}"
+- Slide 43: toglierei l'Anyway iniziale
+- Slide 49: "modalità"
+- Slide 49: "a fixed effect is an *effect*" "a random effect is an *effect*", "sigma2B is the variance component of ..." 
+- Slide 50: "In one-way random effects ANOVA, since E(MSB)=..."; inoltre, spiegare cosa sono MSB e modificare notazione per MSE (dovrebbe essere MSR) per allinearla con quella delle slide correnti
+- Slide 51: stessa cosa della slide 50 per gli MS. Ovviamente verificarlo anche nelle slide successive
+- Slide 53: credo sia "balanced crossed", "unbalanced crossed"
+
+
+- Sposterei ancora i tipi di SS dopo gli esempi
+- Aggiungerei 1 slide sugli effetti random che spieghi rapidamente che per gli effetti random la significatività e le componenti di varianza sono complicati e non "ottimi" quando il piano è un po' più complesso
+- Nested: non sono lotti (al limite sarebbero batches). comunque sono 3 prodotti. Summarized, non Summed up, credo. "Usually", the main interest.... The choice of k
