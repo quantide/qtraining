@@ -1,0 +1,132 @@
+---
+title: "Creating a Box Plot"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+require(dplyr)
+
+require(ggplot2)
+
+require(qdata)
+data(bands)
+```
+
+A Box-and-Whiskers Plot, or Box Plot, is a convenient way to draw data distribution. The box ranges from the first quartile to the third (inter-quartile range or IQR) with a line indicating the median (second quartile). The whiskers contains the lowest datum still within 1.5 IQR of the lower quartile, and the highest datum still within 1.5 IQR of the upper quartile. If there are data outside the range of whiskers, they are represented by a dot. Box Plots are very popular among data analyst, but they are not suggested for a wider audience. Box plots can be drawn either horizontally or vertically.
+
+```{r boxplots, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE}
+ggp <- ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#3690c0") +
+  ylab("Continuos variable") + xlab("Grouping variable") + 
+  theme(
+    axis.text.x = element_blank(), axis.text.y = element_blank()
+  )
+
+ggp1 <- ggp + theme(axis.ticks.x = element_blank())
+  
+ggp2 <- ggp + theme(axis.ticks.y = element_blank()) + coord_flip()
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
+```
+
+This chapter presents how to build box plots and show how to customize: main titles, axes labels and legend titles.
+
+
+# The first box plot
+
+Supposing you are interested in the differences of ink percentage accordingly to the type of press, you can build four box plots to compare distributions.
+
+```{r boxplot_first, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#3690c0")
+```
+
+Appearance aesthetics work as seen until now; `fill` controls the box filling, while `colour` controls the box outline, whiskers and outline points. 
+
+```{r boxplot_colour, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b")
+```
+
+There are also a few `outline.*` parameter to set aesthetics for outlier points.
+
+```{r boxplot_outlines, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3)
+```
+
+
+# Making a single box plot
+
+Surprisingly, it is more complicated to draw a single box plot. This is because `geom_boxplot()` requires an `x` value that is used as grouping variable. You have to set a single value for `x` when you do not have a grouping variable.
+
+```{r boxplot_group0, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x="0", y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b")
+```
+
+It does the job, however you have to remove the x-axis tick marker and label in order to have a nice result.
+
+```{r boxplot_xlab, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x="0", y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+  xlab("") +
+  theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
+```
+
+
+# Customizing Titles and Axis
+
+The last example reveals how to change the x-axis title. This is useful when the name of the variable is not enough clear. An analogous function `ylab()` set the y-axis title, while `ggtitle()` should be used when you want a title for the whole plot. Note the use of the escape code `\n` to break lines.
+
+```{r boxplot_ylab, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+  xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)")
+```
+
+You already saw a "preview" of the `theme()` function, that set many theme settings. Here only a few options regarding axis and titles are shown:
+
+ - `axis.ticks.x` (or `axis.ticks.y`) controls the ticks of x-axis (or y-axis). `axis.ticks` performs the same action to both axis. You can suppress ticks with `element_blank()` or use `element_line()` to change the aspect of ticks setting `colour`, `size` or `linetype`.
+ 
+    ```{r boxplot_axis_ticks, message=FALSE, warning=FALSE}
+    ggplot(data=bands, aes(x="0", y=ink_pct)) + 
+      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
+      theme(axis.ticks.x = element_line(colour="green", size=4), axis.ticks.y=element_line(colour="red"))
+    ```
+
+ - `axis.text.x`, `axis.text.y` and `axis.text` controls the text of x, y or both axis ticks. You can suppress text with `element_blank()` or use `element_text()` to change the aspect of ticks setting font `family`, font `face`, `colour`, `size`, `angle` and other options.
+ 
+    ```{r boxplot_axis_text, message=FALSE, warning=FALSE}
+    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
+      theme(axis.text = element_text(face="bold", colour="#034e7b"))
+    ```
+    
+ - `axis.text.x`, `axis.text.y` and `axis.text` controls the title of x, y or both axes. You can suppress text with `element_blank()` or use `element_text()` to change the aspect of axis text.
+ 
+    ```{r boxplot_axis_title, message=FALSE, warning=FALSE}
+    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
+      theme(axis.title = element_text(face="italic", colour="#034e7b"))
+    ```
+    
+ - `plot.title` controls the text of the overall plot. You can use `element_text()` to change the aspect of title.
+ 
+    ```{r boxplot_plot_title, message=FALSE, warning=FALSE}
+    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
+      theme(plot.title = element_text(face="bold", size=18))
+    ```
+    

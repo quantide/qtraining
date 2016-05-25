@@ -1,0 +1,19 @@
+## `airquality`
+
+`airquality` provides daily air quality measurements in New York, May to September 1973. 
+
+It is included in `datasets` package, that is included in base R.
+
+You just need to type `airquality` to access data.
+
+For a description of data, refer to the help.
+
+```{r airquality_help, eval=FALSE}
+?airquality
+```
+
+Since the temperature is shown in degrees Fahrenheit, can be useful to create a new variable with degrees Celsius.
+
+```{r airquality_tempC}
+airquality <- airquality %>% mutate(Temp_C = (Temp-32)/1.8)
+```

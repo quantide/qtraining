@@ -1,0 +1,12 @@
+Advanced Topics
+More on Axes and Titles | "#"
+More on Legends | "#"
+More on Scales | "#"
+Coordinates | "#"
+Other plots
+Creating a Dot Plot | "#"
+Creating a Map  | "#"
+Interactive Plots Overview | "#"
+Appendices
+R graphic systems  | "#"
+Grammar of graphics and ggplot2 | "#"
