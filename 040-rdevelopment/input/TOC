@@ -1,0 +1,15 @@
+R for developers
+
+Base programming in R                     | 11-baseprogramming.Rmd
+
+Function and Environments                 | 12-programming-functions.Rmd
+
+Debugging and benchmarking                | 13-Debuggingbenchmarking.Rmd
+
+Functional Programming                    | 14-FunctionalProgramming.Rmd
+
+Functionals as for loop substitutes       | 15-Functionals.Rmd
+
+Parallel Computation                      | 16-ParallelComputation.Rmd
+
+Developing R packages                     | 17-DevelopingRpackages.Rmd

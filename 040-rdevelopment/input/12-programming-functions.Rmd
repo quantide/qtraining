@@ -1,0 +1,1783 @@
+---
+title: "Function and Environments"
+output: html_document
+---
+
+```{r echo=FALSE, message=FALSE}
+if (!("scuba" %in% installed.packages()[,1])){install.packages ("scuba", repos="http://cran.rstudio.com/")}
+```
+
+## Introduction
+
+Assuming that we are all familiar with _classic_ `R` objects such as _vectors_, _matrices_, _lists_, _data.frames_, etc ..., this chapter takes into consideration a critical type of objects:  __environments__.
+
+Within the `R` computation mechanism, environments play a crucial role as they are constantly used by `R` just behind the scene of interactive computation. 
+
+An environment is an object that takes care of mapping variable names to values. Each mapping is called a binding.
+
+Being able to understand and manage environments represents a key step in the `R` programming learning curve.
+
+## Environments in `R`
+
+The _environment_ definition is clearly stated by in _R Language Definition_ manual:
+
+Environments can be thought of as consisting of two things. 
+
+* A frame, consisting of a set of symbol-value pairs, 
+* an enclosure, a pointer to an enclosing environment. 
+
+Given that a frame is a set of objects each of them associated to a name, where a name is a simple character string, in practice, we can consider an environment as a self contained portion of memory containing a frame. Each environment can access one and only one other environment known as the parent environment. 
+
+Environments in `R` are created, and eventually destroyed, under many circumstances. 
+
+Any `R` session has an environment associated known as the _global environment_ as returned by functions `globalenv()` and `environment()`:
+
+```{r environments-001}
+globalenv()
+environment()
+```
+
+When we are working with `R` in interactive mode, we are using the frame within the `globalenv` as a _container_ for our objects:
+
+```{r environments-002}
+x <- 0
+ls.str(globalenv())
+```
+
+Any package has at least one environment: 
+
+```{r environments-003}
+as.environment("package:stats")
+```
+
+Almost all functions have an environment as part of their definition:
+
+```{r environments-004}
+environment(mean)
+```
+
+User defined functions have an environment too:
+
+```{r environments-005}
+f <- function() NULL
+environment(f)
+```
+
+Function `environmentName()` returns the name of an environment. As a result we may query `R` for the environment of function `f()`:
+
+```{r environments-006}
+environmentName(environment(f))
+```
+
+or for the name of the environment associated to a package:
+
+```{r environments-006A}
+require("scuba", quietly = T)
+environmentName(as.environment("package:scuba"))
+```
+
+Unfortunately, function `environmentName()` does not always return the expected results:
+
+```{r environments-006B}
+env <- new.env()
+environmentName(env)
+```
+
+Environment names for packages and namespaces are assigned at the `C` level. Therefore, user created environments do not reveal names. Users cannot set the name of an environment in `R` even through a, possibly misleadingly named, function called `environmentName()` exists. This function is really only meant for packages and namespaces, not other environments.
+
+## The ''environment tree structure''
+
+The definition of environment also states that an environment is made of an enclosure: a pointer to an enclosing environment. As a consequence, any environment has a parent environment that, as an environment has a parent environment. This chain of parent environments, known as the _environment tree structure_, roots to a special environment called the _empty environment_ that, as stated by its name, contains no objects.
+
+<div id="fig:environment-structure">
+![Figure from http://obeautifulcode.com/R/How-R-Searches-And-Finds-Stuff/](images/environment-structure.png "http://obeautifulcode.com/R/How-R-Searches-And-Finds-Stuff/")
+
+</div>
+
+
+`R` has a very useful function, known as  `parent.env()`, that returns the parent of any given environment:
+
+```{r environments-007}
+parent.env(globalenv())
+```
+
+In order to visualize the environment tree structure we can easily define a function that returns this structure starting from any given environment:
+
+```{r environments-008}
+tree <- function(env){
+  cat("+ ", environmentName(env), "\n")
+  if(environmentName(env) != environmentName(emptyenv())){  
+    env <- parent.env(env) 
+    Recall(env)
+  }
+invisible(NULL)
+}
+```
+
+The above function make use of function `Recall()` that will be examined in the chapter dedicated to functions.
+
+We can test `tree()` starting with `globalenv()` as argument:
+
+```{r environments-009}
+tree(env = globalenv())
+```
+
+Or we may want to use the built in functions `search()` that returns similar results
+
+```{r environments-010}
+search()
+```
+
+When we attach a `list`, usually a `data.frame`, we actually insert an entry in the environment tree structure in the position given by the `pos` argument of function `attach()`. As this parameter defaults to `pos=2L`, most of the times we attach just underneath the global environment: 
+
+```{r environments-011}
+attach(data.frame(NULL))
+search()
+```
+When loading libraries, functions `library()` or `require()` work on a similar basis and use the same parameter `pos = 2L` 
+
+```{r environments-012}
+library(MASS)
+search()
+```
+
+## How `R` looks for objects
+
+When `R` looks for any object, a symbol value pair, by default `R` looks for a matching symbol in the current environment and, if a matching symbol is found, the corresponding value is returned.  
+
+In case we want to search starting from a different environment we are usually able to specify it directly. As an example, we may consider the well known function `get()` that has an argument `envir` specifying which environment to search, at least as a starting point.
+
+As a result, we can create an object named `Formaldehyde` in the current environment:
+
+```{r environments-013}
+Formaldehyde <- data.frame()
+```
+
+and use `get()` to find it along with the environment where to look for:
+
+```{r environments-014}
+get("Formaldehyde", envir = globalenv())
+```
+
+Note that an object with the same name exists in the environment of `package:datasets` and we can find it by specifying the right environment:
+
+```{r environments-015}
+get("Formaldehyde", envir = as.environment("package:datasets"))
+```
+
+When `R` does not find the required symbol in the current environment, `R` looks in the parent environment and then in the parent of the parent until `R` either finds the symbol in any environment or reaches the empty environment. In the latest case, as by definition the empty environment contains no objects, `R` returns an error.
+
+Given this search mechanism,  `R` stops searching as soon as it finds an object with the corresponding name ignoring any object with the same name in any other environment in the environment tree structure. 
+
+This effect, known as `masking`,  may result in quite embarrassing situations. 
+
+As a very simple example, suppose we define a simple function for computing circumference length given radius as argument:
+
+```{r environments-016}
+circumference <- function(radius) 2*pi*radius
+```
+
+and that, at any point of our working session we defined:
+
+```{r environments-017}
+pi <- 0
+```
+The result we would gain looks quite embarrassing:
+
+```{r environments-018}
+circumference(1)
+```
+
+In this case the object `pi` in the `globalenv()` :
+
+```{r environments-019}
+get("pi", envir = as.environment(globalenv()))
+```
+
+masks the same symbol in the `base` environment
+
+```{r environments-020}
+get("pi", envir = as.environment(baseenv()))
+```
+
+A robust method that reduce the risk of masking consists in specifying the package we are calling objects from. We could achieve this goal by using the ''`::`'' operator:
+
+```{r environments-021}
+circumference <- function(radius) 2*base::pi*radius
+circumference(1)
+```
+
+Finally, any conflict is returned by:
+
+```{r environments-022}
+conflicts()  
+```
+
+## Computing with Environments
+
+As we have seen, environments are an essential components of the `R` working mechanism. As a consequence, it should not come as a surprise if environments are defined as `R` objects themselves. 
+
+As a consequence of being `R` objects, environments can be created:
+
+```{r environments-023}
+env <- new.env()
+```
+
+and eventually deleted:
+
+```{r environments-023A, eval = FALSE}
+rm(env)
+```
+
+The `frame` component of an environment can be used as an objects place holder almost as we do with lists. We can place objects within an environment at least in three different ways:
+
+by using the `$` operator:
+
+```{r environments-024}
+env$zero <- 0
+```
+
+by using function `with()`:
+
+```{r environments-025}
+with(env , one <- 1)
+```
+
+by using function assign:
+
+```{r environments-026}
+assign("three", 3, envir  = env)
+```
+
+Finally, we can browse environment `env` with standard functions `ls()` or `ls.str()` to check our result:
+
+```{r environments-027}
+ls(env)
+ls.str(env)
+```
+
+Suppose we want to store several objects at once into an environment, we may want to define a function `fill_envir()` that saves any series of objects within an environment:  
+
+```{r environments-028}
+fill_envir <- function(..., envir = globalenv()){
+  this_list <- list(...)
+  Map(function(...) assign(..., envir = envir) , names(this_list), this_list)
+  invisible(NULL)
+}
+```
+
+The above function takes `...` as argument and internally makes use of function `Map()` with an _anonymous function_ as first argument. All this interesting concepts will be exhaustively explained in the next chapters.
+
+
+
+By using function `fill_env()`, we can create a new environment and, subsequently, fill it with objects:
+
+```{r environments-029}
+env1 <- new.env() 
+fill_envir(one = 1, seven = 7, envir = env1)
+ls.str(env1)
+```
+
+As we do with `list()`, we may also want a function `envir()` that  directly creates an environment with named objects inside:
+
+```{r environments-030}
+envir <- function(..., hash = TRUE, parent = parent.frame(), size = 29L){
+  envir <- new.env(hash = hash, parent = parent, size = size)
+  fill_envir(..., envir = envir)
+  return(envir)
+}
+```
+
+Note that, we have used the newly created function `fill_envir()` within the body of `envir()`; writing modular functions, reusable within new functions, is a key point for producing efficient `R` coding.   
+
+Function `envir()` is now ready to be used for creating new environments:
+
+```{r environments-031}
+env2 = envir(six = 6, seven = 7)
+ls.str(env2)
+```
+
+Up to now we have noticed that environments behave very similarly to lists but, at this point of this explanation, we must point out at least three differences that exists between environments and lists:
+
+First of all, within environment all objects  must have a name while lists do not impose this restriction. In fact, we can create a list with unnamed components:
+
+```{r environments-032}
+list (0, 1)
+```
+
+but we cannot do the same with environments nor using function `envir()`: 
+
+```{r environments-033, error=TRUE}
+envir(0,1)
+```
+
+or, any other approach that attempts to create nameless objects within an environment. 
+
+This sound quite logical as the definition of environment states that: _Environments consist of a frame, or collection of __named__ objects_.
+
+Similarly, we may have lists with duplicated components:
+
+```{r environments-034}
+l <- list (x = 0 , x = 1)
+l$x
+```
+
+This idea may look strange but it is a basic example _masking_ within `R`. 
+
+When we try to repeat the same experiment with environments, we may observe a different behavior: 
+
+```{r environments-035}
+env <- envir(x = 0, x = 1)
+ls.str(env)
+```
+In this case, the second argument: `x = 1` simply reassigns a different value to `x`.
+
+Finally, as opposite to lists, within environments, the order objects were placed in does not matter. The frame is a collection of named objects and only names matter. As a consequence, objects of an environment are always displayed in alphabetical order:
+
+```{r environments-036}
+env <- envir(b = 2, a = 1)
+ls.str(env)
+```
+
+The second part of the definition of environment states that an environment is made of an enclosure: a pointer to another environment.  
+
+As a consequence of this definition, when we create a new environment, it has, by definition, a parent environment. 
+
+Unless differently specified, the parent of the newly created environment is the environment where the environment was created. 
+
+As a result, if we create an environment, say `env0`, within the global environment, the latest results as the parent of `env0`.
+
+```{r environments-037}
+env0 <- new.env()
+parent.env(env0)
+```
+
+We can pass `env0` as an argument to the `tree()` function:
+
+```{r environments-038}
+tree(env0)
+```
+
+Note that, the name of the environment `env0` is not returned by function `environmentName()`. This happens as the name of an environment is stored into the underlying _C_ function and no assignment or replacement method exist, at the moment, for environments.
+
+
+We may even create an environment, say `env1` and specifically declare its parent environment:
+
+```{r environments-039}
+env1 <- new.env(parent=baseenv())
+```
+
+Again, we can use function `tree()` to see the effects of the previous statement:
+
+```{r environments-040}
+tree(env1)
+```
+
+It should be clear at this point that the structure of the environment tree is a key element in the `R` programming mechanism. 
+
+These concepts will be very often recalled in the chapter dedicated to  functions.
+
+## Copy on modify
+
+When we do an assignment, `R` reserves a portion of memory for that object. We can _display_  objects memory addresses by using a short function:
+
+
+```{r environments-041}
+mem_add <- function(x) substring(capture.output(.Internal(inspect(x))), 2, 17) 
+```
+
+beside its cryptic output, `mem_add()` allows us to verify that, given two different objects:   
+
+```{r environments-042}
+x <- 0
+y <- 0 
+```
+
+they have different memory address:
+
+```{r environments-043}
+mem_add(x)
+mem_add(y)
+```
+
+and that, given:
+
+```{r environments-044}
+x <- 0
+```
+
+if we assign
+
+```{r environments-045}
+y <- x
+```
+
+they share the same memory address:
+
+```{r environments-046}
+identical(mem_add(x), mem_add(y))
+```
+
+that is: when vector `x` is  copied into vector `y`, both objects share the same memory address.
+
+When existing objects are modified, usually `R` objects follow a _copy on modify_ semantic; that is the object is copied into a different memory address. 
+
+
+In practice,  given an object:
+
+```{r environments-047}
+x <- 1:5
+```
+
+with its address
+
+```{r environments-048}
+mem_add(x)
+```
+
+if we modify it
+
+```{r environments-049}
+x[3] <- 0L
+```
+
+`R` modify its address too 
+
+```{r environments-050}
+mem_add(x)
+```
+
+If we apply the same concept to lists, given a list 
+
+```{r environments-051}
+list0 <- list(x = 0)
+```
+
+and its copy 
+
+```{r environments-052}
+list1 <- list0
+```
+
+both list share the same address
+
+```{r environments-053}
+identical(mem_add(list0), mem_add(list1))
+```
+
+but, if we modify `list1`
+
+```{r environments-054}
+list1$x <- 1
+```
+
+`list0` and `list1` now have different addresses:
+
+```{r environments-055}
+identical(mem_add(list0), mem_add(list1))
+```
+
+This mechanism: _copy on modify_, allows to preserve the value of `list0` even if `list1` is modified. 
+
+Prior to `R 3.1` when modifying a list the entire list was copied. With version `3.1` we had a nice change that clearly helps in keeping memory usage under control. 
+
+Suppose we have two copied list made of more than one element:
+
+```{r environments-055A}
+list0 <- list(x = 1:100, y = rpois(100, 100))
+list1 <- list0
+```
+
+and we modify only the second vector of the second list: `y`:
+
+```{r environments-055B}
+list1$y[1] <- 0L
+```
+
+We can now observe that the memory address is modified only for the second element of the list while `list0` and `list1` keep sharing the same address for the first vector: `x`
+
+
+```{r environments-055C}
+lapply(list0, mem_add)
+lapply(list1, mem_add)
+```
+
+In conclusion, we could say that `R`, at least in its newest versions, uses a _partial copy on modify_ semantic.
+
+The same semantic does not apply to environments, that is _environments do not copy on modify_:
+
+As an proof of concept, we can create an environment with some objects in it:
+
+```{r environments-056}
+env0 <- new.env()
+env0$x <- 0
+```
+
+Afterward, we copy our newly created environment `env0` into a second environment, say `env1`.
+
+```{r environments-057}
+env1 <- env0
+```
+
+As `env1` is a copy of `env0`, both environments contain the same symbols with the same values associated to them.
+
+```{r environments-058}
+env0$x
+env1$x
+```
+
+As environments do not copy on modify, if we now modify `x` within `env1`:
+
+```{r environments-059}
+env1$x <- 1
+```
+
+We can easily observe that the value of `x` within `env0` is modified too: 
+
+```{r environments-060}
+env0$x
+```
+
+The previous example clearly shows that any modification on `env1` also affects `env0`. This is possible as `env0` and `env1` share the same memory address even after the modification `env1$x <- 1`:
+
+```{r environments-061}
+identical(mem_add(env0), mem_add(env1))
+```
+
+## Hashed environments
+When we create a new environment, by setting `hash=TRUE`: the default value, we create a hashed environment.
+
+In computer science, a hash table or hash map is a data structure that uses a hash function to map identifying values, known as keys, to associated values. Thus, a hash table implements an associative array. The hash function is used to transform the key into the index (the hash) of an array element (the slot or bucket) where the corresponding value is to be sought.
+
+Hashed environment, allow _value look up by symbol_ faster than traditional methods at the price of the hash table implementation. 
+
+As a proof of concept we may consider the following example. 
+
+First, we create a simple data frame whose rows represent  `name-value` pairs:
+
+```{r environments-062}
+options(stringsAsFactors = FALSE)
+n = 10^6
+df = data.frame(name = paste("p", 1:n, sep = "."), value = 1:n)
+head(df,  3)
+```
+
+Secondly, we create a new environment and we fill it with the _name-value_ pairs so that we define, within the newly created environment, `n` objects of value `i` and name `p.i`:
+
+```{r environments-063, cache=TRUE}
+env = new.env(hash = T)
+
+system.time(
+  Map(function(...) assign(..., envir = env), x = df$name, value = df$value)
+)
+```
+
+As we can see, implementing the hash table require a certain amount of computing time.
+
+We now define a random sample of names: 
+
+```{r environments-064}
+k = 100
+what = paste("p", sample(1:n, k), sep ="." )
+```
+
+and finally, we want to create a vector `out` containing the values corresponding to each name. In practice, if we selected `what <- c(p.1,p.2,p.3)` we would like `R` to return `c(1,2,3)`.
+
+In order to achieve this result we may use either a crazy `for` loop approach
+
+```{r environments-065}
+out <-  numeric(k)
+system.time({
+for (i in 1:k){
+  out[i] <-  df$value[df$name == what[i]]
+}})
+```
+
+or the common `R` vectorized approach 
+
+```{r environments-066}
+system.time({df$value[is.element(df$name , what)]})
+```
+
+or, finally, the new hash approach
+
+```{r environments-067, cache=TRUE}
+system.time({
+  unlist(mget(what,  envir =   env))
+})
+```
+
+
+Definitely, the hash approach, if we are willing to pay the computational price required for building the hash table, offers a clear advantage.
+
+
+## Functions structure
+
+When working with R we all make constant use of functions and, when developing, we create new functions so that functions look like very familiar R objects. Nevertheless, understanding the theory and the rationals underlying R functions may help to create much more efficient and possibly elegant coding.
+
+We can create and assign functions to a variable names as we do with any other object:
+
+```{r functions-001}
+f <- function(x, y = 0) {
+  z <- x + y
+  z
+}
+```
+
+Eventually, we can delete any function  with the usual call to `rm()` or `remove()`
+
+Functions are objects with three basic components: 
+
+* a formal arguments list
+* a body
+* an environment. 
+
+```{r functions-002}
+formals(f)
+body(f)
+environment(f)
+```
+
+
+### Formals
+
+Formals are the formal arguments of a function returned as an object of class `pairlist` where a `pairlist` can be thought as something similar to a list with an important difference:
+
+```{r functions-003}
+is.null(pairlist())
+is.null(list())
+```
+
+that is: a `pairlist` of length zero is `NULL` while a `list` is not.
+
+When we call a function, formals arguments can be specified by position or by name and we can mix positional matching with matching by name so that the following are equivalent:
+
+```{r functions-004}
+
+mean(x = 1:5, trim = 0.1)
+mean(1:5, trim = 0.1)
+mean(x = 1:5, 0.1)
+mean(1:5, 0.1)
+mean(trim = 0.1, x = 1:5)
+```
+
+Along with position and name, we can also specify formals by partial matching so that:
+
+```{r functions-005}
+mean(1:5, tr = 0.1)
+mean(tr = 0.1, x = 1:5)
+```
+
+would work anyway.
+
+Functions formals may also have the construct `symbol = default`, that unless differently specified, forces any argument to be used with its default value.
+
+Specifically, function `mean()` also have a third argument `na.rm` that defaults to `FALSE` and , as a result passing vectors with `NA` values to `mean()` returns `NA`
+
+```{r functions-006}
+mean(c(1, 2, NA))
+```
+
+While, by specifying `na.rm=TRUE` we get the mean of all non missing elements of vector `x`.
+
+```{r functions-007}
+mean(c(1, 2, NA), na.rm = TRUE)
+```
+
+The order `R` uses for matching formals against value is:
+
+1. Check for exact match for a named argument
+2. Check for a partial match
+3. Check for a positional match
+
+Formals of a function are normally used within functions by the internal `R` evaluator but, we can use function `formals()` to expose formals explicitly. 
+
+```{r functions-008}
+formals(f)
+```
+
+`args()` is an other function that displays the formals in a more user friendly fashion. Actually, `args(fun)` returns a function with the same arguments as `fun` but with an empty body.  
+
+```{r functions-009}
+args(f)
+```
+
+Surely, for programming purposes,  `formals()` is a better choice as it returns a simple `pairlist` that can be handled as a list:
+
+
+```{r functions-010}
+is.list(formals(mean))
+```
+
+As a replacement method exists for function `formals`:
+
+```{r functions-011}
+exists("formals<-")
+```
+
+formals of a function can manipulated by using function `alist()`: a `list()` type function that handles unevaluated arguments
+
+```{r functions-012}
+g <- function(x, y=0) x+y
+g(1)
+formals(g)
+formals(g) <- alist(x=, y=1)
+g(1)
+```
+
+As an example of practical use of `formals()` we may decide to re-define function `mean()` that defaults `na.rm` to `TRUE` by simply:
+
+```{r functions-013}
+formals(mean.default)$na.rm <- TRUE
+mean(c(1,2,NA))
+```
+
+Clearly, we now have  copy of `mean.default()` in our `globalenv`:
+
+```{r functions-014}
+exists("mean.default", envir = globalenv())
+```
+
+Finally, let's notice that:
+
+```{r functions-013A}
+environment(mean.default)
+```
+
+remains the base environment: the environment where the function was created.
+
+
+
+The "`...`" argument of a function is a special argument and can contain any number of `symbol=value` arguments .  The "`...`" argument is transformed by `R` into a list that is simply added to the `formals` list:
+
+```{r functions-015}
+h <- function (x, ...) {0}
+formals(h)
+```
+
+The "`...`" argument can be used if the number of arguments is unknown. Suppose we want to define a function that counts the number of rows of any given number of data frames we could write:
+
+```{r functions-016}
+count_rows <- function(...) {
+  list <- list(...)
+  lapply(list, nrow)
+}
+
+count_rows(airquality, cars)
+```
+
+Similarly, the "`...`" arguments becomes very handy when the "`...`" arguments will be passed on to another function as it often happened when calling `plot()` from within another function. The following example shows a basic plot function used for depths plotting where additional graphics parameters are passed via "`...`":
+
+```{r functions-017, fig.height=7, fig.width=7}
+time <-  1:13
+depth <-  c(0,9,18,21,21,21,21,18,9,3,3,3,0)
+
+plot_depth <-  function ( time , depth , type = "l", ...){
+  plot(time, -depth, type = type, 
+       ylab = deparse(substitute(depth)), ...)
+}
+par(mfrow = c(1, 2))
+plot_depth(time, depth, lty = 2)
+plot_depth(time, depth, lwd = 4, col = "red")
+```
+
+### Body of a function
+
+The body of a function is a parsed R statement. In practice, this implies that the body of a function needs to be correct from a formal point of view but no evaluation of the body of a function occurred yet. 
+
+As a result, this function would return an error:
+
+```{r functions-017A, eval=FALSE}
+wrong <- function(x) {x =}
+```
+
+as its body is not a correct `R` statement.
+
+While this function:
+
+```{r functions-018}
+right <- function(x){x+y}
+```
+
+is accepted by `R` as is formally correct even thought, except under specific circumstances, will always return an error:
+
+```{r functions-019, error=TRUE}
+right(x = 2)
+```
+The body of a function, is usually a collection of statements in braces but it can be a single statement, a symbol or even a constant.
+
+The body of function is an object of class `call`:
+
+```{r functions-020}
+f <- function(x) {x+1}
+class(body(f))
+```
+
+and as a `call` object, the body of a function can be manipulated as a list:
+
+```{r functions-021}
+as.list(body(f))
+```
+
+and, as function `body()` has a replacement method: `body()<-`, the body of a function can be easily manipulated: 
+
+```{r functions-022}
+body(f)[[2]][[1]] <- `-`
+f(1)
+```
+
+This technique can be eventually used for testing _on the fly_ small changes to a function without rewriting its full body.
+
+### Environment of a function
+The environment of a function is the environment that was active at the time that the function was created. Generally, for user defined function, the Global environment:
+
+```{r functions-023}
+f <- function(x){x+1}
+environment(f)
+```
+or, when a function is defined within a package, the environment associated to that package:
+
+```{r functions-024}
+environment(mean)
+```
+
+The environment of a function is a structural component of the function and belongs to the function itself.
+
+As an example, we can define a function `f()` that simply returns zero
+
+```{r functions-023A}
+f <- function() 0
+```
+
+the environment of `f()` is clearly the `globalenv()`
+
+```{r functions-023B}
+environment(f)
+```
+
+we can modify the environment of a function and assign to `f()` a newly created environment
+
+```{r functions-023C}
+env <- new.env()
+environment(f) <- env
+environment(f)
+```
+
+in case we delete environment `env`
+
+```{r functions-023D}
+rm(env)
+```
+
+`f()` will keep working
+
+```{r functions-023E}
+f()
+```
+
+All of this happen as `env` and the environment of `f()` are two pointers to the same piece of memory address but they exist as separate objects.
+
+As an example we may consider a function defined in a dedicated environment along with some other objects in the same environment.
+
+```{r functions-025}
+env <- new.env()
+
+with(env,{ 
+     y <- 1
+     g <- function(x){x+y}
+     })
+
+
+with(env, g(1))
+```
+
+As we can see, clearly `g()` knows that `x=1` as it was passed to the function as an argument but, `g()` also remembers that `y=1` as `y` belongs to the environment `env`: the environment of `g()`.
+
+The same behavior occurs many times when we develop `R` function and may lead to errors when calling these functions. Suppose we simply write:
+
+```{r functions-026}
+y <- 1
+g <- function(x){x+y}
+g(2)
+```
+
+The above example works as the environment of `g()` is now the global environment. But, as soon as we do:
+
+```{r functions-027}
+rm(y)
+```
+clearly, `g()` will stop working as object `y` no longer exists in the global environment
+
+```{r functions-028, error=TRUE}
+g(1)
+```
+
+Notice that, if we define this odd function
+
+```{r functions-023F}
+f <- function() x
+```
+
+this function works if it finds variable `x` in its chain of searchable environments. As a result, if we define
+
+```{r functions-023G}
+env <- new.env() 
+env$x <- 0
+environment(f) <- env
+```
+
+now `f()` returns zero as it finds `x` within its environment
+
+```{r functions-023H}
+f()
+```
+
+if now delete `env` 
+
+```{r functions-023I}
+rm(env)
+```
+
+`f()` will keep working
+
+```{r functions-023L}
+f()
+```
+
+as a pointer to the same memory address exists as part of `f()` itself
+
+Along with the environment where the function was created, functions usually interact with, at least, two more environments: 
+
+* The evaluation environment
+* The calling environment 
+
+The evaluation environment is created any time the function is called. Within this environment, the formals arguments of the function are matched with the supplied arguments and the body of the function is evaluated. 
+
+The evaluation environment, as any other environment, has a parent. The parent of the evaluation environment of a function is the environment of the function. In other words, the function environment is the enclosure, the parent, of the evaluation environment.
+
+As a proof of concept we can write simple function that returns the its evaluation environment along with the evaluated symbols that are created within this environment :
+
+```{r functions-029}
+f <-  function(x){
+  env <-  environment()
+  env
+}
+
+env_f <- f(x = 0)
+get("x", envir = env_f)
+```
+
+As we can see, object `x` is bounded to the evaluation environment of `f()`.
+
+The _calling environment_ is the environment the function is called from. When using `R` interactively, the calling environment of a function is usually the global environment but, this is not always the case. 
+
+When we call a function, the function first looks for any variable in the evaluation environment and then in its enclosure; usually, for user defined functions, the global environment. In case no variable is found, `R` keeps searching along the environments stack until it reaches the empty environment. As we can see, this process does not take into account the calling environment.
+
+When using `R` interactively, the environment of a function and the calling environment of that function often coincide: functions are defined in the global environment and called from the same environment. 
+
+In order to better understand the difference between the environment of a function and the calling environment of a function, we may consider a new environment, with a function `f()` defined in it, whose enclosure is forced to the `base` environment:
+
+```{r functions-030}
+env <- new.env(parent = baseenv()) 
+with(env, f <- function(x) {is.function(x)})
+```
+
+Function `f()` takes a single argument and returns `TRUE` in case it is a function, `FALSE` otherwise.
+
+
+If we call this function with argument `x = c`:
+
+```{r functions-031}
+with(env, f(c))
+```
+
+`f()` returns `TRUE` as it is considering function `c()` from the `base` environment.
+
+if we define an object `c` within environment `env`:
+
+```{r functions-032} 
+with(env, c <- 0) 
+```
+
+and we call it:
+
+```{r functions-033}
+with(env, f(x = c))
+```
+
+now `f()` returns `FALSE` as it is considering variable `c` within the `env` environment and does not find function `c()` in the `base` environment. 
+
+If we now remove `c` from `env`:
+
+```{r functions-034}
+remove(c, envir = env)
+```
+
+and we re-define `c` within our global environment:
+
+```{r functions-035}
+c <- 0
+```
+
+when now calling `f(x = c)`, 
+
+```{r functions-036}
+with(env, f(x = c))
+```
+
+we can see that `f()` now returns `TRUE` despite the `c <- 0` assignment in the global environment.
+
+Basically, `f()` start searching from its environment: `env` and, if necessary, keeps searching along the environment tree structure that, in this case, does not include the `globalenv`.
+
+`R` provides at least two useful functions to deal with the environments of a functions:
+
+* `parent.env()`
+* `parent.frame()`
+
+`parent.env()` returns the environment in which the function was defined while `parent.frame(n = 1)` identify the environment from which the function was invoked.
+
+In order to illustrate this concepts, we can define:
+
+```{r functions-037}
+env_of_fun <- function(){
+  evaluated_in <- environment()
+  defined_in <- parent.env(evaluated_in)
+  called_from <- parent.frame(n = 1)
+
+  c(evaluated_in = evaluated_in, 
+    defined_in = defined_in, 
+    called_from = called_from)
+}
+env_of_fun()
+```
+
+
+This function was defined in the global environment and called from the global environment.
+
+Suppose we now define a new environment `env` and we move `env_of_fun()` in it:
+
+```{r functions-038}
+env <- new.env()
+env$env_of_fun <- env_of_fun
+rm(env_of_fun)
+```
+
+when we now call `env_of_fun()`
+
+```{r functions-038A}
+with(env, env_of_fun())
+```
+
+we can see that the calling environment is now different from the definition environment.
+
+Understanding this idea can help to improve clarity and avoid annoying conflicts. 
+
+As an example, we can define function `f()` within a newly created environment `env` and use function `parent.frame()` within the newly created function:
+
+
+```{r functions-039}
+rm(list = ls())
+env <- new.env(parent = baseenv()) 
+with(env, f <- function(x) {
+  x <- eval(x, envir = parent.frame(n = 1))
+  is.function(x)
+  })
+```
+
+and observe that:
+
+```{r functions-040}
+
+env$f(c)
+c <- 1
+env$f(c)
+with(env, f(c))
+```
+
+that is, function `parent.frame()` forced `f()` to look for `c` first inside the calling environment rather than the creation environment: `env` or its parent: `r baseenv()`  
+
+Similarly, in order to avoid conflicts between objects passed as arguments to a function and objects stored in any other environment, such as a package, we could define `f()` within `env` as: 
+
+```{r functions-041}
+env <- new.env(parent = baseenv()) 
+with(env, f <- function(x) eval(x, parent.env(environment())))
+```
+
+in this case we can be sure that whenever we call `f()` it first looks for the value of `x` as stored either in `env` or its parent: `r baseenv()`:
+
+Suppose, in fact, we call;
+
+```{r functions-042}
+with(env, f(x = pi))
+pi <- 0
+with(env, f(x = pi))
+```
+
+we can observe that `f(x = pi)` always returns teh correct value for `pi`
+
+
+## Example: Remove all objects from the workspace
+
+As an example of use of the environment of a function, we can consider several strategies to write a function capable of removing all objects from the `globalenv`. We can iniatially write a simple function:
+
+```{r howRworks-034}
+clear = function(env = globalenv()) {
+  obj = ls(envir = env)
+  rm(list = obj, envir = env)
+}
+```
+
+Function `clear()` removes all objects from a specified environment and seems to work correctly:
+
+```{r howRworks-035}
+x <- 1; y <- 2; z <- 3
+ls()
+clear()
+ls()
+```
+
+At this point, should be obvious what is the drawback of this solution. Function `clear()` deletes also itself and, as a result, it cannot be reused without redefined it.
+
+```{r howRworks-036, error=TRUE}
+a <- 2
+clear()
+```
+
+This function can be improved, to keep function `clear()`  when all other objects are deleted.
+
+```{r howRworks-037}
+clear <-  function (env = globalenv()){
+  objects <-  objects(env)
+  objects <-  objects[objects != "clear"]
+  rm(list = objects, envir = env)
+  invisible (NULL)
+}
+```
+
+Now the function can be used more than once.
+
+```{r howRworks-038}
+a <- b <- c <- 0
+clear()
+a <- b <- c <- 1
+clear()
+```
+
+Unfortunately, this function has also a drawback: it stops working when reassigned.
+
+```{r howRworks-039}
+clean <- clear
+rm (clear)
+a <- b <- c <- 0
+clean()
+```
+
+As defined above, function `clean()` also removes itself: only the object named `clear` is preserved.
+
+```{r howRworks-040, error=TRUE}
+a <- 3
+clean()
+```
+
+To dynamically keep function name, we may modify function clear as follow.
+
+```{r howRworks-041}
+clear <- function (env = globalenv()){
+  fname <- as.character(match.call()[[1]])
+  objects <- objects(env)
+  objects <- objects[objects != fname]
+  rm(list <- objects, envir = env)
+  invisible (NULL)
+}
+```
+
+Nevertheless, beside the above solution, a smart way to obtain the same result is the follow:
+
+```{r howRworks-042, tity = FALSE}
+assign("clean",
+  function(env = globalenv()){
+    rm(list = ls(envir = env), envir = env)
+  },
+  envir = attach(NULL, name = "myenv", pos = 2)
+)
+```
+
+Through function `assign()`, function `clear()`  is created in a new environment called `myenv`. In this way, all objects in the global environment can be removed without deleting function `clear()` 
+
+```{r howRworks-043}
+a <- b <- c <- 0
+ls()
+clean()
+ls()
+```
+
+search()
+
+## Return Value
+The last object called within a function is returned by the function and therefore available for assignment. Functions can return only a single value but, in practice, this is not a limitation as a list containing any number of objects can be returned. 
+
+Objects can be returned `visible` or `invisible`. This option has no effect on the assignment side but affects the way results are displayed when the function is called.
+
+```{r functions-043}
+g <-  function (n){
+ out <- runif(n)
+ cat(head(out))
+ invisible(out)
+}
+
+x <-  g(10^5)
+length(x)
+```
+
+Sometimes, we may want a function that does any job but returns nothing. In this case, the return value will be set to `NULL` and returned as invisible.
+
+Suppose we need a function that `cat()` a message we can write:
+
+```{r functions-044}
+msg <- function(x){
+  cat(x, "\n")
+  invisible(NULL)
+}
+```
+
+and use it as:
+
+```{r functions-045}
+msg("test message")
+```  
+
+with no assignment nor returned value. 
+
+## Operators
+Operators in R are simple function. Specifically, operators are _infix_ functions as opposite to standard functions that are defined as _prefix_ as the name of the function comes before its arguments. Operators can be defined as function with the only constrain that their name must be surrounded with ''%''. As a result, a simple operator that concatenate strings can be defined as:
+
+```{r functions-046}
+"%+%" = function(x,y){paste(x, y, sep = "")} 
+"we " %+% "love " %+% "R !"
+```
+
+A more complex approach, based on `R` capabilities as an object oriented programming language, takes advantage of, `+` being  a generic function:
+
+```{r functions-047}
+methods(`+`)
+```
+
+As a result, different methods for generic function `+` can be defined for different classes of objects.  
+
+As an example, we may define a class of objects named `string`:
+
+```{r functions-048}
+string <- function(x) {
+  s <- as.character(x)
+  class(s) <- "string"
+  s
+}
+```
+
+with a `+` method that concatenates strings:
+
+```{r functions-049}
+`+.string` <- function(s1, s2) paste(s1, s2, sep = "")
+```
+
+and as a result:
+
+```{r functions-050}
+a <- string("Mickey")
+b <- string("Mouse")
+a+b
+```
+
+
+## Lazy evaluation
+Functions arguments, except few exceptions, are, by default, _lazy_; that is, they are not evaluated when the function is called but only when the argument are explicitly used.
+
+Let's take as an example this simple function where the `y` argument is never evaluated within the function body:
+
+```{r functions-051}
+rm(list = ls())
+f = function(x, y){
+  x+1
+}
+```
+
+We can call `f()` and pass a non existing object `z` to argument `y`. Clearly, this kind of statement would result in a error as `z` is not defined but, it works as a function argument:   
+
+```{r functions-052}
+f(x = 0, y = z)
+```
+
+As we can see, `y` is assigned to `z` and `z` does not exit but, `R` does not return any error. This is because `y = z` is never evaluated within the function body. 
+
+As a second example we can consider this basic function that simply prints its arguments: 
+
+
+```{r functions-053, eval=TRUE}
+h <-  function(a , b){
+  cat ("a is:", a, "\n")
+  cat ("b is:", b, "\n")
+  invisible(NULL)
+}
+```
+
+If we call `h()` without passing any vale to `b` we see that: 
+
+```{r functions-054, error=TRUE}
+h(a = "we love R")
+```
+
+that is:  `h()` returns an error only when the evaluation of `b` is required. Prior to that, this function works perfectly.
+
+Usually, whenever a function returns an error if any argument is not provided and not yet evaluated, this is because a control mechanism has been programmed within the function body:
+
+```{r functions-055, error=TRUE}
+g <-function(x, y){
+  call <- match.call()
+  args <- match(c("x", "y"), names(call))
+  if(any(is.na(args))) stop("All args must be provided!")
+  pi
+}
+
+g(y = 1)
+
+```
+
+More formally, an unevaluated argument is called a `promise`. A promise is an object made of three slots: 
+
+* a value
+* an expression 
+* an environment
+
+Practically, when a function is called, any argument is associated to a promise object along with the expression associated to that argument and a pointer to the environment where the expression will be, eventually, evaluated and assigned to the argument symbol.
+
+Evaluation of an argument is required when:
+
+* Interfacing with foreign language
+* Selecting a method for a generic function 
+* An argument needs to be assigned within a function
+
+
+There is generally no way within `R` to check whether an object is a promise or not, nor is there a way to determine the environment of a promise.
+
+<!-- AS provide and example -->
+
+Lazy evaluation permits flexible handling of missing arguments and computations depending on the expression for the argument rather than its value. 
+
+The following example is a good case in point:
+
+```{r functions-056}
+rescale = function(x, location = min(x), scale = max(y)){
+  y <- x-location
+  y/scale
+}
+rescale(1:4)
+```
+
+This function scales any vector, by default, in the `[0,1]` range.  
+Argument `scale` depends on the value of `y` that is not defined but, it will be defined: `y = x-location` prior to its evaluation `y/scale`.
+
+Function `delayedAssign()` offers a direct mechanism for accessing promise mechanism outside a function
+
+```{r functions-056A}
+delayedAssign("promise" , {x+y})
+x <- 0
+y <- 1
+eval(promise)
+```
+
+
+## Functions call
+
+Functions in `R` can be called _directly_ or by mean of a second function such as `do.call()` by passing a string corresponding to the function name.
+
+### do.call()
+Function `do.call()` takes as input two arguments: 
+
+* either a function or a non-empty character string naming the function to be called.
+* a list of arguments to the function call
+
+Basically:
+
+```{r functions-057, eval=FALSE}
+mean(x = 1:100, trim = 0.2)
+```
+
+corresponds to:
+
+```{r functions-058, eval=FALSE}
+do.call("mean", list(x = 1:100, trim = 0.2))
+do.call(mean, list(x = 1:100, trim = 0.2))
+```
+
+### Example: Maximumum Likelihood Estimamates
+As an example, we may consider a maximum likelihood estimator for normal distributions:
+
+```{r functions-059}
+mle = function(theta, x){
+  ml = function(theta, x) {
+    ml = dnorm(x = x, mean = theta[1], sd = theta[2])
+    ml = -sum(log(ml))
+    }
+    optim(theta, ml, x = x)$par
+}
+mle(theta = c(0, 1), x = rnorm(100, 5, 2))
+```
+
+We can re-implement the estimator by using `do.call()`:
+
+```{r functions-060}
+mle = function(theta, x){
+  ml = function(theta, x) {
+    ml = do.call(dnorm, list(x, theta[1], theta[2]))
+    ml = -sum(log(ml))
+  }
+  optim(theta, ml, x = x)$par
+}
+
+mle(theta = c(0, 1), x = rnorm(100, 5, 2))
+```
+
+
+The distribution name can be passed as an argument to the `mle()` and, as a consequence, to  `do.call()`  at the cost of a minor modification to the internal function `mle()`.
+
+```{r functions-061}
+mle = function(theta, x, dist){
+  dist = paste("d", dist , sep = "")
+  ml = function(dist , theta, x) {
+    ml = do.call(dist, list(x, theta[1], theta[2]))
+    -sum(log(ml))
+  }  
+  optim(theta,  ml, dist = dist  , x = x)$par
+}
+mle(dist = "norm" , theta = c(0, 1), x = rnorm(10, 5, 2))
+```
+
+Now it works with most of two parameters distributions assuming that the right initial `theta` is provided.
+
+```{r functions-062}
+mle(dist = "lnorm" , theta = c(0,1), x = rlnorm(100, 3, 1))
+mle(dist = "weibull" , theta = c(1,1), x = rweibull(100, 3, 1))
+```
+
+Clearly, this is a good value generalization given the programming effort required.
+
+### `match.call()`
+
+Function `match.call()` is used within functions and it simply returns the call that has been passed to a function
+
+```{r functions-063}
+f = function(a, b){
+  call = match.call()
+  call}
+  
+my_call = f(2, 3)  
+my_call
+class(my_call)  
+```
+
+Any `call` is an object of class `call` that can explored as a list object:
+
+```{r functions-064}
+my_call_list <- as.list(my_call)
+my_call_list
+```
+
+
+`Call` objects can also be manipulated as list. 
+
+```{r functions-065}
+my_call$a <- 0
+eval(my_call)
+```
+
+
+### Example: Function `anyway()`
+
+As an example, we consider a function with two arguments `a, b` that returns, in case both arguments are numeric, the sum of the arguments; the character variable `"a+b"` otherwise.
+
+```{r functions-066}
+anyway = function(a , b){
+  call <-  match.call()
+  if (is.numeric(a) & is.numeric(b)) {call[[1]] <- as.name("sum")} 
+    else {
+      call[[1]] <- as.name("paste" )
+      call$sep <- "+"
+    }
+eval(call)
+}
+
+anyway(3, 6)
+anyway("c", 2)
+```
+
+### Example: Function `write.csv()` revisited
+
+As a as second application of `do.call()` we consider  `write.csv()`. This function is a wrapper to `write.table()` forcing `sep = ","` and `dec = "."`.
+
+Such a function could be easily written as:
+
+```{r functions-067}
+write.csv <-  function(...) write.table(sep = ",", dec = ".", ...)
+siris <- head(iris, 3)
+write.csv(siris)
+```
+
+Nevertheless, if we try to pass any of the `sep` or `dec` arguments via the ''`...`'' argument, the function returns error:
+
+```{r functions-068, error=TRUE}
+write.csv(siris, sep = ";")
+```
+
+Basically, the  ''`...`'' argument may take any argument to be passed to `write.table()` except `sep` and `dec`. In case any of these arguments is explicitly passed to the function, they have to be forced to the desired default values: `","` and `"."`.
+
+A simplified version of `write.csv()`  can be re-written as: 
+
+```{r functions-069}
+write.csv = function(...){
+  call = match.call()
+  call[[1]] = as.name("write.table")
+  call$sep = ","
+  call$dec = "."
+  eval(call)
+}
+
+write.csv(siris, sep = ";")
+```
+
+Now, `sep = ";"` is simply ignored.
+
+## Recursive functions
+A recursive function use recursion and can call itself until a certain condition is met.
+
+As an example we may consider a function that takes `x` as an argument and keep dividing it by `2` until the result is greater than `2`. This idea can be implemented by a simple `while()` loop:
+
+```{r functions-070}
+one_c <- function(x){
+  while (x > 2){
+    x <- x/2
+}
+x
+}
+one_c(10)
+```
+
+or alternatively by the use of function `Recall()`: a placeholder for the name of the function in which it is called. It allows the definition of recursive functions which still work after being renamed
+
+```{r functions-071}
+one_r <- function(x){
+  if (x > 2 ){
+   x <- x/2
+   x <- Recall(x)
+  }
+x  
+}
+one_r(10)
+```
+
+in this case `Recall(x)` is equivalent to `one_r(x)`. 
+
+The use of recursion my look redundant in this simple example but, it given an idea of how much a function can change by the simple introduction of this concept.
+
+When dealing with more complex problem, the use of recursion may help indeed to simplify our coding.
+
+### Example: Quicksort
+
+A good example of the advantages, and possibly disadvantages, of using recursive function is represented by the implementation of the _quicksort_: a divide and conquer algorithm that first divides a large list into two smaller sub-lists: the low elements and the high elements. Quicksort can then recursively sort the sub-lists.
+
+As a simple implementation we may  consider:
+
+```{r functions-072}
+quick_sort_r  <- function(x) {
+  
+  if(length(x) > 1) {
+    base <- x[1]
+    l <- Recall(x[x < base])
+    m <- x[x == base]
+    h <- Recall(x[x > base])
+    
+    c(l, m, h)
+  }
+  else x
+}
+```
+
+that results in:
+
+```{r functions-073}
+quick_sort_r(sample(1:10))
+```
+
+Note that its non recursive implementation could be:
+
+```{r functions-074}
+quick_sort_c <- function(x , max_lev = 1000) {
+  n <- length(x)
+  i <- 1
+  beg <- end <- max_lev
+  beg[1] <- 1 
+  end[1] <- n+1
+  
+  while (i>=1) {
+    L <- beg[i]
+    R <- end[i]-1
+    if (L<R) {
+      piv <- x[L] 
+      if (i == max_lev) 
+        stop("Error: max_lev reached");
+      
+      while (L<R) {
+        while (x[R]>=piv && L<R){ 
+          R <- R-1
+        }
+        if (L < R){
+          x[L] <-  x[R]
+          L <- L+1
+        }
+        while (x[L]<=piv && L<R){
+          L <- L+1
+        }
+        if (L<R) {
+          x[R] <- x[L]
+          R <- R-1
+        }
+      }
+      x[L] <- piv
+      beg[i+1] <- L+1
+      end[i+1] <- end[i]
+      end[i] <- L
+      i <- i+1
+    }
+    else {
+      i <- i-1 
+    }
+  }
+  return( x) 
+}
+```
+
+that keeps working
+
+```{r functions-075}
+quick_sort_c(sample(1:10))
+```
+
+but does not express the same level of clarity.
+
+Moreover, when looking for performances, the use of recursion in `R` is a clear advantage:
+
+```{r functions-076}
+x <- sample(1:10^5)
+system.time(quick_sort_r(sample(x)))
+system.time(quick_sort_c(sample(x)))
+```
+
+### Example: Left join
+
+Suppose we want to implent a left join between three data frames:
+
+```{r functions-076A}
+df1 <- data.frame(id = 1:6, x1 = 1:6)
+df2 <- data.frame(id = 2:4, x2 = 2:4)
+df3 <- data.frame(id = 3:5, x1 = 3:5)
+```
+
+we will have to acheive this goal in two steps:
+
+```{r functions-076B}
+df12 <- merge(df1, df2, by = "id", all.x = T)
+df123 <- merge(df12, df3, by = "id", all.x = T)
+df123
+```
+
+In case we have to repeat this task several times, expecialy with a variable number of data frames, we could define function `left_join()` as:
+
+```{r functions-076C}
+left_join <- function(df_list, by, all.x = T){
+  df_merged <- merge(df_list[[1]], df_list[[2]], by = by, all.x = all.x)
+  df_list <- df_list[-1]
+  df_list[[1]] <- df_merged
+  if (length(df_list) > 1){
+    df_merged <- Recall(df_list, by = by, all.x = all.x)
+  }  
+  df_merged
+}
+```
+
+and use it as:
+
+```{r functions-076D}
+left_join(list(df1, df2, df3), by = "id")
+```
+
+## Replacement functions
+
+Given any `f()` function sometimes we are allowed to write expressions like: `f(x) <- y`. For example, given any `data.frame`:
+
+```{r functions-077}
+df <-  data.frame(x = 1:3, y = 3:1)
+```
+
+we can query for the names of the variables within the data.frane by:
+
+```{r functions-077A}
+names(df)
+```
+in order to replace variables names, we often use:
+
+```{r functions-078}
+names(df) <-  c("xx", "yy")
+names(df)
+```
+
+This is possible as a function `names<-()` exists and it is known as the replacement method for `names()`.
+
+``` {r functions-079}
+get("names<-")
+```
+
+In principle any replacement function takes the general form of: `"f<-"(x, value)` with `value` being the replacement argument. 
+
+### Example: Trim and replace 
+
+As an example, we may consider function `trim()` that trims any vector at a the quantile corresponding to the `p` (probability) argument:
+
+```{r functions-080}
+trim <-  function(x, p){
+  x[x <= quantile(x, p)]
+}
+
+trim(1:10, p = .25)
+```
+
+A simple replacement method for this function can be written as:
+
+```{r functions-081}
+"trim<-" <-  function (x, p, value){
+  x[x <= quantile(x, p)] <-  value
+  x
+}
+```
+
+and can be used as:
+
+```{r functions-082}
+y <- 1:10
+trim(x = y, p = .25) <-  0
+y
+```
+
+### Replacing non assigned objects
+
+Note that using replacement functions requires that the object passed as argument `x` exists in the calling environment of the function. As a proof of concept we can see that:
+
+```{r functions-083}
+df <- data.frame(x = 0, y = 1)
+names(df) <- c("a", "b")
+```
+works normally, while
+
+```{r functions-084, error=TRUE}
+names(data.frame(x = 0, y = 1)) <- c("a", "b")
+```
+
+does not work as the `data.frame` to be modified does not exist. 

@@ -1,0 +1,848 @@
+---
+title: "Debugging and benchmarking"
+output: html_document
+---
+
+```{r echo=FALSE, message=FALSE}
+if (!("rbenchmark" %in% installed.packages()[,1])){install.packages ("rbenchmark", repos="http://cran.rstudio.com/")}
+if (!("microbenchmark" %in% installed.packages()[,1])){install.packages ("microbenchmark", repos="http://cran.rstudio.com/")}
+if (!("ggplot2" %in% installed.packages()[,1])){install.packages ("ggplot2", repos="http://cran.rstudio.com/")}
+```
+
+
+## Profiling
+
+Profiling `R` code helps to identify bottlenecks and pieces of code that needs are not efficiently implemented.
+
+Profiling  our code is usually the last thing we do when developing functions and packages. With serious profiling, the amount of time required can be drastically reduced with very simple changes to our code.
+
+Benchmarking `R` code is about comparing performances of different solutions to the same problem in terms of execution time.
+
+Both techniques aim to reduce computational time.
+
+### `Rprof`
+As a main tool for profiling `R` code we make use of function `Rprof()`. 
+
+As a basic example to demonstrate `Rprof()` capabilities we consider a trivial function `f1()` written a inefficient `for()` loop fashion:   
+
+
+```{r profiling-001}
+f1 <- function(x, s1 = 1 , s2 = 2){
+  n <- length(x)
+  y <- NULL
+  for ( i in 1:n){
+    if (x[i] %% 2 == 0 ) tmp <- x[i]+rnorm(1, 0 , s2)
+    else tmp <- x[i]+rnorm(1, 0, s1)
+    y <- c(y, tmp)
+  }
+  sum(y)  
+}  
+f1(x = 1:5)
+```
+
+When running `f1()` on a large vector `x` it may require a significant amount of computing time:
+
+```{r profiling-002}
+system.time(f1(x = 1:10^5))
+```
+
+In order to understand if any bottle neck exists within `f1()` we may want to __profile__  function `f1()` by using function `Rprof()`.
+
+Function  `Rprof()` is used to control profiling. Profiling works by recording at fixed intervals, by default every 20 msecs, which line in which `R` function is being used and records the results in a file passed as argument to `Rprof()`. Function `summaryRprof()` can then be used to summarize the activity.
+
+```{r profiling-003}
+
+Rprof("f1.Rprof")
+f1(x = 1:10^5)
+Rprof(NULL)
+summaryRprof("f1.Rprof")$by.self
+```
+
+We can observe that function `c()` takes `r summaryRprof("f1.Rprof")$by.self[1,1]` seconds corresponding to `r summaryRprof("f1.Rprof")$by.self[1,2]` per cent of the total execution time. This is because of the _wrong_ usage we are making of function `c()` within `f1()` when computing `y <- c(y, tmp)`. At each iteration `R` is forced to copy vector `y` in a larger memory space to allocate the longer vector.
+
+We can avoid this multiple copying of `y` by simply defining in advanced the length of vector `y`:
+
+```{r profiling-004}
+f2 <- function(x, s1 = 1 , s2 = 2){
+  n <- length(x)
+  y <- numeric(n)
+  for ( i in 1:n){
+    if (x[i] %% 2 == 0 ) tmp <- x[i]+rnorm(1, 0 , s2)
+    else tmp <- x[i]+rnorm(1, 0, s1)
+    y[i] <- tmp
+  }
+  sum(y)  
+}  
+f2(x = 1:5)
+```
+
+and, if we run `Rprof()` again:
+
+```{r profiling-005}
+Rprof("f2.Rprof")
+f2(x = 1:10^5)
+Rprof(NULL)
+summaryRprof("f2.Rprof")$by.self
+```
+
+we can observe that the execution time is now down to `r summaryRprof("f2.Rprof")$by.self[2,3]` seconds and that `rnorm()` is taking a sensible amount or time.
+
+In case we want to evaluate the gain in efficiency by using `lapply()` instead of a `for()` loop we could rewrite `f2()` as:
+
+```{r profiling-006}
+f3 <- function(x, s1 = 1 , s2 = 2){
+  f31 <- function(x, s1 , s2){
+    ifelse(x %% 2 == 0, x+rnorm(1, 0 , s2) , x+rnorm(1, 0, s1))
+  }
+sum(vapply(x, f31, FUN.VALUE=numeric(1), s1, s2 ))
+}
+f3(x = 1:5)
+```
+
+and profile this functions as usual by:
+
+```{r profiling-007, error=TRUE}
+Rprof("f3.Rprof")
+f3(x)
+Rprof(NULL)
+summaryRprof("f3.Rprof")$by.self
+```
+
+Note that in this case, function `f2()` takes `r summaryRprof("f2.Rprof")$sampling.time` seconds while function `f3()` requires `r summaryRprof("f3.Rprof")$sampling.time` seconds.
+
+
+We can make full use of `R` vectorized capabilities and write:
+
+```{r profiling-008}
+f4 <- function(x, s1 = 1 , s2 = 2){
+  n <- length(x)
+  s1 <- rnorm(n, 0 , s1)
+  s2 <- rnorm(n, 0 , s2)
+  sum(ifelse(x %% 2 == 0, x+s1 , x+s2))
+}
+f4(x = 1:5)
+```
+
+We can now profile this functions as usual by:
+
+```{r profiling-009, error=TRUE}
+Rprof("f4.Rprof")
+f4(x)
+Rprof(NULL)
+summaryRprof("f4.Rprof")$by.self
+```
+
+We see can see no specific bottle necks and a very fast function:
+
+```{r profiling-010}
+sapply(paste("f", 1:4, ".Rprof", sep = ""), function(x) summaryRprof(x)$sampling.time)
+```
+
+Finally, as a whole, function `summaryRprof()` returns a list of four components:
+
+```{r profiling-011}
+names(summaryRprof("f2.Rprof"))
+```
+
+Table `$by.self` lists the time spent by functions alone, while the table `$by.total` lists the time spent by functions and all the functions they call. In the `f2()` simple case, function `f2()` itself just takes `r summaryRprof("f2.Rprof")$by.self[2,1]` seconds to do things like: 
+
+* initialize its own execution environment
+* filling it up with promises arguments 
+* starting the execution of its body
+
+while the same function remains active until the end of the execution: `r summaryRprof("f2.Rprof")$sampling.time` seconds. The lines marked with `.External` refer to calls to external `C` or `Fortran` code.
+
+
+#### `Rprof` with `memory.profiling`
+
+Profiling can be used to gain information about timing as well as memory. In order to gain memory usage we need to call `Rprof()` with  `memory.profiling` enabled and calling `summaryRprof()` with `memory = "both"`:
+
+
+```{r profiling-012}
+Rprof("f1.Rprof", memory.profiling = TRUE)
+f1(x = 1:10^5)
+Rprof(NULL)
+summaryRprof("f1.Rprof", memory = "both")$by.self
+```
+
+In this case a column indicating the memory, expressed in `Mb`, as used by each function, is added to the previous output.
+
+Note that `memory.profiling` requires `R` to be compiled with `--enable-memory-profiling`. This option should be enabled by default under Windows and Mac-OS but not on all Linux distributions.  
+
+## Benchmarking
+
+Function `Rprof()` represent a great tool when investigating for bottle necks within functions in order to remove them and speed up our code.
+
+At the same time we may want to compare different solutions to understand in order to understand if any of them may provide any real advantage over the others.
+
+### `rbenchmark`
+
+```{r profiling-rbenchmark}
+require(rbenchmark)
+```
+
+Library `rbenchmark` is intended to facilitate benchmarking of arbitrary R code. 
+
+The library consists of just one function, `benchmark()`, which is a simple wrapper around `system.time()`.
+
+Given a specification of the benchmarking process: counts of replications, evaluation environment and an arbitrary number of expressions, benchmark evaluates each of the expressions in the specified environment, replicating the evaluation as many times as specified, and returning the results conveniently wrapped into a data frame.
+
+As a first case we can compare the differece in performaces between `sapply()` and `vapply()` when applied to a simple mathematical function:
+
+```{r profiling-0120}
+s <- seq(-pi, pi, len = 1000)
+f <- function(x) sin(x)/ (1-cos(x))
+benchmark(vapply(s,f, FUN.VALUE = numeric(1)), sapply(s,f))
+```
+
+and observe the gain in performances of `vapply()` compared with `sapply()`
+
+As a second example, we can consider the calculation of the 95% quantile of the distribution of the correlation coefficient between two `N(0,1)` vectors of given sizes `n=10`.
+
+
+As a first case we define a function `f_loop()` by using a simple for loop over `k` iterations.
+
+```{r profiling-012A}
+f_loop <- function(n = 10, k = 1e+05){
+  z = numeric(k)
+  for (i in 1:k) {
+    x = rnorm(n, 0, 1)
+    y = rnorm(n, 0, 1)
+    z[i] = cor(x, y)
+  }
+quantile(z, 0.95)
+}
+```
+
+As a second case we develop the same function using a functional approach based on `replicate()`
+
+```{r profiling-012B}
+f_rep <- function(n = 10, k = 1e+05){
+  z <- replicate(k, cor(rnorm(n), rnorm(n)))
+  quantile(z, .95)
+}
+```
+
+As a third case we introduce a function `matrix()` within `replicate()`:
+
+```{r profiling-012C}
+f_mat <- function(n = 10, k = 1e+05){
+  z <- replicate(k, cor(matrix(rnorm(n*2), nrow = n, ncol = 2))[1,2])
+  quantile(z, .95)
+}
+```
+
+Once the three functions have been defined we can compare them by using `rbenchmark()`
+
+```{r profiling-012D}
+benchmark(f_loop(), f_rep(), f_mat(), replications = 10, order = "elapsed")
+```
+
+We can see that all functions, despite the different programming styles, have very similar performances.
+
+### `microbenchmark`
+
+In some cases we may want to benchmark two or more solutions that require a very small amount of time to perform but are very often used in our code.
+
+As as an example, we may want to compare `[i]` and `[[i]]` when applied to atomic objects with `i` being a single integer. 
+
+First, let's notice that `x[i]` and `x[[i]]` return the same result when `i` is a single integer:
+
+```{r profiling-013}
+x <- 1:100
+i <- 66
+x[i]
+x[[i]]
+```
+
+In principle, in order to evaluate performances of these functions, we could use:
+
+```{r profiling-014}
+benchmark(x[i], x[[i]], replications = 1000)
+```
+
+but a better choice is represented by library `microbenchmark`:
+
+```{r profiling-015}
+library(microbenchmark)
+test <- microbenchmark(x[i] , x[[i]], times = 1000)
+test
+```
+
+Note that timing is reported in `nonoseconds` and that the output is made of several statistics.
+
+Moreover, we can use the graphics facilities provided by library `ggplot2` to compare the two distributions:
+
+```{r profiling-016}
+library(ggplot2)
+autoplot(test)
+```
+
+## Debugging
+
+Debugging is typically what programmers do about 90% of the time. 
+
+This is a sad but not unrealistic fact of life. Given that fact, the creators of R have generously provided useful debugging tools to make programmers' lives a little easier. 
+
+The debugging tools should be used as much as necessary to minimize the time spent debugging and to maximize the time spent, as John Chambers wrote, _"turning ideas into software"_.
+
+However, it is all to easy for a programmer to develop an unhealthy relationship with his debugger. This is to be avoided. The debugger should not replace common sense in programming and careful design.
+
+
+
+## Poor man's debugging
+
+Poor man's debugging doesn't require the knowledge of debug functions. Poor man's debugging is probably the simplest of the debugging methods, which often makes it the most effective! 
+
+It is an extremely easily implemented method which can tell you exactly where something went wrong. 
+
+It is based on `print()` and `cat()` functions. 
+Differences between `print()` and `cat()` are described at the end of this section. 
+This kind of debugging is done by simply printing some text between the lines, including the variables you are currently working with. For this reason, it is also called Debug by Print.
+
+As a simple example, consider this basic function: 
+
+```{r quick}
+quick <- function(df) {
+  plot(df$x, df$y, type = "b")
+  summary(df)
+}
+```
+
+This function works when `x` is numeric:
+
+```{r quick1, fig.height=4, fig.width=8}
+df1 <- data.frame(x = 1:100 , y = rnorm(100))
+quick(df1)
+```
+
+The function works as well when `x` is a factor:
+
+```{r quick2, fig.height=4, fig.width=8}
+df2 <- data.frame(x = sample(letters[1:3], 100, rep= T ), y = rnorm(100))
+quick(df2)
+```
+
+The same function stops working when option `stringsAsFactors` is set to `FALSE`.
+
+```{r quick3, fig.keep = "none"}
+options(stringsAsFactors = FALSE)
+df <- data.frame(x = sample(letters[1:3], 100, rep= T ), y = rnorm(100))
+try(quick(df))
+```
+
+As a very simple debugging procedure we could insert a `cat` command within the function body:
+
+```{r quick4, , fig.keep = "none", error = TRUE}
+quick <- function(df){
+ cat (str(df), "\n")
+ plot(df$x, df$y, type = "b")
+ summary(df)
+}
+quick(df)
+```
+
+We could easily observe that `x` is a character vector and, as a consequence, it cannot be used as a plotting variable.
+
+When using iterations, the use of markers may result in a very efficient debugging tool. `rmean()` is a trivial example illustrating the use of markers within a `for` loop.
+
+```{r rmean}
+rmean <- function(n, min, max){
+ x <- numeric(n)
+ for (i in 1:n){
+   s <-  sample(min:max,1)
+   x[i] <- log(s)
+   if(!is.finite(x[i])) {cat ("Loop" , i, ": s = " , s , "\n")}
+ }
+ mean(x)
+}
+
+rmean(n = 10, min = -1, max = 4)
+```
+
+This example fully illustrates how to take advantage of this debugging tecnique. In this instance, a marker `Loop` is used to indicate that the print out is within the loop and that `s` is not finite. This allows to quickly reference which part of the code is being processed.
+
+The values of the variables that are being worked within the loop inside `rmean()` are returned. Now, if there is a simple flaw in our logic or something wrong was happening, this output makes most problems easy to track down.
+
+In other words, when a function doesn't work may be useful to insert a `print()` or a `cat()` in several points of the function to detect where it fails.
+
+
+### `print` and `cat`
+
+Both `print()` and `cat()` print a string, but several differences exist between these functions:
+
+ - `print()` is a generic method which looks at the class of its first argument and dispatches a different method depending on which class the first argument is. If no method is found, R uses `print.default`. Cat simply returns any object as it is. As an example we can consider any object belonging to a class with a print method related to that class:
+
+```{r xf}
+xf <- factor(c("a", "b", "c"))
+class(xf)
+print(xf)
+print.default(xf)
+cat(xf) 
+```
+
+ - `print()` requires `paste()` to concatenate strings, while `cat()` concatenates strings before outputting any result:
+
+```{r italy}
+myCountry <- "Italy"
+print(paste("I live in", myCountry))
+cat("I live in", myCountry)
+```
+
+ - `cat()` interprets character strings that it gets.
+  
+```{r debug-009}
+xc <- 'test\\test'
+print(xc)
+cat(xc)
+```
+
+
+## `stop()` and `warning()`
+
+Functions `stop()` and `warning()` provide basic tools for exception handling. `stop()` stops execution of the current expression and executes an error action while `warning()` generates a warning message that corresponds to its argument. An extensive use of these functions during code development makes debugging much shorter.
+
+```{r half}
+half <- function(x) {return(x/2)}
+try(half("text"))
+```
+
+```{r stop, error = TRUE}
+half <- function(x){
+  if(!is.numeric(x)) {stop("x must be numeric")}
+  return(x/2)
+}
+half("text")
+```
+
+```{r warning}
+repText <- function(times, text = NA) {
+  if(is.na(text)) {
+    warning("text not provided. 'test' is used.")
+    text  <- "test"
+  }
+  rep(text, times)
+}
+repText(times = 3)
+```
+
+## Trying a function
+
+The function `try()` is a wrapper to run an expression that might fail and allows the user's code to handle error-recovery. It is useful to avoid that an error stops the execution of the whole function, as below. Again, good use of `try()` when developing avoid extensive debugging session.
+
+```{r doit}
+doit <- function(x) {
+  x <- sample(x, replace=TRUE)
+  if(length(unique(x)) == length(x)) {
+    mean(x)
+  } else {
+    stop("too few unique points")
+  }
+  cat("end of function", "\n")
+  invisible(NULL)
+}
+```
+
+```{r doitExecute, error = TRUE}
+x <- 1:10
+thisError  <- doit(x)
+thisTry <- try(doit(x))
+thisError
+thisTry
+```
+
+When function `doit()` is called directly, it returns an error and object `thisError` is not created. When using `try()` as a wrapper on `doit()`, despite the function returns error, object `thisTry` is created. `try()` returns the object returned by the called funcion if the called function does not go in error, otherwise, `try()` returns an object of class "try-error".
+
+## Debugging in R
+
+There are a few basic tools in R that are worth knowing about:
+
+*  `browser()` interrupts the execution of an expression or within an R function. Objects can be viewed and changed during execution. Support exists for setting conditional breakpoints. 
+ *  `debug()` marks a function for debugging, so that `browser()` will be called on entry.
+ *  `trace()` modifies a function to allow debug code to be temporarily inserted.
+
+
+### Browsing
+
+Function `browser()` is usually called from within an other function. When the evaluator encounters this function it opens a browsing session on the evaluated frame so that the active environment can be explored.
+
+All R commands can be used within the evaluated frame. Moreover, the interpreter, sets up special functions to be called uniquely within the `browser()` environment:
+
+ * `n` advances to the next step;
+ * `c` continues to the end of the current section of code (e.g., to the end of a for loop, or the end of the function itself);
+ * `where` prints a stack trace of all active function calls;
+ * `Q` exits the browser and the current evaluation and return to the top-level prompt.
+
+As an example, consider the function below. It ouputs the sum of a given parameter plus two random numbers. In order to see the value of the two random numbers: `rn` and `ru` prior summing them up, the function evaluated frame is inspected by inserting a call to function `browser` within the function body.
+
+```{r mix, error = TRUE}
+mix <- function (x) {
+ rn <- rnorm(1)
+ ru <- runif(1)
+ browser()
+ return(x +rn+ru)
+}
+```
+
+```{r mix-out, eval = FALSE}
+mix(0)
+Called from: mix(0)
+Browse[1]> rn
+[1] 0.9315371
+Browse[1]> ru
+[1] 0.4610282
+Browse[1]> c
+[1] 1.392565
+```
+
+The use of `browser()` finds its best application when called by function `debug()`.
+
+### _Post Mortem_ Debugging
+
+Classical debugging is named _Post Mortem_ as the error function is debugged after the evaluator returns a critical error so that the execution of the function is interrupted. Function `debug()` is the most used debugging tool.
+
+Function `debug()` allows stepping through the execution of a function, line by line. At any step a `browser()` is opened on the evaluation frame. 
+
+As an example, consider this simple function: 
+
+```{r debug-018}
+msg <- function (x) {
+  if (x > 0 ) cat ("Hello")
+  else cat("goodbye")
+  invisible(NULL)
+}
+
+msg(1)
+msg(-1)
+```
+This function simply prints _"Hello"_ or _"Goodbye"_ depending on whether `x` is greater than or less than 0. In principle, this function should never fail; nevertheless:
+
+```{r debug-019, error= TRUE}
+msg(log(-1))
+```
+this function returns an error and the execution is halted. As a first step, a call to `traceback()` is always worth:
+
+```{r debug-020}
+traceback()
+```
+
+
+In this case, `traceback()` does not help a lot. It simply says that the error occurs within the call to `msg()`. Not a big surprise as, `msg()` was the only function called.
+
+The use of functions `debug()` or `debugonce()` returns interesting results:
+
+```{r debug-020A, eval= FALSE}
+debugonce(msg)
+```
+```
+msg(log(-1))
+debugging in: msg(log(-1))
+debug at #1: {
+    if (x > 0) 
+        cat("Hello")
+    else cat("goodbye")
+    invisible(NULL)
+}
+Browse[2]> ls()
+[1] "x"
+Browse[2]> x
+[1] NaN
+Warning message:
+In log(-1) : NaNs produced
+Browse[2]> x > 0 
+[1] NA
+Browse[2]> n
+debug at #2: if (x > 0) cat("Hello") else cat("goodbye")
+Browse[2]> n
+Error in if (x > 0) cat("Hello") else cat("goodbye") : 
+  missing value where TRUE/FALSE needed
+```
+
+As it can be observed, `log(-1)` produces a simple warning and returns `NaN` but, passing the resulting value of `x` into `msg()` ended in a fatal error as the comparison between `NaN` and `0` is clearly undefined and returns `NA` that, in tur, returns an error like the following:
+
+```{r debug-021, error = TRUE}
+if(NA) {cat ("this is strange")}
+```
+
+Finally, `debugonce()` is clearly used to debug a function at its next call. When using `debug()`, the function passed as an argument is set into "debug mode" and it is kept in the same mode until `undebug()` is called on the same function. Function `isdebugged()` is used to query the debugging flag on a function.
+
+```{r isdebugged}
+debug(msg)
+isdebugged(msg)
+undebug(msg)
+isdebugged(msg)
+```
+
+In more complex situation, the use of `traceback()` after a call stack may result into a very useful debugging tool. Suppose we define functions `f()`, `g()` and `h()` as:
+
+```{r fgh}
+f <-  function(x) {
+  r <-  x - g(x)
+  r
+}
+
+g <- function(y) {
+  r <- y * h(y)
+  r
+}
+
+h <- function(z) {
+  r <- log(z)
+  if (r < 10)
+      r^2
+  else r^3
+}
+```
+when calling the outer function `f()`:
+
+```{r fneg, error = TRUE}
+f(-1)
+```
+
+The error seems to be generated within function `f()`. And this is partially true as the error is actually generated within function `h()` as  `f()` calls `g()` that calls `h()`. All this mechanism is not always transparent to the end user as the inner mechanism of a function is not necessarily known. A simple call to traceback may quickly put the truth into evidence:
+
+```{r trb, eval = FALSE}
+traceback()
+```
+```
+3: h(y) at #2
+2: g(x) at #2
+1: f(-1)
+```
+
+The output of `traceback()` is to be read bottom-up or by following the output row number. In this case, `traceback()` says that the error occurs within function `h()`. As a result, function `h()` can be put into debug mode and `f(-1)` be called again:
+ 
+```{r dbgonce-h, eval = FALSE}
+debugonce(h)
+f(-1)
+```
+```
+debugging in: h(y)
+debug at #1: {
+    r <- log(z)
+    if (r < 10) 
+        r^2
+    else r^3
+}
+Browse[2]> 
+debug at #2: r <- log(z)
+Browse[2]> ls()
+[1] "z"
+Browse[2]> z
+[1] -1
+Browse[2]> n
+debug at #3: if (r < 10) r^2 else r^3
+Browse[2]> ls()
+[1] "r" "z"
+Warning message:
+In log(z) : NaNs produced
+Browse[2]> z
+[1] -1
+Browse[2]> r
+[1] NaN
+Browse[2]> Q
+```
+
+The error clearly occurs in function `h()` as `NA` within an `if` statement returns error.
+
+In case we simply put `f()` directly into debug mode instead of running `traceback()` first, the result would be useless:
+
+```{r dbgonce-f, eval = FALSE}
+debugonce(f)
+```
+```
+f(-1)
+debugging in: f(-1)
+debug at #1: {
+    r = x - g(x)
+    r
+}
+Browse[2]> 
+debug at #2: r = x - g(x)
+Browse[2]> ls()
+[1] "x"
+Browse[2]> x
+[1] -1
+Browse[2]> n
+Error in if (r < 10) r^2 else r^3 : missing value where TRUE/FALSE needed
+In addition: Warning message:
+In log(z) : NaNs produced
+```
+
+
+### Debugging on error
+When the evaluator encounters an error, it looks for an error action. The error action, a function or an expression to be evaluated, is determined by the `error` argument of the `options`, by default set to `NULL`:
+
+```{r options1}
+options("error")
+```
+
+By setting:
+```{r debug-026}
+options(error = recover)
+```
+
+the evaluator stops whenever an error occurs and calls function `recover()` which, in turn, offers a selection of available frames for browsing. By selecting 0, recovering is exited and the normal prompt is returned.
+
+```{r debug-026A, eval= FALSE}
+f(-1)
+```
+```
+Error in if (r < 10) r^2 else r^3 : missing value where TRUE/FALSE needed
+In addition: Warning message:
+In log(z) : NaNs produced
+
+Enter a frame number, or 0 to exit   
+
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Selection: 1
+Called from: top level 
+Browse[1]> ls()
+[1] "x"
+Browse[1]> x
+[1] -1
+Browse[1]> n
+Enter a frame number, or 0 to exit   
+
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Selection: 2
+Called from: f(-1)
+Browse[2]> ls()
+[1] "y"
+Browse[2]> y
+[1] -1
+Browse[2]> n
+
+Enter a frame number, or 0 to exit   
+
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Selection: 3
+Called from: g(x)
+Browse[3]> ls()
+[1] "r" "z"
+Browse[3]> z
+[1] -1
+Browse[3]> r
+[1] NaN
+
+Browse[3]> h
+function(z) {
+  r <- log(z)
+  if (r < 10)
+      r^2
+  else r^3
+}
+
+Browse[3]> r < 10
+[1] NA
+
+Browse[3]> #OK got it !!
+Browse[3]> n
+
+Enter a frame number, or 0 to exit   
+
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Selection: 0
+```
+
+Debugging on error is clearly a useful techniques when running R in interactive mode. When calling R in BATCH mode, interactive debugging is of no use. In this case a call to `dump.frames()` provides the right solutions as the evaluated frame is dumped into a file, `last.dump` by default, to be lately inspected by function `debugger()`. Again, `dump.frame()` is set as the error argument to function `options()`.
+
+```{r debug-027, error = TRUE}
+options(error = quote(dump.frames("fdump", to.file=TRUE)))
+f(-1)
+```
+
+The error can now be inspected, as in interactive mode. The whole working environment has been dumped to file `fdump` that can be loaded, at any time, by function `debugger()`:
+
+```{r debug-027A, eval = FALSE}
+load("fdump.rda")
+debugger(fdump)
+```
+```
+Message:  Error in if (r < 10) r^2 else r^3 : missing value where TRUE/FALSE needed
+Available environments had calls:
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Enter an environment number, or 0 to exit  
+Selection: 0
+```
+
+Finally, during development, setting `options("error")` as: 
+
+```{r debug-027B, eval = FALSE}
+options(error = Quote(
+ if (interactive()) recover()
+ else dump.frames()
+))
+```
+could help to take advantage of both solutions.
+
+
+<!---
+### Debugging _on the fly_
+
+Function `trace()` is useful for making minor modifications to functions _on the fly_ without having to modify functions and re-sourcing them. It is especially useful if an error or an unwanted result occur in a base function since base functions cannot be edited by the user.
+
+As an example, consider this function:
+
+```{r f4}
+f = function(lambda, n = 10){
+  x = numeric(n)
+  for ( i in 1:n) {
+    r = rpois(1 , lambda)
+    l = sum(rexp(r, 1/r))
+    x[i] = log(r*l)
+  }
+mean(x)
+}
+```
+
+This function returns finite results as long as `lambda` is large but, as `lambda` closes to zero, result could be a non finite number:
+```{r f101}
+f(10)
+f(.1)
+```
+The basic idea consists of on inserting a call to the usual `browser()` without modifying the original function or debugging it step by step.
+
+As we suspect that the problem occurs at `x[i]=log(r*l)`, we want to inspect the working environment just before the function exits:
+
+```{r trace}
+trace("f", exit = quote(browser()), print=F)
+f(1)
+```
+```
+Called from: eval(expr, envir, enclos)
+Browse[1]> ls()
+[1] "i"      "l"      "lambda" "n"      "r"      "x"     
+Browse[1]> x
+ [1]  2.15619791  2.86990919  0.93359990        -Inf
+ [5] -0.07578643  1.10145460  0.59390610        -Inf
+ [9]  0.28873680  0.80491086
+Browse[1]> Q
+```
+
+Problem solved, some `x` were not finite.
+
+Note that, when calling `trace()` the original function is modified as:
+
+```{r body2}
+trace("f", exit = quote(browser()) , print=F)
+body(f)
+```
+
+that is, a call to `browser()` is inserted within the body of an alternative definition of `f()`.
+--->

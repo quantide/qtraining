@@ -1,0 +1,605 @@
+---
+title: "Functional Programming"
+output: html_document
+---
+
+```{r echo=FALSE, message=FALSE}
+if (!("pracma" %in% installed.packages()[,1])){install.packages ("pracma", repos="http://cran.rstudio.com/")}
+if (!("truncdist" %in% installed.packages()[,1])){install.packages ("truncdist", repos="http://cran.rstudio.com/")}
+```
+
+
+## R as a functional programming language
+
+```{r closures-000, echo=FALSE}
+rm(list = ls())
+```
+`R` can be considered as a functional programming language as it focuses on the creation and manipulation of functions and has what's known as first class functions.
+
+In computer science, functional programming is a programming paradigm, a style of building the structure and elements of computer programs, that treats computation as the evaluation of mathematical functions and avoids state and mutable data. 
+
+Functional programming emphasizes functions that produce results that depend only on their inputs and not on the program state.
+
+In functional code, the output value of a function depends only on the arguments that are input to the function, so calling a function `f()` twice with the same value for an argument `x` will produce the same result `f(x)` both times. `R` is clearly a functional programming language.
+
+Understanding the functional nature of `R` may help to improve clarity and avoid redundancy.
+
+We will examine:
+
+* First Class Functions
+* Functions Closures
+* Functions Factories
+* Anonymous Functions
+* Lists of Functions
+* Functionals
+
+
+## First class functions
+
+First-class functions are a key component of functional programming style. 
+
+A programming language is said to have first-class functions when the language supports:
+
+* passing functions as arguments to other functions
+* creating anonymous functions 
+* returning functions  as the values from other functions
+* storing functions in data structures.
+
+and `R` has has first-class functions indeed.
+
+In this example we pass function: `identity()` as argument to function `lapply()`
+
+```{r closures-00A}
+lapply(0, identity)
+```
+
+Here we make use of an anonymous function:
+
+```{r closures-00B}
+(function(x) sd(x)/mean(x))(x = 1:5)
+```
+
+
+We can easily define a function that return a function
+
+```{r closures-00C}
+f <- function(){
+  function(x) sd(x)/mean(x)
+}
+```
+
+Finaly we store functions within a list:
+
+```{r closures-00D}
+function_list <- list(mean , sd)
+```
+
+## Functions closures
+
+A __function closure__ or __closure__ is a function together with a referencing environment. 
+
+
+Almost all functions in `R` are closures as they remember the environment where they were created. Generally, but not always, the global environment: 
+
+```{r closures-001}
+f <- function(x) 0
+environment(f)
+```
+
+or the package environment
+
+```{r closures-002}
+environment(mean)
+```
+
+Functions that cannot be classified as _closures_, and therefore do not have a referencing environment,  are know as  _primitives_. These are internal `R` function calling the underlying `C` code. `sum()` and `c()` are good cases in point:
+
+```{r closures-002A}
+environment(sum)
+```
+
+As functions remember the environments where they were created, the following example does not return any error:
+
+```{r closures-003}
+y <- 1 
+f <- function(x){x+y}
+f(1)
+```
+
+This is possible as `f()` is declared within the global environment and therefore `f()` remembers all objects bounded to that environment (the referencing environment), `y` included. 
+
+
+When we call a function, a new environment is created to hold the function's execution and, normally, that environment is destroyed when the function exits. But, if we define a function `g()` that returns a function `f()`, the environment where `f()` is created is the execution environment of `g()`, that is, the execution environment of `g()` is the referencing environment of `f()`. As a consequence, the execution environment of `g()` is not destroyed as `g()` exits but it persists as long as `f()` exists. Finally, as `f()` remembers all objects bounded to its referencing environment, `f()` remembers all objects bounded to the execution environment of `g()` 
+
+<!-- aggiungere esempio di funzione con un exec env dichiarato e poi distrutto che pero rimane -->
+
+With this idea in mind, we can use the referencing environment of `f()`, that is the execution environment of `g()`, to hold any object and these objects will be available to `f()`. 
+
+```{r closures-005}
+g <- function(){
+  y <- 1
+  function(x) {x+y}
+}
+f1 <- g()
+f1(3)
+```
+
+Moreover, as `f()` is created within `g()` any argument passed to `g()` will be available to `f()` in  its later executions.
+
+```{r closures-006}
+g <- function (y) {
+    function(x) x+y
+}
+f1 <- g(1)
+f1(3)
+```
+
+As a proof of concept, we may temporaly modify function `g()` in order to print the execution environment of `g()`
+
+```{r closures-007}
+g_tmp <- function(y){
+  print(environment())
+  function(x) {x+y}
+}
+```
+
+Than use `g()` to produce `f()` 
+
+```{r closures-008}
+f1 <- g_tmp(1)
+```
+
+and finaly ask `R` for the environment associated with `f()`
+
+```{r closures-009}
+environment(f1)
+```
+As we can see, the execution environment of `g_tmp()` corresponds to the environment associated to `f()`. 
+
+Finally, 
+
+
+```{r closures-010}
+get("y" , env = environment(f1))
+```
+
+shows where `y` is stored.
+
+Notice that each call to `g()` returns a function with its own referencing environment:
+
+```{r closures-011}
+f2 <- g(1)
+environment(f1)
+environment(f2)
+```
+The referencing environments for `f1()` and `f2()` are different, despite that `f1()` and `f2()` are both returned by `g()`.
+
+## Functions Factories
+
+In practice, we can use closures to write specific functions that, in turn, can be used to generate new functions. This allows us to have a double layer of development: a first layer that is used to do all the complex work in common to all functions and a second layer that defines the details of each function.
+
+### Example: A basic case in point
+We can think of a simple function `add(x,i)` that add the value `i` to the value `x`. We could define this function as:
+
+```{r closures-012}
+add <- function(x, i){
+  x+i
+}
+```
+
+Alternatively, we may consider a set of functions, say `f1(x)`, `f2(x)`, `...`, `fi(x)`, `...`, `fn{x}`   that add `1,2,...,i,...,n` to the `x` argument. Clearly, we do not want to define all these functions but we want to define a unique function `f(i)`:
+
+
+```{r closures-013}
+f <- function(i){
+  function(x) {x+i}
+}
+```
+
+capable of generating all `fi(x)` functions:
+
+```{r closures-014}
+f1 <-  f(1)
+f1(3)
+f2 <- f(2)
+f2(4)
+```
+
+In this simple example, this approach shows no benefit and possibly increases the complexity of our codes but, for more structured cases, it is definitely worth. 
+
+### Example: MLE functions
+As a more structured example, we may consider the development of a set of functions: `lnorm(x)`, `lweibull(x)`, `...` that compute max likelihood estimates for those distributions given a vector of data `x`:
+
+
+```{r closures-015}
+new_estimate <-  function(dist){
+  estimate <-  function(x, theta){   
+    neglik <-  function(theta = theta , x = x, log = T){
+      args <-  c(list(x), as.list(theta), as.list(log))
+      neglik <-  -sum(do.call(dist,  args))
+      neglik
+    }
+    optim(par = theta, fn = neglik , x = x)$par
+  }
+estimate
+}
+```
+
+`new_estimate` returns a second function: `estimate()` whose body depends on the argument `dist` passed to `new_estimate()`.
+
+Within `estimate()` we first define a third function `neglik()` and secondly, we minimize it within `optim()`.
+
+The returned function: `estimate()` can be used as a generator of maximum likelihood estimation functions for any distribution as long as its corresponding `ddist()` exists in `R`.
+
+Once we have `new_estimate()`, we can use it to define any MLE estimation function as long as its density function is defined. That is, we can now write a `llnorm()` that computes log-normal maximum likelihood  estimates as simply as:
+
+
+
+```{r closures-016}
+llnorm <- new_estimate("dlnorm")
+x <- rlnorm(100, 7 , 1)
+llnorm(x, theta = c(mean(log(x)), sd(log(x))))
+
+``` 
+
+and similarly:
+
+```{r closures-017}
+lweibull <- new_estimate("dweibull")
+w <- rweibull(100, 2 , 1)
+lweibull(w, theta = c(mean(w), sd(w)))
+```
+
+
+### Example: moving statistics
+
+As a further example of functions factories we may consider a function `moving(f)` that returns `moving_f()` where `f()` could be `mean()`, `median()` or any other statistical function as long it returns a single value.
+
+As a first step we may consider a simple function `g()` that returns the value of `f()` for any backward window of length `n` starting at `i`:
+
+```{r closures-018}
+g <- function(i , x, n , f, ...) f(x[(i-n+1):i], ...)
+g(i = 5 , x = 1:10,n = 3  , f= mean) 
+g(i = 5 , x = 1:10,n = 3  , f= sd) 
+
+```
+
+Note that `g()` takes, among its inputs, a second function `f()`  and apply it to the window `[(i-n+1):i]` of `x`. 
+
+As a second step we define a function `moving(f)` that takes any function `f()` as an input and define function `g()` within its body. 
+
+
+```{r closures-019}
+moving <- function(f){
+  g <- function(i , x, n , f, ...) f(x[(i-n+1):i], ...)
+  h <- function(x, n, ...) {
+    N <- length(x)
+    vapply(n:N, g, x , n , f, FUN.VALUE = numeric(1), ...)
+  }
+return(h)  
+}
+```
+
+
+Function `moving()` returns function `h()` that, in turn can be used to generate any `moving_f()` functions:   
+
+Function `vapply()` within `h()` is a _functional_ used as a for loop replacement that will be fully explored when discussing  _functionals_.
+
+```{r closures-020}
+moving_average <- moving(mean)  
+moving_average(x = rpois(10, 10), n = 3)
+```
+
+Eventually, argument ''`...`'' can be used to pass extra arguments to `f()`.  
+
+```{r closures-021}
+moving_average(x = rpois(10, 10), n = 3, trim = .5)
+```
+
+If necessary, function `moving()` ca be used in the form of anonymous function: 
+
+```{r closures-022}
+moving(sd)(rpois(10, 10), n = 5)
+```
+
+Finally:
+
+```{r closures-023,  fig.width=7, fig.height=4, fig.cap="Plot of moving average and median"}
+
+x <- 1:100
+y <- seq(along = x, from = 0 , to = 1)+rnorm(length(x), 0 , .1)
+plot(x, y)
+lines(x[10:length(x)], moving(mean)(y, 10), col = "red", lwd = 2)
+lines(x[10:length(x)], moving(median)(y, 10), col = "green", lwd = 2)
+```
+### Example: Truncated density function 
+
+Density function in R are usually specified by the prefixes `d` followed by a standard suffix for each ditribution. `dnorm()`, `dlnorm()`, `dweibull()`, etc ...
+
+Therefore, we use to write:
+
+```{r closures-024}
+x <- c(7,10,13)
+dlnorm(x , meanlog = 2, sdlog = 1)
+```
+
+in order to get density values at `x` from a lognormal distribution with parameters `2` and `1`.
+
+In case we need value from a truncated distribution, as far as we know, we need to load an extra package such as `truncdist`. The package itself works perfectly. In fact, assuming that a `dlnorm()` function exists, we can get density values from a left truncated lognormal distribution with parameters `meanlog = 2` and `sdlog = 1` by simply writing:
+
+```{r closures-025}
+require(truncdist)
+dtrunc(x, spec = "lnorm", a = 5)
+```
+
+where `a = 5` represents the left threshold for truncation 
+
+Nevertheless, the above command require a change in our programming style.
+
+In principle, we would like to be able to write:
+
+```{r closures-025A, eval = FALSE}
+tdlnorm(x, meanlog = 2, sdlog = 1, L = 5)
+```
+
+where `L = 5` represents the left threshold for truncation 
+
+so that we could have the same programming style, just with different parameters, for both truncated and not truncated distribution. 
+
+Within this frame, when `tdlnorm()` is called with `L` and `U` set to their default values it behaves as `stats::dlnorm()`
+
+```{r closures-025B, eval = FALSE}
+tdlnorm(x, meanlog = 2, sdlog = 1)
+```
+
+but when called with different settings for `L` and `U`; such as: 
+
+`tdlnorm(x, meanlog = 2, sdlog = 1, L = 5, U = 20)`
+
+it behaves as a lognormal density left truncated at `L=5` and right truncated at `U=20`.
+
+This goal could be achieved by writing a `tdlnorm()` as:
+
+```{r closures-026}
+tdlnorm <-  function (x, meanlog = 0, sdlog = 1,  L = 0,  H = Inf) 
+ {
+  
+  density <-  
+     stats::dlnorm(x, meanlog=meanlog, sdlog=sdlog)/
+        (
+        stats::plnorm(H, meanlog=meanlog, sdlog=sdlog)-  
+        stats::plnorm(L, meanlog=meanlog, sdlog=sdlog)  
+          )
+              
+   return(density)
+ }
+```
+That returns the same results as function `truncdist::dtrunc()` 
+
+```{r closures-027}
+tdlnorm(x, 1, 2, L= 5, H = 20)
+dtrunc(x, spec = "lnorm", a = 5, b = 20, meanlog = 1, sdlog = 2)
+```
+
+As this function clearly works, next step could be to write something similar for other distributions such as `weibull`, `gumbel` or `gamma`. We have to admit that all of this may become as quite time consuming.
+
+A different approach could be to define a different function, `dtruncate()`, taking the name of a density distribution as an argument and returning a second function that computes density values for the truncated distribution:
+
+```{r closures-028}
+dtruncate <-
+  function (dist, pkg = stats){ 
+    
+    dist <- deparse(substitute(dist))
+    envir <- as.environment(paste("package", as.character(substitute(pkg)), sep = ":"))
+    
+    ddist=paste("d", dist, sep = "") 
+    pdist=paste("p", dist, sep = "")
+        
+    #gets density function                    
+    ddist <-  get(ddist, mode = "function", envir = envir)
+    #gets argument of density function
+    dargs <- formals(ddist)
+   
+    #gets probability function                    
+    pdist <- get(pdist, mode = "function", envir = envir)
+    #gets argument of probability function
+    pargs <- formals(pdist)
+        
+    #Output function starts here
+    density <- function () 
+    {
+      #check L U 
+      if (L > U) stop("U must be greater than or equal to L")
+      
+      #gets density arguments
+      call <- as.list(match.call())[-1]
+      
+      #all unique arguments belonging to density and ddist 
+      dargs <- c(dargs[!is.element(names(dargs), names(call))], call[is.element(names(call), names(dargs))])
+      
+      #all unique arguments belonging to probability and pdist 
+      pargs <- c(pargs[!is.element(names(pargs), names(call))], call[is.element(names(call), names(pargs))])
+      
+      #select x only where defined by L and U
+      dargs$x <- x[x > L & x <= U]
+      
+      #define arguments for pdist in L and U
+      pUargs <-  pLargs <- pargs 
+      pUargs$q <- U
+      pLargs$q <- L
+      
+      #initialize output
+      density <- numeric(length(x))
+      
+      #standard method for computing density values for truncated distributions
+      density[x > L & x <= U] <-  do.call("ddist", as.list(dargs)) / (do.call("pdist", as.list(pUargs)) - do.call("pdist", as.list(pLargs)))
+      
+      #returns density values for truncated distributions
+      return(density)
+      
+    }
+    
+    #add to density function formals L and U with values as passed with dtruncate
+    formals(density) <-  c(formals(ddist), eval(substitute(alist(L=-Inf, U=Inf))))
+    #return density function
+    return(density)
+  }
+```
+
+
+with:
+
+* envir: the environment `plnorm()` and `dlnorm()` belong to
+
+We can now define a new `tdlnorm()` as:
+
+```{r closures-029}
+tdlnorm <- dtruncate(dist = lnorm)
+```
+
+and use it as: 
+
+```{r closures-030}
+p <- ppoints(1000)
+x <- qlnorm(p, meanlog = 1, sdlog = 1)
+d <- tdlnorm(x, meanlog = 1, sdlog = 1)
+dt <- tdlnorm(x, meanlog = 1, sdlog = 1, L= 5, U = 10)
+plot(x, dt, type = "n", xlab = "Quantile", ylab = "Density")
+points(x, dt, type = "s", col = "red", lwd = 2)
+points(x, d, type = "s", col = "darkblue", lwd = 2)
+title("Truncated and not-truncated log-normal")
+grid()
+```
+
+clearly, `tdlnorm()` returns the same results as `truncdist::dtrunc()`:
+
+```{r closures-031}
+dtrunc(x = 5:8, spec = "lnorm", a = 5, b = 10, meanlog = 1, sdlog = 1)
+tdlnorm(x = 5:8, meanlog = 1, sdlog = 1, L = 5, U = 10)
+```
+
+Moreover, our newly created `tdlnorm()` function takes as argument `meanlog` and `sdlog`, as well as `lower.tail = TRUE`, `log.p = FALSE`, `as stats::plnorm()` does, despite these arguments were not mentioned when calling `dtruncate()`.
+
+Now that we have `dtruncate()`, the same exercise can be replicate, at no extra programming effort, to any density function:
+
+```{r closures-032}
+dweibull <-  dtruncate(dist = weibull)
+dgpd <- dtruncate(gpd, pkg = evd)
+```
+
+## Functions with memory 
+
+When talking about clousures, we used the referencing environment of `f()` to hold any value passed by `g()`. Similarly, we can use the same environment to keep a state across multiple executions of `f()`.
+
+### Example: Track how many times a function is called
+We may consider a function that simply returns the current date but tracks how many times it has ben called:
+
+```{r closures-033}
+g <- function(){
+ i <- 0
+ f <- function(){
+    i <<- i+1
+    cat("this function has been called ", i, " times", "\n")
+    date()  
+}}
+
+f <- g()
+#first call
+f()
+#second call
+f() 
+#third call
+f()
+```
+
+Note that, we used the `<<-` operator that assigns in the parent environment. This is equivalent to:
+
+```{r closures-033A, eval = FALSE}
+assign("i", i+1, envir = parent.env(environment())):
+```
+
+
+### Example: Avoid re-calculate previous results
+We can use the referencing environment of a function to keep previous returned values of the same function. By using this idea, we could try to avoid re-calculating previously computed values.
+
+Supose we want a function that takes `n` as argument and returns all primes less or equal to `n`. This function already exists within library `pracma`:
+
+```{r closures-034}
+library(pracma)
+primes(n = 9)
+```
+
+In order to keep previous results we can define a function `makefprime()` that, when called, returns a second function with an environment `.env` attached: 
+
+```{r closures-035}
+makefprime = function () {
+  .env = new.env()
+  f = function(n) {
+    symbol = paste("p", n, sep = ".")
+    if (exists(symbol, envir = .env)){
+      prime = get(symbol, envir = .env)
+    } 
+    else {prime = primes(n = n)
+      assign(symbol , prime, envir = .env)
+    }
+    prime
+   }  
+f
+}
+```
+
+We can now create a function named for instance `fprimes()` by calling function `makefprime()` which returns identical results when compared with `primes()`.
+
+```{r closures-036}
+fprimes = makefprime()
+fprimes(10)
+```
+
+Now suppose we need to compute prime numbers several time within a working session or a for loop. When `n` is large, this computation may require a substancial ammount of time.
+
+```{r closures-037}
+system.time({p1 = fprimes(n = 10^7)})
+```
+
+Nevertheless, because of the way we defined `fprimes()`, second time this function is called with `n = 10^7` computing time is practicaly zero as the function reuse previously computed results as stored in environment `.env`. 
+
+```{r closures-038}
+system.time({p2 = fprimes(n = 10^7)})
+```
+
+<!--- questo non mi piace 
+### Example: Conditioning a function to its previous result
+--->
+
+### Example: Add to an existing plot
+As a last example, we may want to have a function that add to an existing plot any time a new observation becomes available, using the same mechanism, we can define a `new_plot()` function that instances a new plot the first time it is called:
+
+```{r closures-043}
+new_plot = function(){
+  xx = NULL
+  yy = NULL
+  function(x, y, ...) {
+  xx <<- c(xx, x)
+  yy <<- c(yy, y)
+  plot(xx, yy, ...)
+}}
+
+this_plot <- new_plot()
+```
+and add to the same plot at each next call: 
+
+```{r closures-044, fig.width=7, fig.height=4, fig.cap="first call"}
+this_plot (1:4, c(2, 3, 1, 5), type = "b")
+```
+
+```{r closures-045, fig.width=7, fig.height=4, fig.cap="second call"}
+this_plot(5, 3, type = "b")
+```
+```{r closures-046, fig.width=7, fig.height=4, fig.cap="third call"}
+this_plot(6, 3, type = "b", col = "red")
+```
+
+
+
+
+
