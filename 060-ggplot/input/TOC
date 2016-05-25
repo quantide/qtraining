@@ -1,4 +1,5 @@
 Introduction to Graphics | 1-intro.Rmd
+
 Base ggplot2
 Creating a Scatter Plot  | 2-scatterplot.Rmd
 Creating a Line Graph    | 3-linegraph.Rmd
