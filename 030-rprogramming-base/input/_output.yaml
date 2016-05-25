@@ -7,7 +7,7 @@ html_document:
   theme: flatly
   highlight: textmate
   mathjax: "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-  lib_dir: include/libs
+  lib_dir: ../../include/libs
   includes:
     in_header: ../../include/html/in-header.html
     before_body: ../../include/html/before-body.html
