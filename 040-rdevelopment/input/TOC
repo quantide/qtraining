@@ -4,12 +4,12 @@ Base programming in R                     | 11-baseprogramming.Rmd
 
 Function and Environments                 | 12-programming-functions.Rmd
 
-Debugging and benchmarking                | 13-Debuggingbenchmarking.Rmd
+Debugging and benchmarking                | 13-debugging-benchmarking.Rmd
 
-Functional Programming                    | 14-FunctionalProgramming.Rmd
+Functional Programming                    | 14-functional-programming.Rmd
 
-Functionals as for loop substitutes       | 15-Functionals.Rmd
+Functionals as for loop substitutes       | 15-functionals.Rmd
 
-Parallel Computation                      | 16-ParallelComputation.Rmd
+Parallel Computation                      | 16-parallel-computation.Rmd
 
-Developing R packages                     | 17-DevelopingRpackages.Rmd
+Developing R packages                     | 17-developing-rpackages.Rmd
