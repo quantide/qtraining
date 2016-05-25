@@ -3,6 +3,7 @@
 ## `for` loops
 
 `for` loops, as any other iterators, are common components of almost any programming language. The common structure of a `for` loop in `R` is:
+
 ```{r programming-for-01}
 languages <- c("C", "C++", "R", "Java", "Python")
 for(lang in languages) {
