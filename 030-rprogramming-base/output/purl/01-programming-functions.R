@@ -52,17 +52,25 @@ count_rows <- function(...) {
 
 count_rows(airquality, cars)
 
-## ----functions-dots3, fig.height=7, fig.width=7--------------------------
-time <-  1:13
-depth <-  c(0,9,18,21,21,21,21,18,9,3,3,3,0)
+## ----functions-dots3, fig.height=7, fig.width=7, message=FALSE-----------
+require(ggplot2)
 
-plot_depth <-  function ( time , depth , type = "l", ...){
-  plot(time, -depth, type = type, 
-       ylab = deparse(substitute(depth)), ...)
+# Function
+plot_depth <-  function(df, time_var_name, depth_var_name, ...){
+  ggp <- ggplot(data=df, mapping=aes_string(x=time_var_name, y= depth_var_name)) +
+          geom_line(...) + xlab(time_var_name)
+  return(ggp)
 }
-par(mfrow = c(1, 2))
-plot_depth(time, depth, lty = 2)
-plot_depth(time, depth, lwd = 4, col = "red")
+
+# Example
+time <-  1:13
+depth <-  c(0,-9,-18,-21,-21,-21,-21,-18,-9,-3,-3,-3,0)
+df <- data.frame(time=time, depth=depth)
+
+ggp1 <- plot_depth(df, "time", "depth", linetype = 2)
+ggp2 <- plot_depth(df, "time", "depth", size = 4, col = "red")
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 
 ## ----functions-body-wrong, eval=FALSE------------------------------------
 ## wrong <- function(x) {x =}
@@ -83,16 +91,4 @@ environment(mean)
 ## ----functions-environment-global, error=TRUE----------------------------
 f <- function(x){x+1}
 x
-
-## ----functions-writing---------------------------------------------------
-myFunction =  function(a, b, c) {...}
-
-## ----functions-writing-example, tidy=FALSE-------------------------------
-vat = function(amount, rate = 0.21) {
-  taxable = amount / (1 + rate)
-  tax = amount - taxable
-  return(list(tax = tax, taxable = taxable))
-}
-vat(121)
-vat(104, rate = 0.04)
 

@@ -1,4 +1,6 @@
-# Functions in R
+---
+title: "Functions structure"
+---
 
 ## Introduction to functions structure
 
@@ -116,19 +118,27 @@ count_rows <- function(...) {
 count_rows(airquality, cars)
 ```
 
-Similarly, the "`...`" arguments becomes very handy when the "`...`" arguments will be passed on to another function as it often happened when calling `plot()` from within another function. The following example shows a basic plot function used for depths plotting where additional graphics parameters are passed via "`...`":
+Similarly, the "`...`" arguments becomes very handy when the "`...`" arguments will be passed on to another function as it often happened when calling `ggplot2` functions from within another function. The following example shows a function which draws a line plot, where additional graphics parameters are passed via "`...`":
 
-```{r functions-dots3, fig.height=7, fig.width=7}
-time <-  1:13
-depth <-  c(0,9,18,21,21,21,21,18,9,3,3,3,0)
+```{r functions-dots3, fig.height=7, fig.width=7, message=FALSE}
+require(ggplot2)
 
-plot_depth <-  function ( time , depth , type = "l", ...){
-  plot(time, -depth, type = type, 
-       ylab = deparse(substitute(depth)), ...)
+# Function
+plot_depth <-  function(df, time_var_name, depth_var_name, ...){
+  ggp <- ggplot(data=df, mapping=aes_string(x=time_var_name, y= depth_var_name)) +
+          geom_line(...) + xlab(time_var_name)
+  return(ggp)
 }
-par(mfrow = c(1, 2))
-plot_depth(time, depth, lty = 2)
-plot_depth(time, depth, lwd = 4, col = "red")
+
+# Example
+time <-  1:13
+depth <-  c(0,-9,-18,-21,-21,-21,-21,-18,-9,-3,-3,-3,0)
+df <- data.frame(time=time, depth=depth)
+
+ggp1 <- plot_depth(df, "time", "depth", linetype = 2)
+ggp2 <- plot_depth(df, "time", "depth", size = 4, col = "red")
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
 ### Body of a function
@@ -180,27 +190,3 @@ Environments are not threated here, but the following fundamental concepts:
     x
    ```
 
-## Writing a function
-
-A function in R can be defined with the `function()` function. Its use can be summed up as follows:
-```{r functions-writing}
-myFunction =  function(a, b, c) {...}
-```
-
-`myFunction` is the name of the customised function; `a`, `b` and `c` are the arguments of `myFunction()` and the part in curly brackets contains the definition of the function.
-
-As an example, write a function which calculates taxable income and taxes, given the total and the VAT percentage.
-
-```{r functions-writing-example, tidy=FALSE}
-vat = function(amount, rate = 0.21) {
-  taxable = amount / (1 + rate)
-  tax = amount - taxable
-  return(list(tax = tax, taxable = taxable))
-}
-vat(121)
-vat(104, rate = 0.04)
-```
-
-The value assigned to the `rate` argument is the default value assumed by the argument itself.
-
-It is good practice to end the function specifying its output with the `return()` or `invisible()` functions. The function output ought to be made of a single object. If there are multiple objects, they can be inserted in a list. 

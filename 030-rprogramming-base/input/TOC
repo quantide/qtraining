@@ -1,5 +1,6 @@
 Basic programming
-Functions in R								| 01-programming-functions.Rmd
-Conditionals in R							| 02-programming-conditionals.Rmd
-Loops in R								| 03-programming-loops.Rmd
+Functions structure						| 01-programming-functions.Rmd
+Functions writing						| 02-function-writing.Rmd
+Conditionals 							| 03-programming-conditionals.Rmd
+Loops 								| 04-programming-loops.Rmd
 
