@@ -31,7 +31,7 @@ zip:
 	mv $(INPUT_DIR)/*.R $(PURL_DIR)/
 	mv $(PURL_DIR)/options.R $(INPUT_DIR)/.
 	zip -9 -r $(PURL_DIR)/R.zip $(PURL_DIR)/
-#	rm -r $(INPUT_DIR)/03-programming-loops_cache
+
 
 toc:
 	R --slave -e "source('../include/r/build-toc-html.R'); build_toc_html(path='$(INPUT_DIR)/',download_file='$(PROJECT).zip')"
