@@ -79,6 +79,13 @@ bands_freq_na
 ggplot(data=bands_freq_na, mapping=aes(x=press_type, y=n, fill=cylinder_size)) +
   geom_bar(stat="identity", position="dodge")
 
+## ----bargraph_na_as_level, message=FALSE---------------------------------
+bands <- bands %>% mutate(cylinder_size = as.character(cylinder_size), cylinder_size =ifelse(is.na(cylinder_size),"NA",cylinder_size),
+  cylinder_size = factor(cylinder_size, levels= c("CATALOG", "SPIEGEL", "TABLOID", "NA"), labels = c("CATALOG", "SPIEGEL", "TABLOID", "NA")))
+
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) +
+  geom_bar() 
+
 ## ----bargraph_geomtext, message=FALSE------------------------------------
 bands_freq <- bands %>% group_by(press_type) %>% summarize(n=n())
   

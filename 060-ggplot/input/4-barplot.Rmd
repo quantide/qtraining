@@ -184,8 +184,8 @@ ggplot(data=bands_freq_na, mapping=aes(x=press_type, y=n, fill=cylinder_size)) +
   geom_bar(stat="identity", position="dodge")
 ```
 
-As we see in the previous plots, `cylinder_size` is a factor variable with three levels: `CATALOG`, `SPIEGEL` and `TABLOID` but it has also missing values (`NA`).   
-To visualize also missing values (`NA`) as `cylinder_size` level in plots legend, we have to recode its levels, adding also `NA` as level.  
+As you see in the previous plots, `cylinder_size` is a factor variable with three levels: `CATALOG`, `SPIEGEL` and `TABLOID` but it has also missing values (`NA`).   
+To visualize also missing values (`NA`) as `cylinder_size` level in plots legend, you have to recode its levels, adding also `NA` as level.  
 
 ```{r bargraph_na_as_level, message=FALSE}
 bands <- bands %>% mutate(cylinder_size = as.character(cylinder_size), cylinder_size =ifelse(is.na(cylinder_size),"NA",cylinder_size),
