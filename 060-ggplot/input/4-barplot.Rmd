@@ -1,5 +1,5 @@
 ---
-title: "Creating a Bar Graph"
+title: "Creating a Bar Plot"
 output: html_document
 ---
 
@@ -19,9 +19,9 @@ require(qdata)
 data(bands)
 ```
 
-Bar Graphs are used to display numeric values for different categories. Although they appears similar to Histograms, these plots are very different: bar plot are used for categorical x values, bars should be spaced and the weight of the bar has no meaning while histograms are used for continuous y values, bars (that are called _bins_) must not be spaced and the weight of bins depends on data.
+Bar plots are used to display numeric values for different categories. Although they appears similar to Histograms, these plots are very different: bar plots are used for categorical x values, bars should be spaced and the weight of the bar has no meaning while histograms are used for continuous x values, bars (that are called _bins_) must not be spaced and the weight of bins depends on data.
 
-To avoid confusion between bar graphs and histograms, some authors suggest to build bars horizontally.
+To avoid confusion between bar plots and histograms, some authors suggest to build bars horizontally.
 
 ```{r bargraphs, message=FALSE, echo=FALSE, purl=FALSE}
 ds = data.frame(x=factor(1:4), y=c(4,2,6,5))
@@ -40,10 +40,10 @@ ggp2 <- ggp +
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-This chapter presents how to build bar graphs and introduces other basic concepts of `ggplot2` graphics: `stat`.
+This chapter presents how to build bar plots and introduces other basic concepts of `ggplot2` graphics: `stat`.
 
 
-# The first bar graph
+# The first bar plot
 
 As seen in the previous chapter, chicks receive one of four diets (see `ChickWeight` data set). A graphical summary about how chicks receive each diet can be obtained.
 
@@ -57,13 +57,13 @@ If you prefer horizontal bars, just flip the plot with `coord_flip()`.
 ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar() + coord_flip()
 ```
 
-Another way to distinguish bar graphs and histograms are tiny bars, to increase the space among bars.
+Another way to distinguish bar plots and histograms are tiny bars, to increase the space among bars.
 
 ```{r bargraph_width, message=FALSE}
 ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar(width=0.5)
 ```
 
-# Setting and mapping variables to line graphs
+# Setting and mapping variables to line plots
 
 Colours and other available aesthetics (`linetype` and `size`) can be set or mapped as usual. Remember that `colour` controls the bar outline, while `fill` controls the bar colour.
 
@@ -131,7 +131,7 @@ Since you have an `y` variable containing frequencies, you tell `ggplot` the var
 A statistical transformation, or `stat`, transforms the data, typically by summarizing it in some manner. By default, almost all `geom`s seen until now uses `stat="identity"`, that do not transform data. As just seen, by default `geom_bar()` uses `stat="count"` that counts the number of cases at each `x` position. If you do not want to transform your data, `stat="identity"` must be supplied.
 
 
-# Stacked and grouped bar graphs
+# Stacked and grouped bar plots
 
 If you are a quality engineer analysing the `bands` data, you may be interested to the number of presses for each type, distinguishing them by the cylinder size.
 
@@ -182,6 +182,17 @@ At this point, you can easily build the plot starting from frequency table. Just
 ```{r bargraph_stack_na, message=FALSE}
 ggplot(data=bands_freq_na, mapping=aes(x=press_type, y=n, fill=cylinder_size)) +
   geom_bar(stat="identity", position="dodge")
+```
+
+As we see in the previous plots, `cylinder_size` is a factor variable with three levels: `CATALOG`, `SPIEGEL` and `TABLOID` but it has also missing values (`NA`).   
+To visualize also missing values (`NA`) as `cylinder_size` level in plots legend, we have to recode its levels, adding also `NA` as level.  
+
+```{r bargraph_na_as_level, message=FALSE}
+bands <- bands %>% mutate(cylinder_size = as.character(cylinder_size), cylinder_size =ifelse(is.na(cylinder_size),"NA",cylinder_size),
+  cylinder_size = factor(cylinder_size, levels= c("CATALOG", "SPIEGEL", "TABLOID", "NA"), labels = c("CATALOG", "SPIEGEL", "TABLOID", "NA")))
+
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) +
+  geom_bar() 
 ```
 
 

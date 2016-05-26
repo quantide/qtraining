@@ -2,8 +2,8 @@ Introduction to Graphics | 1-intro.Rmd
 
 Base ggplot2
 Creating a Scatter Plot  | 2-scatterplot.Rmd
-Creating a Line Graph    | 3-linegraph.Rmd
-Creating a Bar Graph     | 4-bargraph.Rmd
+Creating a Line Plot     | 3-lineplot.Rmd
+Creating a Bar Plot      | 4-barplot.Rmd
 Creating a Histogram     | 5-histogram.Rmd
 Creating a Box Plot      | 6-boxplot.Rmd
 Presenting Plots         | 7-presenting.Rmd

@@ -41,9 +41,22 @@ Suppose you are interested in the relationship between the humidity and the visc
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
 ```
 
+<!--
 The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: the _data_ are in the `bands` data frame and you _map_ the data to _aesthetics_ (visual properties) of plot like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `roughness` variable. Note that the function is named `ggplot()` while the package is named `ggplot2`.
+-->
 
-The `ggplot()` function does not return anything. You have to add to `ggplot()`, which geometric object (_geom_) you want to add. A scatter plot is made by points, and so you will use the `geom_point()` function, without any function. 
+The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: 
+
+* _data_ refers to the dataframe to use for the plot, in this case is the `bands` data frame 
+* _mapping_ refers to the  list of aesthetic mappings (visual properties) to use for plot, passed as arguments of the `aes()` function. In this case you _map_ the data to _aesthetics_  of plot like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `viscosity` variable. 
+
+Notes: 
+
+* the variable names must be unquoted 
+* the function is named `ggplot()` while the package is named `ggplot2`
+
+
+The `ggplot()` function does not return anything. You have to add to `ggplot()`, which geometric object (_geom_) you want to add. A scatter plot is made by points, and so you will use the `geom_point()` function, without any argument. 
 
 The meaning of technical terms will be cleared in the following examples.
 

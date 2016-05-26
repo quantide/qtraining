@@ -1,5 +1,5 @@
 ---
-title: "Creating a Line Graph"
+title: "Creating a Line Plot"
 output: html_document
 ---
 
@@ -19,9 +19,9 @@ require(qdata)
 data(bands)
 ```
 
-Line Graphs are used to display how one continuous variable, on the y-axis, changes in relation to another continuous variable, on the x-axis. It is similar to a scatter plot, except that points are ordered in the x-axis and connected by a segment. Points can also be missing. 
+Line plots are used to display how one continuous variable, on the y-axis, changes in relation to another continuous variable, on the x-axis. It is similar to a scatter plot, except that points are ordered in the x-axis and connected by a segment. Points can also be missing. 
 
-```{r linegraphs, message=FALSE, echo=FALSE, purl=FALSE}
+```{r lineplots, message=FALSE, echo=FALSE, purl=FALSE}
 ds = data.frame(x=0:6, y=c(0,3,7,12,20,30,45.6))
 
 ggp <- ggplot(data=ds, aes(x=x, y=y)) + 
@@ -32,10 +32,10 @@ ggp <- ggplot(data=ds, aes(x=x, y=y)) +
 gridExtra::grid.arrange(ggp+geom_point(colour="#2B4C6F"), ggp, ncol=2)
 ```
 
-This chapter presents how to build line graphs and introduces other basic concepts of `ggplot2` graphics: `group` aesthetic and manual scales.
+This chapter presents how to build line plots and introduces other basic concepts of `ggplot2` graphics: `group` aesthetic and manual scales.
 
 
-# The first line graph
+# The first line plot
 
 `ChickWeight` data contains the body weight of 50 chicks over time. Suppose you are interested to the growth of the first chick.
 
@@ -102,7 +102,7 @@ lines(x = c(xs, xe), y = c(1, 1), lty = 6, lwd = lwd0)
 ```
 
 
-# Mapping variables to line graphs
+# Mapping variables to line plots
 
 If you are interested in the average growth of chicks for the different diets, you must first summarize data.
 
@@ -148,7 +148,7 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) 
 
 Notice the use of `group=supp`. This is required to tell ggplot how to group data when it draws the lines. As [Hadley himself said](https://groups.google.com/forum/#!topic/ggplot2/Pwq6hO7r90w):
 
-> The important thing [for a line graph with a factor on the horizontal axis] is to manually specify the grouping. By default `ggplot2` uses the combination of all categorical variables in the plot to group geoms - that doesn't work for this plot because you get an individual line for each point. Manually specify `group = 1` indicates you want a single line connecting all the points.
+> The important thing [for a line plot with a factor on the horizontal axis] is to manually specify the grouping. By default `ggplot2` uses the combination of all categorical variables in the plot to group geoms - that doesn't work for this plot because you get an individual line for each point. Manually specify `group = 1` indicates you want a single line connecting all the points.
 
 ```{r linegraph_group1, message=FALSE}
 ggplot(data=(tg%>%filter(supp=="OJ")), mapping=aes(x=factor(dose), y=length, group=1)) +
@@ -201,7 +201,7 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
 
 # Adding horizontal and vertical lines
 
-Line graphs often contains horizontal or vertical lines.
+Line plots often contains horizontal or vertical lines.
 
 It may be interesting to analyse the average daily growth for each diet type.
 

@@ -36,8 +36,8 @@ Each of the following chapters introduces a different plot with one or more rela
 | Plot          | Geoms | `ggplot2` key concepts introduced in the chapter                                                    |  
 |---------------|-------|-----------------------------------------------------------------------------------------------------|
 | Scatter plots | `geom_point` `geom_smooth`                         | aesthetics, _setting_ or _mapping_, geoms, assignment  |
-| Line graphs   | `geom_line` `geom_point` `geom_hline` `geom_vline` | `group` aesthetic, manual scales                       |
-| Bar graphs    | `geom_bar` `geom_text`                             | `stat`, hide legend, swapping axes                     |
+| Line plots   | `geom_line` `geom_point` `geom_hline` `geom_vline` | `group` aesthetic, manual scales                       |
+| Bar plots    | `geom_bar` `geom_text`                             | `stat`, hide legend, swapping axes                     |
 | Histograms    | `geom_histogram` `geom_density`                    | faceting                                               |
 | Box plots     | `geom_boxplot`                                     | titles and theme (plot title and axes ticks/titles)    |
 
