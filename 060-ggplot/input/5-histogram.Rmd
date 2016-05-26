@@ -78,7 +78,7 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(mapping=aes(fill=press_type))
 ```
 
-In this cases, four different histograms may produce a more readable result.
+In this case, four different histograms may produce a more readable result.
 
 ```{r histogram_facetgrid_col, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
