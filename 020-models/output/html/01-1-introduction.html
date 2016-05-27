@@ -285,7 +285,7 @@ $(document).ready(function () {
 
 <header>
       <div class="inner">
-        <h1>Introduction to Statistics for Data Scientists</h1>
+        <h1>Statistical Models with R</h1>
         <h2></h2>
       </div>
     </header>
@@ -391,7 +391,7 @@ Relation between Weight and Height of 200 young people
 </p>
 </div>
 <p>In other words, one might want to draw a smooth line that “best approximates” the causal relation between <code>height</code> and <code>weight</code> (i.e., the height influences the weight).</p>
-<p>Note that the relation might be really simple, as finding a simple “central value”&quot; (i.e., when one hypotesizes that <code>weight</code> does not change when varying the height); in this case the “best” smooth line could be the mean of <code>weight</code> values)</p>
+<p>Note that the relation might be really simple, as finding a simple “central value” (i.e., when one hypotesizes that <code>weight</code> does not change when varying the height); in this case the “best” smooth line could be the mean of <code>weight</code> values)</p>
 <pre class="r"><code>ds2 &lt;- ds %&gt;% slice(c(1,1:20*10))
 ds2 &lt;- ds2 %&gt;% mutate(x1=height, x0=height, y0=weight, y1=mean(weight))
 
@@ -459,11 +459,19 @@ print(ggp)</code></pre>
 Relation between Weight and Height in 100 male and 100 female young people
 </p>
 </div>
-<p>This is because, roughly speaking, a model is said a <strong>linear model</strong> if unknown parameters and error term combine linearly, and not necessarily if the functional form, or relation, between independent and dependent variables is linear. In theoretical introduction chapter this topic is covered more thoroughly.</p>
+<p>This is because, roughly speaking, a model is said a <strong>linear model</strong> if unknown parameters and error term combine linearly, and not necessarily if the functional form, or relation, between independent and dependent variables is linear. In “Some Theory on Linear Model” chapter this topic is covered more thoroughly.</p>
 <div id="linear-model-formulae-and-functions-in-r" class="section level2">
 <h2>Linear model formulae and functions in R</h2>
-<p>In R, the main functions to “build” linear model analysis objects are <code>lm()</code> and <code>aov()</code>, where the latter may be seen as a “special case” of the first.<br />
-Either functions request a parameter <code>formula</code> that allows the analyst to specify the hypothesized relation between dependent (response) variable and independent variable(s).</p>
+<p>There are lots of different types of regression models in statistics but R mantains a coherent syntax for the estimation of all of them. Indeed, the common interface to fit a model in R is made of a call to the corresponding function with arguments <code>formula</code> and <code>data</code>.</p>
+<p>Talking about linear regression models, the <code>lm</code> and <code>aov</code> functions are used in R to fit respectively linear regression and analysis of variance model and their syntax is:</p>
+<pre class="r"><code>linear_model &lt;- lm(formula, data)
+anova_model &lt;- aov(formula, data)</code></pre>
+<ul>
+<li><code>formula</code> argument is a symbolic description of the model to be fitted (i.e. <code>dep_var ~ indep_var1 + indep_var2</code>)</li>
+<li><code>data</code> refers to a data frame containing the variable in the model</li>
+</ul>
+<p>For example, to fit a linear model on the relation between <code>weight</code> and <code>height</code> of <code>ds</code> dataset, the sintax is:</p>
+<pre class="r"><code>linear_model &lt;- lm(formula = weight ~ height, data = ds)</code></pre>
 <p>In following table some formulas examples are shown, where <code>x</code>, <code>x1</code>, <code>x2</code>, <code>x3</code> represent continuous variates, whereas upper case letters represent factors</p>
 <table>
 <thead>
@@ -542,7 +550,7 @@ An expression of the form <code>y ~</code> <code>model</code> is interpreted as 
 <h3>Common R functions for inference</h3>
 <p>In following table the main functions used for linear model analysis are presented.</p>
 <p>All the functions have to be applied on objects of class <code>lm</code> or class <code>aov</code>, obtained by calling, respectively,</p>
-<p><code>obj = lm(formula)</code> or <code>obj = aov(formula)</code></p>
+<p><code>obj &lt;- lm(formula)</code> or <code>obj &lt;- aov(formula)</code></p>
 <table>
 <thead>
 <tr class="header">

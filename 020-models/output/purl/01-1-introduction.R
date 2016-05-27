@@ -54,3 +54,10 @@ ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight, colour=gender)) +
 
 print(ggp)
 
+## ----model, eval=FALSE---------------------------------------------------
+## linear_model <- lm(formula, data)
+## anova_model <- aov(formula, data)
+
+## ----model_example, eval=FALSE-------------------------------------------
+## linear_model <- lm(formula = weight ~ height, data = ds)
+
