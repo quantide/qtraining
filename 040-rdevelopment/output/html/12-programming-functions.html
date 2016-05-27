@@ -633,9 +633,9 @@ parent.env(env0)</code></pre>
 y &lt;- 0 </code></pre>
 <p>they have different memory address:</p>
 <pre class="r"><code>mem_add(x)</code></pre>
-<pre><code>## [1] &quot;2b2d088 14 REALS&quot;</code></pre>
+<pre><code>## [1] &quot;3a5e088 14 REALS&quot;</code></pre>
 <pre class="r"><code>mem_add(y)</code></pre>
-<pre><code>## [1] &quot;2b2d028 14 REALS&quot;</code></pre>
+<pre><code>## [1] &quot;3a5e028 14 REALS&quot;</code></pre>
 <p>and that, given:</p>
 <pre class="r"><code>x &lt;- 0</code></pre>
 <p>if we assign</p>
@@ -649,12 +649,12 @@ y &lt;- 0 </code></pre>
 <pre class="r"><code>x &lt;- 1:5</code></pre>
 <p>with its address</p>
 <pre class="r"><code>mem_add(x)</code></pre>
-<pre><code>## [1] &quot;2932888 13 INTSX&quot;</code></pre>
+<pre><code>## [1] &quot;352c4e8 13 INTSX&quot;</code></pre>
 <p>if we modify it</p>
 <pre class="r"><code>x[3] &lt;- 0L</code></pre>
 <p><code>R</code> modify its address too</p>
 <pre class="r"><code>mem_add(x)</code></pre>
-<pre><code>## [1] &quot;24abad8 13 INTSX&quot;</code></pre>
+<pre><code>## [1] &quot;33dcb20 13 INTSX&quot;</code></pre>
 <p>If we apply the same concept to lists, given a list</p>
 <pre class="r"><code>list0 &lt;- list(x = 0)</code></pre>
 <p>and its copy</p>
@@ -677,16 +677,16 @@ list1 &lt;- list0</code></pre>
 <p>We can now observe that the memory address is modified only for the second element of the list while <code>list0</code> and <code>list1</code> keep sharing the same address for the first vector: <code>x</code></p>
 <pre class="r"><code>lapply(list0, mem_add)</code></pre>
 <pre><code>## $x
-## [1] &quot;2a07670 13 INTSX&quot;
+## [1] &quot;2c6e570 13 INTSX&quot;
 ## 
 ## $y
-## [1] &quot;2a322a0 13 INTSX&quot;</code></pre>
+## [1] &quot;2838730 13 INTSX&quot;</code></pre>
 <pre class="r"><code>lapply(list1, mem_add)</code></pre>
 <pre><code>## $x
-## [1] &quot;2a07670 13 INTSX&quot;
+## [1] &quot;2c6e570 13 INTSX&quot;
 ## 
 ## $y
-## [1] &quot;22b1130 13 INTSX&quot;</code></pre>
+## [1] &quot;28f52a0 13 INTSX&quot;</code></pre>
 <p>In conclusion, we could say that <code>R</code>, at least in its newest versions, uses a <em>partial copy on modify</em> semantic.</p>
 <p>The same semantic does not apply to environments, that is <em>environments do not copy on modify</em>:</p>
 <p>As an proof of concept, we can create an environment with some objects in it:</p>
@@ -743,11 +743,11 @@ for (i in 1:k){
   out[i] &lt;-  df$value[df$name == what[i]]
 }})</code></pre>
 <pre><code>##    user  system elapsed 
-##   1.720   0.000   1.725</code></pre>
+##   1.692   0.000   1.692</code></pre>
 <p>or the common <code>R</code> vectorized approach</p>
 <pre class="r"><code>system.time({df$value[is.element(df$name , what)]})</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.056   0.000   0.054</code></pre>
+##   0.052   0.000   0.051</code></pre>
 <p>or, finally, the new hash approach</p>
 <pre class="r"><code>system.time({
   unlist(mget(what,  envir =   env))
@@ -943,7 +943,7 @@ environment(f)</code></pre>
 <pre class="r"><code>env &lt;- new.env()
 environment(f) &lt;- env
 environment(f)</code></pre>
-<pre><code>## &lt;environment: 0xc26abb8&gt;</code></pre>
+<pre><code>## &lt;environment: 0xd1a52a0&gt;</code></pre>
 <p>in case we delete environment <code>env</code></p>
 <pre class="r"><code>rm(env)</code></pre>
 <p><code>f()</code> will keep working</p>
@@ -1048,7 +1048,7 @@ with(env, f &lt;- function(x) {is.function(x)})</code></pre>
 }
 env_of_fun()</code></pre>
 <pre><code>## $evaluated_in
-## &lt;environment: 0x4c3a810&gt;
+## &lt;environment: 0x5b6f3d8&gt;
 ## 
 ## $defined_in
 ## &lt;environment: R_GlobalEnv&gt;
@@ -1063,13 +1063,13 @@ rm(env_of_fun)</code></pre>
 <p>when we now call <code>env_of_fun()</code></p>
 <pre class="r"><code>with(env, env_of_fun())</code></pre>
 <pre><code>## $evaluated_in
-## &lt;environment: 0x56cece8&gt;
+## &lt;environment: 0x6603c70&gt;
 ## 
 ## $defined_in
 ## &lt;environment: R_GlobalEnv&gt;
 ## 
 ## $called_from
-## &lt;environment: 0x54b44c0&gt;</code></pre>
+## &lt;environment: 0x63e84e0&gt;</code></pre>
 <p>we can see that the calling environment is now different from the definition environment.</p>
 <p>Understanding this idea can help to improve clarity and avoid annoying conflicts.</p>
 <p>As an example, we can define function <code>f()</code> within a newly created environment <code>env</code> and use function <code>parent.frame()</code> within the newly created function:</p>
@@ -1510,10 +1510,10 @@ one_r(10)</code></pre>
 <pre class="r"><code>x &lt;- sample(1:10^5)
 system.time(quick_sort_r(sample(x)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.444   0.000   0.441</code></pre>
+##   0.376   0.000   0.378</code></pre>
 <pre class="r"><code>system.time(quick_sort_c(sample(x)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   3.368   0.000   3.371</code></pre>
+##   2.980   0.000   2.982</code></pre>
 </div>
 <div id="example-left-join" class="section level3">
 <h3>Example: Left join</h3>

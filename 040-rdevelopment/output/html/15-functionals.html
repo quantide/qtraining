@@ -483,12 +483,12 @@ vector_list &lt;- lapply(n, sample , x = 0:9)</code></pre>
   sapply(vector_list, length )
 )</code></pre>
 <pre><code>##    user  system elapsed 
-##   1.024   0.020   1.047</code></pre>
+##   0.860   0.008   0.869</code></pre>
 <pre class="r"><code>system.time(
   vapply(vector_list, length, FUN.VALUE = numeric(1))
 )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.376   0.000   0.379</code></pre>
+##   0.372   0.000   0.371</code></pre>
 </div>
 <div id="lapply-patterns" class="section level3">
 <h3><code>lapply</code> patterns</h3>

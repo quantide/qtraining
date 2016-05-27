@@ -379,7 +379,7 @@ head(grid, n = 3)</code></pre>
 <p>The sequential calculation simply calls function <code>f()</code> for each row of the grid:</p>
 <pre class="r"><code>system.time({z &lt;- apply(grid, 1, f)})</code></pre>
 <pre><code>##    user  system elapsed 
-##   9.420   0.044   9.480</code></pre>
+##   9.068   0.048   9.123</code></pre>
 <p>The calculation needs about <code>20</code> seconds. To assure the correctness of the calculation we plot the function:</p>
 <pre class="r"><code>par(mfrow = c(1,1))
 dim(z) &lt;- c(length(x), length(x))
@@ -391,12 +391,12 @@ persp(x, x, z, theta=30, phi=30, expand=0.5, col='white', border=NA, shade=0.3, 
 <p>Now, <code>apply()</code> from the sequential calculation is executed for each element of the list. A sequential execution is done using <code>lapply()</code>:</p>
 <pre class="r"><code>system.time({z_list &lt;- lapply(grid_list, apply, 1, f)})</code></pre>
 <pre><code>##    user  system elapsed 
-##   8.460   0.000   8.483</code></pre>
+##   8.068   0.000   8.072</code></pre>
 <p>The parallel execution is done using the parallel analogon, <code>mclapply()</code>:</p>
 <pre class="r"><code>library(parallel)
 system.time({z_list &lt;- mclapply(grid_list, apply, 1, f, mc.cores = 2L, mc.preschedule=TRUE)})</code></pre>
 <pre><code>##    user  system elapsed 
-##   5.156   0.176   5.547</code></pre>
+##   0.092   0.060   4.568</code></pre>
 <p>The parallel execution needs about half of the time. In background the <code>mclapply()</code> has forked two child processes and each of the them has calculated the result for one list element. In principle, <code>mclapply()</code> produces the following results:</p>
 <pre class="r"><code>par(mfrow=c(1,2))
 # First half:
@@ -436,7 +436,7 @@ plot(y~x , data = df, pch = 16, cex = .5)</code></pre>
 <p>The previously created <code>cross_val()</code> function can be iterated trough <code>lapply()</code> using a single core:</p>
 <pre class="r"><code>system.time({single &lt;- lapply(1:n, cross_val, fm)})[3]</code></pre>
 <pre><code>## elapsed 
-##  25.526</code></pre>
+##  24.682</code></pre>
 <pre class="r"><code>op &lt;- par(mfrow = c(1, 2))
 plot(y~x , df, pch = 16, col = &quot;red&quot;, cex = .6)
 plot(unlist(single), type = &quot;s&quot;, ylab = &quot;Cross Validation&quot;, col = &quot;darkgreen&quot;)</code></pre>
@@ -447,7 +447,7 @@ plot(unlist(single), type = &quot;s&quot;, ylab = &quot;Cross Validation&quot;, 
   quad &lt;- mclapply(1:n, cross_val, fm,
   mc.cores = 4L, mc.preschedule = TRUE)})[3]</code></pre>
 <pre><code>## elapsed 
-##  12.287</code></pre>
+##  11.746</code></pre>
 <p>Clearly, both methods lead to the same results:</p>
 <pre class="r"><code>identical(single, quad)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -474,7 +474,7 @@ my_summary(df,
   flist = list(mean = mean, stdev = sd, range =  function(x,...){sd(x,...)/mean(x,...)})
 )})</code></pre>
 <pre><code>##    user  system elapsed 
-##   1.068   0.164   1.232</code></pre>
+##   1.020   0.092   1.117</code></pre>
 <p>or write a parallel version of this function with minor modifications to teh original <code>my_summary()</code>:</p>
 <pre class="r"><code>my_mc_summary &lt;- function(x, flist, mc.cores = 1L){
   f &lt;- function(f,...)f(...)
@@ -490,7 +490,7 @@ my_mc_summary(df,
   mc.cores = 2L
 )})</code></pre>
 <pre><code>##    user  system elapsed 
-##  11.504   0.112   1.083</code></pre>
+##  11.864   0.156   0.758</code></pre>
 <p>The reduction in computing time is appreciabl eat very little coding effort.</p>
 <p>Finally, <code>my_mc_summary(..., mc.cores = 1L)</code> will run the <code>mc</code> function on a single core as <code>my_summary()</code>.</p>
 </div>
@@ -517,7 +517,7 @@ system.time({
     mc.preschedule = FALSE)
 }) </code></pre>
 <pre><code>##    user  system elapsed 
-##  15.828 410.088 261.377</code></pre>
+##  18.460 323.204 180.607</code></pre>
 <p>Explicit parallelism has the programmer responsible for dividing the problem to be solved into independent chunks, to be run in parallel, and also responsible for aggregating the results from each chunk.</p>
 </div>
 <div id="cluster-parallelism" class="section level3">
@@ -597,7 +597,7 @@ system.time({
 }) </code></pre>
 <pre><code>## 95th quantile =  81668229</code></pre>
 <pre><code>##    user  system elapsed 
-##  12.944   0.040  13.002</code></pre>
+##  13.240   0.040  13.295</code></pre>
 <p>We just need to replace the <code>sapply</code> function with the corresponding <code>parSapply</code> to make use of <code>R</code> parallel capabilities.</p>
 <pre class="r"><code>nc &lt;- detectCores()
 cluster  &lt;- makeCluster(nc)
@@ -612,9 +612,9 @@ system.time({
     np = np, meanlog = 9,  sdlog = 2)
   cat (&quot;95th quantile = &quot; , quantile(out , .95), &quot;\n&quot;)
 }) </code></pre>
-<pre><code>## 95th quantile =  81444016</code></pre>
+<pre><code>## 95th quantile =  81572900</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.092   0.000   5.684</code></pre>
+##   0.100   0.000   5.732</code></pre>
 <pre class="r"><code>stopCluster(cluster)</code></pre>
 </div>
 <div id="setting-up-a-cluster" class="section level3">
@@ -680,9 +680,9 @@ system.time({
         sdlog = 2)
     cat(&quot;95th quantile = &quot;, quantile(out, 0.95), &quot;\n&quot;)
 })</code></pre>
-<pre><code>## 95th quantile =  81457375</code></pre>
+<pre><code>## 95th quantile =  81456629</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.888   0.020  54.347</code></pre>
+##   0.852   0.052  57.300</code></pre>
 <pre class="r"><code>stopCluster(biCluster)</code></pre>
 <p>Finally, working across public networks, especially with little bandwidth, may easily kill the extra benefits of having multiple cores available</p>
 </div>

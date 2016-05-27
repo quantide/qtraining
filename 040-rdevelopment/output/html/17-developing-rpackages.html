@@ -847,7 +847,7 @@ sum &lt;- function(..., na.rm = TRUE) {}</code></pre>
 <p>As a consequence, when function <code>sd()</code> runs, a new environment is created whose enclosure is the <code>stats</code> namespace environment and all <em>hidden</em> functions within the namespace become available to function <code>sd()</code>.</p>
 <p>The namespace environment of any package, as any environment has a parent. We can query <code>R</code> for the parent of any namespace:</p>
 <pre class="r"><code>parent.env(as.environment(.getNamespace(&quot;stats&quot;)))</code></pre>
-<pre><code>## &lt;environment: 0x1b82068&gt;
+<pre><code>## &lt;environment: 0x197f068&gt;
 ## attr(,&quot;name&quot;)
 ## [1] &quot;imports:stats&quot;</code></pre>
 <p>As we can see the parent environment of a namespace is a new environment: <code>imports:packagename</code> whose parent, is the namespace of package <code>base</code>.</p>

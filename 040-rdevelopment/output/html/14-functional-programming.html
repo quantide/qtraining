@@ -427,10 +427,10 @@ f1(3)</code></pre>
 }</code></pre>
 <p>Than use <code>g()</code> to produce <code>f()</code></p>
 <pre class="r"><code>f1 &lt;- g_tmp(1)</code></pre>
-<pre><code>## &lt;environment: 0x2804c98&gt;</code></pre>
+<pre><code>## &lt;environment: 0x2697de8&gt;</code></pre>
 <p>and finaly ask <code>R</code> for the environment associated with <code>f()</code></p>
 <pre class="r"><code>environment(f1)</code></pre>
-<pre><code>## &lt;environment: 0x2804c98&gt;</code></pre>
+<pre><code>## &lt;environment: 0x2697de8&gt;</code></pre>
 <p>As we can see, the execution environment of <code>g_tmp()</code> corresponds to the environment associated to <code>f()</code>.</p>
 <p>Finally,</p>
 <pre class="r"><code>get(&quot;y&quot; , env = environment(f1))</code></pre>
@@ -439,9 +439,9 @@ f1(3)</code></pre>
 <p>Notice that each call to <code>g()</code> returns a function with its own referencing environment:</p>
 <pre class="r"><code>f2 &lt;- g(1)
 environment(f1)</code></pre>
-<pre><code>## &lt;environment: 0x2804c98&gt;</code></pre>
+<pre><code>## &lt;environment: 0x2697de8&gt;</code></pre>
 <pre class="r"><code>environment(f2)</code></pre>
-<pre><code>## &lt;environment: 0x2362660&gt;</code></pre>
+<pre><code>## &lt;environment: 0x21f5d20&gt;</code></pre>
 <p>The referencing environments for <code>f1()</code> and <code>f2()</code> are different, despite that <code>f1()</code> and <code>f2()</code> are both returned by <code>g()</code>.</p>
 </div>
 <div id="functions-factories" class="section level2">
@@ -688,15 +688,15 @@ f &lt;- g()
 #first call
 f()</code></pre>
 <pre><code>## this function has been called  1  times</code></pre>
-<pre><code>## [1] &quot;Wed May 25 17:50:06 2016&quot;</code></pre>
+<pre><code>## [1] &quot;Thu May 26 17:34:53 2016&quot;</code></pre>
 <pre class="r"><code>#second call
 f() </code></pre>
 <pre><code>## this function has been called  2  times</code></pre>
-<pre><code>## [1] &quot;Wed May 25 17:50:06 2016&quot;</code></pre>
+<pre><code>## [1] &quot;Thu May 26 17:34:53 2016&quot;</code></pre>
 <pre class="r"><code>#third call
 f()</code></pre>
 <pre><code>## this function has been called  3  times</code></pre>
-<pre><code>## [1] &quot;Wed May 25 17:50:06 2016&quot;</code></pre>
+<pre><code>## [1] &quot;Thu May 26 17:34:53 2016&quot;</code></pre>
 <p>Note that, we used the <code>&lt;&lt;-</code> operator that assigns in the parent environment. This is equivalent to:</p>
 <pre class="r"><code>assign(&quot;i&quot;, i+1, envir = parent.env(environment())):</code></pre>
 </div>
@@ -729,7 +729,7 @@ fprimes(10)</code></pre>
 <p>Now suppose we need to compute prime numbers several time within a working session or a for loop. When <code>n</code> is large, this computation may require a substancial ammount of time.</p>
 <pre class="r"><code>system.time({p1 = fprimes(n = 10^7)})</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.660   0.028   0.687</code></pre>
+##   0.784   0.040   0.832</code></pre>
 <p>Nevertheless, because of the way we defined <code>fprimes()</code>, second time this function is called with <code>n = 10^7</code> computing time is practicaly zero as the function reuse previously computed results as stored in environment <code>.env</code>.</p>
 <pre class="r"><code>system.time({p2 = fprimes(n = 10^7)})</code></pre>
 <pre><code>##    user  system elapsed 
