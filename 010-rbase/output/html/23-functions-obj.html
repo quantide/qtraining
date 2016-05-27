@@ -285,7 +285,7 @@ $(document).ready(function () {
 
 <header>
       <div class="inner">
-        <h1>Introduction to Data Programming</h1>
+        <h1>R for Beginners</h1>
         <h2></h2>
       </div>
     </header>
@@ -340,7 +340,9 @@ $(document).ready(function () {
 <div id="TOC">
 <ul>
 <li><a href="#mathematical-functions">Mathematical Functions</a></li>
+<li><a href="#probabilistic-functions">Probabilistic Functions</a><ul>
 <li><a href="#statistical-functions">Statistical Functions</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -380,7 +382,7 @@ quantile(rdata, na.rm = TRUE, probs = c(0.25, 0.50, 0.75))</code></pre>
 <pre class="r"><code>help(read.table)</code></pre>
 <p>or</p>
 <pre class="r"><code>?read.table</code></pre>
-<p>There lots of function types, let us see some examples.</p>
+<p>There are lots of function types, let us see some examples.</p>
 <div id="mathematical-functions" class="section level3">
 <h3>Mathematical Functions</h3>
 <p>The names of the basic functions and mathematical operators in R follow the standards of programming languages. In this paragraph the functions and operators enabling basic mathematical operations to be performed will be dealt with. R can also be used to perform more complex calculations, such as matrix operations or calculations with complex numbers.</p>
@@ -421,6 +423,69 @@ x + y + z</code></pre>
 <pre class="r"><code>round(3.19, digits = 1)</code></pre>
 <pre><code>## [1] 3.2</code></pre>
 </div>
+<div id="probabilistic-functions" class="section level2">
+<h2>Probabilistic Functions</h2>
+<p>Probabilistic functions in R fall into four categories:</p>
+<ol style="list-style-type: decimal">
+<li><code>r*</code> functions for generating random numbers,</li>
+<li><code>d*</code> functions for calculating the value of the density function in a point,</li>
+<li><code>p*</code> functions for calculating the cumulative distribution function,</li>
+<li><code>q*</code> functions for calculating quantiles.</li>
+</ol>
+<p>The asterisk indicates the distribution which is used: <code>norm</code> for normal distribution, <code>t</code> for Student’s t-distribution, <code>binom</code> for binomial distribution, <code>gamma</code> distribution, <code>beta</code> distribution, <code>weibull</code> distribution, etc. R integrates numerous statistical distributions. The list of all the probability distributions included in the base R can be obtained by typing <code>help(Distributions)</code>. Other probability distributions become available when loading additional packages.</p>
+<p>The following functions:</p>
+<pre class="r"><code>rnorm(n = 10)</code></pre>
+<pre><code>##  [1] -0.3329234  1.3631137 -0.4691473  0.8428756 -1.4579937 -0.4003059 -0.7764173 -0.3692965  1.2401015
+## [10] -0.1074338</code></pre>
+<pre class="r"><code>rnorm(n = 20, mean = 3, sd = 5)</code></pre>
+<pre><code>##  [1]  3.86296753  4.27300634 -0.07266914 -4.14607548  1.34512283  3.64193032  8.09059996  1.72213154
+##  [9]  1.48729495 11.07595341 -0.86856677  5.12001201  0.08026509  5.07517839 -4.72630828  0.40625248
+## [17]  1.60104223  8.03728691  0.65215023  4.48948519</code></pre>
+<pre class="r"><code>rbinom(n = 50, size = 20, prob = 0.8)</code></pre>
+<pre><code>##  [1] 17 14 18 15 15 14 17 18 14 13 15 15 16 18 15 15 16 18 15 17 17 17 19 17 16 15 15 13 18 17 18 15 17 15
+## [35] 17 18 15 15 16 16 14 15 13 16 16 12 16 15 16 13</code></pre>
+<pre class="r"><code>rweibull(n = 30, shape = 5, scale = 3)</code></pre>
+<pre><code>##  [1] 2.9997846 1.9945284 2.8602040 2.7936399 2.8510382 2.5919418 2.6157584 2.2568736 2.6979975 2.2962057
+## [11] 2.9411133 2.7706815 2.7499327 1.1192084 2.9004878 0.9941732 2.2551540 2.7622912 2.7836324 1.8636385
+## [21] 3.1761919 3.3550978 2.9474701 2.7257877 3.2118703 2.9870258 2.6563625 3.2814013 2.2191625 2.5550999</code></pre>
+<p>generate, respectively:</p>
+<ul>
+<li>10 pseudorandom values from a normal distribution with parameters (0, 1);</li>
+<li>20 pseudorandom values from a normal distribution with parameters (3, 5);</li>
+<li>50 pseudorandom values from a binomial distribution with <span class="math inline">\(n = 20\)</span> and <span class="math inline">\(\pi = 0.8\)</span>;</li>
+<li>50 pseudorandom values from a Weibull distribution with parameters (5, 3).</li>
+</ul>
+<p>The following functions:</p>
+<pre class="r"><code>dbinom(x = 20, size = 20, prob = 0.8)</code></pre>
+<pre><code>## [1] 0.01152922</code></pre>
+<pre class="r"><code>dnorm(x = -5:5, mean = 0, sd = 1)</code></pre>
+<pre><code>##  [1] 1.486720e-06 1.338302e-04 4.431848e-03 5.399097e-02 2.419707e-01 3.989423e-01 2.419707e-01 5.399097e-02
+##  [9] 4.431848e-03 1.338302e-04 1.486720e-06</code></pre>
+<p>calculate, respectively:</p>
+<ul>
+<li>the probability that <code>x</code> is equal to 20, if <code>x</code> is distributed as a binomial distribution with <span class="math inline">\(n = 20\)</span> and <span class="math inline">\(\pi = 0.8\)</span>;</li>
+<li>thee values of the density function of a standard normal for integer values comprised between -5 and 5. As expected, the highest value is obtained with 0.</li>
+</ul>
+<p>The following functions:</p>
+<pre class="r"><code>pnorm(q = 0, mean = 0, sd = 1)</code></pre>
+<pre><code>## [1] 0.5</code></pre>
+<pre class="r"><code>pbinom(q = 20, size = 20, prob = 0.8)</code></pre>
+<pre><code>## [1] 1</code></pre>
+<p>calculate, respectively:</p>
+<ul>
+<li>the value of the cumulative distribution function of a standard normal distribution at zero; as expected the result is 0.5.</li>
+<li>the value of a cumulative distribution function of a binomial distribution with parameters <span class="math inline">\(n = 20\)</span> and <span class="math inline">\(\pi = 0.8\)</span> at 20; as expected, the result is 1.</li>
+</ul>
+<p>The following functions:</p>
+<pre class="r"><code>qnorm(p = 0.5, mean = 0, sd = 1)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>qbinom(p = 0.5, size = 20, prob = 0.8)</code></pre>
+<pre><code>## [1] 16</code></pre>
+<p>calculate, respectively:</p>
+<ul>
+<li>the quantile with which a 0.5 probability on the left is obtained in a standard normal distribution;</li>
+<li>The quantile with which a 0.5 probability on the left is obtained in a binomial distribution with parameters <span class="math inline">\(n = 20\)</span> and <span class="math inline">\(\pi = 0.8\)</span>.</li>
+</ul>
 <div id="statistical-functions" class="section level3">
 <h3>Statistical Functions</h3>
 <p>Any kind of statistical analysis can be performed in R thanks to the built-in functions of the base version or the numerous additional packages. The functions enabling the calculation of the main descriptive statistical analyses are explained below.</p>
@@ -469,6 +534,7 @@ cor(data)</code></pre>
 ## hp   -320.732056  6721.15867 4700.86694 -16.4511089  44.1926613
 ## drat    2.195064   -47.06402  -16.45111   0.2858814  -0.3727207
 ## wt     -5.116685   107.68420   44.19266  -0.3727207   0.9573790</code></pre>
+</div>
 </div>
 
 

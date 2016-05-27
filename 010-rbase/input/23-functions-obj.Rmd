@@ -48,7 +48,6 @@ quantile(rdata, TRUE, c(0.25, 0.50, 0.75))
 quantile(rdata, na.rm = TRUE, probs = c(0.25, 0.50, 0.75))
 ```
 
-
 It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:
   
 ```{r, help3, eval=F}
@@ -61,7 +60,7 @@ or
 ?read.table
 ```
 
-There lots of function types, let us see some examples.
+There are lots of function types, let us see some examples.
 
 ### Mathematical Functions
 
@@ -99,6 +98,60 @@ round(3.14, digits = 1)
 round(3.19, digits = 1)
 ```
 
+## Probabilistic Functions
+
+Probabilistic functions in R fall into four categories:
+
+ 1. `r*` functions for generating random numbers,
+ 2. `d*` functions for calculating the value of the density function in a point,
+ 3. `p*` functions for calculating the cumulative distribution function,
+ 4. `q*` functions for calculating quantiles.
+
+The asterisk indicates the distribution which is used: `norm` for normal distribution, `t` for Student's t-distribution, `binom` for binomial distribution, `gamma` distribution, `beta` distribution, `weibull` distribution, etc. R integrates numerous statistical distributions. The list of all the probability distributions included in the base R can be obtained by typing `help(Distributions)`. Other probability distributions become available when loading additional packages.
+
+The following functions:
+```{r, random}
+rnorm(n = 10)
+rnorm(n = 20, mean = 3, sd = 5)
+rbinom(n = 50, size = 20, prob = 0.8)
+rweibull(n = 30, shape = 5, scale = 3)
+```
+generate, respectively:
+
+ - 10 pseudorandom values from a normal distribution with parameters (0, 1);
+ - 20 pseudorandom values from a normal distribution with parameters (3, 5);
+ - 50 pseudorandom values from a binomial distribution with $n = 20$ and $\pi = 0.8$;
+ - 50 pseudorandom values from a Weibull distribution with parameters (5, 3).
+
+The following functions:
+```{r, density}
+dbinom(x = 20, size = 20, prob = 0.8)
+dnorm(x = -5:5, mean = 0, sd = 1)
+```
+calculate, respectively:
+
+ - the probability that `x` is equal to 20, if `x` is distributed as a binomial distribution with $n = 20$ and $\pi = 0.8$;
+ - thee values of the density function of a standard normal for integer values comprised between -5 and 5. As expected, the highest value is obtained with 0. 
+
+The following functions:
+```{r, cdf}
+pnorm(q = 0, mean = 0, sd = 1)
+pbinom(q = 20, size = 20, prob = 0.8)
+```
+calculate, respectively:
+
+ - the value of the cumulative distribution function of a standard normal distribution at zero; as expected the result is 0.5.
+ - the value of a cumulative distribution function of a binomial distribution with parameters $n = 20$ and $\pi = 0.8$ at 20; as expected, the result is 1.
+
+The following functions:
+```{r, quantiles}
+qnorm(p = 0.5, mean = 0, sd = 1)
+qbinom(p = 0.5, size = 20, prob = 0.8)
+```
+calculate, respectively:
+
+ - the quantile with which a 0.5 probability on the left is obtained in a standard normal distribution;
+ - The quantile with which a 0.5 probability on the left is obtained in a binomial distribution with parameters $n = 20$ and $\pi = 0.8$.
 
 ### Statistical Functions
 
