@@ -120,16 +120,21 @@ linear_model <- lm(formula, data)
 anova_model <- aov(formula, data)
 ```
 
-* `formula` argument is a symbolic description of the model to be fitted (i.e. `dep_var ~ indep_var1 + indep_var2`)
-* `data` refers to a data frame containing the variable in the model
+`formula` argument is a symbolic description of the model to be fitted, which has the form: `response variable ∼ predictor variables`. The variables involved in `formula` should be columns of a dataframe specied in `data` argument.
 
-For example, to fit a linear model on the relation between `weight` and `height` of `ds` dataset, the sintax is:
+For example, consider `ds` dataset.
+
+```{r model_example_0, eval=FALSE}
+str(ds)
+```
+
+To fit a linear model on the relation between `weight` and `height` of `ds` dataset, the sintax is:
 
 ```{r model_example, eval=FALSE}
 linear_model <- lm(formula = weight ~ height, data = ds)
 ```
 
-In following table some formulas examples are shown, where `x`, `x1`, `x2`, `x3` represent continuous variates, whereas upper case letters represent factors
+In the following table some formulas examples are shown, where `y` represents the response variable, `x`, `x1`, `x2`, `x3` represent continuous variates, whereas upper case letters represent factors:
 
 **Expression**                      **Description**
 -------------------------------     ----------------------------

@@ -1,9 +1,10 @@
 ## ---- options, echo=FALSE, results='hide', message=FALSE, warning=FALSE----
-source("options.R")
 require(knitr)
+options(width = 108)
 opts_knit$set(root.dir = "../data")
 
 ## ----first, message=FALSE------------------------------------------------
+require(qdata)
 require(ggplot2)
 require(dplyr)
 
@@ -12,11 +13,8 @@ require(dplyr)
 ## anova_model <- aov(formula, data)
 
 ## ---- drug---------------------------------------------------------------
-load("drug.Rda")
+data(drug)
 str(drug)
-
-## ----require_ggplot2, eval=FALSE-----------------------------------------
-## require(ggplot2)
 
 ## ---- drugplot, fig = TRUE-----------------------------------------------
 pl_1 <- ggplot(data = drug, mapping = aes(x = dose, y=time)) + 
@@ -52,7 +50,7 @@ par(mfrow = c(2,2))
 plot(fm)
 
 ## ---- carseat------------------------------------------------------------
-load("carseat.Rda")
+data(carseat)
 str(carseat)
 
 ## ----require_dplyr, eval=FALSE-------------------------------------------
@@ -80,7 +78,7 @@ par(mfrow = c(1,2))
 plot(fm, which = 1:2)
 
 ## ---- boiling------------------------------------------------------------
-load("boiling.Rda")
+data(boiling)
 str(boiling)
 
 ## ---- boilingxyplot, fig=T-----------------------------------------------
