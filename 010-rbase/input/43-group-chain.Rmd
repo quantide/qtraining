@@ -3,7 +3,7 @@ title: "Group Data and Chain Verbs"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
 ```{r first, message=FALSE}

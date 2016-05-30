@@ -4,7 +4,7 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
 Functions are one of the most important objects in R as when working with R we all make constant use of functions.

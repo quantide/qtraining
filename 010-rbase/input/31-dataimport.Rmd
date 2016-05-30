@@ -3,7 +3,7 @@ title: "Data Import and Export"
 ---
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 require(knitr)
 opts_knit$set(root.dir = "./../data")
 outDir <- "."

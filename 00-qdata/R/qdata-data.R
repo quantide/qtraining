@@ -2006,7 +2006,7 @@ NULL
 #' 
 #' 
 #' @details 
-#' The 3 variables of the \code{titanic} tbl data frame are the following ones:
+#' The 3 variables of the \code{skin} tbl data frame are the following ones:
 #' \itemize{
 #' \item \code{Counts} counts of patients (numeric)
 #' \item \code{Type} cancer type (factor with four levels: \code{Melan}, \code{Super}, \code{Nodul} and \code{Indet})
@@ -2035,7 +2035,7 @@ NULL
 #' 
 #' 
 #' @details 
-#' The 3 variables of the \code{titanic} tbl data frame are the following ones:
+#' The 9 variables of the \code{ozone} tbl data frame are the following ones:
 #' \itemize{
 #' \item \code{O3} Ozone conc., ppm, at Sandbug AFB. (numeric)
 #' \item \code{temp} Temperature F. (max). (numeric)
@@ -2053,3 +2053,32 @@ NULL
 NULL
 ##################################################################################################################################
  
+##################################################################################################################################
+#' Quality of car seats 
+#' 
+#' 
+#' @name carseat
+#' 
+#' 
+#' @description \code{carseat} contains data of an experiment about the reproducibility of a measurement method aiming to test resistance of a specific material used to cover car seats.
+#' As a result, an experiments involving 75 samples of material from the same batch is set up. Three operators: Kevin, Michelle and Rob are assigned to test 25 samples each.
+#' 
+#'  
+#' @usage data(carseat)
+#' 
+#' 
+#' @format \code{carseat} is a tbl data frame with 75 observations on 2 variables.
+#' 
+#' 
+#' @details 
+#' The 2 variables of the \code{titanic} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Operator} operator which performed the measurement (factor with levels: \code{Michelle}, \code{Kevin} and \code{Rob})
+#' \item \code{Strength} breaking load of the fabric (in kg) (numeric)
+#' }
+#' 
+#' 
+#' @source 
+NULL
+##################################################################################################################################
+

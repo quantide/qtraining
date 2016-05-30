@@ -4,12 +4,13 @@ output: html_document
 ---
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-source("options.R")
 require(knitr)
+options(width = 108)
 opts_knit$set(root.dir = "../data")
 ```
 
 ```{r first, message=FALSE}
+require(qdata)
 require(ggplot2)
 require(dplyr)
 ```
@@ -28,8 +29,7 @@ linear_model <- lm(formula, data)
 anova_model <- aov(formula, data)
 ```
 
-* `formula` argument is a symbolic description of the model to be fitted (i.e. `dep_var ~ indep_var1 + indep_var2`)
-* `data` refers to a data frame containing the variable in the model
+`formula` argument is a symbolic description of the model to be fitted, which has the form: `response variable ∼ predictor variables`. The variables involved in `formula` should be columns of a dataframe specied in `data` argument.
 
 The resulting object (`linear_model` or `anova_model`) is a list of elements containing information about regression results. This information can be investigated by the following functions:
 
@@ -51,15 +51,11 @@ Let us see some examples of regression analisys.
 In an experiment to investigate the effect of a depressant drug, the reaction times of ten males rats to a certain stimulus were measured after a specified dose of the drug had been administer to each rat. The results were as follows:
 
 ```{r, drug}
-load("drug.Rda")
+data(drug)
 str(drug)
 ```
 
 Basic graphical data exploration may be achieved with: 
-
-```{r require_ggplot2, eval=FALSE}
-require(ggplot2)
-```
 
 ```{r, drugplot, fig = TRUE}
 pl_1 <- ggplot(data = drug, mapping = aes(x = dose, y=time)) + 
@@ -139,7 +135,7 @@ As a result, an experiments involving 75 samples of material from the same batch
 Comparison of operators average measurements and within operators variations are the key points of the analysis.
 
 ```{r, carseat}
-load("carseat.Rda")
+data(carseat)
 str(carseat)
 ```
 
@@ -192,7 +188,7 @@ Despite a small departure from normality on the rigth side of the residuals dist
 In an attempt to resolve a domestic dispute about which of two pans was the quicker pan for cooking, the following data were obtained:
 
 ```{r, boiling}
-load("boiling.Rda")
+data(boiling)
 str(boiling)
 ```
 

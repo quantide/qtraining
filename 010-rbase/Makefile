@@ -29,8 +29,8 @@ zip:
 	zip -9 -r $(PROJECT).zip $(OUTPUT_DIR)/
 	mv $(PROJECT).zip $(OUTPUT_DIR)/
 	mv $(INPUT_DIR)/*.R $(PURL_DIR)/
-	mv $(PURL_DIR)/packages_to_install.R $(INPUT_DIR)/.
-	mv $(PURL_DIR)/options.R $(INPUT_DIR)/.
+	# mv $(PURL_DIR)/packages_to_install.R $(INPUT_DIR)/.
+	# mv $(PURL_DIR)/options.R $(INPUT_DIR)/.
 	zip -9 -r $(PURL_DIR)/R.zip $(PURL_DIR)/
 
 #install:

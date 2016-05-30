@@ -3,7 +3,7 @@ title: "Reports with R Markdown"
 ---
 
 ```{r, echo=FALSE, message=FALSE, include=FALSE, purl=FALSE}  
-source("options.R")
+options(width = 108)
 show_chunk <- function(x){
   cat(x)
 }

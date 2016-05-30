@@ -4,7 +4,7 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
 One of the great strengths of R is the user's ability to add functions. Indeed, each one of us can write his/her own functions following simple rules.  
