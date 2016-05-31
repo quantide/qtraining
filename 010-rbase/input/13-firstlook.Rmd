@@ -87,11 +87,28 @@ ls()
 ## The Working Directory
 <!-- questo va cambiato AS -->
 
-If you want to read files from a specific location or write files to a specific location you will need to set working directory in R. The following example shows how to set the working directory in R to the folder "Data" within the folder "Documents and Settings" on the C drive.
+If you want to read files from a specific location or write files to a specific location without typing (on Windows, usually very long) path names you will need to set working directory in R. 
+
+You can set a working directory using absolute or relative paths.   
+The following example shows an example how to set the working directory in R using an absolute path. The working directory is set to the folder "Data" within the folder "Documents and Settings" on the C drive ().
 
 ```{r, setwd, eval=FALSE}
-setwd("C:/Documents and Settings/Data")
+setwd("C:/User/Andrea/Documents and Settings/Data")
 ```
+
+It is a nice approach, but things get complicated if you move files to different computers, say from home to your office, and have different directory structures, disk names etc. Of course you can change it every time. 
+
+Using relative paths solves this problem. Relative paths are more convenient than absolute paths as they makes your R script or RStudio project independent of the directory structure in which it resides thus facilitating the reproducibility of your work on a different PC our directory environment.
+
+<!--
+chiedere al pego
+-->
+
+```{r, setwd, eval=FALSE}
+setwd("~/Documents and Settings/Data")
+```
+
+where `~` replaces `C:/User/Andrea`.
 
 To get the path of the current working directory, the `getwd()` function should be used.
 
@@ -101,7 +118,7 @@ getwd()
 
 
 ```
-## [1] "C:/Documents and Settings/Data"
+## [1] "C:/User/Andrea/Documents and Settings/Data"
 ```
 
 Remember that you must use the forward slash / or double backslash \\\\ in R! The Windows format of single backslash will not work.

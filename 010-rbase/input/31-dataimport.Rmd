@@ -113,7 +113,7 @@ To create a new empty file xlsx with one empty sheet named *Input* the syntax is
 
 ```{r outDir_set_up, eval=FALSE}
 # Set up output directory and output file name  
-outDir <- "/home/marco/Desktop/xlsx" 
+outDir <- "~/Desktop/xlsx" 
 ```
 ```{r}
 # File path string
@@ -235,7 +235,7 @@ To read an existing excel file, the syntax is:
 
 ```{r excel_file_name, eval=FALSE}
 # Excel file (with path) to be loaded into R
-file_xls <- "/home/marco/Desktop/xlsx/newFile.xlsx"
+file_xls <- "~/Desktop/xlsx/newFile.xlsx"
 ```
 
 ```{r load.xlsx}
