@@ -7,61 +7,28 @@ output: html_document
 if (!("truncgof" %in% installed.packages()[,1])){install.packages ("truncgof", repos="http://cran.rstudio.com/")}
 ```
 
+> "To become significantly more reliable, code must become more transparent. In particular, nested conditions and loops must be viewed with great suspicion. Complicated control flows confuse programmers. Messy code often hides bugs."
+ — Bjarne Stroustrup
 
-_Functionals_ are functions that take a function as input and return a data object as output. 
+`for` loops are quite often nested and mixed up with `if()` statements. As a result, the whole coding structure may result in a complicated muddle to understand and, as a consequence, the objective of our coding may get lost within the code itself.
 
-`R` incorporates many examples of functionals. Among many, `Reduce()` and `Filter()` are two good cases in point.
+`for()` loops do have a bad reputation of being slow especially when compared with equivalent functionals structures as `lapply()`. Nowadays, speed is no more a crucial point when dealing with `for()` loops  
 
-`Reduce(f, x)` tries to fold the element of `x` according to function `f()`. As a result we may use this function for binding the elements of a list into a matrix:
+In other words, `for()` loops, whenever possible, should be avoided not mainly because of a performance issue but to achieve modularity and clarity in our codes. This is functionals work!
 
-```{r functionals-000A}
-l <- list(x = 1:4, y = 4:1)
-Reduce(rbind, l)
-```
+_Functionals_ are functions that take a function as input and return a data object as output. Functionals are very often excellent substitutes to `for` loops as they allow to communicate the objective of our code in a more clear and concise manner as the code will be cleaner and it will more closely adhere to `R`'s idioms.
 
-`Filter(f, x)` applies function `f()` to each element of `x`, and returns the subset of x for which this gives `TRUE`. In order to subset even number from any vector `x` we could write
+In this chapter the most important functionals will be analyzed, in particular:
 
-```{r functionals-000B}
-Filter(f = function(x) x %% 2 == 0 , x = 1:5)
-```
+* `lapply()`, which can be consider as the main functional,
+* `lapply friends` as `sapply()` and `vapply()`, which perform as `lapply()` but return a simplified output  
+* Functionals for matrices and data frames manipulation, as `apply()` and `tapply()`
 
-
-As a very interesting example of functional we may define: 
-
-```{r functionals-000C}
-fun <- function(f, ...) f(...)
-```
-
-That is a function `fun()` that takes any function `f()` as input along with any other argument and compute  `f(...)` where `...` represents the set of arguments.
-
-As a result we may write:
-
-```{r functionals-000D}
-fun(mean, x = 1:10, trim = .1)
-```
-
-that is equivalent to:
-
-```{r functionals-000E}
-mean(x = 1:10, trim = .1)
-```
-
-Functionals are very often excellent substitutes to for loops as they allow to communicate the objective of our code in a more clear and concise manner as the code will be cleaner and it will more closely adhere to `R`'s idioms.
-
-Functionals may even perform a little better than the equivalent for loop nevertheless but, in a first instance, our focus must always be on clarity rather than performances.     
-
-`lapply()` is, possibly, the most used functional:
-
-```{r functionals-001}
-lapply(list(one = 1, a = "a"), FUN = is.numeric)
-```
-
-`lapply()` can be consider as the main functional. `sapply()` and `vapply()` perform as `lapply()` but return a simplified output. `mapply()` and `Map()` are extension of `lapply()` that allow for multiple inputs.  
 
 
 ## `lapply`
 
-`lapply()` takes a function and applies it to each element of a list, saving the results back into a result list.  `lapply()` is the building block for many other functionals. In principle, `lapply()` is a wrapper around a standard for loop. The wrapper is written in `C` to increase performance. 
+`lapply()` is, possibly, the most used functional. `lapply()` takes a function and applies it to each element of a list, saving the results back into a result list.  `lapply()` is the building block for many other functionals. In principle, `lapply()` is a wrapper around a standard for loop. The wrapper is written in `C` to increase performance. 
 
 `lapply()` takes three arguments: 
 
@@ -69,7 +36,7 @@ lapply(list(one = 1, a = "a"), FUN = is.numeric)
 * a function `FUN` that takes, as first argument, each element of `X`
 * the `''...''` argument that can be any argument to be passed to `FUN`
 
-Suppose we want to gain the maximum of each column for the `airquality` data frame. By using  a for loop we could write:
+Suppose we want to gain the maximum of each column for the `airquality` data frame. By using a for loop we could write:
 
 ```{r functionals-002}
 n <- ncol(airquality)
@@ -83,7 +50,7 @@ out
 alternatively, as a data frame is a list:
 
 ```{r functionals-003}
-lapply(X=airquality, FUN = max, na.rm = TRUE)
+lapply(X = airquality, FUN = max, na.rm = TRUE)
 ```
 
 The second chunk of code is by far more clear and concise than the first one even though a vector would be preferable than a list as output.
@@ -110,15 +77,14 @@ x <- rnorm(100)
 lapply(X = c(0.1, 0.2, 0.5), mean, x = x)
 ```
 
-### `sapply` and `vapply`, 
+## `lapply` friends: `sapply` and `vapply`
 
 `sapply()` and `vapply()`, variants of `lapply()` that produce vectors, matrices and arrays as output, instead of lists.
 
 `lapply()` returns a list as output, in order to get a vector, the previous examples could be written by using `sapply()`, a simple variant of `lapply()`, that tries to return an atomic vector instead of a list. 
 
-
 ```{r functionals-006}
-sapply(X=airquality, FUN = max, na.rm = TRUE)
+sapply(X = airquality, FUN = max, na.rm = TRUE)
 ```
 
 Note that `sapply()` is a simple wrapper around `lapply()` that uses `simplify2array()`. 
@@ -137,7 +103,7 @@ A better alternative to `sapply()` is provided by `vapply()` a second variant of
 
 ```{r functionals-008}
 vapply(list(), is.numeric, FUN.VALUE = logical(1))
-vapply(X=airquality, FUN = max, na.rm = TRUE, FUN.VALUE = numeric(1))
+vapply(X = airquality, FUN = max, na.rm = TRUE, FUN.VALUE = numeric(1))
 ```
 
 In this case the `FUN.VALUE` argument specify what kind of output each element of the result should be.
@@ -180,7 +146,6 @@ Clearly this second behavior is more coherent and, within the frame of a large p
 
 Finally, `vapply()` is  faster that `sapply()` as `R` does not have to _guess_ the kind of output `sapply()` needs to return.
 
-
 Suppose we have a list made of `10^6` vectors of variable length between one and five.
 
 ```{r functionals-014}
@@ -200,9 +165,9 @@ system.time(
 ```
 
 
-### `lapply` patterns
+#### `lapply` patterns
 
-When using `lapply()` we can loop  at least in two different ways: on the `xs` or on an index `i`. As a example, we may consider the following code:
+When using `lapply()` we can loop at least in two different ways: on the `xs` or on an index `i`. As a example, we may consider the following code:
 
 ```{r functionals-016}
 x = 1:3
@@ -221,11 +186,11 @@ Suppose, instead, we want to compute the mean the three variables of the `trees`
 By using a for loop, beside clarity and the number of lines required, the code is quite simple:
 
 ```{r functionals-018}
-n = ncol(trees)
-out = numeric(n)
-trim = c(0.1, 0.2, 0.3)
+n <- ncol(trees)
+out <- numeric(n)
+trim <- c(0.1, 0.2, 0.3)
 for ( i in 1:n){
-  out[i] = mean(trees[,i], trim[i], na.rm = TRUE)
+  out[i] <- mean(trees[,i], trim[i], na.rm = TRUE)
 }
 out
 ```
@@ -243,11 +208,11 @@ The same approach we used to solve `for()` loops into `lapply()`, can be general
 As an example consider this apparently messy loop:
 
 ```{r functionals-020}
-ni = 4
-nj = 2
+ni <- 4
+nj <- 2
 
-nk = ni*nj
-k = numeric(nk)
+nk <- ni*nj
+k <- numeric(nk)
 for (j in 1:nj){
   if ( j %% 2 == 0){  
     for ( i in 1:ni){
@@ -274,7 +239,7 @@ We can use `lapply()` with the  index strategy. We have to rewrite the innermost
 
 
 ```{r functionals-021}
-f = function(k , i , j) {
+f <- function(k , i , j) {
   i <- i[k]
   j <- j[k]
   result <- 99
@@ -297,7 +262,7 @@ The use of `expand.grid()` allows to transform a nested loop into a matrix of al
 Alternatively, we can make use of a nested `lapply()`. We first define function `f()` as:
 
 ```{r functionals-023}
-f = function(i , j) {
+f <- function(i , j) {
   ifelse( j %% 2 == 0,
     ifelse(i %% 2 == 0 , i+j , i-j),
   99)        
@@ -319,272 +284,27 @@ This case clearly illustrate how much we gain in clarity and efficiency when usi
 
 As an alternative to `lapply()` with the index strategy we may consider `mapply()` and `Map()` that naturally iterate over multiple input data structures in parallel.
 
-### `mapply` and `Map`  
 
-A first alternative to `lapply()`, along with the index strategy, is represented by `mapply()`:
+## Functionals for matrices and data frames manipulation
 
-```{r functionals-025}
-mapply(mean ,trees, trim = c(0.1 , 0.2, 0.3), 
-  MoreArgs = list(na.rm = TRUE),
-  SIMPLIFY = FALSE) 
-```
-
-The structure of `mapply()` is:
-
-```{r functionals-, eval = FALSE}
-mapply(FUN, ..., MoreArgs=NULL, SIMPLIFY = TRUE) 
-```
-
-
-where, as opposite to `lapply()`, the `FUN` argument takes the first position and the ''`...`'' argument specifies any list of arguments to be passed to `FUN` during the iteration.
-
-The `MoreArgs` argument takes a list of parameters to be kept as fixed during the iteration. Note that this breaks R's usual lazy evaluation semantics, and is inconsistent with other functions.
-
-The `SIMPLIFY` as set to `TRUE` by default, allows output simplification in the `sapply()` fashion. Clearly, this options gives as little control over the output as `sapply()` does. 
-
-
-An alternative to `mapply()` is represented by `Map()` that returns identical results to `mapply()` with `SIMPLIFY` set to `FALSE` and uses anonymous or external function to pass fixed parameters to `FUN`.
-
-```{r functionals-026}
-Map(function(...) mean(..., na.rm = TRUE), 
-  x = trees , trim = c(0.1 , 0.2, 0.3))
-```
-
-The choice between using `mapply()` or `Map()` is surely a personal one. 
-
-Both `Map()` and `mapply()` can be used to substitute nested loops.
-
-We can consider the previous nested loop and, with a little help from `expand.grid()` and function `f()`
-
-
-```{r functionals-027}
-f = function(i , j) {
-  result = 99
-  if( j %% 2 == 0){
-  result <- ifelse(i %% 2 == 0 , i+j , i-j)
-  }
-  result
-}
-
-grid <- expand.grid(i = 1:4, j = 1:2)
-```
-
-And, similarly to the `lappy()` case, we could write:
-
-```{r functionals-028}
-with(grid , mapply(f, i=i , j=j, SIMPLIFY = TRUE))
-```
-
-or:
-```{r functionals-029}
-unlist(with(grid , Map(f, i=i , j=j)))
-```
-
-### eapply
-
-Sometimes we may find our self using environments as data structure because of many reasons including: hash tables and copy on modify semantic that does not apply to environments. 
-
-When objects are stored within an environment, we can use `eapply()` as a functional to the environment:
-
-```{r functionals-030}
-env <- new.env()
-env$x = 3 ; env$y = -2
-eapply(env, function(x) ifelse(x>0 , 1 , -1))
-```
-
-
-### rapply
-
-`rapply()` is a recursive version of `lapply()`. 
-
-The structure of `rapply()` is:
-
-```{r functionals-rapply, eval=FALSE}
-rapply(object, f, classes = "ANY", deflt = NULL,
-       how = c("unlist", "replace", "list"), ...)
-```
-
-This function has two basic modes. If `how = "replace"`, each element of the list which is not itself a list and has a class included in `classes` is replaced by the result of applying `f` to the element.
-
-```{r functionals-rapply1}
-l <- list(list(a = pi, b = list(c = 1:1)), d = "a test")
-l
-rapply(l, function(x) x, how = "replace")
-rapply(l, function(x){paste("rapply of:",x)}, how = "replace")
-# class="character" applies the function only to the character
-rapply(l, function(x){paste("rapply of:",x)}, how = "replace", class="character")
-
-```
-
-If the mode is `how = "list"` or `how = "unlist"`, the list is copied, all non-list elements which have a class included in `classes` are replaced by the result of applying `f` to the element and all others are replaced by deflt. Finally, if `how = "unlist"`, `unlist(recursive = TRUE)` is called on the result.
-
-```{r functionals-rapply2}
-# class="character" applies the function only to the character and leaves unchanged elements of other classes
-rapply(l, nchar, classes = "character", deflt = as.integer(NA), how = "replace")
-# class="character" applies the function only to the character and replaces the elements of other classes with NA
-rapply(l, nchar, classes = "character", deflt = as.integer(NA), how = "list")
-rapply(l, nchar, classes = "character", deflt = as.integer(NA), how = "unlist")
-
-```
-## Lists of functions
-
-Functions, as any type of `R` object,  can be stored in a list. 
-
-```{r list-of-functions-001}
-fun_list <- list(m = mean , s = sd)
-```
-
-This makes it easier to work with groups of related functions.
-
-Functions defined within a list are still accessible at least in three different ways:
-
-using function `with()`
-
-```{r list-of-functions-002}
-with (fun_list, m(x = 1:10))
-```
-
-by using the `$` operator
-
-```{r list-of-functions-003}
-fun_list$m( x = 1:10)
-```
-
-by attaching the list:
-
-```{r list-of-functions-004}
-attach(fun_list)
-m( x = 1:10)
-detach(fun_list)
-```
-
-Lists of functions can be most useful when we want to apply all functions of the list to the same set of data. 
-
-We can achieve this goal in two logical steps. 
-
-We first define a function  
-
-```{r list-of-functions-005}
-fun <- function(f, ...){f(...)}
-```
-that takes a function `f()` as argument along with any other arguments ''`...`'' and returns `f(...)`. In practice:
-
-```{r list-of-functions-006}
-fun(mean, x = 1:10, na.rm = TRUE)
-```
-
-Secondly, we apply function `fun()` to the list of functions. Arguments required by the functions stored in the list are passed by the ''`...`'' argument: 
-
-```{r list-of-functions-007}
-lapply(fun_list, fun, x = 1:10)
-
-```
-
-Under almost all circumstances, equivalent results can be achieved by using function `do.call()` within a call to `lapply()`:
-
-```{r list-of-functions-008}
-lapply(fun_list, do.call, list(x = 1:10, na.rm = T))
-```
-
-the only difference being that arguments to functions within the list must be enclosed in a list too.
-
-<!-- AS 
-capire perche questo non restituisce  x = "x"" ma tutti i valori di x in data.names 
-lapply(list(ad.test), do.call, list(x = x, distn = "pnorm", fit = list(mean = mean(x), sd = sd(x))))
-Stefano ... qualche idea?
--->
-
-### Example: Multiple _Anderson-Darling_ tests
-
-As a simple example we may want to compare the results of four __Anderson-Darling__ type tests from the `truncgof` package applied to the same data.
-
-We can define a list that holds these four functions and store it in the global environment:
-
-```{r list-of-functions-009, tidy=TRUE}
-require(truncgof, quietly = TRUE)
-nor_test <-  list (ad2.test = ad2.test, ad2up.test = ad2up.test,
-                   ad.test = ad.test,adup.test = adup.test)
-```
-
-and, afterword, apply function `fun()` to each element of this list:
-
-```{r list-of-functions-010}
-x <- rnorm(100, 10, 1)
-m <-  mean(x)
-s <- sd(x)
-lapply(nor_test, fun, x , distn = "pnorm", list(mean = m, sd = s), sim = 100)
-```
-
-### Example: Summary statistics
-
-We may want to define a function that returns some specific statistics for a given set of variables in the form of a `data.frame`.
-
-
-```{r list-of-functions-011, tidy=TRUE}
-this_summary <- as.data.frame(rbind(
-  vapply(trees , mean, FUN.VALUE = numeric(1)),
-  vapply(trees , sd, FUN.VALUE = numeric(1)),
-  vapply(trees , function(x, ...){diff(range(x))}, FUN.VALUE = numeric(1)))
-)
-
-row.names(this_summary) <- c("mean", "sd", "range")
-this_summary
-```
-
-We may achieve the same result by writing a more general function that will work with any kind of statistics as long as they return a single value:
-
-```{r list-of-functions-012, tidy=TRUE}
-my_summary <- function(x, flist){
-  f <- function(f,...)f(...)
-  g <- function(x, flist){vapply(flist, f , x, FUN.VALUE = numeric(1))}
-  df <- as.data.frame(lapply(x, g , flist))
-  row.names(df) <- names(flist)
-  df
-}
-
-my_summary(cars, 
-  flist = list(
-    mean = mean, 
-    stdev = sd, 
-    cv =  function(x,...){sd(x,...)/mean(x,...)}
-               )
-)
-
-```
-
-### fapply
-
-Working with this mind set we may even define a function `fapply()` that applies all functions of a list to the same set of arguments
-
-```{r list-of-functions-013}
-fapply <- function(X, FUN, ...){
-  lapply(FUN, function(f, ...){f(...)}, X, ...)
-}
-```
-
-and use it as:
-
-```{r list-of-functions-014}
-basic_stat <- list(mean = mean, median = median, sd = sd)
-fapply(1:10, basic_stat)
-```
-
-## Manipulating matrices and data frames
+Functionals can also be used to eliminate loops in common data manipulation tasks. 
 
 The `apply` family functions apply a function to single elements of a data frame, vector, list or matrix.
 
-The apply functions here presented are `apply()` and `tapply()` with its user-friendly versions `aggregate()` and `by()`. R has other apply functions which, for example, apply a function in a recursive way.
+The apply functions here presented are `apply()` and `tapply()` with its user-friendly version `aggregate()`. 
 
-### apply
-The `apply()` function applies a function over rows or columns of a data frame
-and it returns a vector or array or list of values.
+### Apply a Function over Data Frame Margins
+
+#### apply
+
+The `apply()` function applies a function over rows or columns of a data frame and it returns a vector or array or list of values.
 
 The `Airline` data contain monthly airline passenger numbers between 1949 and 1960. Data are provided as a single time series, so some preprocessing is required to transform them to a data frame.
 
 ```{r datamanagement-applying-df}
-df = as.data.frame(matrix(AirPassengers, ncol=12))
-names(df) = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-row.names(df) = 1949:1960
+df <- as.data.frame(matrix(AirPassengers, ncol=12))
+names(df) <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+row.names(df) <- 1949:1960
 df
 ```
 
@@ -645,6 +365,7 @@ tapply(iris[, 1], INDEX = iris[, 5], FUN = mean)
 ```
 
 ### aggregate
+
 The `aggregate()` function splits the data into subsets, computes summary statistics for each, and returns the result in a convenient form.
 
 To compute the mean of each of the four variables (Sepal Length, Sepal Width, Petal Length, Petal Width) for the three Species the `aggregate()` function can be used. Please note that the `by` argument ought be a list and a name can be assigned to each grouping variable.

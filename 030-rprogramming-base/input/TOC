@@ -1,6 +1,9 @@
 Basic programming
-Functions structure						| 01-programming-functions.Rmd
-Functions writing						| 02-function-writing.Rmd
-Conditionals 							| 03-programming-conditionals.Rmd
-Loops 								| 04-programming-loops.Rmd
+Functions structure					      	| 01-programming-functions.Rmd
+Functions writing					        	| 02-function-writing.Rmd
+Conditionals 					    	      	| 03-programming-conditionals.Rmd
+Loops 				        				      | 04-programming-loops.Rmd
+Functionals                         | 05-functionals.Rmd
 
+Advanced Programming
+R Markdown								          | 06-rmarkdown.Rmd
