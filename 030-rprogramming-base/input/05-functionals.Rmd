@@ -3,32 +3,22 @@ title: "Functionals"
 output: html_document
 ---
 
-```{r echo=FALSE, message=FALSE}
-if (!("truncgof" %in% installed.packages()[,1])){install.packages ("truncgof", repos="http://cran.rstudio.com/")}
-```
-
-> "To become significantly more reliable, code must become more transparent. In particular, nested conditions and loops must be viewed with great suspicion. Complicated control flows confuse programmers. Messy code often hides bugs."
+> "To become significantly more reliable, code must become more transparent. In particular, nested conditions and loops must be viewed with great suspicion. Complicated control flows confuse programmers. Messy code often hides bugs."  
  — Bjarne Stroustrup
 
-`for` loops are quite often nested and mixed up with `if()` statements. As a result, the whole coding structure may result in a complicated muddle to understand and, as a consequence, the objective of our coding may get lost within the code itself.
-
-`for()` loops do have a bad reputation of being slow especially when compared with equivalent functionals structures as `lapply()`. Nowadays, speed is no more a crucial point when dealing with `for()` loops  
-
-In other words, `for()` loops, whenever possible, should be avoided not mainly because of a performance issue but to achieve modularity and clarity in our codes. This is functionals work!
+`for()` loops are quite often nested and mixed up with `if()` statements. As a result, the whole coding structure may result in a complicated muddle to understand and, as a consequence, the objective of our coding may get lost within the code itself. `for()` loops do have a bad reputation of being slow especially when compared with equivalent functionals structures as `lapply()`. Nowadays, speed is no more a crucial point when dealing with `for()` loops. In other words, `for()` loops, whenever possible, should be avoided not mainly because of a performance issue but to achieve modularity and clarity in our codes. 
 
 _Functionals_ are functions that take a function as input and return a data object as output. Functionals are very often excellent substitutes to `for` loops as they allow to communicate the objective of our code in a more clear and concise manner as the code will be cleaner and it will more closely adhere to `R`'s idioms.
 
 In this chapter the most important functionals will be analyzed, in particular:
 
-* `lapply()`, which can be consider as the main functional,
-* `lapply friends` as `sapply()` and `vapply()`, which perform as `lapply()` but return a simplified output  
+* `lapply()`, which can be consider as the main functional
+* `lapply()` friends as `sapply()` and `vapply()`, which perform as `lapply()` but return a simplified output  
 * Functionals for matrices and data frames manipulation, as `apply()` and `tapply()`
-
-
 
 ## `lapply`
 
-`lapply()` is, possibly, the most used functional. `lapply()` takes a function and applies it to each element of a list, saving the results back into a result list.  `lapply()` is the building block for many other functionals. In principle, `lapply()` is a wrapper around a standard for loop. The wrapper is written in `C` to increase performance. 
+`lapply()` is, possibly, the most used functional. `lapply()` takes a function and applies it to each element of a list, saving the results back into a result list. `lapply()` is the building block for many other functionals. In principle, `lapply()` is a wrapper around a standard for loop. The wrapper is written in `C` to increase performance. 
 
 `lapply()` takes three arguments: 
 
@@ -36,12 +26,13 @@ In this chapter the most important functionals will be analyzed, in particular:
 * a function `FUN` that takes, as first argument, each element of `X`
 * the `''...''` argument that can be any argument to be passed to `FUN`
 
-Suppose we want to gain the maximum of each column for the `airquality` data frame. By using a for loop we could write:
+Suppose we want to gain the maximum of each column for the `airquality` data frame. By using a `for()` loop we could write:
 
 ```{r functionals-002}
-n <- ncol(airquality)
-out <- numeric(n)
-for (i in 1:n){
+n_col <- ncol(airquality)
+out <- numeric(n_col)
+
+for (i in 1:n_col){
  out[i] <- max(airquality[,i], na.rm = TRUE)
 }
 out
@@ -55,7 +46,7 @@ lapply(X = airquality, FUN = max, na.rm = TRUE)
 
 The second chunk of code is by far more clear and concise than the first one even though a vector would be preferable than a list as output.
 
-Moreover, `lapply()` as opposite to `for` loops does not produce any intermediate result when running. In the above `for` loop, the value of the result of the loop, vector `out`, changes at each iteration. The result of `lapply()`, instead, can be assigned to a variable but does not produce any intermediate result.
+Moreover, `lapply()` as opposite to `for()` loops does not produce any intermediate result when running. In the above `for()` loop, the value of the result of the loop, vector `out`, changes at each iteration. The result of `lapply()`, instead, can be assigned to a variable but does not produce any intermediate result.
 
 By default `lapply()` takes each element of list `X` as the first argument of function `FUN`. This works perfectly, as long as each element of `X` is the first of `FUN`. This is true in case we want to compute the mean of each column of a data frame as each column is passed as first argument to function `mean()`.
 
@@ -77,9 +68,11 @@ x <- rnorm(100)
 lapply(X = c(0.1, 0.2, 0.5), mean, x = x)
 ```
 
+
+
 ## `lapply` friends: `sapply` and `vapply`
 
-`sapply()` and `vapply()`, variants of `lapply()` that produce vectors, matrices and arrays as output, instead of lists.
+`sapply()` and `vapply()` are variants of `lapply()` that produce vectors, matrices and arrays as output, instead of lists.
 
 `lapply()` returns a list as output, in order to get a vector, the previous examples could be written by using `sapply()`, a simple variant of `lapply()`, that tries to return an atomic vector instead of a list. 
 
@@ -109,6 +102,7 @@ vapply(X = airquality, FUN = max, na.rm = TRUE, FUN.VALUE = numeric(1))
 In this case the `FUN.VALUE` argument specify what kind of output each element of the result should be.
 `vapply()` improves consistency by providing either the return type we were expecting or error. This is a clear advantage, as it helps catch errors before they happen and leads to more robust code. 
 
+<!--
 As an example, suppose we have a list of data frames:
 
 ```{r functionals-009}
@@ -142,156 +136,17 @@ vapply(df_list, ncol, FUN.VALUE = numeric(1))
 `R` returns an error. 
 
 Clearly this second behavior is more coherent and, within the frame of a large project, possibly helps to avoid annoying hours of debugging
-
+-->
 
 Finally, `vapply()` is  faster that `sapply()` as `R` does not have to _guess_ the kind of output `sapply()` needs to return.
 
-Suppose we have a list made of `10^6` vectors of variable length between one and five.
-
-```{r functionals-014}
-n <- sample(1:5, 10^6 , rep = T)
-vector_list <- lapply(n, sample , x = 0:9)
-```
-We can appreciate the difference in speed between `sapply()` and `vapply()` by the following example:
-
-```{r functionals-015}
-system.time(
-  sapply(vector_list, length )
-)
-
-system.time(
-  vapply(vector_list, length, FUN.VALUE = numeric(1))
-)
-```
-
-
-#### `lapply` patterns
-
-When using `lapply()` we can loop at least in two different ways: on the `xs` or on an index `i`. As a example, we may consider the following code:
-
-```{r functionals-016}
-x = 1:3
-vapply(x, function(x) x*x, numeric(1))
-```
-and compare it with the next chunk:
-
-```{r functionals-017}
-vapply(1:length(x), function(i , x) x[i]*x[i], x=x , FUN.VALUE=numeric(1))
-```
-
-The second chunk of code looks a little more complicated as it introduces the `i` index that in this case is simply redundant.
-
-Suppose, instead, we want to compute the mean the three variables of the `trees` dataset  but using different trims values for all columns and setting `na.rm = TRUE`.
-
-By using a for loop, beside clarity and the number of lines required, the code is quite simple:
-
-```{r functionals-018}
-n <- ncol(trees)
-out <- numeric(n)
-trim <- c(0.1, 0.2, 0.3)
-for ( i in 1:n){
-  out[i] <- mean(trees[,i], trim[i], na.rm = TRUE)
-}
-out
-```
-
-When translating this code with `lapply()`, we may use the index strategy result as mandatory  because, `lapply(X, FUN, ...)` allows only argument `X` of function `FUN` to vary. All other arguments to function `FUN` can be passed via ''`...`'' but without varying. 
-
-```{r functionals-019, tidy=TRUE}
-lapply(1:ncol(trees), 
-  function(i, x, trim, ...) mean(x[,i], trim[i], na.rm = TRUE), 
-  x = trees, trim = c(0.1, 0.2, 0.3))
-```
-
-The same approach we used to solve `for()` loops into `lapply()`, can be generalized to nested loop.
-
-As an example consider this apparently messy loop:
-
-```{r functionals-020}
-ni <- 4
-nj <- 2
-
-nk <- ni*nj
-k <- numeric(nk)
-for (j in 1:nj){
-  if ( j %% 2 == 0){  
-    for ( i in 1:ni){
-      if ( i %% 2 == 0 ) next_k = i+j 
-      else next_k = i-j
-      cat("first ij " , i , j , next_k, "\n")
-      k[i+(j-1)*ni] = next_k
-    }
-  }  
-  else {
-    for (i in 1:ni){
-    next_k <- 99
-    cat("second ij " , i , j , next_k, "\n")
-    k[i+(j-1)*ni] = next_k
-    }
-  }
-}
-
-```
-
-We have at least two alternatives to transform this loop. 
-
-We can use `lapply()` with the  index strategy. We have to rewrite the innermost part of the whole loop as:
-
-
-```{r functionals-021}
-f <- function(k , i , j) {
-  i <- i[k]
-  j <- j[k]
-  result <- 99
-  if( j %% 2 == 0){
-  result <- ifelse(i %% 2 == 0 , i+j , i-j)
-  }
-  result
-}
-```
-
-secondly, with a little help from `expand.grid`:
-
-```{r functionals-022} 
-grid <- expand.grid(i = 1:ni, j = 1:nj )
-with(grid , vapply(1:nrow(grid), f, i=i , j=j, FUN.VALUE = numeric(1)))
-```
-
-The use of `expand.grid()` allows to transform a nested loop into a matrix of all possible combinations over which we can easily loop by using `lapply()`. This approach may help a lot in simplifying our code but, is quite memory hungry as it requires to explode all possible combinations in a single matrix. 
-
-Alternatively, we can make use of a nested `lapply()`. We first define function `f()` as:
-
-```{r functionals-023}
-f <- function(i , j) {
-  ifelse( j %% 2 == 0,
-    ifelse(i %% 2 == 0 , i+j , i-j),
-  99)        
-}
-```
-
-Afterword, we nest two functionals as following:
-
-```{r functionals-024, tidy = TRUE}
-unlist(
-  lapply(1:2, 
-         function(j, i = ni) vapply(1:4, FUN = f, j, FUN.VALUE = numeric(1))
-         )
-)
-
-```
-
-This case clearly illustrate how much we gain in clarity and efficiency when using functionals instead of loops.
-
-As an alternative to `lapply()` with the index strategy we may consider `mapply()` and `Map()` that naturally iterate over multiple input data structures in parallel.
-
-
 ## Functionals for matrices and data frames manipulation
 
-Functionals can also be used to eliminate loops in common data manipulation tasks. 
+Functionals can also be used to eliminate loops in common data manipulation tasks.   
+In this section, we’ll give a brief overview of the available options, hint at how they can help you, and point you in the right direction to learn more. We’ll cover two categories of data structure functionals:
 
-The `apply` family functions apply a function to single elements of a data frame, vector, list or matrix.
-
-The apply functions here presented are `apply()` and `tapply()` with its user-friendly version `aggregate()`. 
+* Apply a Function over Data Frame Margins with `apply()` 
+* Apply a Function to each group of values with `tapply()` and with its user-friendly version `aggregate()`
 
 ### Apply a Function over Data Frame Margins
 
@@ -328,8 +183,9 @@ If the function requires further argument they can be provided.
 apply(df, MARGIN = 1, FUN = quantile, probs=c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95))
 ```
 
+### Apply a Function to each group of values
 
-### tapply
+#### tapply
 
 The `tapply()` function applies a function to each cell of a ragged array, that is to each (non-empty) group of values given by a unique combination of the levels of certain factors. 
 
@@ -345,6 +201,8 @@ The following example returns the number of breaks for each level of tension.
 ```{r datamanagement-applying-tapply1}
 tapply(warpbreaks$breaks, INDEX = warpbreaks[, 3], FUN = sum)
 ```
+
+The first argument is the data frame columns on which the function has to be applied, `INDEX` represents a list of factor columns by which the "ragged" data structure is created and `FUN` is the function to be applied.  
 
 The following example returns a contingency table of the number of breaks for each type of wool and level of tension.
 
@@ -364,7 +222,7 @@ Means of sepal length for each species can be computed in the following way.
 tapply(iris[, 1], INDEX = iris[, 5], FUN = mean)
 ```
 
-### aggregate
+#### aggregate
 
 The `aggregate()` function splits the data into subsets, computes summary statistics for each, and returns the result in a convenient form.
 

@@ -63,7 +63,7 @@ would work anyway.
 
 Functions formals may also have the construct `symbol = default`, that unless differently specified, forces any argument to be used with its default value.
 
-Specifically, function `mean()` also have a third argument `na.rm` that defaults to `FALSE` and , as a result passing vectors with `NA` values to `mean()` returns `NA`
+Specifically, function `mean()` also have a third argument `na.rm` that defaults to `FALSE` and, as a result passing vectors with `NA` values to `mean()` returns `NA`
 
 ```{r functions-formals-arguments3}
 mean(c(1, 2, NA))
@@ -135,8 +135,8 @@ time <-  1:13
 depth <-  c(0,-9,-18,-21,-21,-21,-21,-18,-9,-3,-3,-3,0)
 df <- data.frame(time=time, depth=depth)
 
-ggp1 <- plot_depth(df, "time", "depth", linetype = 2)
-ggp2 <- plot_depth(df, "time", "depth", size = 4, col = "red")
+ggp1 <- plot_depth(df, time_var_name = "time", depth_var_name = "depth", linetype = 2)
+ggp2 <- plot_depth(df, time_var_name = "time", depth_var_name = "depth", size = 4, col = "red")
 
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```

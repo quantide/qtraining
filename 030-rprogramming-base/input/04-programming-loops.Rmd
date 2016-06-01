@@ -125,63 +125,6 @@ system.time(fast(runif(1000), runif(1000)))[3]
 
 Simply working with vectorized dimensions drastically reduce computing time. Note that `j` index is computed within the `i` loop  and that `y[j]` has been replaced with `y`, as a result, a single for loop is required.
 
-### Functionals: `lapply`
-
-`for` loops are quite often nested and mixed up with `if()` statements. As a result, the whole coding structure may result in a complicated muddle to understand and, as a consequence, the objective of our coding may get lost within the code itself.
-
-`for()` loops do have a bad reputation of being slow especially when compared with equivalent functionals structures as `lapply()`. Nowadays, speed is no more a crucial point when dealing with `for()` loops  
-
-In other words, `for()` loops, whenever possible, should be avoided not mainly because of a performance issue but to to achieve modularity and clarity in our codes.
-
-_Functionals_ are functions that take a function as input and return a data object as output. Functionals are very often excellent substitutes to `for` loops as they allow to communicate the objective of our code in a more clear and concise manner as the code will be cleaner and it will more closely adhere to `R`'s idioms.
-
-`lapply()` is, possibly, the most used functional. `lapply()` takes a function and applies it to each element of a list, saving the results back into a result list.  `lapply()` is the building block for many other functionals. In principle, `lapply()` is a wrapper around a standard for loop.
-
-`lapply()` takes three arguments: 
-
-* a list `X`, or anything that can be coerced to a list by `as.list()`
-* a function `FUN` that takes, as first argument, each element of `X`
-* the `''...''` argument that can be any argument to be passed to `FUN`
-
-Suppose we want to gain the maximum of each column for the `airquality` data frame. By using a `for` loop we could write:
-
-```{r programming-lapply-02}
-n <- ncol(airquality)
-out <- numeric(n)
-for (i in 1:n){
- out[i] <- max(airquality[,i], na.rm = TRUE)
-}
-out
-```
-
-alternatively, as a data frame is a list:
-
-```{r programming-lapply-03}
-lapply(X=airquality, FUN = max, na.rm = TRUE)
-```
-
-The second chunk of code is by far more clear and concise than the first one even though a vector would be preferable than a list as output.
-
-Moreover, `lapply()` as opposite to `for` loops does not produce any intermediate result when running. In the above `for` loop, the value of the result of the loop, vector `out`, changes at each iteration. The result of `lapply()`, instead, can be assigned to a variable but does not produce any intermediate result.
-
-By default `lapply()` takes each element of list `X` as the first argument of function `FUN`. This works perfectly, as long as each element of `X` is the first of `FUN`. This is true in case we want to compute the mean of each column of a data frame as each column is passed as first argument to function `mean()`.
-
-But, suppose we want to compute various trimmed means of the same vector, `trim` is the second parameter of `mean()`, so we want to vary `trim`, keeping the first argument `x` fixed.  
-
-This can be easily achieved by observing that the following two calls are equivalent:
-
-```{r programming-lapply-04}
-mean(1:100, trim = 0.1)
-mean(0.1, x = 1:100)
-```
-
-So, in order to use `lapply()` with the second argument of function `FUN`, we just need to name the first argument of `FUN` and pass it to `lapply()` as part as the `''...''` argument:
-
-```{r programming-lapply-05}
-x <- rnorm(100)
-lapply(X = c(0.1, 0.2, 0.5), mean, x = x)
-```
-
 
 
 ## `while` loops
