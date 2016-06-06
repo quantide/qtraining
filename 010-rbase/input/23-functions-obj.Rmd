@@ -98,7 +98,7 @@ round(3.14, digits = 1)
 round(3.19, digits = 1)
 ```
 
-## Probabilistic Functions
+### Probabilistic Functions
 
 Probabilistic functions in R fall into four categories:
 
