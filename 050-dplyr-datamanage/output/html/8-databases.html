@@ -342,19 +342,23 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(ggplot2)
+require(DBI)
+require(RSQLite)</code></pre>
 <div id="getting-started-with-large-data" class="section level1">
 <h1>Getting Started with Large Data</h1>
 <p>To experimement with large files you may want to use data from <a href="http://stat-computing.org/dataexpo/2009/the-data.html" class="uri">http://stat-computing.org/dataexpo/2009/the-data.html</a>.</p>
 <p>The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are nearly 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12Gb when uncompressed. Only four of these files will be considered in the next example for a 29 millions records data frame.</p>
 <p>This is clearly a case for SQLite: let us load the <code>RSQLite</code> package.</p>
 <pre class="r"><code>require(RSQLite)</code></pre>
-<p>As these files might have different encodings you may need to define a simple function that returns the encoding of the file. Nothe that this function uses unix system commands and may not work under windows based computers.</p>
+<p>As these files might have different encodings you may need to define a simple function that returns the encoding of the file. Note that this function uses unix system commands and may not work under windows based computers.</p>
 <pre class="r"><code>charset &lt;- function (file){
   info &lt;- system(paste(&quot;file -i&quot; ,file ), intern = TRUE)
   info_split &lt;- strsplit(info, split = &quot;charset=&quot;)[[1]][2]
   info_split
 }</code></pre>
-<p>You then create an empty SQLite database with a little trick that ensures the database is reoved in case it already exists:</p>
+<p>You then create an empty SQLite database with a little trick that ensures the database is removed in case it already exists:</p>
 <pre class="r"><code>path &lt;- &quot;./&quot;
 db &lt;- &quot;ontime.sqlite&quot;
 path_db &lt;- paste(path, db, sep = &quot;/&quot;)

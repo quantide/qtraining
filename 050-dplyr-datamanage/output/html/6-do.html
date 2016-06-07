@@ -342,6 +342,11 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(tidyr)
+require(qdata)
+require(broom)
+data(people)</code></pre>
 <div id="do-a-general-purpose-verb" class="section level1">
 <h1><code>do()</code>: a General Purpose Verb</h1>
 <p>Function <code>do()</code> is a general purpose complement to the specialized manipulation functions <code>filter()</code>, <code>select()</code>, <code>mutate()</code>, <code>summarise()</code> and <code>arrange()</code>. You can use <code>do()</code> to perform arbitrary computation, returning either a data frame or arbitrary objects which will be stored in a list.</p>
@@ -453,7 +458,6 @@ models %&gt;% mutate_each(funs(intercept, slope , RSq), mod)</code></pre>
 ## 1 Female &lt;S3:lm&gt;  59.60891 -0.9589109 0.0102240949
 ## 2   Male &lt;S3:lm&gt;  75.98925  0.3791737 0.0001956876</code></pre>
 <p>Finally, by using function <code>tidy()</code> from package <code>broom</code>:</p>
-<pre class="r"><code>require(broom)</code></pre>
 <pre class="r"><code>people %&gt;% group_by(Gender) %&gt;% 
   do(tidy(lm(Weight~Area, data = .)))</code></pre>
 <pre><code>## Source: local data frame [8 x 6]

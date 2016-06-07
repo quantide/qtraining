@@ -1,8 +1,7 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
 require(qdata)
+require(lazyeval)
 data(bank)
 
 ## ------------------------------------------------------------------------

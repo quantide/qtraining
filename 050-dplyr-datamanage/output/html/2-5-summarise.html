@@ -344,6 +344,9 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(qdata)
+data(bank)</code></pre>
 <div id="summarise" class="section level1">
 <h1><code>summarise()</code></h1>
 <p>The last verb is <code>summarise()</code>, which collapses a data frame to a single row:</p>
@@ -364,13 +367,13 @@ $(document).ready(function () {
 <ul>
 <li><code>last</code> returns the last value of a vector:</li>
 </ul>
-<pre class="r"><code>summarise(bank, last(job))</code></pre>
+<pre class="r"><code>summarise(bank, last(job)) </code></pre>
 <pre><code>##      last(job)
 ## 1 entrepreneur</code></pre>
 <ul>
 <li><code>nth</code> returns the nth value of a vector:</li>
 </ul>
-<pre class="r"><code>summarise(bank, nth(job,8))</code></pre>
+<pre class="r"><code>summarise(bank, nth(job, 8))</code></pre>
 <pre><code>##    nth(job, 8)
 ## 1 entrepreneur</code></pre>
 <ul>

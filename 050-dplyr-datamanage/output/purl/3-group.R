@@ -1,31 +1,32 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
 require(qdata)
 data(bank)
 
-## ------------------------------------------------------------------------
+## ----grouped_df_class----------------------------------------------------
+# Example data frame
 df <- data.frame(x = 1:6, f = rep(1:2, each = 3))
-dff <- df %>% group_by(f)
+
+# Grouped data frame
+dff <- group_by(df, f)
 dff
 class(dff)
 
-
-dffn <- dff %>% mutate(n = row_number())
-
+# Use dff (grouped data frame) as .data argument value in mutate() 
+dffn <- mutate(.data = dff, n = n())
+dffn
 class(dffn)
 
-dffa <- dff %>% arrange(desc(x))
 
+# Use dff (grouped data frame) as .data argument value in arrange()
+dffa <- arrange(.data = dff, desc(x))
+dffa
 class(dffa)
 
-dfg <- df %>% 
-  group_by(f) %>%
-  summarise(x_avg = mean(x))
 
+# Use dff (grouped data frame) as data argument value in summarise()
+dfg <- summarise(.data = dff, x_avg = mean(x))
 dfg
-
 class(dfg)
 
 ## ------------------------------------------------------------------------

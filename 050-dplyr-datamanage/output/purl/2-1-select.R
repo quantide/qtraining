@@ -1,8 +1,8 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
 require(qdata)
 data(bank) 
-bank <-  tbl_df(bank)
+bank <- tbl_df(bank)
 
 ## ----bank----------------------------------------------------------------
 select(bank, year, month, day)

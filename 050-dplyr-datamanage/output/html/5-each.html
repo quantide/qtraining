@@ -357,6 +357,9 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(qdata)
+data(mtcars)</code></pre>
 <div id="controlling-dplyr" class="section level1">
 <h1>Controlling <code>dplyr</code></h1>
 <p>When using <code>dplyr</code> to manipulate data, you have three factors to control:</p>
@@ -772,7 +775,7 @@ mtcars %&gt;%
 ## 7     8     3    15.2    275.8    17.3    275.8
 ## 8     8     4    10.4    350.0    15.8    472.0
 ## 9     8     8    15.0    301.0    15.0    301.0</code></pre>
-<p>When you apply many functions to one variable, the use of <code>summarise_each()</code> provides a more compact and tidy notation:</p>
+<p>When you apply many functions to many variables, the use of <code>summarise_each()</code> provides a more compact and tidy notation:</p>
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise_each(funs(min, max), mpg, disp)</code></pre>
@@ -1482,7 +1485,7 @@ mtcars %&gt;%
 ## 9        Merc 230     2     4  22.8 140.8   0.1555556          6
 ## 10      Merc 240D     2     4  24.4 146.7   0.3333333          4
 ## ..            ...   ...   ...   ...   ...         ...        ...</code></pre>
-<p>When you apply many functions to one variable, the use of <code>mutate_each()</code> provides a more compact and tidy notation:</p>
+<p>When you apply many functions to many variables, the use of <code>mutate_each()</code> provides a more compact and tidy notation:</p>
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate_each(funs(rescale, order), mpg,  disp)</code></pre>

@@ -1,6 +1,4 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
 require(qdata)
 require(lubridate)
@@ -8,6 +6,8 @@ data(bank)
 
 ## ------------------------------------------------------------------------
 filter(bank, job == "student", balance > 20000)
+
+## ------------------------------------------------------------------------
 filter(bank, job == "student", as.character(date) == "2008-05-05")
 filter(bank, job == "student", date == ymd("2008-05-05"))
 

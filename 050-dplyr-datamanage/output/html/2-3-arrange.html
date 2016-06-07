@@ -342,6 +342,9 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(qdata)
+data(bank)</code></pre>
 <div id="arrange" class="section level1">
 <h1><code>arrange()</code></h1>
 <p><code>arrange()</code> works similarly to <code>filter()</code> except that instead of filtering or selecting rows, it reorders them. It takes a data frame, and a set of column names (or more complicated expressions) to order by. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns:</p>

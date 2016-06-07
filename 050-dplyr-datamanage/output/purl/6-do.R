@@ -1,6 +1,4 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
 require(tidyr)
 require(qdata)
@@ -53,9 +51,6 @@ slope <- function(model) coefficients(model)[[2]]
 RSq <- function(model, i) summary(model)$r.squared
 
 models %>% mutate_each(funs(intercept, slope , RSq), mod)
-
-## ---- message=FALSE------------------------------------------------------
-require(broom)
 
 ## ------------------------------------------------------------------------
 people %>% group_by(Gender) %>% 

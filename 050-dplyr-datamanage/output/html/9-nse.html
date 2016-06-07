@@ -344,6 +344,10 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(qdata)
+require(lazyeval)
+data(bank)</code></pre>
 <div id="programming-with-dplyr" class="section level1">
 <h1>Programming with <code>dplyr</code></h1>
 <p>Package <code>dplyr</code> has been developed to provide end users with a tool for effective yet easy data manipulation tool. Nevertheless, when developing R code with <code>dplyr</code>, you may notice some apparently strange behavior. Suppose you to create a simple function that, for any <code>tbl</code> object filters for all value of a variable above a given threshold. The <code>dplyr</code> interactive code for achieving this, applied as an example to data frame <code>mtcars</code>, could be:</p>
@@ -418,7 +422,7 @@ fun4(mtcars, x = disp, threshold = 450)</code></pre>
 <li>saves time when coding</li>
 <li>keeps yout code simpler</li>
 </ul>
-<p>On the other hand, NSE is is hard to program with.</p>
+<p>On the other hand, NSE is hard to program with.</p>
 <p>Fortunatelly, every function in <code>dplyr</code> that uses NSE also has a version that uses SE. There’s a consistent naming scheme: the SE is the NSE name with <code>_</code> on the end. For example, the SE version of <code>summarise()</code> is <code>summarise_()</code>, the SE version of <code>arrange()</code> is <code>arrange_()</code>.</p>
 <p>These functions work very similarly to their NSE counterparts, but the inputs must be “quoted”.</p>
 <p>That is, the NSE version of <code>summarise()</code>:</p>
@@ -484,7 +488,7 @@ summarise_(bank, .dots = dots)</code></pre>
 </div>
 <div id="mixing-constants-and-variables" class="section level1">
 <h1>Mixing Constants and Variables</h1>
-<p>You may want to mix constant and variable in the same call: that is the variable and the function are passed as arguments.</p>
+<p>You may want to mix constants and variables in the same call: that is the variable and the function are passed as arguments.</p>
 <p>Suppose you want to write a function <code>summarise_by(data, g , x , fun)</code> that summarise <code>data</code> by <code>g</code> by computing <code>fun(x)</code>.</p>
 <p>In this case you may want to write first prepare the SE version: <code>summarise_by_()</code>:</p>
 <pre class="r"><code>summarise_by_ &lt;- function(data, g , x , fun){

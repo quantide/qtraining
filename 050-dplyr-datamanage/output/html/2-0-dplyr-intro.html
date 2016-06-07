@@ -357,11 +357,23 @@ $(document).ready(function () {
 <div id="tbl_df-the-dplyr-data-frame-class" class="section level1">
 <h1><code>tbl_df</code>: the <code>dplyr</code> Data Frame Class</h1>
 <p><code>dplyr</code> can work with data frames as is but it is worthwhile to convert them to a <code>tbl_df</code>: this is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.</p>
-<pre class="r"><code>data(bank)
-class(bank)</code></pre>
-<pre><code>## [1] &quot;data.frame&quot;</code></pre>
-<pre class="r"><code>bank</code></pre>
-<pre><code>##          id age           job  marital education default balance housing loan   contact day month year
+<!--
+
+```r
+data(bank)
+class(bank)
+```
+
+```
+## [1] "data.frame"
+```
+
+```r
+bank
+```
+
+```
+##          id age           job  marital education default balance housing loan   contact day month year
 ## 1         1  58    management  married  tertiary      no    2143     yes   no   unknown   5   may 2008
 ## 2         2  44    technician   single secondary      no      29     yes   no   unknown   5   may 2008
 ## 3         3  33  entrepreneur  married secondary      no       2     yes  yes   unknown   5   may 2008
@@ -10361,7 +10373,9 @@ class(bank)</code></pre>
 ## 4997  2008-05-21      304        1    -1        0  unknown  no
 ## 4998  2008-05-21       51        2    -1        0  unknown  no
 ## 4999  2008-05-21      836       12    -1        0  unknown  no
-##  [ reached getOption(&quot;max.print&quot;) -- omitted 40212 rows ]</code></pre>
+##  [ reached getOption("max.print") -- omitted 40212 rows ]
+```
+-->
 <p>When the class of data object is not tbl, <code>tbl_df()</code> function should be used:</p>
 <pre class="r"><code># Example of data frame
 df &lt;- setNames(object = data.frame(matrix(data = runif(2000), nrow = 100, ncol = 20)),

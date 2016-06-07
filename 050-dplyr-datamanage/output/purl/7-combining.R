@@ -17,8 +17,8 @@ left_join(df2, df1)
 full_join(df1, df2)
 
 ## ------------------------------------------------------------------------
-comuni <- comuni %>% select(cod_comune:pop_legale, cod_provincia, cod_regione)
-province <- province %>% select(cod_provincia:sigla_auto)
+comuni <- comuni %>% select(cod_comune:pop_legale, cod_provincia:cod_regione)
+province <- province %>% select(cod_provincia:cod_citta_metro)
 
 ## ------------------------------------------------------------------------
 comuni %>% left_join(province)
@@ -26,7 +26,7 @@ comuni %>% left_join(regioni)
 comuni %>% left_join(province) %>% left_join(regioni)
 
 ## ------------------------------------------------------------------------
-comuni %>% left_join(province)
+comuni %>% left_join(regioni)
 
 ## ------------------------------------------------------------------------
 comuni %>% left_join(province)

@@ -351,9 +351,13 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(qdata)
+data(italia)
+data(tennis)</code></pre>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Very often you will have to deal with many tables that contribute to the analysis you are performin and you need flexible tools to combine them.</p>
+<p>Very often you will have to deal with many tables that contribute to the analysis you are performing and you need flexible tools to combine them.</p>
 <p>Supposing that the two tables are already in a tidy form: the rows are observations and the columns are variables, <code>dplyr</code> provides three families of verbs that work with two tables at a time:</p>
 <ul>
 <li><strong>mutating joins</strong>, which add new variables to one table from matching rows in another;</li>
@@ -419,7 +423,7 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 ## 4  4    d    d
 ## 5  5 &lt;NA&gt;    e</code></pre>
 <p>The left, right and full joins are collectively know as outer joins. When a row doesn’t match in an outer join, the new variables are filled in with missing values.</p>
-<p>While mutating joins are primarily used to add new variables, they can also generate new observations. If a match is not unique, a join will add all possible combinations (the Cartesian product) of the matching observations:</p>
+<p>While mutating joins are primarily used to add new variables, they can also generate new observations. If a match is not unique, a join will add all possible combinations (the Cartesian product) of the matching observations.</p>
 </div>
 </div>
 <div id="example-the-italia-data-frame" class="section level1">
@@ -427,126 +431,123 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <p>Data frame <code>comuni</code> contains several variables detected on Italian “comuni”, in particular the codes of the Italian “province” and “regioni” relative to the “comuni”, but not their names.</p>
 <p>You don’t know which “provincia” or “regione” each “comune” belongs to but, in data frames <code>province</code> and <code>regioni</code> you have the codes for “province” and “regioni” along with their names.</p>
 <p>Let’s keep only a few variables of these datasets in order to better understand the join results:</p>
-<pre class="r"><code>comuni &lt;- comuni %&gt;% select(cod_comune:pop_legale, cod_provincia, cod_regione)
-province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
+<pre class="r"><code>comuni &lt;- comuni %&gt;% select(cod_comune:pop_legale, cod_provincia:cod_regione)
+province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre>
 <p>You can use a join to add “provincia” and “regione” to the Italian “comuni”:</p>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
-<pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
-<pre><code>## Source: local data frame [8,003 x 8]
-## 
-##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
-##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001           Agliè           FALSE          2             1
-## 2        1002         Airasca           FALSE          3             1
-## 3        1003    Ala di Stura           FALSE        462             1
-## 4        1004 Albiano d'Ivrea           FALSE          1             1
-## 5        1005 Alice Superiore           FALSE        701             1
-## 6        1006          Almese           FALSE          6             1
-## 7        1007         Alpette           FALSE        277             1
-## 8        1008       Alpignano           FALSE         16             1
-## 9        1009        Andezeno           FALSE          1             1
-## 10       1010         Andrate           FALSE        512             1
-## ..        ...             ...             ...        ...           ...
-## Variables not shown: cod_regione (int), provincia (chr), sigla_auto (chr)</code></pre>
-<pre class="r"><code>comuni %&gt;% left_join(regioni)</code></pre>
-<pre><code>## Joining by: &quot;cod_regione&quot;</code></pre>
-<pre><code>## Source: local data frame [8,003 x 7]
-## 
-##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
-##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001           Agliè           FALSE          2             1
-## 2        1002         Airasca           FALSE          3             1
-## 3        1003    Ala di Stura           FALSE        462             1
-## 4        1004 Albiano d'Ivrea           FALSE          1             1
-## 5        1005 Alice Superiore           FALSE        701             1
-## 6        1006          Almese           FALSE          6             1
-## 7        1007         Alpette           FALSE        277             1
-## 8        1008       Alpignano           FALSE         16             1
-## 9        1009        Andezeno           FALSE          1             1
-## 10       1010         Andrate           FALSE        512             1
-## ..        ...             ...             ...        ...           ...
-## Variables not shown: cod_regione (int), regione (chr)</code></pre>
-<pre class="r"><code>comuni %&gt;% left_join(province) %&gt;% left_join(regioni)</code></pre>
-<pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
-<pre><code>## Joining by: &quot;cod_regione&quot;</code></pre>
+<pre><code>## Joining by: c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
 <pre><code>## Source: local data frame [8,003 x 9]
 ## 
-##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
-##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001           Agliè           FALSE          2             1
-## 2        1002         Airasca           FALSE          3             1
-## 3        1003    Ala di Stura           FALSE        462             1
-## 4        1004 Albiano d'Ivrea           FALSE          1             1
-## 5        1005 Alice Superiore           FALSE        701             1
-## 6        1006          Almese           FALSE          6             1
-## 7        1007         Alpette           FALSE        277             1
-## 8        1008       Alpignano           FALSE         16             1
-## 9        1009        Andezeno           FALSE          1             1
-## 10       1010         Andrate           FALSE        512             1
-## ..        ...             ...             ...        ...           ...
-## Variables not shown: cod_regione (int), provincia (chr), sigla_auto (chr),
-##   regione (chr)</code></pre>
-<p>As well as <code>x</code> and <code>y</code>, each mutating join takes an argument <code>by</code> that controls which variables are used to match observations in the two tables and there are few ways to specify it:</p>
-<ul>
-<li><code>NULL</code>, the default. <code>dplyr</code> will use all variables that appear in both tables, a natural join. For example, the <code>comuni</code> and <code>province</code> tables match on their common variable <code>cod_provincia</code>:</li>
-</ul>
-<pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
-<pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
+##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
+##         (int)           (chr)           (lgl)      (int)         (int)           (chr)       (int)
+## 1        1001           Agliè           FALSE          2             1             201           1
+## 2        1002         Airasca           FALSE          3             1             201           1
+## 3        1003    Ala di Stura           FALSE        462             1             201           1
+## 4        1004 Albiano d'Ivrea           FALSE          1             1             201           1
+## 5        1005 Alice Superiore           FALSE        701             1             201           1
+## 6        1006          Almese           FALSE          6             1             201           1
+## 7        1007         Alpette           FALSE        277             1             201           1
+## 8        1008       Alpignano           FALSE         16             1             201           1
+## 9        1009        Andezeno           FALSE          1             1             201           1
+## 10       1010         Andrate           FALSE        512             1             201           1
+## ..        ...             ...             ...        ...           ...             ...         ...
+## Variables not shown: provincia (chr), sigla_auto (chr)</code></pre>
+<pre class="r"><code>comuni %&gt;% left_join(regioni)</code></pre>
+<pre><code>## Joining by: &quot;cod_regione&quot;</code></pre>
 <pre><code>## Source: local data frame [8,003 x 8]
 ## 
-##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
-##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001           Agliè           FALSE          2             1
-## 2        1002         Airasca           FALSE          3             1
-## 3        1003    Ala di Stura           FALSE        462             1
-## 4        1004 Albiano d'Ivrea           FALSE          1             1
-## 5        1005 Alice Superiore           FALSE        701             1
-## 6        1006          Almese           FALSE          6             1
-## 7        1007         Alpette           FALSE        277             1
-## 8        1008       Alpignano           FALSE         16             1
-## 9        1009        Andezeno           FALSE          1             1
-## 10       1010         Andrate           FALSE        512             1
-## ..        ...             ...             ...        ...           ...
-## Variables not shown: cod_regione (int), provincia (chr), sigla_auto (chr)</code></pre>
+##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione  regione
+##         (int)           (chr)           (lgl)      (int)         (int)           (chr)       (int)    (chr)
+## 1        1001           Agliè           FALSE          2             1             201           1 Piemonte
+## 2        1002         Airasca           FALSE          3             1             201           1 Piemonte
+## 3        1003    Ala di Stura           FALSE        462             1             201           1 Piemonte
+## 4        1004 Albiano d'Ivrea           FALSE          1             1             201           1 Piemonte
+## 5        1005 Alice Superiore           FALSE        701             1             201           1 Piemonte
+## 6        1006          Almese           FALSE          6             1             201           1 Piemonte
+## 7        1007         Alpette           FALSE        277             1             201           1 Piemonte
+## 8        1008       Alpignano           FALSE         16             1             201           1 Piemonte
+## 9        1009        Andezeno           FALSE          1             1             201           1 Piemonte
+## 10       1010         Andrate           FALSE        512             1             201           1 Piemonte
+## ..        ...             ...             ...        ...           ...             ...         ...      ...</code></pre>
+<pre class="r"><code>comuni %&gt;% left_join(province) %&gt;% left_join(regioni)</code></pre>
+<pre><code>## Joining by: c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
+<pre><code>## Joining by: &quot;cod_regione&quot;</code></pre>
+<pre><code>## Source: local data frame [8,003 x 10]
+## 
+##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
+##         (int)           (chr)           (lgl)      (int)         (int)           (chr)       (int)
+## 1        1001           Agliè           FALSE          2             1             201           1
+## 2        1002         Airasca           FALSE          3             1             201           1
+## 3        1003    Ala di Stura           FALSE        462             1             201           1
+## 4        1004 Albiano d'Ivrea           FALSE          1             1             201           1
+## 5        1005 Alice Superiore           FALSE        701             1             201           1
+## 6        1006          Almese           FALSE          6             1             201           1
+## 7        1007         Alpette           FALSE        277             1             201           1
+## 8        1008       Alpignano           FALSE         16             1             201           1
+## 9        1009        Andezeno           FALSE          1             1             201           1
+## 10       1010         Andrate           FALSE        512             1             201           1
+## ..        ...             ...             ...        ...           ...             ...         ...
+## Variables not shown: provincia (chr), sigla_auto (chr), regione (chr)</code></pre>
+<p>As well as <code>x</code> and <code>y</code>, each mutating join takes an argument <code>by</code> that controls which variables are used to match observations in the two tables and there are few ways to specify it:</p>
+<ul>
+<li><code>NULL</code>, the default. <code>dplyr</code> will use all variables that appear in both tables, a natural join. For example, the <code>comuni</code> and <code>regioni</code> tables match on their common variable <code>cod_regione</code>:</li>
+</ul>
+<pre class="r"><code>comuni %&gt;% left_join(regioni)</code></pre>
+<pre><code>## Joining by: &quot;cod_regione&quot;</code></pre>
+<pre><code>## Source: local data frame [8,003 x 8]
+## 
+##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione  regione
+##         (int)           (chr)           (lgl)      (int)         (int)           (chr)       (int)    (chr)
+## 1        1001           Agliè           FALSE          2             1             201           1 Piemonte
+## 2        1002         Airasca           FALSE          3             1             201           1 Piemonte
+## 3        1003    Ala di Stura           FALSE        462             1             201           1 Piemonte
+## 4        1004 Albiano d'Ivrea           FALSE          1             1             201           1 Piemonte
+## 5        1005 Alice Superiore           FALSE        701             1             201           1 Piemonte
+## 6        1006          Almese           FALSE          6             1             201           1 Piemonte
+## 7        1007         Alpette           FALSE        277             1             201           1 Piemonte
+## 8        1008       Alpignano           FALSE         16             1             201           1 Piemonte
+## 9        1009        Andezeno           FALSE          1             1             201           1 Piemonte
+## 10       1010         Andrate           FALSE        512             1             201           1 Piemonte
+## ..        ...             ...             ...        ...           ...             ...         ...      ...</code></pre>
 <ul>
 <li>A character vector, <code>by = &quot;x&quot;</code>. It is like a natural join, but uses only some of the common variables. For example, when joining <code>comuni</code> and <code>province</code>, you will see that <code>R</code> will tell you that it’s joining the two data frames by both <code>cod_provincia</code> and <code>cod_citta_metro</code>:</li>
 </ul>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
-<pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
-<pre><code>## Source: local data frame [8,003 x 8]
+<pre><code>## Joining by: c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
+<pre><code>## Source: local data frame [8,003 x 9]
 ## 
-##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
-##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001           Agliè           FALSE          2             1
-## 2        1002         Airasca           FALSE          3             1
-## 3        1003    Ala di Stura           FALSE        462             1
-## 4        1004 Albiano d'Ivrea           FALSE          1             1
-## 5        1005 Alice Superiore           FALSE        701             1
-## 6        1006          Almese           FALSE          6             1
-## 7        1007         Alpette           FALSE        277             1
-## 8        1008       Alpignano           FALSE         16             1
-## 9        1009        Andezeno           FALSE          1             1
-## 10       1010         Andrate           FALSE        512             1
-## ..        ...             ...             ...        ...           ...
-## Variables not shown: cod_regione (int), provincia (chr), sigla_auto (chr)</code></pre>
+##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
+##         (int)           (chr)           (lgl)      (int)         (int)           (chr)       (int)
+## 1        1001           Agliè           FALSE          2             1             201           1
+## 2        1002         Airasca           FALSE          3             1             201           1
+## 3        1003    Ala di Stura           FALSE        462             1             201           1
+## 4        1004 Albiano d'Ivrea           FALSE          1             1             201           1
+## 5        1005 Alice Superiore           FALSE        701             1             201           1
+## 6        1006          Almese           FALSE          6             1             201           1
+## 7        1007         Alpette           FALSE        277             1             201           1
+## 8        1008       Alpignano           FALSE         16             1             201           1
+## 9        1009        Andezeno           FALSE          1             1             201           1
+## 10       1010         Andrate           FALSE        512             1             201           1
+## ..        ...             ...             ...        ...           ...             ...         ...
+## Variables not shown: provincia (chr), sigla_auto (chr)</code></pre>
 <p>But we only want to join by <code>cod_provincia</code> not by <code>cod_citta_metro</code>. As only some of the “province” have a “città metropolitana” (9 of them: Torino, Milano, Venezia, Genova, Bologna, Firenze, Roma, Napoli, Bari):</p>
 <pre class="r"><code>comuni %&gt;% left_join(province, by = &quot;cod_provincia&quot;)</code></pre>
-<pre><code>## Source: local data frame [8,003 x 8]
+<pre><code>## Source: local data frame [8,003 x 10]
 ## 
-##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
-##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001           Agliè           FALSE          2             1
-## 2        1002         Airasca           FALSE          3             1
-## 3        1003    Ala di Stura           FALSE        462             1
-## 4        1004 Albiano d'Ivrea           FALSE          1             1
-## 5        1005 Alice Superiore           FALSE        701             1
-## 6        1006          Almese           FALSE          6             1
-## 7        1007         Alpette           FALSE        277             1
-## 8        1008       Alpignano           FALSE         16             1
-## 9        1009        Andezeno           FALSE          1             1
-## 10       1010         Andrate           FALSE        512             1
-## ..        ...             ...             ...        ...           ...
-## Variables not shown: cod_regione (int), provincia (chr), sigla_auto (chr)</code></pre>
+##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro.x cod_regione
+##         (int)           (chr)           (lgl)      (int)         (int)             (chr)       (int)
+## 1        1001           Agliè           FALSE          2             1               201           1
+## 2        1002         Airasca           FALSE          3             1               201           1
+## 3        1003    Ala di Stura           FALSE        462             1               201           1
+## 4        1004 Albiano d'Ivrea           FALSE          1             1               201           1
+## 5        1005 Alice Superiore           FALSE        701             1               201           1
+## 6        1006          Almese           FALSE          6             1               201           1
+## 7        1007         Alpette           FALSE        277             1               201           1
+## 8        1008       Alpignano           FALSE         16             1               201           1
+## 9        1009        Andezeno           FALSE          1             1               201           1
+## 10       1010         Andrate           FALSE        512             1               201           1
+## ..        ...             ...             ...        ...           ...               ...         ...
+## Variables not shown: provincia (chr), sigla_auto (chr), cod_citta_metro.y (chr)</code></pre>
 <p>Note that the <code>cod_citta_metro</code> columns in the output are disambiguated with a suffix.</p>
 <ul>
 <li>A named character vector: <code>by = c(&quot;x&quot; = &quot;a&quot;)</code>. This will match variable <code>x</code> in table <code>x</code> to variable <code>a</code> in table <code>b</code>. For example, suppose the <code>regioni2</code> table is equal to <code>regioni</code> except for that its id variable is called <code>id_regione</code> and not <code>cod_regione</code> and suppose we want to use <code>regioni2</code> to associate the “regione” to each “comune”:</li>
@@ -554,22 +555,21 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 <pre class="r"><code>regioni2 &lt;- regioni %&gt;% rename(id_regione = cod_regione)</code></pre>
 <p>Then, in this case</p>
 <pre class="r"><code>comuni %&gt;% left_join(regioni2, c(&quot;cod_regione&quot; = &quot;id_regione&quot;))</code></pre>
-<pre><code>## Source: local data frame [8,003 x 7]
+<pre><code>## Source: local data frame [8,003 x 8]
 ## 
-##    cod_comune          comune comune_cap_prov pop_legale cod_provincia
-##         (int)           (chr)           (lgl)      (int)         (int)
-## 1        1001           Agliè           FALSE          2             1
-## 2        1002         Airasca           FALSE          3             1
-## 3        1003    Ala di Stura           FALSE        462             1
-## 4        1004 Albiano d'Ivrea           FALSE          1             1
-## 5        1005 Alice Superiore           FALSE        701             1
-## 6        1006          Almese           FALSE          6             1
-## 7        1007         Alpette           FALSE        277             1
-## 8        1008       Alpignano           FALSE         16             1
-## 9        1009        Andezeno           FALSE          1             1
-## 10       1010         Andrate           FALSE        512             1
-## ..        ...             ...             ...        ...           ...
-## Variables not shown: cod_regione (int), regione (chr)</code></pre>
+##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione  regione
+##         (int)           (chr)           (lgl)      (int)         (int)           (chr)       (int)    (chr)
+## 1        1001           Agliè           FALSE          2             1             201           1 Piemonte
+## 2        1002         Airasca           FALSE          3             1             201           1 Piemonte
+## 3        1003    Ala di Stura           FALSE        462             1             201           1 Piemonte
+## 4        1004 Albiano d'Ivrea           FALSE          1             1             201           1 Piemonte
+## 5        1005 Alice Superiore           FALSE        701             1             201           1 Piemonte
+## 6        1006          Almese           FALSE          6             1             201           1 Piemonte
+## 7        1007         Alpette           FALSE        277             1             201           1 Piemonte
+## 8        1008       Alpignano           FALSE         16             1             201           1 Piemonte
+## 9        1009        Andezeno           FALSE          1             1             201           1 Piemonte
+## 10       1010         Andrate           FALSE        512             1             201           1 Piemonte
+## ..        ...             ...             ...        ...           ...             ...         ...      ...</code></pre>
 <div id="a-pretty-example" class="section level2">
 <h2>A Pretty Example</h2>
 <p>With the commands you have seen so far, with very few lines of <code>R</code> code you can for example:</p>
@@ -581,7 +581,7 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
   group_by(provincia) %&gt;%
   summarise(pop_legale = sum(pop_legale)) %&gt;% 
   arrange(desc(pop_legale))</code></pre>
-<pre><code>## Joining by: &quot;cod_provincia&quot;</code></pre>
+<pre><code>## Joining by: c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
 <pre><code>## Source: local data frame [110 x 2]
 ## 
 ##      provincia pop_legale
@@ -662,8 +662,7 @@ province &lt;- province %&gt;% select(cod_provincia:sigla_auto)</code></pre>
 <li><code>anti_join(x, y)</code> drops all observaitons in <code>x</code> that have a match in <code>y</code>.</li>
 </ul>
 <p>These are most useful for diagnosing join mismatches.</p>
-<p>Let’s recall the small examle data frames:</p>
-<p>For the next examples I will consider these two small data frames:</p>
+<p>Let’s recall the small example data frames:</p>
 <pre class="r"><code>df1 &lt;- data.frame(id = 1:4, x1 = letters[1:4])
 df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <p>All observations in <code>df1</code> also in <code>df2</code></p>
@@ -803,8 +802,8 @@ super_usopen %&gt;%
 </div>
 <div id="binding" class="section level1">
 <h1>Binding</h1>
-<p><code>bind_rows</code> and <code>bind_cols</code> allow to bind data frames by rows and by columns, respectively:</p>
-<p>Variables names in the two data frames to bind play a crucial role in the outcome type:</p>
+<p><code>bind_rows</code> and <code>bind_cols</code> allow to bind data frames by rows and by columns, respectively.</p>
+<p>Variables names in the two data frames to bind play a crucial role in the outcome type.</p>
 <p>When binding rows and both data frames have the same columns:</p>
 <pre class="r"><code>df1 &lt;- data.frame(x = 1:3, y = 3:1)
 df2 &lt;- data.frame(x = 4:6, y = 6:4)
@@ -1040,8 +1039,8 @@ ripartizioni5 %>% str
 ```
 
 ```
-## Warning in outer_join_impl(x, y, by$x, by$y): joining factors with
-## different levels, coercing to character vector
+## Warning in outer_join_impl(x, y, by$x, by$y): joining factors with different levels, coercing to character
+## vector
 ```
 
 ```
@@ -1139,8 +1138,8 @@ ripartizioni5 %>% str
 ```
 
 ```
-## Warning in outer_join_impl(x, y, by$x, by$y): joining factors with
-## different levels, coercing to character vector
+## Warning in outer_join_impl(x, y, by$x, by$y): joining factors with different levels, coercing to character
+## vector
 ```
 
 ```
@@ -1328,8 +1327,8 @@ ripartizioni4 %>% str
 ```
 
 ```
-## Warning in outer_join_impl(x, y, by$x, by$y): joining factor and character
-## vector, coercing into character vector
+## Warning in outer_join_impl(x, y, by$x, by$y): joining factor and character vector, coercing into character
+## vector
 ```
 
 ```

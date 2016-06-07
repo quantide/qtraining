@@ -345,6 +345,9 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(qdata)
+data(bank)</code></pre>
 <div id="mutate" class="section level1">
 <h1><code>mutate()</code></h1>
 <p>As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing columns. This is the job of <code>mutate()</code>:</p>
@@ -377,12 +380,6 @@ df %&gt;% mutate(x1 = x+1)</code></pre>
 ## 1 1 3  2  3
 ## 2 2 2  3  4
 ## 3 3 1  4  5</code></pre>
-<pre class="r"><code>#df %&gt;% mutate(y1 = x1+1, x1 = x+1)
-df %&gt;% mutate(y1 = x+1, x1 = x+1)</code></pre>
-<pre><code>##   x y y1 x1
-## 1 1 3  2  2
-## 2 2 2  3  3
-## 3 3 1  4  4</code></pre>
 <pre class="r"><code>df %&gt;% mutate(xx = x)</code></pre>
 <pre><code>##   x y xx
 ## 1 1 3  1
@@ -456,7 +453,7 @@ bank %&gt;%
 <li><code>lead</code> copies a vector with values shifted by 1:</li>
 </ul>
 <pre class="r"><code>time &lt;- select(bank, duration)
-mutate(time, lead_duration = lead(duration) ,delta_duration = lead_duration - duration)</code></pre>
+mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - duration)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 3]
 ## 
 ##    duration lead_duration delta_duration
@@ -475,7 +472,7 @@ mutate(time, lead_duration = lead(duration) ,delta_duration = lead_duration - du
 <ul>
 <li><code>lag</code> copies a vector with values lagged by 1:</li>
 </ul>
-<pre class="r"><code>mutate(time, lag_duration = lag(duration) ,delta_duration = duration - lag_duration)</code></pre>
+<pre class="r"><code>mutate(time, lag_duration = lag(duration), delta_duration = duration - lag_duration)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 3]
 ## 
 ##    duration lag_duration delta_duration
@@ -492,7 +489,7 @@ mutate(time, lead_duration = lead(duration) ,delta_duration = lead_duration - du
 ## 10       55           50              5
 ## ..      ...          ...            ...</code></pre>
 <!--- exlpain ties in details --->
-<p>These functions represents six variations on ranking functions, mimizing the ranking functions described in SQL2003. They are currently implemented using the built in rank function, and are provided mainly as a convenience when converting between <code>R</code> and SQL. All ranking functions map smallest inputs to smallest outputs. Use <code>desc</code> to reverse the direction.</p>
+<p>The following functions represents six variations on ranking functions, mimizing the ranking functions described in SQL2003. They are currently implemented using the built in rank function, and are provided mainly as a convenience when converting between <code>R</code> and SQL. All ranking functions map smallest inputs to smallest outputs. Use <code>desc</code> to reverse the direction.</p>
 <ul>
 <li><code>min_rank</code> is equivalent to <code>rank(ties.method = &quot;min&quot;)</code> and returns the min rank of each observation:</li>
 </ul>

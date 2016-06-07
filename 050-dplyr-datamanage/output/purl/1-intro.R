@@ -5,7 +5,7 @@ require(tidyr)
 ## ----bank, message=FALSE-------------------------------------------------
 require(qdata)
 data(bank)
-bank
+head(bank)
 str(bank)
 
 ## ----people, message=FALSE-----------------------------------------------

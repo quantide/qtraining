@@ -342,12 +342,17 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(qdata)
+data(bank)</code></pre>
 <div id="group_by" class="section level1">
 <h1><code>group_by()</code></h1>
-<p>The verb functions are useful, but they become really powerful when you combine them with the idea of “group by”, repeating the operation individually on groups of observations within the dataset. In <code>dplyr</code>, you use the <code>group_by()</code> function to describe how to break a dataset down into groups of rows. You can then use the resulting object in exactly the same functions as above; they’ll automatically work “by group” when the input is a grouped.</p>
-<!-- explain -->
-<pre class="r"><code>df &lt;- data.frame(x = 1:6, f = rep(1:2, each = 3))
-dff &lt;- df %&gt;% group_by(f)
+<p>The verb functions are useful, but they become really powerful when you combine them with the idea of “group by”, repeating the operation individually on groups of observations within the dataset. In <code>dplyr</code>, you use the <code>group_by()</code> function to describe how to break a dataset down into groups of rows. You can then use the resulting object in the verbs functions; they’ll automatically work “by group” when the input is a grouped. Let us see some examples (pay attention to objects class).</p>
+<pre class="r"><code># Example data frame
+df &lt;- data.frame(x = 1:6, f = rep(1:2, each = 3))
+
+# Grouped data frame
+dff &lt;- group_by(df, f)
 dff</code></pre>
 <pre><code>## Source: local data frame [6 x 2]
 ## Groups: f [2]
@@ -362,18 +367,40 @@ dff</code></pre>
 ## 6     6     2</code></pre>
 <pre class="r"><code>class(dff)</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
-<pre class="r"><code>dffn &lt;- dff %&gt;% mutate(n = row_number())
-
-class(dffn)</code></pre>
+<pre class="r"><code># Use dff (grouped data frame) as .data argument value in mutate() 
+dffn &lt;- mutate(.data = dff, n = n())
+dffn</code></pre>
+<pre><code>## Source: local data frame [6 x 3]
+## Groups: f [2]
+## 
+##       x     f     n
+##   (int) (int) (int)
+## 1     1     1     3
+## 2     2     1     3
+## 3     3     1     3
+## 4     4     2     3
+## 5     5     2     3
+## 6     6     2     3</code></pre>
+<pre class="r"><code>class(dffn)</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
-<pre class="r"><code>dffa &lt;- dff %&gt;% arrange(desc(x))
-
-class(dffa)</code></pre>
+<pre class="r"><code># Use dff (grouped data frame) as .data argument value in arrange()
+dffa &lt;- arrange(.data = dff, desc(x))
+dffa</code></pre>
+<pre><code>## Source: local data frame [6 x 2]
+## Groups: f [2]
+## 
+##       x     f
+##   (int) (int)
+## 1     3     1
+## 2     2     1
+## 3     1     1
+## 4     6     2
+## 5     5     2
+## 6     4     2</code></pre>
+<pre class="r"><code>class(dffa)</code></pre>
 <pre><code>## [1] &quot;grouped_df&quot; &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
-<pre class="r"><code>dfg &lt;- df %&gt;% 
-  group_by(f) %&gt;%
-  summarise(x_avg = mean(x))
-
+<pre class="r"><code># Use dff (grouped data frame) as data argument value in summarise()
+dfg &lt;- summarise(.data = dff, x_avg = mean(x))
 dfg</code></pre>
 <pre><code>## Source: local data frame [2 x 2]
 ## 
@@ -383,7 +410,7 @@ dfg</code></pre>
 ## 2     2     5</code></pre>
 <pre class="r"><code>class(dfg)</code></pre>
 <pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
-<p>In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (<code>count = n()</code>) and computing the average duration call (<code>dist = mean(duration, na.rm = TRUE)</code>) and balance (<code>delay = mean(balance, na.rm = TRUE)</code>):</p>
+<p>In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (<code>count = n()</code>) and computing the average duration call (<code>mean_duration = mean(duration, na.rm = TRUE)</code>) and balance (<code>mean_balance = mean(balance, na.rm = TRUE)</code>):</p>
 <pre class="r"><code>bank &lt;- tbl_df(bank)
 by_year &lt;- group_by(bank, year)
 summarise(by_year,
@@ -398,29 +425,55 @@ summarise(by_year,
 ## 2  2009 14862      262.9644     1362.140
 ## 3  2010  2620      294.1065     1861.092</code></pre>
 <!-- AS comment on tables --->
-<pre class="r"><code>dm &lt;- mtcars %&gt;% 
-  group_by(cyl, carb) %&gt;%
+<!--
+
+```r
+dm <- mtcars %>% 
+  group_by(cyl, carb) %>%
   summarise(mpg_mean = mean(mpg))
 
 
-tapply(dm$mpg_mean, list(dm$cyl, dm$carb), FUN = I)</code></pre>
-<pre><code>##       1     2    3     4    6  8
+tapply(dm$mpg_mean, list(dm$cyl, dm$carb), FUN = I)
+```
+
+```
+##       1     2    3     4    6  8
 ## 4 27.58 25.90   NA    NA   NA NA
 ## 6 19.75    NA   NA 19.75 19.7 NA
-## 8    NA 17.15 16.3 13.15   NA 15</code></pre>
-<pre class="r"><code>with(dm, tapply(mpg_mean, list(cyl, carb), FUN = I))</code></pre>
-<pre><code>##       1     2    3     4    6  8
+## 8    NA 17.15 16.3 13.15   NA 15
+```
+
+```r
+with(dm, tapply(mpg_mean, list(cyl, carb), FUN = I))
+```
+
+```
+##       1     2    3     4    6  8
 ## 4 27.58 25.90   NA    NA   NA NA
 ## 6 19.75    NA   NA 19.75 19.7 NA
-## 8    NA 17.15 16.3 13.15   NA 15</code></pre>
-<pre class="r"><code>require(xtable)</code></pre>
-<pre><code>## Loading required package: xtable</code></pre>
-<pre class="r"><code>xtabs(mpg_mean~cyl+carb, data = dm)</code></pre>
-<pre><code>##    carb
+## 8    NA 17.15 16.3 13.15   NA 15
+```
+
+```r
+require(xtable)
+```
+
+```
+## Loading required package: xtable
+```
+
+```r
+xtabs(mpg_mean~cyl+carb, data = dm)
+```
+
+```
+##    carb
 ## cyl     1     2     3     4     6     8
 ##   4 27.58 25.90  0.00  0.00  0.00  0.00
 ##   6 19.75  0.00  0.00 19.75 19.70  0.00
-##   8  0.00 17.15 16.30 13.15  0.00 15.00</code></pre>
+##   8  0.00 17.15 16.30 13.15  0.00 15.00
+```
+-->
 <p>Then, you search for the number of days covered per year. You report also the number of phone calls per year:</p>
 <pre class="r"><code>summarise(by_year,
           days = n_distinct(date),

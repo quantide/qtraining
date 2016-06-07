@@ -1,9 +1,8 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
 require(tidyr)
 require(qdata)
+require(ggplot2)
 
 ## ------------------------------------------------------------------------
 data(people)
@@ -32,6 +31,18 @@ df
 
 ## ------------------------------------------------------------------------
 gather(df, key = "age", value = "freq" , 2:4)
+
+## ------------------------------------------------------------------------
+df <- data.frame(country = c("EU", "US"),
+                age_0_17 = c(7,5), 
+                age_18_65 = c(6,2), 
+                age_65 = c(6,5))
+                
+df <- gather(df, key = "age", value = "freq" , age_0_17, age_18_65, age_65)
+
+subx <- function(x, pattern, replacement , ...) sub(pattern, replacement, x, ...)
+
+df %>% mutate(age = subx(age, "age_", ""))
 
 ## ------------------------------------------------------------------------
 df <- data.frame(

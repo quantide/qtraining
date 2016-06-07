@@ -346,6 +346,10 @@ $(document).ready(function () {
 </ul>
 </div>
 
+<pre class="r"><code>require(dplyr)
+require(qdata)
+data(bank) 
+bank &lt;- tbl_df(bank)</code></pre>
 <div id="select" class="section level1">
 <h1><code>select()</code></h1>
 <p>Often you work with large datasets with many columns where only a few are actually of interest to you.</p>
@@ -422,7 +426,7 @@ $(document).ready(function () {
 <h2>Helper Functions for <code>select()</code></h2>
 <p><code>select()</code> offer a wide set of helper functions:</p>
 <ul>
-<li><code>contains(x)</code>: selects all variables whose name contains <code>x</code></li>
+<li><code>contains(x)</code> selects all variables whose name contains <code>x</code></li>
 <li><code>ends_with(x)</code> selects all variables whose name ends in <code>x</code></li>
 <li><code>starts_with(x)</code> selects all variables whose name starts with <code>x</code></li>
 <li><code>everything()</code> selects all variables:</li>
@@ -469,7 +473,7 @@ $(document).ready(function () {
 ## 10 secondary       55
 ## ..       ...      ...</code></pre>
 <ul>
-<li><code>starts_with</code> selects all variables whose name starts with “arr”:</li>
+<li><code>starts_with</code> selects all variables whose name starts with “d”:</li>
 </ul>
 <pre class="r"><code>select(bank, starts_with(&quot;d&quot;))</code></pre>
 <pre><code>## Source: local data frame [45,211 x 4]

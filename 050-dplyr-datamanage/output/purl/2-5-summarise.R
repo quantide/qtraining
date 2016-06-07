@@ -1,6 +1,4 @@
-## ----first, include=FALSE, purl=TRUE, message=FALSE----------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
 require(qdata)
 data(bank)
@@ -13,10 +11,10 @@ summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(bala
 summarise(bank, first(job))
 
 ## ------------------------------------------------------------------------
-summarise(bank, last(job))
+summarise(bank, last(job)) 
 
 ## ------------------------------------------------------------------------
-summarise(bank, nth(job,8))
+summarise(bank, nth(job, 8))
 
 ## ------------------------------------------------------------------------
 summarise(bank, n())
