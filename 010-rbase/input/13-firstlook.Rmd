@@ -25,8 +25,6 @@ log(14)
 ```
 
 
-
-
 ## Assignment
 
 Results of calculations can be stored in objects using the assignment operators:
@@ -58,8 +56,11 @@ print(z)
 
 ## The R Workspace
 
-Objects created during an R session are hold in memory. The collection of objects currently avalaible is called the workspace.
-To list the objects in the current R session, the function `ls()` or the function `objects()` may be used.
+The workspace is your current R working environment and includes any user-defined objects. It is also known as global environment.
+
+### Objects listing
+
+Objects created during an R session are hold in memory. To list the objects in the current R session, the function `ls()` or the function `objects()` may be used.
 
 ```{r, workspace}
 ls()
@@ -75,6 +76,7 @@ x2 <- log(9)
 ls(pattern = "x")
 ```
 
+### Removing objects
 
 If a value to an object that already exists is assigned then the contents of the object will be overwritten with the new value (without a warning!). The function `rm()` ought be used to remove one or more objects from your session.
 
@@ -83,45 +85,64 @@ rm(x2)
 ls()
 ```
 
+### Garbage collection
+
+When objects are no longer used, and this clearly happens when objects are deleted, `R` releases immediately the memory they filled in the system. This is done automatically by the garbage collector `gc()`.
+
+We can call `gc()` also to see how much memory `R` is using for allocating objects
+
+```{r howRworks-029}
+gc()
+```
 
 ## The Working Directory
-<!-- questo va cambiato AS -->
 
 If you want to read files from a specific location or write files to a specific location without typing (on Windows, usually very long) path names you will need to set working directory in R. 
 
-You can set a working directory using absolute or relative paths.   
-The following example shows an example how to set the working directory in R using an absolute path. The working directory is set to the folder "Data" within the folder "Documents and Settings" on the C drive ().
+You can set a working directory with `setwd()` function, using absolute or relative paths.
+The following example shows an example how to set the working directory in R using an absolute path. The working directory is set to the folder "Data" within the folder "Documents and Settings" on the C drive.
 
-```{r, setwd, eval=FALSE}
+```{r, setwd1, eval=FALSE}
 setwd("C:/User/Andrea/Documents and Settings/Data")
 ```
 
+Remember that you must use the forward slash / or double backslash \\\\ in R! The Windows format of single backslash will not work.
+
 It is a nice approach, but things get complicated if you move files to different computers, say from home to your office, and have different directory structures, disk names etc. Of course you can change it every time. 
+Using relative paths solves this problem. Relative paths are more convenient than absolute paths as they makes your R script or RStudio project independent of the directory structure in which it resides thus facilitating the reproducibility of your work on a different PC.
 
-Using relative paths solves this problem. Relative paths are more convenient than absolute paths as they makes your R script or RStudio project independent of the directory structure in which it resides thus facilitating the reproducibility of your work on a different PC our directory environment.
-
-<!--
-chiedere al pego
--->
-
-```{r, setwd, eval=FALSE}
-setwd("~/Documents and Settings/Data")
-```
-
-where `~` replaces `C:/User/Andrea`.
-
-To get the path of the current working directory, the `getwd()` function should be used.
+So, you can use `getwd()` function to get the path of the current working directory:
 
 ```{r, getwd, eval=FALSE}
 getwd()
 ```
 
-
 ```
 ## [1] "C:/User/Andrea/Documents and Settings/Data"
 ```
+Suppose that your current directory is the previous (set to "Data" folder) one and you want to set the directory on "Statistics" folder inside "Data" folder. 
 
-Remember that you must use the forward slash / or double backslash \\\\ in R! The Windows format of single backslash will not work.
+```{r, setwd2, eval=FALSE}
+setwd("./Statistics")
+```
+
+```
+## [1] "C:/User/Andrea/Documents and Settings/Data/Statistics"
+```
+
+`.` represents your current directory. 
+
+Suppose that your current directory is the previous one (set to "Statistics" folder) and you want to set the directory on "Maths" folder inside "Data" folder.
+
+```{r, setwd3, eval=FALSE}
+setwd("./../Maths")
+```
+
+```
+## [1] "C:/User/Andrea/Documents and Settings/Data/Maths"
+```
+
+`..` are useful to move up the directory hierarchy relative to the current working directory. In particular, you move out from "Statistics" folder, and up into the "Maths" folder. 
 
 
 ## R help

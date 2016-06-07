@@ -60,6 +60,133 @@ or
 ?read.table
 ```
 
+Let us see in depth the function structure.
+
+## Function structure
+
+When working with R we all make constant use of functions and, when developing, we create new functions so that functions look like very familiar R objects. Nevertheless, understanding the theory and the rationals underlying R functions may help to create much more efficient and possibly elegant coding.
+
+We can create and assign functions to a variable name as we do with any other object:
+
+```{r functions-create}
+f <- function(x, y = 0) {
+  z <- x + y
+  z
+}
+```
+
+Eventually, we can delete any function with the usual call to `rm()` or `remove()`
+
+Functions are objects with three basic components: 
+
+* a formal arguments list
+* a body
+* an environment. 
+
+```{r functions-002}
+formals(f)
+body(f)
+environment(f)
+```
+
+
+### Formals
+Formals are the formal arguments of a function.
+
+When we call a function, formals arguments can be specified by position or by name and we can mix positional matching with matching by name so that the following are equivalent:
+
+```{r functions-formals-argument}
+
+mean(x = 1:5, trim = 0.1)
+mean(1:5, trim = 0.1)
+mean(x = 1:5, 0.1)
+mean(1:5, 0.1)
+mean(trim = 0.1, x = 1:5)
+```
+
+Along with position and name, we can also specify formals by partial matching so that:
+
+```{r functions-formals-argument2}
+mean(1:5, tr = 0.1)
+mean(tr = 0.1, x = 1:5)
+```
+
+would work anyway.
+
+Functions formals may also have the construct `symbol = default`, that unless differently specified, forces any argument to be used with its default value.
+
+Specifically, function `mean()` also have a third argument `na.rm` that defaults to `FALSE` and, as a result passing vectors with `NA` values to `mean()` returns `NA`
+
+```{r functions-formals-arguments3}
+mean(c(1, 2, NA))
+```
+
+While, by specifying `na.rm=TRUE` we get the mean of all non missing elements of vector `x`.
+
+```{r functions-formals-arguments4}
+mean(c(1, 2, NA), na.rm = TRUE)
+```
+
+The order `R` uses for matching formals against value is:
+
+1. Check for exact match for a named argument
+2. Check for a partial match
+3. Check for a positional match
+
+
+### Body of a function
+
+The body of a function is a parsed R statement. In practice, this implies that the body of a function needs to be correct from a formal point of view but no evaluation of the body of a function occurred yet. 
+
+As a result, this function would return an error:
+
+```{r functions-body-wrong, eval=FALSE}
+wrong <- function(x) {x =}
+```
+
+as its body is not a correct `R` statement.
+
+While this function:
+
+```{r functions-body-right}
+right <- function(x){x+h}
+```
+
+is accepted by `R` as is formally correct even thought, except under specific circumstances, will always return an error:
+
+```{r functions-body-right-error, error=TRUE}
+right(x = 2)
+```
+
+The body of a function, is usually a collection of statements in braces but it can be a single statement, a symbol or even a constant.
+
+### Environment of a function
+Environments are a fundamental concept in R and their knowledge is essential for advanced programming.
+
+Environments have the following fundamental concepts:
+
+ * The environment of a function is the environment that was active at the time that the function was created. Generally, for user defined function, the Global environment:
+
+    ```{r functions-environment-userdefined}
+    f <- function(x){x+1}
+    environment(f)
+    ```
+    or, when a function is defined within a package, the environment associated to that package:
+
+    ```{r functions-environment-package}
+    environment(mean)
+    ```
+
+ * Objects defined within a function, exists in the environment of the function itself.
+ 
+    ```{r functions-environment-global, error=TRUE}
+    f <- function(x){x+1}
+    x
+   ```
+
+
+## Function Examples
+   
 There are lots of function types, let us see some examples.
 
 ### Mathematical Functions
@@ -195,6 +322,4 @@ data <- mtcars[, c(1, 3, 4, 5, 6)]
 cor(data)
 cov(data)
 ```
-
-
 

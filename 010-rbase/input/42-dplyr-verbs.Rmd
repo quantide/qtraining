@@ -134,11 +134,11 @@ arrange(bank, desc(balance))
 
 You can order a data frame by one or more than one variables.
 
-Ordering data frame bank by `age` first and descending `ballance` afterward requires:
+Ordering data frame bank by `age` first and descending `balance` afterward requires:
 
 
 ```{r arrange3}
-arrange(bank, age , desc(balance))
+arrange(bank, age, desc(balance))
 ```
 
 

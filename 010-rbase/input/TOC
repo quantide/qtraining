@@ -21,8 +21,3 @@ Data Visualization with ggplot2 		| 51-ggplot.Rmd
 
 Data Analysis
 Statistical Models with R						| 61-statmodels.Rmd
-
-R Development
-Writing R Functions							    | 71-functions.Rmd
-R Markdown								          | 72-rmarkdown.Rmd
-Git and Github								      | 73-git.Rmd	
