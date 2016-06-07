@@ -3,12 +3,10 @@ title: "DB Interface"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(ggplot2)
 require(DBI)
@@ -28,7 +26,7 @@ This is clearly a case for SQLite: let us load the `RSQLite` package.
 require(RSQLite)
 ```
 
-As these files might have different encodings you may need to define a simple function that returns the encoding of the file. Nothe that this function uses unix system commands and may not work under windows based computers.
+As these files might have different encodings you may need to define a simple function that returns the encoding of the file. Note that this function uses unix system commands and may not work under windows based computers.
 
 ```{r eval=FALSE}
 charset <- function (file){
@@ -38,7 +36,7 @@ charset <- function (file){
 }
 ```
 
-You then create an empty SQLite database with a little trick that ensures the database is reoved in case it already exists:
+You then create an empty SQLite database with a little trick that ensures the database is removed in case it already exists:
 
 ```{r eval=FALSE}
 path <- "./"

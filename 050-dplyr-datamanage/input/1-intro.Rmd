@@ -3,7 +3,7 @@ title: "Data Management with `dplyr` and `tidyr`"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
 
@@ -36,7 +36,7 @@ Most of the examples of this course require the dataset `bank` which is included
 ```{r bank, message=FALSE}
 require(qdata)
 data(bank)
-bank
+head(bank)
 str(bank)
 ```
 

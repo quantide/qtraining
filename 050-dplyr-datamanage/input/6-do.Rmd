@@ -3,12 +3,10 @@ title: "Generic Do"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(tidyr)
 require(qdata)
@@ -116,10 +114,6 @@ models %>% mutate_each(funs(intercept, slope , RSq), mod)
 ```
 
 Finally, by using function `tidy()` from package `broom`:
-
-```{r, message=FALSE}
-require(broom)
-```
 
 ```{r}
 people %>% group_by(Gender) %>% 

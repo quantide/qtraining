@@ -3,12 +3,10 @@ title: "Group Data"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(qdata)
 data(bank)
@@ -17,36 +15,37 @@ data(bank)
 
 # `group_by()`
 
-The verb functions are useful, but they become really powerful when you combine them with the idea of “group by”, repeating the operation individually on groups of observations within the dataset.
-In `dplyr`, you use the `group_by()` function to describe how to break a dataset down into groups of rows. You can then use the resulting object in exactly the same functions as above; they’ll automatically work “by group” when the input is a grouped.
+The verb functions are useful, but they become really powerful when you combine them with the idea of "group by", repeating the operation individually on groups of observations within the dataset.
+In `dplyr`, you use the `group_by()` function to describe how to break a dataset down into groups of rows. You can then use the resulting object in the verbs functions; they’ll automatically work "by group" when the input is a grouped. Let us see some examples (pay attention to objects class).
 
-<!-- explain -->
-
-```{r}
+```{r grouped_df_class}
+# Example data frame
 df <- data.frame(x = 1:6, f = rep(1:2, each = 3))
-dff <- df %>% group_by(f)
+
+# Grouped data frame
+dff <- group_by(df, f)
 dff
 class(dff)
 
-
-dffn <- dff %>% mutate(n = row_number())
-
+# Use dff (grouped data frame) as .data argument value in mutate() 
+dffn <- mutate(.data = dff, n = n())
+dffn
 class(dffn)
 
-dffa <- dff %>% arrange(desc(x))
 
+# Use dff (grouped data frame) as .data argument value in arrange()
+dffa <- arrange(.data = dff, desc(x))
+dffa
 class(dffa)
 
-dfg <- df %>% 
-  group_by(f) %>%
-  summarise(x_avg = mean(x))
 
+# Use dff (grouped data frame) as data argument value in summarise()
+dfg <- summarise(.data = dff, x_avg = mean(x))
 dfg
-
 class(dfg)
 ```
 
-In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (`count = n()`) and computing the average duration call (`dist = mean(duration, na.rm = TRUE)`) and balance (`delay = mean(balance, na.rm = TRUE)`):
+In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (`count = n()`) and computing the average duration call (`mean_duration = mean(duration, na.rm = TRUE)`) and balance (`mean_balance = mean(balance, na.rm = TRUE)`):
 
 ```{r}
 bank <- tbl_df(bank)
@@ -59,6 +58,7 @@ summarise(by_year,
 
 <!-- AS comment on tables --->
 
+<!--
 ```{r}
 dm <- mtcars %>% 
   group_by(cyl, carb) %>%
@@ -73,6 +73,7 @@ require(xtable)
 xtabs(mpg_mean~cyl+carb, data = dm)
 
 ```
+-->
 
 Then, you search for the number of days covered per year. You report also the number of phone calls per year:
 

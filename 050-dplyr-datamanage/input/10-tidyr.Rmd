@@ -3,15 +3,14 @@ title: "Tidy Data with `tidyr`"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(tidyr)
 require(qdata)
+require(ggplot2)
 ```
 
 
@@ -38,9 +37,11 @@ This data frame can be considered as a tidy data frame.
 
 As a result, plotting `Weight` as a function of `Height` with different colours for `Gender`, using package `ggplot2`, is very straightforward as `ggplot2` is a set of visualization tools ready for tidy data 
 
+<!--
 ```{r message=FALSE}
 require(ggplot2)
 ```
+-->
 
 ```{r}
 ggplot(people, aes(x = Height, y = Weight, colour = Gender)) + geom_point()
@@ -84,9 +85,9 @@ Tidy data makes it easy for an analyst or a computer to extract needed variables
 Real datasets can, and often do, violate the three precepts of tidy data in almost every way imaginable. These are the five most common problems with messy datasets:
 
 1. column headers are values, not variable names;
-1. multiple variables are stored in one column
+1. multiple variables are stored in one column;
 1. variables are stored in both rows and columns;
-1. multiple types of observational units are stored in the same table
+1. multiple types of observational units are stored in the same table;
 1. a single observational unit is stored in multiple tables.
 
 
@@ -136,7 +137,7 @@ where `key` and `value` are the names for the newly created key-value pair and `
 
 <!--- AS same example with subx -->
 
-``{r}
+```{r}
 df <- data.frame(country = c("EU", "US"),
                 age_0_17 = c(7,5), 
                 age_18_65 = c(6,2), 
@@ -207,7 +208,7 @@ df <- data.frame(
 df
 ```
 
-This data frame stores two types of observational units in the same table. Variables `country`, `country` and `km3` refer to the first type of observational unit. The number of events: `event` per year: `year` by `state` refer to a second type of observational unit.
+This data frame stores two types of observational units in the same table. Variables `country`, `state` and `km3` refer to the first type of observational unit. The number of events: `event` per year: `year` by `state` refer to a second type of observational unit.
 
 You can tidy this data by splitting the original data frame into two data frame: `df1` and `df2`.
 

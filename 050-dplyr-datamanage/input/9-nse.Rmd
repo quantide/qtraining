@@ -3,14 +3,13 @@ title: "Non-Standard Evaluation"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(qdata)
+require(lazyeval)
 data(bank)
 ```
 
@@ -100,7 +99,7 @@ NSE is great as for interactive use as:
 * saves time when coding
 * keeps yout code simpler
 
-On the other hand, NSE is is hard to program with.
+On the other hand, NSE is hard to program with.
 
 Fortunatelly, every function in `dplyr` that uses NSE also has a version that uses SE. There’s a consistent naming scheme: the SE is the NSE name with `_` on the end. For example, the SE version of `summarise()` is `summarise_()`, the SE version of `arrange()` is `arrange_()`.
 
@@ -170,7 +169,7 @@ summarise_(bank, .dots = setNames(dots, c("mean", "count")))
 
 # Mixing Constants and Variables
 
-You may want to mix constant and variable in the same call: that is the variable and the function are passed as arguments.
+You may want to mix constants and variables in the same call: that is the variable and the function are passed as arguments.
 
 Suppose you want to write a function `summarise_by(data, g , x , fun)` that summarise `data` by `g` by computing `fun(x)`.
 

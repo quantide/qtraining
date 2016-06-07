@@ -3,12 +3,10 @@ title: "Each"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(qdata)
 data(mtcars)
@@ -252,7 +250,7 @@ mtcars %>%
   summarise(min_mpg = min(mpg), min_disp = min(disp), max_mpg = max(mpg), max_disp = max(disp))
 ```
 
-When you apply many functions to one variable, the use of `summarise_each()` provides a more compact and tidy notation:
+When you apply many functions to many variables, the use of `summarise_each()` provides a more compact and tidy notation:
 
 ```{r}
 # without groups
@@ -547,7 +545,7 @@ mtcars %>%
   mutate(rescale_mpg = rescale(mpg),  order_disp = order(disp))
 ```
 
-When you apply many functions to one variable, the use of `mutate_each()` provides a more compact and tidy notation:
+When you apply many functions to many variables, the use of `mutate_each()` provides a more compact and tidy notation:
 
 ```{r}
 # without groups

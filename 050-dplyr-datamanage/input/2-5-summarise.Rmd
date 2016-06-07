@@ -3,12 +3,10 @@ title: "Summarise Data"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(qdata)
 data(bank)
@@ -36,13 +34,13 @@ summarise(bank, first(job))
 * `last` returns the last value of a vector:
 
 ```{r}
-summarise(bank, last(job))
+summarise(bank, last(job)) 
 ```
 
 * `nth` returns the nth value of a vector:
 
 ```{r}
-summarise(bank, nth(job,8))
+summarise(bank, nth(job, 8))
 ```
 
 * `n()` returns the number of values in a vector:

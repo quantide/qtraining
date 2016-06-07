@@ -3,12 +3,10 @@ title: "Filter Data"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(qdata)
 require(lubridate)
@@ -24,14 +22,18 @@ data(bank)
 
 The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.
 
-For example, you can select all calls made on 2008-05-05 to students whit balance above 20,000:
-
-
+For example, you can select all calls made to students whit balance above 20,000:
 ```{r}
 filter(bank, job == "student", balance > 20000)
+```
+
+or all calls made on 2008-05-05 to students:
+
+```{r}
 filter(bank, job == "student", as.character(date) == "2008-05-05")
 filter(bank, job == "student", date == ymd("2008-05-05"))
 ```
+
 
 Note that you'll have to either convert variable `date` to character or the string "2008-05-05" to an object of class `POSIX` as `dplyr` allows comparison between same class objects only.
 
@@ -60,7 +62,7 @@ filter(bank, job == "admin." | job == "technician")
 # `slice()`
 To select rows by position, use `slice()`:
 
-You can select the first 10 calls of the bank dataset as follow:
+You can select the first 5 calls of the bank dataset as follow:
 
 ```{r}
 slice(bank, 1:5)
@@ -74,16 +76,17 @@ Or the last row by:
 slice(bank, n()) 
 ```
 
-This function is implemented special for each data source and can only be used from within summarise, mutate and filter
-
+<!--
+This function is implemented special for each data source and can only be used from within summarise, mutate and filter 
+-->
 
 where function `n()` returns the number of element of a vector in the current group. This function is implemented special for each data source and can only be used from within `summarise()`, `mutate()` and `filter()`
 
+<!--
 ?n
 
-
 or the last call
-
+-->
 
 
 # `sample_n()` and `sample_frac()`

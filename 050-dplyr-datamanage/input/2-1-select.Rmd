@@ -4,15 +4,15 @@ title: "Select Data"
 
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+options(width = 108)
 ```
 
 
-```{r first, include=FALSE, purl=TRUE, message=FALSE}
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
 require(qdata)
 data(bank) 
-bank <-  tbl_df(bank)
+bank <- tbl_df(bank)
 ```
 
 
@@ -43,7 +43,7 @@ select(bank, ID = id)
 
 `select()` offer a wide set of helper functions:
 
-* `contains(x)`: selects all variables whose name contains `x`
+* `contains(x)` selects all variables whose name contains `x`
 * `ends_with(x)` selects all variables whose name ends in `x`
 * `starts_with(x)` selects all variables whose name starts with `x`
 * `everything()` selects all variables:
@@ -65,7 +65,7 @@ select(bank, contains("at"))
 select(bank, ends_with("tion"))
 ```
 
-* `starts_with` selects all variables whose name starts with "arr":
+* `starts_with` selects all variables whose name starts with "d":
 
 ```{r}
 select(bank, starts_with("d"))
