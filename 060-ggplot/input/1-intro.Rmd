@@ -4,14 +4,7 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
-```
-
-```{r first, include=FALSE, purl=TRUE}
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
-
-require(dplyr)
+options(width = 108)
 ```
 
 R provides at least three main graphical systems: `graphics` that comes with base R, `lattice` that is an R implementation of William Cleveland's trellis graphics and `ggplot2` that is an R implementation of Leland Wilkinson's Grammar of Graphics. The Grammar of Graphics is a formal and structured perspective on how to describe data graphics. CRAN provides a [Task View on Graphics](https://cran.r-project.org/web/views/Graphics.html), that is an organized list of all R packages about graphics, that includes not only the three main graphical systems but also packages to produce specialized plots.
@@ -57,7 +50,7 @@ The following data sets are used in the examples of this section.
 ```{r intro_data_bands, message=FALSE}
 require(qdata)
 data(bands)
-bands
+head(bands)
 ```
 
 For a complete description of data, refer to the help (`?bands`).

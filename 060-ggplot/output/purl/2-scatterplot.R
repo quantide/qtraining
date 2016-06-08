@@ -1,11 +1,6 @@
-## ----first, include=FALSE, purl=TRUE-------------------------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
-
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
-
 require(ggplot2)
-
 require(qdata)
 data(bands)
 

@@ -396,29 +396,42 @@ $(document).ready(function () {
 <p><code>bands</code> data is included in the <code>qdata</code> package.</p>
 <pre class="r"><code>require(qdata)
 data(bands)
-bands</code></pre>
-<pre><code>## Source: local data frame [540 x 40]
-## 
-##    timestamp cylinder_number   customer job_number grain_screened ink_color proof_on_ctd_ink blade_mfg
-##        (int)           (chr)      (chr)      (int)         (fctr)    (fctr)           (fctr)    (fctr)
-## 1   19910108            X126    TVGUIDE      25503            YES       KEY              YES    BENTON
-## 2   19910109            X266    TVGUIDE      25503            YES       KEY              YES    BENTON
-## 3   19910104              B7     MODMAT      47201            YES       KEY              YES    BENTON
-## 4   19910104            T133     MASSEY      39039            YES       KEY              YES    BENTON
-## 5   19910111             J34      KMART      37351             NO       KEY              YES    BENTON
-## 6   19910104            T218     MASSEY      38039            YES       KEY              YES    BENTON
-## 7   19910111            X249      ROSES      35751             NO       KEY              YES    BENTON
-## 8   19910111            X788      ROSES      35751             NO       KEY              YES    BENTON
-## 9   19910112            M372     MODMAT      47201            YES       KEY              YES    BENTON
-## 10  19910114            I320 CHILDCRAFT      37000            YES       KEY              YES    BENTON
-## ..       ...             ...        ...        ...            ...       ...              ...       ...
-## Variables not shown: cylinder_division (fctr), paper_type (fctr), ink_type (fctr), direct_steam (fctr),
-##   solvent_type (fctr), type_on_cylinder (fctr), press_type (fctr), press (int), unit_number (int),
-##   cylinder_size (fctr), paper_mill_location (fctr), plating_tank (int), proof_cut (dbl), viscosity (int),
-##   caliper (dbl), ink_temperature (dbl), humidity (int), roughness (dbl), blade_pressure (int), varnish_pct
-##   (dbl), press_speed (int), ink_pct (dbl), solvent_pct (dbl), esa_voltage (dbl), esa_amperage (dbl), wax
-##   (dbl), hardener (dbl), roller_durometer (dbl), current_density (int), anode_space_ratio (dbl),
-##   chrome_content (int), band_type (fctr)</code></pre>
+head(bands)</code></pre>
+<pre><code>##   timestamp cylinder_number customer job_number grain_screened ink_color proof_on_ctd_ink blade_mfg
+## 1  19910108            X126  TVGUIDE      25503            YES       KEY              YES    BENTON
+## 2  19910109            X266  TVGUIDE      25503            YES       KEY              YES    BENTON
+## 3  19910104              B7   MODMAT      47201            YES       KEY              YES    BENTON
+## 4  19910104            T133   MASSEY      39039            YES       KEY              YES    BENTON
+## 5  19910111             J34    KMART      37351             NO       KEY              YES    BENTON
+## 6  19910104            T218   MASSEY      38039            YES       KEY              YES    BENTON
+##   cylinder_division paper_type ink_type direct_steam solvent_type type_on_cylinder press_type press
+## 1          GALLATIN   UNCOATED UNCOATED           NO         LINE              YES   MOTTER94   821
+## 2          GALLATIN   UNCOATED UNCOATED           NO         LINE              YES   MOTTER94   821
+## 3          GALLATIN   UNCOATED   COATED           NO         LINE              YES  WOODHOE70   815
+## 4          GALLATIN   UNCOATED UNCOATED           NO         LINE              YES  WOODHOE70   816
+## 5          GALLATIN   UNCOATED   COATED           NO         LINE              YES  WOODHOE70   816
+## 6          GALLATIN   UNCOATED UNCOATED           NO         LINE              YES  WOODHOE70   816
+##   unit_number cylinder_size paper_mill_location plating_tank proof_cut viscosity caliper ink_temperature
+## 1           2       TABLOID             NORTHUS         1911        55        46   0.200            17.0
+## 2           2       TABLOID             NORTHUS           NA        55        46   0.300            15.0
+## 3           9       CATALOG             NORTHUS           NA        62        40   0.433            16.0
+## 4           9       CATALOG             NORTHUS         1910        52        40   0.300            16.0
+## 5           2       TABLOID                &lt;NA&gt;         1910        50        46   0.300            17.0
+## 6           2       CATALOG             NORTHUS         1910        50        40   0.267            16.8
+##   humidity roughness blade_pressure varnish_pct press_speed ink_pct solvent_pct esa_voltage esa_amperage
+## 1       78    0.7500             20        13.1        1700    50.5        36.4           0            0
+## 2       80    0.7500             20         6.6        1900    54.9        38.5           0            0
+## 3       80        NA             30         6.5        1850    53.8        39.8           0            0
+## 4       75    0.3125             30         5.6        1467    55.6        38.8           0            0
+## 5       80    0.7500             30         0.0        2100    57.5        42.5           5            0
+## 6       76    0.4375             28         8.6        1467    53.8        37.6           5            0
+##   wax hardener roller_durometer current_density anode_space_ratio chrome_content band_type
+## 1 2.5      1.0               34              40            105.00            100      BAND
+## 2 2.5      0.7               34              40            105.00            100    NOBAND
+## 3 2.8      0.9               40              40            103.87            100    NOBAND
+## 4 2.5      1.3               40              40            108.06            100    NOBAND
+## 5 2.3      0.6               35              40            106.67            100    NOBAND
+## 6 2.5      0.8               40              40            103.87            100    NOBAND</code></pre>
 <p>For a complete description of data, refer to the help (<code>?bands</code>).</p>
 </div>
 <div id="chickweight" class="section level2">

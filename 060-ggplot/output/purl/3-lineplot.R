@@ -1,13 +1,6 @@
-## ----first, include=FALSE, purl=TRUE-------------------------------------
-# This code chunk contains R code already described in the previous chapters
-# that is required by following examples
-
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
-
 require(ggplot2)
-
-require(qdata)
-data(bands)
 
 ## ----linegraph_first, message=FALSE--------------------------------------
 ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + geom_line()
