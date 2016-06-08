@@ -44,7 +44,7 @@ Mac users click on "R-X.XX.X.pkg (latest version)".
 
 Linux users find download files and installation instructions for their Linux distribution in the website. 
 
-X.XX.X identify the current version of R. In April 2016, the current version is the 3.2.5.
+X.XX.X identify the current version of R. In June 2016, the current version is the 3.3.0.
 
 To install R, Windows and Mac users must just double click on the file and follow the installation instructions.
 
