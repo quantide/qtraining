@@ -1,0 +1,49 @@
+---
+title: "R Data Files"
+---
+
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
+options(width = 108)
+require(knitr)
+opts_knit$set(root.dir = "./../data")
+outDir <- "."
+```
+ 
+
+## Save R Data Files 
+
+Statistical packages often provide the opportunity to save the working environment with all the objects it contains in their own formats. Even if rarely used, this function is available in R as well. The format used by R is called `Rdata` (or `Rda`).
+
+In this way, different objects can be saved in a single file. Moreover, all the features of a data frame which cannot be saved in a text file, such as the levels of a factor, can be kept in the file. 
+
+To save an object of the R workspace in a file use the `save()` function. The first argument of the function is the object to be saved, whereas the file name is defined in the `file` argument. If the position is not specified, R saves the file in the current directory.
+
+```{r, save1, eval=FALSE}
+# It creates a mtcars.Rda file in the current directory
+save(mtcars, file = "mtcars.Rda")
+```
+
+To save more than one object list their names.
+
+```{r, save2, eval=FALSE}
+# It creates a datasets.Rda file in the current directory
+save(mtcars, iris, file = "datasets.Rda")
+```
+
+An alternative method to save more than one object is provided by the `list` argument. The names of the objects to be saved in a vector can be inserted with the `list` argument. This method is advisable when the list of the files to be saved is contained in a vector.
+
+```{r, save3, eval=FALSE}
+# It creates a datasets.Rda file in the current directory
+datalist = c("mtcars", "iris")
+save(list = datalist, file = "datasets.Rda")
+```
+
+## Load R Data Files
+
+To upload `Rda` files in R use the `load()` function.
+
+```{r, load, eval=FALSE}
+# It reads the datasets.Rda file previously created in the current directory
+load("datasets.Rda")
+```
+

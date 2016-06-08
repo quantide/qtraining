@@ -120,7 +120,7 @@ getwd()
 ```
 ## [1] "C:/User/Andrea/Documents and Settings/Data"
 ```
-Suppose that your current directory is the previous (set to "Data" folder) one and you want to set the directory on "Statistics" folder inside "Data" folder. 
+Suppose that your current directory is the previous one ("Data" folder) and you want to set the directory on "Statistics" folder inside "Data" folder: 
 
 ```{r, setwd2, eval=FALSE}
 setwd("./Statistics")
@@ -132,7 +132,7 @@ setwd("./Statistics")
 
 `.` represents your current directory. 
 
-Suppose that your current directory is the previous one (set to "Statistics" folder) and you want to set the directory on "Maths" folder inside "Data" folder.
+Suppose that your current directory is the previous one ("Statistics" folder) and you want to set the directory on "Maths" folder inside "Data" folder:
 
 ```{r, setwd3, eval=FALSE}
 setwd("./../Maths")

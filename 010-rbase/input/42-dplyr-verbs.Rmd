@@ -92,23 +92,23 @@ filter(bank, age == 18 & job == "student")
 ```
 
 ```{r filter3}
-# Select all calls made to people of 18 or years
+# Select all calls made to people of 18 or 95 years
 filter(bank, age == 18 | age == 95)
 ```
 
 `filter()` can be used also with `%in%` to establish conditions under which filter: 
 
 ```{r filter4}
-# Select all calls made to people of 18 or years
+# Select all calls made to people of 18 or 95 years
 filter(bank, age %in% c(18,95))
 ```
 
 An other example is:
 
 ```{r filter5}
-# Select all calls made to people whose jos is admin. or technician 
+# Select all calls made to people whose job is admin. or technician 
 filter(bank, job %in% c("admin.","technician"))
-# Select all calls made to people whose jos is admin. or technician 
+# Select all calls made to people whose job is admin. or technician 
 filter(bank, job == "admin." | job == "technician")
 ```
 
@@ -184,9 +184,9 @@ The last verb is `summarise()`, which collapses a data frame to a single row.
 The first argument is the name of the data frame, and the second and subsequent are summarising expressions.
 
 ```{r summarise}
-# Compute the mean of balance
+# Compute the mean of balance variable of bank data frame
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
-# Compute the minimum and the maximum value of balance
+# Compute the minimum and the maximum value of balance of bank data frame
 summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
 ```
 
