@@ -2,6 +2,7 @@
 title: "Reports with R Markdown"
 ---
 
+
 ```{r, echo=FALSE, message=FALSE, include=FALSE, purl=FALSE}  
 options(width = 108)
 show_chunk <- function(x){

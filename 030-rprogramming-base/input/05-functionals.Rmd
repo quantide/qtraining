@@ -3,10 +3,14 @@ title: "Functionals"
 output: html_document
 ---
 
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
 > "To become significantly more reliable, code must become more transparent. In particular, nested conditions and loops must be viewed with great suspicion. Complicated control flows confuse programmers. Messy code often hides bugs."  
  — Bjarne Stroustrup
 
-`for()` loops are quite often nested and mixed up with `if()` statements. As a result, the whole coding structure may result in a complicated muddle to understand and, as a consequence, the objective of our coding may get lost within the code itself. `for()` loops do have a bad reputation of being slow especially when compared with equivalent functionals structures as `lapply()`. Nowadays, speed is no more a crucial point when dealing with `for()` loops. In other words, `for()` loops, whenever possible, should be avoided not mainly because of a performance issue but to achieve modularity and clarity in our codes. 
+`for` loops are quite often nested and mixed up with `if` statements. As a result, the whole coding structure may result in a complicated muddle to understand and, as a consequence, the objective of our coding may get lost within the code itself. `for` loops do have a bad reputation of being slow especially when compared with equivalent functionals structures as `lapply()`. Nowadays, speed is no more a crucial point when dealing with `for` loops. In other words, `for` loops, whenever possible, should be avoided not mainly because of a performance issue but to achieve modularity and clarity in our codes. 
 
 _Functionals_ are functions that take a function as input and return a data object as output. Functionals are very often excellent substitutes to `for` loops as they allow to communicate the objective of our code in a more clear and concise manner as the code will be cleaner and it will more closely adhere to `R`'s idioms.
 
@@ -18,7 +22,7 @@ In this chapter the most important functionals will be analyzed, in particular:
 
 ## `lapply`
 
-`lapply()` is, possibly, the most used functional. `lapply()` takes a function and applies it to each element of a list, saving the results back into a result list. `lapply()` is the building block for many other functionals. In principle, `lapply()` is a wrapper around a standard for loop. The wrapper is written in `C` to increase performance. 
+`lapply()` is, possibly, the most used functional. `lapply()` takes a function and applies it to each element of a list, saving the results back into a result list. `lapply()` is the building block for many other functionals. In principle, `lapply()` is a wrapper around a standard `for` loop. The wrapper is written in `C` to increase performance. 
 
 `lapply()` takes three arguments: 
 
@@ -26,7 +30,7 @@ In this chapter the most important functionals will be analyzed, in particular:
 * a function `FUN` that takes, as first argument, each element of `X`
 * the `''...''` argument that can be any argument to be passed to `FUN`
 
-Suppose we want to gain the maximum of each column for the `airquality` data frame. By using a `for()` loop we could write:
+Suppose we want to gain the maximum of each column for the `airquality` data frame, included in `datasets` package. By using a `for` loop we could write:
 
 ```{r functionals-002}
 n_col <- ncol(airquality)
@@ -46,7 +50,7 @@ lapply(X = airquality, FUN = max, na.rm = TRUE)
 
 The second chunk of code is by far more clear and concise than the first one even though a vector would be preferable than a list as output.
 
-Moreover, `lapply()` as opposite to `for()` loops does not produce any intermediate result when running. In the above `for()` loop, the value of the result of the loop, vector `out`, changes at each iteration. The result of `lapply()`, instead, can be assigned to a variable but does not produce any intermediate result.
+Moreover, `lapply()` as opposite to `for` loops does not produce any intermediate result when running. In the above `for` loop, the value of the result of the loop, vector `out`, changes at each iteration. The result of `lapply()`, instead, can be assigned to a variable but does not produce any intermediate result.
 
 By default `lapply()` takes each element of list `X` as the first argument of function `FUN`. This works perfectly, as long as each element of `X` is the first of `FUN`. This is true in case we want to compute the mean of each column of a data frame as each column is passed as first argument to function `mean()`.
 
@@ -189,7 +193,7 @@ apply(df, MARGIN = 1, FUN = quantile, probs=c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90
 
 The `tapply()` function applies a function to each cell of a ragged array, that is to each (non-empty) group of values given by a unique combination of the levels of certain factors. 
 
-The `warpbreaks` data set gives the number of warp breaks per loom, where a loom corresponds to a fixed length of yarn. The data frame contains the number of `breaks`, the type of `wool` (`A` or `B`) and the level of `tension` (`L`, `M`, `H`).
+The `warpbreaks` data set, included in `datasets` package, gives the number of warp breaks per loom, where a loom corresponds to a fixed length of yarn. The data frame contains the number of `breaks`, the type of `wool` (`A` or `B`) and the level of `tension` (`L`, `M`, `H`).
 
 ```{r datamanagement-applying-warpbreaks}
 data(warpbreaks)
@@ -210,7 +214,7 @@ The following example returns a contingency table of the number of breaks for ea
 tapply(warpbreaks$breaks, INDEX = warpbreaks[,-1], FUN = sum)
 ```
 
-The famous (Fisher's or Anderson's) `iris` data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica. 
+The famous (Fisher's or Anderson's) `iris` data set, included in `datasets` package, gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica. 
 
 ```{r, tapply3}
 head(iris)

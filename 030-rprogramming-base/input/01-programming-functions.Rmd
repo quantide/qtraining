@@ -2,6 +2,12 @@
 title: "Functions structure"
 ---
 
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+
 ## Introduction to functions structure
 
 When working with R we all make constant use of functions and, when developing, we create new functions so that functions look like very familiar R objects. Nevertheless, understanding the theory and the rationals underlying R functions may help to create much more efficient and possibly elegant coding.
@@ -87,7 +93,7 @@ Formals of a function are normally used within functions by the internal `R` eva
 formals(f)
 ```
 
-`args()` is an other function that displays the formals in a more user friendly fashion. Actually, `args(fun)` returns a function with the same arguments as `fun` but with an empty body.  
+`args()` is another function that displays the formals in a more user friendly fashion. Actually, `args(fun)` returns a function with the same arguments as `fun` but with an empty body.  
 
 ```{r functions-formals-args}
 args(f)
@@ -118,6 +124,7 @@ count_rows <- function(...) {
 count_rows(airquality, cars)
 ```
 
+
 Similarly, the "`...`" arguments becomes very handy when the "`...`" arguments will be passed on to another function as it often happened when calling `ggplot2` functions from within another function. The following example shows a function which draws a line plot, where additional graphics parameters are passed via "`...`":
 
 ```{r functions-dots3, fig.height=7, fig.width=7, message=FALSE}
@@ -126,7 +133,7 @@ require(ggplot2)
 # Function
 plot_depth <-  function(df, time_var_name, depth_var_name, ...){
   ggp <- ggplot(data=df, mapping=aes_string(x=time_var_name, y= depth_var_name)) +
-          geom_line(...) + xlab(time_var_name)
+          geom_line(...)
   return(ggp)
 }
 

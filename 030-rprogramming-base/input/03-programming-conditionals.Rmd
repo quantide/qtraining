@@ -2,6 +2,10 @@
 title: "Conditionals"
 ---
 
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
 ## The `if` statement
 Conditionals are very useful when programming, as they allow to execute some code when a condition is satisfied.
 
