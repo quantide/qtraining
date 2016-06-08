@@ -1,5 +1,5 @@
 ---
-title: "Complex Linear Models examples"
+title: "Complex Linear Models Examples"
 ---
 
 ```{r setup, include=FALSE, purl=FALSE}

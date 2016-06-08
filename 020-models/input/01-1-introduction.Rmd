@@ -124,7 +124,7 @@ anova_model <- aov(formula, data)
 
 For example, consider `ds` dataset.
 
-```{r model_example_0, eval=FALSE}
+```{r model_example_0}
 str(ds)
 ```
 

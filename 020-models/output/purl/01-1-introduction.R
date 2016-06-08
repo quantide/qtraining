@@ -58,6 +58,9 @@ print(ggp)
 ## linear_model <- lm(formula, data)
 ## anova_model <- aov(formula, data)
 
+## ----model_example_0-----------------------------------------------------
+str(ds)
+
 ## ----model_example, eval=FALSE-------------------------------------------
 ## linear_model <- lm(formula = weight ~ height, data = ds)
 

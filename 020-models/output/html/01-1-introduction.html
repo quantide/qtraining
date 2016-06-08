@@ -466,13 +466,16 @@ Relation between Weight and Height in 100 male and 100 female young people
 <p>Talking about linear regression models, the <code>lm</code> and <code>aov</code> functions are used in R to fit respectively linear regression and analysis of variance model and their syntax is:</p>
 <pre class="r"><code>linear_model &lt;- lm(formula, data)
 anova_model &lt;- aov(formula, data)</code></pre>
-<ul>
-<li><code>formula</code> argument is a symbolic description of the model to be fitted (i.e. <code>dep_var ~ indep_var1 + indep_var2</code>)</li>
-<li><code>data</code> refers to a data frame containing the variable in the model</li>
-</ul>
-<p>For example, to fit a linear model on the relation between <code>weight</code> and <code>height</code> of <code>ds</code> dataset, the sintax is:</p>
+<p><code>formula</code> argument is a symbolic description of the model to be fitted, which has the form: <code>response variable ∼ predictor variables</code>. The variables involved in <code>formula</code> should be columns of a dataframe specied in <code>data</code> argument.</p>
+<p>For example, consider <code>ds</code> dataset.</p>
+<pre class="r"><code>str(ds)</code></pre>
+<pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    200 obs. of  3 variables:
+##  $ height: num  152 152 172 159 171 ...
+##  $ weight: num  54.5 62.6 61.4 62.9 64.5 ...
+##  $ gender: Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+<p>To fit a linear model on the relation between <code>weight</code> and <code>height</code> of <code>ds</code> dataset, the sintax is:</p>
 <pre class="r"><code>linear_model &lt;- lm(formula = weight ~ height, data = ds)</code></pre>
-<p>In following table some formulas examples are shown, where <code>x</code>, <code>x1</code>, <code>x2</code>, <code>x3</code> represent continuous variates, whereas upper case letters represent factors</p>
+<p>In the following table some formulas examples are shown, where <code>y</code> represents the response variable, <code>x</code>, <code>x1</code>, <code>x2</code>, <code>x3</code> represent continuous variates, whereas upper case letters represent factors:</p>
 <table>
 <thead>
 <tr class="header">
