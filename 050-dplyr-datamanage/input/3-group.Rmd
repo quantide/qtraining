@@ -1,5 +1,5 @@
 ---
-title: "Group Data"
+title: "Grouping Data"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
