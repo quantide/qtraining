@@ -350,10 +350,12 @@ data(bank)</code></pre>
 <div id="summarise" class="section level1">
 <h1><code>summarise()</code></h1>
 <p>The last verb is <code>summarise()</code>, which collapses a data frame to a single row:</p>
-<pre class="r"><code>summarise(bank, mean_balance = mean(balance, na.rm = TRUE))</code></pre>
+<pre class="r"><code># Compute the mean of balance variable of bank data frame
+summarise(bank, mean_balance = mean(balance, na.rm = TRUE))</code></pre>
 <pre><code>##   mean_balance
 ## 1     1362.272</code></pre>
-<pre class="r"><code>summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))</code></pre>
+<pre class="r"><code># Compute the minimum and the maximum value of balance of bank data frame
+summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))</code></pre>
 <pre><code>##   max_balance min_balance
 ## 1      102127       -8019</code></pre>
 <div id="helper-functions-for-summarise" class="section level2">
@@ -425,6 +427,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>

@@ -21,12 +21,14 @@ bank <- tbl_df(bank)
 ![](images/arr.png)
 
 ```{r}
+# Order `bank` data frame by date and age in ascending order
 arrange(bank, date, age)
 ```
 
 Use `desc()` to order a column in descending order:
 
 ```{r}
+# Order `bank` data frame by age in descending order
 arrange(bank, desc(age))
 ```
 

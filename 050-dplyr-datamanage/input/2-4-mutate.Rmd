@@ -10,6 +10,7 @@ options(width = 108)
 require(dplyr)
 require(qdata)
 data(bank)
+bank <- tbl_df(bank)
 ```
 
 
@@ -39,7 +40,6 @@ df %>% mutate(xx = x)
 
 
 ```{r}
-bank <- tbl_df(bank)
 bank %>% 
   select (year, age, balance) %>%
   mutate(balance_by_age = balance / age, year_of_birth = year - age)

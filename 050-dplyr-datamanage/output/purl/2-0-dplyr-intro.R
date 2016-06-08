@@ -2,13 +2,6 @@
 # This code chunk contains R code already described in the previous chapters
 # that is required by following examples
 require(dplyr)
-require(qdata)
-data(bank)
-
-## ----tbl_df_bank---------------------------------------------------------
-data(bank)
-class(bank)
-bank
 
 ## ----tbl_df--------------------------------------------------------------
 # Example of data frame

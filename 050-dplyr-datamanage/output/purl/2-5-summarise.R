@@ -4,7 +4,9 @@ require(qdata)
 data(bank)
 
 ## ------------------------------------------------------------------------
+# Compute the mean of balance variable of bank data frame
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
+# Compute the minimum and the maximum value of balance of bank data frame
 summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
 
 ## ------------------------------------------------------------------------

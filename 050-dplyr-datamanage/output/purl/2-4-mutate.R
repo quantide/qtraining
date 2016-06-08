@@ -2,6 +2,7 @@
 require(dplyr)
 require(qdata)
 data(bank)
+bank <- tbl_df(bank)
 
 ## ------------------------------------------------------------------------
 df <- data.frame(x = 1:3, y = 3:1)
@@ -19,7 +20,6 @@ df %>% mutate(x1 = x+1, y1 = x1+1)
 df %>% mutate(xx = x)
 
 ## ------------------------------------------------------------------------
-bank <- tbl_df(bank)
 bank %>% 
   select (year, age, balance) %>%
   mutate(balance_by_age = balance / age, year_of_birth = year - age)

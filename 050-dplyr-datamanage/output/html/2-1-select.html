@@ -355,7 +355,8 @@ bank &lt;- tbl_df(bank)</code></pre>
 <p>Often you work with large datasets with many columns where only a few are actually of interest to you.</p>
 <p><code>select()</code> allows you to rapidly zoom in on a useful subset of columns by using a set of useful helper functions.</p>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYYAAAEjCAYAAAA2Uaa4AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA9hAAAPYQGoP6dpAAAAB3RJTUUH4AEaCC4k4UOTLAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAB9mSURBVHja7d17dFT1vffxz2SSmQSSCSGGEEQhISA3TeWOgAiK4DlQBMRCLeBBH6toK5e6qKWo6/FAF/aRCkrx4I1abrW0RaQqp1BwQbklICAIhJAQQkhISCaXCcnMZDLPH2OjEVRAsmcn836tlbXIzjD7l9/+fvOZvffM3ha/3+8XAABfCGMKAAAEAwCAYAAAEAwAAIIBAEAwAAAIBgAAwQAAIBgAAAQDAIBgAAAQDAAAggEAQDAAAAgGAADBAAAgGAAABAMAgGAAABAMAAAQDAAAggEAQDAAAAgGAADBAAAgGAAABAMAgGAAABAMAACCAQBAMAAACAYAAMEAACAYAAAEAwCAYAAAEAwAAIIBAEAwAAAIBgAACAYAAMEAACAYAAAEAwCAYAAAEAwAAIIBAEAwAAAIBgBAsIQzBbhWK1eulMfjYSJgajabTQ8//DATQTDACB6PR4899hgTAVNbsWIFk3CVOJQEACAYAAAEAwCAYAAAEAwAAIIBAEAwAAAIBgAAwQAAIBgAAMHHJTGu0bvvvquampqQnwcuN4DLsdlsmjZtmiwWC5NBMISWKVOmKCoqKqRDgWsl4dteOIVyfzRlHEq6RlFRUaqurmYiAPqDYACFD3yXyMhIDrUSDAQDAPqDYKDweUUE0B8EAxruKvOKCKA/CAawqwywx0AwgGAA2GMgGEAwAPQHwQB2lQH6AwQDu8oA/QGC4fqx2Wzy+/2qra1lMoCvsdvt8nq9qqurC/pYfvCDH7BBCAZeFQHBZrFYZLfbTXE4qV+/fmwQgsE4nGADvtmkSZPUokULJoJgCC0DBw5UbGxsyP7+7KLj20RERDAJTXWPz+/3+5kGAAB7DAAAggEAQDAAAAgGAADBAAAgGK4Wn1DGt/F4PEwCPcN8fCGk3q76wQcfBH0MY8aMYRwmHQfoGWokxPYYAAAEwzXx+/3KyspSfn4+kwHQMyEpnCloqK6uTrNnz1bPnj21cOHCb33s0aNHlZ6ervLycpWXl2vgwIEaMWIEkwh6hp4hGELV3r17tXPnTjkcDuXk5Khz585MCkDPEAzNjdVq1caNG6/osdOnT9f06dMlSQ8++CCTB3qGniEYmpOamhqtWbOm/vukpCTdd9993/jYbdu26cyZM0pISNCwYcMabVyffvqpPv300/rvhwwZIknasWNH/bK77rpLKSkpjTo/f//733X+/HlJUsuWLfWjH/1IkrRz505lZmbW/4GYNm2aIdsrNzdXW7duvezPevfurbS0NIo6RHvGbLVKMDRhtbW1OnTokCSpsLBQnTp1umyR5+fn6/nnn1dxcbESEhJUUlKidevWye12N8q4CgsLtWfPHhUWFsput6tnz56SpI8//lg1NTVq3769IZe/PnnypPbt2yeXy6W0tLT6ZsvLy9OHH34on8/X6OH0VQUFBdqwYYPat29ff3nnvLw81dbW6sYbbyQYQrhnzFarTRHvSvpCdHS0lixZoiVLlqhHjx6XfYzf79fvfvc7eb1eLV26VG+++aZWrVqlzp07q7E+DnLfffdp+fLlGjZsmDwej5xOp0pKSuR2uzVhwgQtW7ZMvXr1avT5mTlzpn7+859Lku6999765YMHD1Ztba3GjRunl19+2fDtNn/+fC1ZskSjRo1SbW2tRo4c2WB8CL2eMWutEgzNVElJiTIzMzVx4kR16NChflf18ccfb9T1Wq1WzZw5U6NGjdKyZcu0fPlyPfjgg5o6daosFothv3///v3VpUsXrVmzRj6fT36/X2+99ZZiY2M1ceJEQ7dFt27d9OKLL6p169batm2bli9friFDhuiJJ54wdE5gzp4xU60SDM2c0+mUJLVu3brB8oSEhEZft8ViUZs2beq/j42NNfwPoMVi0ZQpU5Sfn69t27Zp//79OnDggKZOnaqoqChDxxIbG6u0tDQdOHBAS5YsUd++fTV79myFhVHS9Iy5arUp4hzDVbj55psVHh6uffv26Y477qhfvnfv3kZf98aNG/WHP/xBkydPlsvl0ooVK+T1ejVu3DhD5yAtLU1paWlau3atbDabUlNTNXz48KBsjwMHDuill15Sjx49NHfuXFmtVj3yyCP64Q9/qLFjx1KwId4zZqpVgqGJys7O1pkzZ+p3f71er7Zv315f3CkpKbLb7Zo0aZJWrVqlsLAw9e3bV2fOnNH69eslSadPn9aePXs0YMCA6zaugwcP6siRI3rvvffU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" alt /></p>
-<pre class="r"><code>select(bank, year, month, day)</code></pre>
+<pre class="r"><code># Select columns: year, month and day of bank data frame
+select(bank, year, month, day)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 3]
 ## 
 ##     year  month   day
@@ -371,7 +372,8 @@ bank &lt;- tbl_df(bank)</code></pre>
 ## 9   2008    may     5
 ## 10  2008    may     5
 ## ..   ...    ...   ...</code></pre>
-<pre class="r"><code>select(bank, year:day)</code></pre>
+<pre class="r"><code># Select columns: year, month and day of bank data frame
+select(bank, year:day)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 3]
 ## 
 ##     year  month   day
@@ -387,7 +389,8 @@ bank &lt;- tbl_df(bank)</code></pre>
 ## 9   2008    may     5
 ## 10  2008    may     5
 ## ..   ...    ...   ...</code></pre>
-<pre class="r"><code>select(bank, -(year:day))</code></pre>
+<pre class="r"><code># Select all columns of bank data frame apart from: year, month and day
+select(bank, -(year:day))</code></pre>
 <pre><code>## Source: local data frame [45,211 x 17]
 ## 
 ##       id   age          job  marital education default balance housing   loan contact       date duration
@@ -406,7 +409,8 @@ bank &lt;- tbl_df(bank)</code></pre>
 ## Variables not shown: campaign (int), pdays (int), previous (int), poutcome (fctr), y (fctr)</code></pre>
 <p>This function works similarly to the select argument to the <code>base::subset()</code>. It has its own function in <code>dplyr</code>, because the <code>dplyr</code> philosophy is to have small functions that each do one thing well.</p>
 <p>You can rename variables with <code>select()</code> by using named arguments:</p>
-<pre class="r"><code>select(bank, ID = id)</code></pre>
+<pre class="r"><code># Rename id variable as ID
+select(bank, ID = id)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 1]
 ## 
 ##       ID
@@ -571,7 +575,7 @@ wimbledon</code></pre>
 ## 9   1976              SWE    Björn Borg               ROU   Ilie Năstase   6–4       6–2   9–7            
 ## 10  1977              SWE    Björn Borg               USA  Jimmy Connors   3–6       6–2   6–1   5–7   6–4
 ## ..   ...              ...           ...               ...            ...   ...       ...   ...   ...   ...</code></pre>
-<pre class="r"><code>select(wimbledon ,num_range(&quot;s&quot;, c(1:3, 5)))</code></pre>
+<pre class="r"><code>select(wimbledon, num_range(&quot;s&quot;, c(1:3, 5)))</code></pre>
 <pre><code>## Source: local data frame [48 x 4]
 ## 
 ##       s1        s2    s3    s5
@@ -684,14 +688,16 @@ select(bank, one_of(vars))</code></pre>
 <div id="distinct" class="section level1">
 <h1><code>distinct()</code></h1>
 <p>A common use of <code>select()</code> is to find out which values a set of variables takes. This is particularly useful in conjunction with the <code>distinct()</code> verb which only returns the unique values in a table.</p>
-<pre class="r"><code>distinct(select(bank, housing))</code></pre>
+<pre class="r"><code># find out unique values of housing variable of bank data frame
+distinct(select(bank, housing))</code></pre>
 <pre><code>## Source: local data frame [2 x 1]
 ## 
 ##   housing
 ##    (fctr)
 ## 1     yes
 ## 2      no</code></pre>
-<pre class="r"><code>distinct(select(bank, housing, loan))</code></pre>
+<pre class="r"><code># find out combinations of unique values of housing and loan variables of bank data frame
+distinct(select(bank, housing, loan))</code></pre>
 <pre><code>## Source: local data frame [4 x 2]
 ## 
 ##   housing   loan
@@ -705,7 +711,8 @@ select(bank, one_of(vars))</code></pre>
 <div id="rename" class="section level1">
 <h1><code>rename()</code></h1>
 <p>As seen previously, you can rename the variables using <code>select()</code>, however it drops all the variables not explicitly mentioned so it’s not that useful. Instead, use <code>rename()</code>:</p>
-<pre class="r"><code>rename(bank, ID = id)</code></pre>
+<pre class="r"><code># Rename id variable as ID
+rename(bank, ID = id)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 20]
 ## 
 ##       ID   age          job  marital education default balance housing   loan contact   day  month  year
@@ -756,6 +763,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>

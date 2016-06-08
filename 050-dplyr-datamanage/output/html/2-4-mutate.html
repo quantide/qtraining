@@ -347,7 +347,8 @@ $(document).ready(function () {
 
 <pre class="r"><code>require(dplyr)
 require(qdata)
-data(bank)</code></pre>
+data(bank)
+bank &lt;- tbl_df(bank)</code></pre>
 <div id="mutate" class="section level1">
 <h1><code>mutate()</code></h1>
 <p>As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing columns. This is the job of <code>mutate()</code>:</p>
@@ -385,8 +386,7 @@ df %&gt;% mutate(x1 = x+1)</code></pre>
 ## 1 1 3  1
 ## 2 2 2  2
 ## 3 3 1  3</code></pre>
-<pre class="r"><code>bank &lt;- tbl_df(bank)
-bank %&gt;% 
+<pre class="r"><code>bank %&gt;% 
   select (year, age, balance) %&gt;%
   mutate(balance_by_age = balance / age, year_of_birth = year - age)</code></pre>
 <pre><code>## Source: local data frame [45,211 x 5]
@@ -712,6 +712,15 @@ $(document).ready(function () {
 
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
 </html>

@@ -5,11 +5,15 @@ data(bank)
 bank <- tbl_df(bank)
 
 ## ----bank----------------------------------------------------------------
+# Select columns: year, month and day of bank data frame
 select(bank, year, month, day)
+# Select columns: year, month and day of bank data frame
 select(bank, year:day)
+# Select all columns of bank data frame apart from: year, month and day
 select(bank, -(year:day))
 
 ## ------------------------------------------------------------------------
+# Rename id variable as ID
 select(bank, ID = id)
 
 ## ------------------------------------------------------------------------
@@ -33,7 +37,7 @@ select(bank, matches(".r"))
 ## ------------------------------------------------------------------------
 data(tennis)
 wimbledon
-select(wimbledon ,num_range("s", c(1:3, 5)))
+select(wimbledon, num_range("s", c(1:3, 5)))
 
 ## ------------------------------------------------------------------------
 select(bank, one_of(c("marital","education")))
@@ -48,9 +52,12 @@ select(bank, -job)
 select(bank, -starts_with("d"))
 
 ## ------------------------------------------------------------------------
+# find out unique values of housing variable of bank data frame
 distinct(select(bank, housing))
+# find out combinations of unique values of housing and loan variables of bank data frame
 distinct(select(bank, housing, loan))
 
 ## ------------------------------------------------------------------------
+# Rename id variable as ID
 rename(bank, ID = id)
 

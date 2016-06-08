@@ -42,19 +42,23 @@ Note that you'll have to either convert variable `date` to character or the stri
 You can use other boolean operators explicitly:
 
 ```{r}
+# Select all calls made to people of 18 or 95 years
 filter(bank, age == 18 | age == 95)
 ```
 
 `filter()` can be used also with `%in%` to establish conditions under which filter: 
 
 ```{r}
+# Select all calls made to people of 18 or 95 years
 filter(bank, age %in% c(18,95))
 ```
 
 An other example is:
 
 ```{r}
+# Select all calls made to people whose job is admin. or technician 
 filter(bank, job %in% c("admin.","technician"))
+# Select all calls made to people whose job is admin. or technician 
 filter(bank, job == "admin." | job == "technician")
 ```
 
