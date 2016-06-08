@@ -15,12 +15,12 @@ for(i  in 1:n) {
 
 ## ----programming-for-03, include =FALSE----------------------------------
 rm(list = ls())
-g = gc()
+g <- gc()
 
 ## ----programming-for-04, cache=TRUE--------------------------------------
-k = 100000
-n = 10
-z = NULL 
+k <- 100000
+n <- 10
+z <- NULL 
 system.time({
     for (i in 1:k) {
     x = rnorm(n , 0, 1)
@@ -31,9 +31,9 @@ system.time({
 })[3]
 
 ## ----programming-for-05, cache=TRUE--------------------------------------
-k = 100000
-n = 10
-z = numeric(k)
+k <- 100000
+n <- 10
+z <- numeric(k)
 system.time({
   for ( i in 1:k){
     x = rnorm(n , 0, 1)
@@ -44,7 +44,7 @@ system.time({
 })[3]
 
 ## ----structures-006, cache=TRUE------------------------------------------
-slow =  function(x, y) {  
+slow <-  function(x, y) {  
   nx = length(x)
   ny = length(y)  
   xy = numeric(nx + ny - 1)  
@@ -62,7 +62,7 @@ slow =  function(x, y) {
 system.time(slow(runif(1000), runif(1000)))[3]
 
 ## ----structures-007, cache=TRUE------------------------------------------
-fast =  function(x, y) {  
+fast <-  function(x, y) {  
   nx = length(x)
   ny = length(y)  
   xy = numeric(nx + ny - 1)  
@@ -74,25 +74,6 @@ fast =  function(x, y) {
       xy  
 }
 system.time(fast(runif(1000), runif(1000)))[3]
-
-## ----programming-lapply-02-----------------------------------------------
-n <- ncol(airquality)
-out <- numeric(n)
-for (i in 1:n){
- out[i] <- max(airquality[,i], na.rm = TRUE)
-}
-out
-
-## ----programming-lapply-03-----------------------------------------------
-lapply(X=airquality, FUN = max, na.rm = TRUE)
-
-## ----programming-lapply-04-----------------------------------------------
-mean(1:100, trim = 0.1)
-mean(0.1, x = 1:100)
-
-## ----programming-lapply-05-----------------------------------------------
-x <- rnorm(100)
-lapply(X = c(0.1, 0.2, 0.5), mean, x = x)
 
 ## ---- while0, eval=FALSE-------------------------------------------------
 ## while(condition) code-to-be-execute

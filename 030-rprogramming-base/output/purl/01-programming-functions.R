@@ -58,7 +58,7 @@ require(ggplot2)
 # Function
 plot_depth <-  function(df, time_var_name, depth_var_name, ...){
   ggp <- ggplot(data=df, mapping=aes_string(x=time_var_name, y= depth_var_name)) +
-          geom_line(...) + xlab(time_var_name)
+          geom_line(...)
   return(ggp)
 }
 
@@ -67,8 +67,8 @@ time <-  1:13
 depth <-  c(0,-9,-18,-21,-21,-21,-21,-18,-9,-3,-3,-3,0)
 df <- data.frame(time=time, depth=depth)
 
-ggp1 <- plot_depth(df, "time", "depth", linetype = 2)
-ggp2 <- plot_depth(df, "time", "depth", size = 4, col = "red")
+ggp1 <- plot_depth(df, time_var_name = "time", depth_var_name = "depth", linetype = 2)
+ggp2 <- plot_depth(df, time_var_name = "time", depth_var_name = "depth", size = 4, col = "red")
 
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 

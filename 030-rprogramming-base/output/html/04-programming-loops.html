@@ -302,11 +302,14 @@ $(document).ready(function () {
   <li><a href="acknowledgements.html">Acknowledgements</a></li>
 </ul>
 <ul class="nav nav-list well sidebar-nav">
-  <li class="nav-header">Basic programming</li>
+  <li class="nav-header">Base Programming</li>
   <li><a href="01-programming-functions.html">Functions structure</a></li>
   <li><a href="02-function-writing.html">Functions writing</a></li>
   <li><a href="03-programming-conditionals.html">Conditionals</a></li>
   <li><a href="04-programming-loops.html">Loops</a></li>
+  <li><a href="05-functionals.html">Functionals</a></li>
+  <li class="nav-header">Advanced Topics</li>
+  <li><a href="06-rmarkdown.html">Reporting with R Markdown</a></li>
 </ul>
     </div>  
   </div>
@@ -326,7 +329,6 @@ $(document).ready(function () {
 <li><a href="#good-programming-practices-with-for-loops">Good programming practices with <code>for</code> loops</a><ul>
 <li><a href="#pre-allocating-memory">Pre-allocating memory</a></li>
 <li><a href="#vectorized-for-loops">Vectorized <code>for</code> loops</a></li>
-<li><a href="#functionals-lapply">Functionals: <code>lapply</code></a></li>
 </ul></li>
 <li><a href="#while-loops"><code>while</code> loops</a></li>
 </ul>
@@ -365,9 +367,9 @@ for(i  in 1:n) {
 <p><code>for</code> loops, as any equivalent iterator structure may require quite a long time to complete. Long computing time is quite natural as computational effort linearly increases with the number of iterations in the loop.</p>
 <p>Nevertheless, few little cautions may help to save a sensible amount of time.</p>
 <p>As an example, we may calculate the <code>95%</code> quantile of the distribution of the correlation coefficient between two <code>N(0,1)</code> vectors of given sizes <code>n=10</code> by using a simple for loop over <code>k = 100,000</code> iterations.</p>
-<pre class="r"><code>k = 100000
-n = 10
-z = NULL 
+<pre class="r"><code>k &lt;- 100000
+n &lt;- 10
+z &lt;- NULL 
 system.time({
     for (i in 1:k) {
     x = rnorm(n , 0, 1)
@@ -378,15 +380,15 @@ system.time({
 })[3]</code></pre>
 <pre><code>## 95th quantile =  0.5465989</code></pre>
 <pre><code>## elapsed 
-##  33.621</code></pre>
-<p>We can gain a first improvement by <em>‘pre-allocating’</em>, the vector of results, We tell <code>R</code> what the size of the vector is before we begin filling it up. The wrong way to fill in a vector is to allow it to grow dynamically as it happens in the above loop.</p>
+##  34.025</code></pre>
+<p>We can gain a first improvement by <em>‘pre-allocating’</em> the vector of results. We tell <code>R</code> what the size of the vector is before we begin filling it up. The wrong way to fill in a vector is to allow it to grow dynamically as it happens in the above loop.</p>
 <p>In the above case, R has to store a vector of one element than a second vector of two elements and so on up to a vector of <code>100,000</code> elements. As each new vector can’t fit inside the RAM allocated to the previous vector, R has to use a ‘’new’’ bit of contiguous RAM for new vector.</p>
-<p>Thus, instead of using just one chunk of RAM that it takes to make a vector of <code>k=100,000</code> and filling it up with one more element at each iteration, R is forced to write the new enlarged vector in Ram at each iteration. Clearly, all of this memory writing takes up time.</p>
+<p>Thus, instead of using just one chunk of RAM that it takes to make a vector of <code>k=100,000</code> and filling it up with one more element at each iteration, R is forced to write the new enlarged vector in RAM at each iteration. Clearly, all of this memory writing takes up time.</p>
 <p>Fortunately, R has a quite efficient mechanism for garbage collection and, as a result, memory usage is kept under control. Otherwise, looping without <em>pre-allocating</em> may also cause serious memory usage problems.</p>
-<p>Running the previous example, by simply pre-allocating vector <code>z</code> before looping, reduces computing time to about half of the previous time.</p>
-<pre class="r"><code>k = 100000
-n = 10
-z = numeric(k)
+<p>Running the previous example, by simply pre-allocating vector <code>z</code> before looping, reduces computing time to about a tenth of of the previous time.</p>
+<pre class="r"><code>k &lt;- 100000
+n &lt;- 10
+z &lt;- numeric(k)
 system.time({
   for ( i in 1:k){
     x = rnorm(n , 0, 1)
@@ -397,14 +399,14 @@ system.time({
 })[3]</code></pre>
 <pre><code>## 95th quantile =  0.5475401</code></pre>
 <pre><code>## elapsed 
-##   3.111</code></pre>
+##   3.056</code></pre>
 <p>Clearly, pre-allocation requires to know in advance the size of the output vector. Whenever this is not possible, as it may happen in while loops, computing time may noticeably increase.</p>
 </div>
 <div id="vectorized-for-loops" class="section level3">
 <h3>Vectorized <code>for</code> loops</h3>
 <p>Whenever possible, loops should be replaced with vectorized calculation. This approach improve both performance and clarity.</p>
 <p>As an example, we examine a double for loop:</p>
-<pre class="r"><code>slow =  function(x, y) {  
+<pre class="r"><code>slow &lt;-  function(x, y) {  
   nx = length(x)
   ny = length(y)  
   xy = numeric(nx + ny - 1)  
@@ -421,9 +423,9 @@ system.time({
 
 system.time(slow(runif(1000), runif(1000)))[3]</code></pre>
 <pre><code>## elapsed 
-##   1.738</code></pre>
+##   1.802</code></pre>
 <p>An attempt to vectorize the previous code leads to:</p>
-<pre class="r"><code>fast =  function(x, y) {  
+<pre class="r"><code>fast &lt;-  function(x, y) {  
   nx = length(x)
   ny = length(y)  
   xy = numeric(nx + ny - 1)  
@@ -436,69 +438,8 @@ system.time(slow(runif(1000), runif(1000)))[3]</code></pre>
 }
 system.time(fast(runif(1000), runif(1000)))[3]</code></pre>
 <pre><code>## elapsed 
-##   0.055</code></pre>
+##   0.054</code></pre>
 <p>Simply working with vectorized dimensions drastically reduce computing time. Note that <code>j</code> index is computed within the <code>i</code> loop and that <code>y[j]</code> has been replaced with <code>y</code>, as a result, a single for loop is required.</p>
-</div>
-<div id="functionals-lapply" class="section level3">
-<h3>Functionals: <code>lapply</code></h3>
-<p><code>for</code> loops are quite often nested and mixed up with <code>if()</code> statements. As a result, the whole coding structure may result in a complicated muddle to understand and, as a consequence, the objective of our coding may get lost within the code itself.</p>
-<p><code>for()</code> loops do have a bad reputation of being slow especially when compared with equivalent functionals structures as <code>lapply()</code>. Nowadays, speed is no more a crucial point when dealing with <code>for()</code> loops</p>
-<p>In other words, <code>for()</code> loops, whenever possible, should be avoided not mainly because of a performance issue but to to achieve modularity and clarity in our codes.</p>
-<p><em>Functionals</em> are functions that take a function as input and return a data object as output. Functionals are very often excellent substitutes to <code>for</code> loops as they allow to communicate the objective of our code in a more clear and concise manner as the code will be cleaner and it will more closely adhere to <code>R</code>’s idioms.</p>
-<p><code>lapply()</code> is, possibly, the most used functional. <code>lapply()</code> takes a function and applies it to each element of a list, saving the results back into a result list. <code>lapply()</code> is the building block for many other functionals. In principle, <code>lapply()</code> is a wrapper around a standard for loop.</p>
-<p><code>lapply()</code> takes three arguments:</p>
-<ul>
-<li>a list <code>X</code>, or anything that can be coerced to a list by <code>as.list()</code></li>
-<li>a function <code>FUN</code> that takes, as first argument, each element of <code>X</code></li>
-<li>the <code>''...''</code> argument that can be any argument to be passed to <code>FUN</code></li>
-</ul>
-<p>Suppose we want to gain the maximum of each column for the <code>airquality</code> data frame. By using a <code>for</code> loop we could write:</p>
-<pre class="r"><code>n &lt;- ncol(airquality)
-out &lt;- numeric(n)
-for (i in 1:n){
- out[i] &lt;- max(airquality[,i], na.rm = TRUE)
-}
-out</code></pre>
-<pre><code>## [1] 168.0 334.0  20.7  97.0   9.0  31.0</code></pre>
-<p>alternatively, as a data frame is a list:</p>
-<pre class="r"><code>lapply(X=airquality, FUN = max, na.rm = TRUE)</code></pre>
-<pre><code>## $Ozone
-## [1] 168
-## 
-## $Solar.R
-## [1] 334
-## 
-## $Wind
-## [1] 20.7
-## 
-## $Temp
-## [1] 97
-## 
-## $Month
-## [1] 9
-## 
-## $Day
-## [1] 31</code></pre>
-<p>The second chunk of code is by far more clear and concise than the first one even though a vector would be preferable than a list as output.</p>
-<p>Moreover, <code>lapply()</code> as opposite to <code>for</code> loops does not produce any intermediate result when running. In the above <code>for</code> loop, the value of the result of the loop, vector <code>out</code>, changes at each iteration. The result of <code>lapply()</code>, instead, can be assigned to a variable but does not produce any intermediate result.</p>
-<p>By default <code>lapply()</code> takes each element of list <code>X</code> as the first argument of function <code>FUN</code>. This works perfectly, as long as each element of <code>X</code> is the first of <code>FUN</code>. This is true in case we want to compute the mean of each column of a data frame as each column is passed as first argument to function <code>mean()</code>.</p>
-<p>But, suppose we want to compute various trimmed means of the same vector, <code>trim</code> is the second parameter of <code>mean()</code>, so we want to vary <code>trim</code>, keeping the first argument <code>x</code> fixed.</p>
-<p>This can be easily achieved by observing that the following two calls are equivalent:</p>
-<pre class="r"><code>mean(1:100, trim = 0.1)</code></pre>
-<pre><code>## [1] 50.5</code></pre>
-<pre class="r"><code>mean(0.1, x = 1:100)</code></pre>
-<pre><code>## [1] 50.5</code></pre>
-<p>So, in order to use <code>lapply()</code> with the second argument of function <code>FUN</code>, we just need to name the first argument of <code>FUN</code> and pass it to <code>lapply()</code> as part as the <code>''...''</code> argument:</p>
-<pre class="r"><code>x &lt;- rnorm(100)
-lapply(X = c(0.1, 0.2, 0.5), mean, x = x)</code></pre>
-<pre><code>## [[1]]
-## [1] -0.06864644
-## 
-## [[2]]
-## [1] -0.09059667
-## 
-## [[3]]
-## [1] -0.01918497</code></pre>
 </div>
 </div>
 <div id="while-loops" class="section level2">
