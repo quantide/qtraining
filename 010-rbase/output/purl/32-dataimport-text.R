@@ -1,11 +1,11 @@
 ## ----read.table, error=TRUE----------------------------------------------
-df <- read.table("C:/Users/UserName/Documents/dati/tennis.txt", header = TRUE, sep = "", dec = ".")
+df <- read.table("C:/Users/UserName/Documents/data/tennis.txt", header = TRUE, sep = "", dec = ".")
 
-## ---- getwd--------------------------------------------------------------
-getwd() 
+## ---- getwd, eval=FALSE--------------------------------------------------
+## getwd()
 
 ## ---- setwd, eval=FALSE--------------------------------------------------
-## setwd("C:/Users/UserName/Documents/dati")
+## setwd("./data")
 
 ## ---- read.table2--------------------------------------------------------
 df <- read.table("tennis.txt", header = TRUE)

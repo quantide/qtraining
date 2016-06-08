@@ -3,7 +3,7 @@ require(XLConnect)
 
 ## ----outDir_set_up, eval=FALSE-------------------------------------------
 ## # Set up output directory and output file name
-## outDir <- "~/Desktop/xlsx"
+## outDir <- "./xlsx"
 
 ## ------------------------------------------------------------------------
 # File path string
@@ -74,7 +74,7 @@ include_graphics("images/excel-addFormula.png")
 
 ## ----excel_file_name, eval=FALSE-----------------------------------------
 ## # Excel file (with path) to be loaded into R
-## file_xls <- "~/Desktop/xlsx/newFile.xlsx"
+## file_xls <- "./xlsx/newFile.xlsx"
 
 ## ----load.xlsx-----------------------------------------------------------
 exc2 <- loadWorkbook(file_xls)

@@ -356,7 +356,7 @@ Let us see how <code>XLConnect</code> works.</p>
 <h2>Create a new file xlsx</h2>
 <p>To create a new empty file xlsx with one empty sheet named <em>Input</em> the syntax is:</p>
 <pre class="r"><code># Set up output directory and output file name  
-outDir &lt;- &quot;~/Desktop/xlsx&quot; </code></pre>
+outDir &lt;- &quot;./xlsx&quot; </code></pre>
 <pre class="r"><code># File path string
 file_xls &lt;- paste(outDir,&quot;newFile.xlsx&quot;,sep='/')
 # Delete file_xls if it already exists 
@@ -426,7 +426,7 @@ saveWorkbook(exc)</code></pre>
 <h2>Read an existing xlsx file</h2>
 <p>To read an existing excel file, the syntax is:</p>
 <pre class="r"><code># Excel file (with path) to be loaded into R
-file_xls &lt;- &quot;~/Desktop/xlsx/newFile.xlsx&quot;</code></pre>
+file_xls &lt;- &quot;./xlsx/newFile.xlsx&quot;</code></pre>
 <pre class="r"><code>exc2 &lt;- loadWorkbook(file_xls)
 dt_air &lt;- readWorksheet(exc2, sheet = 'Airquality')
 head(dt_air)</code></pre>

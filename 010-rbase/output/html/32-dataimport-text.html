@@ -348,17 +348,19 @@ $(document).ready(function () {
 <h2>Data Import</h2>
 <p>The <code>read.table()</code> function imports a text file (ASCII) with a table structure where each row represents a case.</p>
 <p>A full path can be provided, but it must be modified by each user, otherwise it fails:</p>
-<pre class="r"><code>df &lt;- read.table(&quot;C:/Users/UserName/Documents/dati/tennis.txt&quot;, header = TRUE, sep = &quot;&quot;, dec = &quot;.&quot;)</code></pre>
-<pre><code>## Warning in file(file, &quot;rt&quot;): cannot open file 'C:/Users/UserName/Documents/dati/tennis.txt': No such file or
+<pre class="r"><code>df &lt;- read.table(&quot;C:/Users/UserName/Documents/data/tennis.txt&quot;, header = TRUE, sep = &quot;&quot;, dec = &quot;.&quot;)</code></pre>
+<pre><code>## Warning in file(file, &quot;rt&quot;): cannot open file 'C:/Users/UserName/Documents/data/tennis.txt': No such file or
 ## directory</code></pre>
 <pre><code>## Error in file(file, &quot;rt&quot;): cannot open the connection</code></pre>
 <p>The path uses the slash (“<code>/</code>”) as delimiting character, in the UNIX-like style. Under Windows, can be used both a slash character or a doubled backslash character (“<code>\\</code>”).</p>
-<p>Relative paths starts from the current working directory. The current working directory can be viewed with <code>getwd()</code>.</p>
+<p>So, it is strongly suggested to set the working directory to the directory containing the data.</p>
+<p><code>getwd()</code> function allows you to view the current working directory:</p>
 <pre class="r"><code>getwd() </code></pre>
-<pre><code>## [1] &quot;/home/veronica/dev/qtraining/010-rbase/data&quot;</code></pre>
-<p>It is strongly suggested to set the working directory to the directory containing the data. This can be done using the <code>setwd()</code> function:<br />
-<code>&gt; setwd(path)</code> where <code>path</code> is a string containing the path to directory containing the <code>data</code> folder, e.g. <code>&quot;C:/Users/UserName/Documents/dati&quot;</code>, under Windows.</p>
-<pre class="r"><code>setwd(&quot;C:/Users/UserName/Documents/dati&quot;) </code></pre>
+<pre><code>## [1] &quot;C:/Users/Andrea/Documents&quot;</code></pre>
+<p>and <code>setwd()</code> function allows you to set the working directory on “data” folder, in this way:</p>
+<pre class="r"><code>setwd(&quot;./data&quot;) </code></pre>
+<pre><code>## [1] &quot;C:/Users/Andrea/Documents/data&quot;</code></pre>
+<p>Now, the the text file can be imported just providing its filename:</p>
 <pre class="r"><code>df &lt;- read.table(&quot;tennis.txt&quot;, header = TRUE)</code></pre>
 <pre class="r"><code>head(df)</code></pre>
 <pre><code>##         Name First.Name Age Sex Rank Slams Won Lost Earnings Citizen

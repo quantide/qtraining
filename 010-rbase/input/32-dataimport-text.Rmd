@@ -16,23 +16,34 @@ The `read.table()` function imports a text file (ASCII) with a table structure w
 
 A full path can be provided, but it must be modified by each user, otherwise it fails:
 ```{r read.table, error=TRUE}
-df <- read.table("C:/Users/UserName/Documents/dati/tennis.txt", header = TRUE, sep = "", dec = ".")
+df <- read.table("C:/Users/UserName/Documents/data/tennis.txt", header = TRUE, sep = "", dec = ".")
 ```
 
 The path uses the slash ("`/`") as delimiting character, in the UNIX-like style. Under Windows, can be used both a slash character or a doubled backslash character ("`\\`").
 
-Relative paths starts from the current working directory. The current working directory can be viewed with `getwd()`.
+So, it is strongly suggested to set the working directory to the directory containing the data.  
 
-```{r, getwd}
+`getwd()` function allows you to view the current working directory:
+
+```{r, getwd, eval=FALSE}
 getwd() 
 ```
 
-It is strongly suggested to set the working directory to the directory containing the data. This can be done using the `setwd()` function:    
-`> setwd(path)` where `path` is a string containing the path to directory containing the `data` folder, e.g. `"C:/Users/UserName/Documents/dati"`, under Windows.
+```
+## [1] "C:/Users/Andrea/Documents"
+```
+
+and `setwd()` function allows you to set the working directory on "data" folder, in this way:    
 
 ```{r, setwd, eval=FALSE}
-setwd("C:/Users/UserName/Documents/dati") 
+setwd("./data") 
 ```
+
+```
+## [1] "C:/Users/Andrea/Documents/data"
+```
+
+Now, the the text file can be imported just providing its filename: 
 
 ```{r, read.table2}
 df <- read.table("tennis.txt", header = TRUE)
