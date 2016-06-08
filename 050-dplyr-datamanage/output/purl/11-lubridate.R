@@ -1,3 +1,10 @@
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
+require(lubridate)
+require(dplyr)
+require(ggplot2)
+require(tidyr)
+require(qdata)
+
 ## ----lubridate_require, message=FALSE------------------------------------
 require(lubridate)
 

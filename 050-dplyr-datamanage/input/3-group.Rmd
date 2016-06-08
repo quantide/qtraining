@@ -12,7 +12,6 @@ require(qdata)
 data(bank)
 ```
 
-
 # `group_by()`
 
 The verb functions are useful, but they become really powerful when you combine them with the idea of "group by", repeating the operation individually on groups of observations within the dataset.

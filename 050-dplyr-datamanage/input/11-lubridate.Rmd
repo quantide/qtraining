@@ -6,7 +6,7 @@ title: "Date Manipulation with lubridate"
 options(width = 108)
 ```
 
-```{r first, include=FALSE, purl=FALSE, message=FALSE}
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(lubridate)
 require(dplyr)
 require(ggplot2)
@@ -251,7 +251,11 @@ ymd_hms("2016-04-01 14:00:00", tz="CET")
 The parsed object return `CEST` instead of `CET`. This is because April is during Daylight Saving Time, and CET area move to Central European _Summer_ Time (CEST).
 
 
-The next examples show how to set timezone when parsing date. The following examples will show how to modify a date to change its timezone. 
+The next examples show how to set timezone when parsing date. 
+
+<!--
+The following examples will show how to modify a date to change its timezone. 
+-->
 
 Function `force_tz()` forces a date-time to a new time zone
 

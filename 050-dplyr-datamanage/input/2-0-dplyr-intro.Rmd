@@ -10,8 +10,6 @@ options(width = 108)
 # This code chunk contains R code already described in the previous chapters
 # that is required by following examples
 require(dplyr)
-require(qdata)
-data(bank)
 ```
 
 
@@ -30,13 +28,6 @@ Let's start by having a look at how data frames are saved and visualized and at 
 
 `dplyr` can work with data frames as is but it is worthwhile to convert them to a `tbl_df`: this is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.
 
-<!--
-```{r tbl_df_bank}
-data(bank)
-class(bank)
-bank
-```
--->
 
 When the class of data object is not tbl, `tbl_df()` function should be used:
 

@@ -10,6 +10,7 @@ options(width = 108)
 require(dplyr)
 require(qdata)
 data(bank)
+bank <- tbl_df(bank)
 ```
 
 
@@ -20,7 +21,6 @@ data(bank)
 ![](images/arr.png)
 
 ```{r}
-bank <- tbl_df(bank)
 arrange(bank, date, age)
 ```
 
