@@ -303,15 +303,19 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Introduction to R</li>
-  <li><a href="11-intro.html">About R</a></li>
+  <li><a href="11-aboutr.html">About R</a></li>
   <li><a href="12-setup.html">R, RStudio Set Up</a></li>
   <li><a href="13-firstlook.html">A First Look to R Session</a></li>
   <li class="nav-header">R Objects</li>
   <li><a href="21-introduction.html">Introduction</a></li>
   <li><a href="22-data-obj.html">Data Objects</a></li>
   <li><a href="23-functions-obj.html">Function Object</a></li>
-  <li class="nav-header">Data Import</li>
-  <li><a href="31-dataimport.html">Data Import and Export</a></li>
+  <li class="nav-header">Data Import and Export</li>
+  <li><a href="31-introduction.html">Introduction</a></li>
+  <li><a href="32-dataimport-text.html">Text files</a></li>
+  <li><a href="33-dataimport-excel.html">Microsoft Excel</a></li>
+  <li><a href="34-dataimport-db.html">Databases</a></li>
+  <li><a href="35-dataimport-rdata.html">R data files</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
   <li><a href="42-dplyr-verbs.html">Verb Functions</a></li>
@@ -320,10 +324,6 @@ $(document).ready(function () {
   <li><a href="51-ggplot.html">Data Visualization with ggplot2</a></li>
   <li class="nav-header">Data Analysis</li>
   <li><a href="61-statmodels.html">Statistical Models with R</a></li>
-  <li class="nav-header">R Development</li>
-  <li><a href="71-functions.html">Writing R Functions</a></li>
-  <li><a href="72-rmarkdown.html">R Markdown</a></li>
-  <li><a href="73-git.html">Git and Github</a></li>
 </ul>
     </div>  
   </div>
@@ -341,7 +341,11 @@ $(document).ready(function () {
 <ul>
 <li><a href="#the-first-r-session">The First R Session</a></li>
 <li><a href="#assignment">Assignment</a></li>
-<li><a href="#the-r-workspace">The R Workspace</a></li>
+<li><a href="#the-r-workspace">The R Workspace</a><ul>
+<li><a href="#objects-listing">Objects listing</a></li>
+<li><a href="#removing-objects">Removing objects</a></li>
+<li><a href="#garbage-collection">Garbage collection</a></li>
+</ul></li>
 <li><a href="#the-working-directory">The Working Directory</a></li>
 <li><a href="#r-help">R help</a></li>
 </ul>
@@ -397,7 +401,10 @@ z &lt;- x + y</code></pre>
 </div>
 <div id="the-r-workspace" class="section level2">
 <h2>The R Workspace</h2>
-<p>Objects created during an R session are hold in memory. The collection of objects currently avalaible is called the workspace. To list the objects in the current R session, the function <code>ls()</code> or the function <code>objects()</code> may be used.</p>
+<p>The workspace is your current R working environment and includes any user-defined objects. It is also known as global environment.</p>
+<div id="objects-listing" class="section level3">
+<h3>Objects listing</h3>
+<p>Objects created during an R session are hold in memory. To list the objects in the current R session, the function <code>ls()</code> or the function <code>objects()</code> may be used.</p>
 <pre class="r"><code>ls()</code></pre>
 <pre><code>## [1] &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
 <pre class="r"><code>objects()</code></pre>
@@ -407,20 +414,42 @@ z &lt;- x + y</code></pre>
 <pre class="r"><code>x2 &lt;- log(9)
 ls(pattern = &quot;x&quot;)</code></pre>
 <pre><code>## [1] &quot;x&quot;  &quot;x2&quot;</code></pre>
+</div>
+<div id="removing-objects" class="section level3">
+<h3>Removing objects</h3>
 <p>If a value to an object that already exists is assigned then the contents of the object will be overwritten with the new value (without a warning!). The function <code>rm()</code> ought be used to remove one or more objects from your session.</p>
 <pre class="r"><code>rm(x2)
 ls()</code></pre>
 <pre><code>## [1] &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
 </div>
+<div id="garbage-collection" class="section level3">
+<h3>Garbage collection</h3>
+<p>When objects are no longer used, and this clearly happens when objects are deleted, <code>R</code> releases immediately the memory they filled in the system. This is done automatically by the garbage collector <code>gc()</code>.</p>
+<p>We can call <code>gc()</code> also to see how much memory <code>R</code> is using for allocating objects</p>
+<pre class="r"><code>gc()</code></pre>
+<pre><code>##          used (Mb) gc trigger (Mb) max used (Mb)
+## Ncells 301299 16.1     592000 31.7   460000 24.6
+## Vcells 495931  3.8    1023718  7.9   786332  6.0</code></pre>
+</div>
+</div>
 <div id="the-working-directory" class="section level2">
 <h2>The Working Directory</h2>
-<!-- questo va cambiato AS -->
-<p>If you want to read files from a specific location or write files to a specific location you will need to set working directory in R. The following example shows how to set the working directory in R to the folder “Data” within the folder “Documents and Settings” on the C drive.</p>
-<pre class="r"><code>setwd(&quot;C:/Documents and Settings/Data&quot;)</code></pre>
-<p>To get the path of the current working directory, the <code>getwd()</code> function should be used.</p>
-<pre class="r"><code>getwd()</code></pre>
-<pre><code>## [1] &quot;C:/Documents and Settings/Data&quot;</code></pre>
+<p>If you want to read files from a specific location or write files to a specific location without typing (on Windows, usually very long) path names you will need to set working directory in R.</p>
+<p>You can set a working directory with <code>setwd()</code> function, using absolute or relative paths. The following example shows an example how to set the working directory in R using an absolute path. The working directory is set to the folder “Data” within the folder “Documents and Settings” on the C drive.</p>
+<pre class="r"><code>setwd(&quot;C:/User/Andrea/Documents and Settings/Data&quot;)</code></pre>
 <p>Remember that you must use the forward slash / or double backslash \\ in R! The Windows format of single backslash will not work.</p>
+<p>It is a nice approach, but things get complicated if you move files to different computers, say from home to your office, and have different directory structures, disk names etc. Of course you can change it every time. Using relative paths solves this problem. Relative paths are more convenient than absolute paths as they makes your R script or RStudio project independent of the directory structure in which it resides thus facilitating the reproducibility of your work on a different PC.</p>
+<p>So, you can use <code>getwd()</code> function to get the path of the current working directory:</p>
+<pre class="r"><code>getwd()</code></pre>
+<pre><code>## [1] &quot;C:/User/Andrea/Documents and Settings/Data&quot;</code></pre>
+<p>Suppose that your current directory is the previous one (“Data” folder) and you want to set the directory on “Statistics” folder inside “Data” folder:</p>
+<pre class="r"><code>setwd(&quot;./Statistics&quot;)</code></pre>
+<pre><code>## [1] &quot;C:/User/Andrea/Documents and Settings/Data/Statistics&quot;</code></pre>
+<p><code>.</code> represents your current directory.</p>
+<p>Suppose that your current directory is the previous one (“Statistics” folder) and you want to set the directory on “Maths” folder inside “Data” folder:</p>
+<pre class="r"><code>setwd(&quot;./../Maths&quot;)</code></pre>
+<pre><code>## [1] &quot;C:/User/Andrea/Documents and Settings/Data/Maths&quot;</code></pre>
+<p><code>..</code> are useful to move up the directory hierarchy relative to the current working directory. In particular, you move out from “Statistics” folder, and up into the “Maths” folder.</p>
 </div>
 <div id="r-help" class="section level2">
 <h2>R help</h2>

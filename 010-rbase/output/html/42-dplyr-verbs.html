@@ -303,15 +303,19 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Introduction to R</li>
-  <li><a href="11-intro.html">About R</a></li>
+  <li><a href="11-aboutr.html">About R</a></li>
   <li><a href="12-setup.html">R, RStudio Set Up</a></li>
   <li><a href="13-firstlook.html">A First Look to R Session</a></li>
   <li class="nav-header">R Objects</li>
   <li><a href="21-introduction.html">Introduction</a></li>
   <li><a href="22-data-obj.html">Data Objects</a></li>
   <li><a href="23-functions-obj.html">Function Object</a></li>
-  <li class="nav-header">Data Import</li>
-  <li><a href="31-dataimport.html">Data Import and Export</a></li>
+  <li class="nav-header">Data Import and Export</li>
+  <li><a href="31-introduction.html">Introduction</a></li>
+  <li><a href="32-dataimport-text.html">Text files</a></li>
+  <li><a href="33-dataimport-excel.html">Microsoft Excel</a></li>
+  <li><a href="34-dataimport-db.html">Databases</a></li>
+  <li><a href="35-dataimport-rdata.html">R data files</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
   <li><a href="42-dplyr-verbs.html">Verb Functions</a></li>
@@ -320,10 +324,6 @@ $(document).ready(function () {
   <li><a href="51-ggplot.html">Data Visualization with ggplot2</a></li>
   <li class="nav-header">Data Analysis</li>
   <li><a href="61-statmodels.html">Statistical Models with R</a></li>
-  <li class="nav-header">R Development</li>
-  <li><a href="71-functions.html">Writing R Functions</a></li>
-  <li><a href="72-rmarkdown.html">R Markdown</a></li>
-  <li><a href="73-git.html">Git and Github</a></li>
 </ul>
     </div>  
   </div>
@@ -482,7 +482,7 @@ filter(bank, age == 18 &amp; job == &quot;student&quot;)</code></pre>
 ## 12 44645    18 student  single   unknown      no     438      no     no  cellular     1    sep  2010
 ## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
 ##   (fctr), y (fctr)</code></pre>
-<pre class="r"><code># Select all calls made to people of 18 or years
+<pre class="r"><code># Select all calls made to people of 18 or 95 years
 filter(bank, age == 18 | age == 95)</code></pre>
 <pre><code>## Source: local data frame [14 x 20]
 ## 
@@ -505,7 +505,7 @@ filter(bank, age == 18 | age == 95)</code></pre>
 ## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
 ##   (fctr), y (fctr)</code></pre>
 <p><code>filter()</code> can be used also with <code>%in%</code> to establish conditions under which filter:</p>
-<pre class="r"><code># Select all calls made to people of 18 or years
+<pre class="r"><code># Select all calls made to people of 18 or 95 years
 filter(bank, age %in% c(18,95))</code></pre>
 <pre><code>## Source: local data frame [14 x 20]
 ## 
@@ -528,7 +528,7 @@ filter(bank, age %in% c(18,95))</code></pre>
 ## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
 ##   (fctr), y (fctr)</code></pre>
 <p>An other example is:</p>
-<pre class="r"><code># Select all calls made to people whose jos is admin. or technician 
+<pre class="r"><code># Select all calls made to people whose job is admin. or technician 
 filter(bank, job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
 <pre><code>## Source: local data frame [12,768 x 20]
 ## 
@@ -547,7 +547,7 @@ filter(bank, job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
 ## ..   ...   ...        ...      ...       ...     ...     ...     ...    ...     ...   ...    ...   ...
 ## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
 ##   (fctr), y (fctr)</code></pre>
-<pre class="r"><code># Select all calls made to people whose jos is admin. or technician 
+<pre class="r"><code># Select all calls made to people whose job is admin. or technician 
 filter(bank, job == &quot;admin.&quot; | job == &quot;technician&quot;)</code></pre>
 <pre><code>## Source: local data frame [12,768 x 20]
 ## 
@@ -611,8 +611,8 @@ You may want to order the <code>bank</code> data frame by the balance of the acc
 ## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
 ##   (fctr), y (fctr)</code></pre>
 <p>You can order a data frame by one or more than one variables.</p>
-<p>Ordering data frame bank by <code>age</code> first and descending <code>ballance</code> afterward requires:</p>
-<pre class="r"><code>arrange(bank, age , desc(balance))</code></pre>
+<p>Ordering data frame bank by <code>age</code> first and descending <code>balance</code> afterward requires:</p>
+<pre class="r"><code>arrange(bank, age, desc(balance))</code></pre>
 <pre><code>## Source: local data frame [45,211 x 20]
 ## 
 ##       id   age     job marital education default balance housing   loan   contact   day  month  year
@@ -692,14 +692,14 @@ mutate(df, x1 = x+1)</code></pre>
 <h1><code>summarise()</code></h1>
 <p>The last verb is <code>summarise()</code>, which collapses a data frame to a single row.</p>
 <p>The first argument is the name of the data frame, and the second and subsequent are summarising expressions.</p>
-<pre class="r"><code># Compute the mean of balance
+<pre class="r"><code># Compute the mean of balance variable of bank data frame
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))</code></pre>
 <pre><code>## Source: local data frame [1 x 1]
 ## 
 ##   mean_balance
 ##          (dbl)
 ## 1     1362.272</code></pre>
-<pre class="r"><code># Compute the minimum and the maximum value of balance
+<pre class="r"><code># Compute the minimum and the maximum value of balance of bank data frame
 summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))</code></pre>
 <pre><code>## Source: local data frame [1 x 2]
 ## 

@@ -303,15 +303,19 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Introduction to R</li>
-  <li><a href="11-intro.html">About R</a></li>
+  <li><a href="11-aboutr.html">About R</a></li>
   <li><a href="12-setup.html">R, RStudio Set Up</a></li>
   <li><a href="13-firstlook.html">A First Look to R Session</a></li>
   <li class="nav-header">R Objects</li>
   <li><a href="21-introduction.html">Introduction</a></li>
   <li><a href="22-data-obj.html">Data Objects</a></li>
   <li><a href="23-functions-obj.html">Function Object</a></li>
-  <li class="nav-header">Data Import</li>
-  <li><a href="31-dataimport.html">Data Import and Export</a></li>
+  <li class="nav-header">Data Import and Export</li>
+  <li><a href="31-introduction.html">Introduction</a></li>
+  <li><a href="32-dataimport-text.html">Text files</a></li>
+  <li><a href="33-dataimport-excel.html">Microsoft Excel</a></li>
+  <li><a href="34-dataimport-db.html">Databases</a></li>
+  <li><a href="35-dataimport-rdata.html">R data files</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
   <li><a href="42-dplyr-verbs.html">Verb Functions</a></li>
@@ -320,10 +324,6 @@ $(document).ready(function () {
   <li><a href="51-ggplot.html">Data Visualization with ggplot2</a></li>
   <li class="nav-header">Data Analysis</li>
   <li><a href="61-statmodels.html">Statistical Models with R</a></li>
-  <li class="nav-header">R Development</li>
-  <li><a href="71-functions.html">Writing R Functions</a></li>
-  <li><a href="72-rmarkdown.html">R Markdown</a></li>
-  <li><a href="73-git.html">Git and Github</a></li>
 </ul>
     </div>  
   </div>
@@ -339,8 +339,14 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
+<li><a href="#function-structure">Function structure</a><ul>
+<li><a href="#formals">Formals</a></li>
+<li><a href="#body-of-a-function">Body of a function</a></li>
+<li><a href="#environment-of-a-function">Environment of a function</a></li>
+</ul></li>
+<li><a href="#function-examples">Function Examples</a><ul>
 <li><a href="#mathematical-functions">Mathematical Functions</a></li>
-<li><a href="#probabilistic-functions">Probabilistic Functions</a><ul>
+<li><a href="#probabilistic-functions">Probabilistic Functions</a></li>
 <li><a href="#statistical-functions">Statistical Functions</a></li>
 </ul></li>
 </ul>
@@ -348,6 +354,7 @@ $(document).ready(function () {
 
 <p>Functions are one of the most important objects in R as when working with R we all make constant use of functions.</p>
 <p>A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.</p>
+<p>Let us see some examples:</p>
 <p>The function <code>ls()</code> doesn’t require any input and returns an output.</p>
 <pre class="r"><code>ls()</code></pre>
 <pre><code>## character(0)</code></pre>
@@ -357,31 +364,106 @@ rm(foo)</code></pre>
 <p>Usually, functions require an input and returns an output.</p>
 <pre class="r"><code>sum(1:10)</code></pre>
 <pre><code>## [1] 55</code></pre>
-<p>The several elements of the input of a function are the arguments of the function. When a function is called the arguments can be declared explicitely or implicitely. The arguments can be explicitely with their name.</p>
-<pre class="r"><code>sum(c(1, 2, NA), na.rm = TRUE)</code></pre>
-<pre><code>## [1] 3</code></pre>
-<p>In the above example, the <code>na.rm</code> argument of the <code>sum()</code> function is called explicitely.</p>
-<p>When arguments are called implicitely, the order of the arguments is fundamental. The third example of the code below returns a wrong result.</p>
-<pre class="r"><code>rdata &lt;- c(rnorm(100), NA)
-quantile(x = rdata, probs = c(0.25, 0.50, 0.75), na.rm = TRUE)</code></pre>
-<pre><code>##        25%        50%        75% 
-## -0.6088466 -0.0594199  0.6558911</code></pre>
-<pre class="r"><code>quantile(rdata, c(0.25, 0.50, 0.75), TRUE)</code></pre>
-<pre><code>##        25%        50%        75% 
-## -0.6088466 -0.0594199  0.6558911</code></pre>
-<pre class="r"><code>quantile(rdata, TRUE, c(0.25, 0.50, 0.75))</code></pre>
-<pre><code>## Warning in if (na.rm) x &lt;- x[!is.na(x)] else if (anyNA(x)) stop(&quot;missing values and NaN's not allowed if
-## 'na.rm' is FALSE&quot;): the condition has length &gt; 1 and only the first element will be used</code></pre>
-<pre><code>##     100% 
-## 2.581959</code></pre>
-<pre class="r"><code># When arguments are called explicitely, you can change arguments order 
-quantile(rdata, na.rm = TRUE, probs = c(0.25, 0.50, 0.75))</code></pre>
-<pre><code>##        25%        50%        75% 
-## -0.6088466 -0.0594199  0.6558911</code></pre>
 <p>It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:</p>
 <pre class="r"><code>help(read.table)</code></pre>
 <p>or</p>
 <pre class="r"><code>?read.table</code></pre>
+<p>Let us deeply explore function structure.</p>
+<div id="function-structure" class="section level2">
+<h2>Function structure</h2>
+<p>We can create and assign functions to a variable name as we do with any other object:</p>
+<pre class="r"><code>f &lt;- function(x, y = 0) {
+  z &lt;- x + y
+  z
+}</code></pre>
+<p>Eventually, we can delete any function with the usual call to <code>rm()</code> or <code>remove()</code></p>
+<p>Function structure is made up by three basic components:</p>
+<ul>
+<li>a formal arguments list</li>
+<li>a body</li>
+<li>an environment.</li>
+</ul>
+<pre class="r"><code>formals(f)</code></pre>
+<pre><code>## $x
+## 
+## 
+## $y
+## [1] 0</code></pre>
+<pre class="r"><code>body(f)</code></pre>
+<pre><code>## {
+##     z &lt;- x + y
+##     z
+## }</code></pre>
+<pre class="r"><code>environment(f)</code></pre>
+<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+<div id="formals" class="section level3">
+<h3>Formals</h3>
+<p>Formals are the formal arguments of a function.</p>
+<p>When we call a function, formals arguments can be specified by position or by name and we can mix positional matching with matching by name so that the following are equivalent:</p>
+<pre class="r"><code>mean(x = 1:5, trim = 0.1)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>mean(1:5, trim = 0.1)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>mean(x = 1:5, 0.1)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>mean(1:5, 0.1)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>mean(trim = 0.1, x = 1:5)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<p>Along with position and name, we can also specify formals by partial matching so that:</p>
+<pre class="r"><code>mean(1:5, tr = 0.1)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>mean(tr = 0.1, x = 1:5)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<p>would work anyway.</p>
+<p>Functions formals may also have the construct <code>symbol = default</code>, that unless differently specified, forces any argument to be used with its default value.</p>
+<p>Specifically, function <code>mean()</code> also have a third argument <code>na.rm</code> that defaults to <code>FALSE</code> and, as a result passing vectors with <code>NA</code> values to <code>mean()</code> returns <code>NA</code></p>
+<pre class="r"><code>mean(c(1, 2, NA))</code></pre>
+<pre><code>## [1] NA</code></pre>
+<p>While, by specifying <code>na.rm=TRUE</code> we get the mean of all non missing elements of vector <code>x</code>.</p>
+<pre class="r"><code>mean(c(1, 2, NA), na.rm = TRUE)</code></pre>
+<pre><code>## [1] 1.5</code></pre>
+<p>The order <code>R</code> uses for matching formals against value is:</p>
+<ol style="list-style-type: decimal">
+<li>Check for exact match for a named argument</li>
+<li>Check for a partial match</li>
+<li>Check for a positional match</li>
+</ol>
+</div>
+<div id="body-of-a-function" class="section level3">
+<h3>Body of a function</h3>
+<p>The body of a function is a parsed R statement. In practice, this implies that the body of a function needs to be correct from a formal point of view but no evaluation of the body of a function occurred yet.</p>
+<p>As a result, this function would return an error:</p>
+<pre class="r"><code>wrong &lt;- function(x) {x =}</code></pre>
+<p>as its body is not a correct <code>R</code> statement.</p>
+<p>While this function:</p>
+<pre class="r"><code>right &lt;- function(x){x+h}</code></pre>
+<p>is accepted by <code>R</code> as is formally correct even thought, except under specific circumstances, will always return an error:</p>
+<pre class="r"><code>right(x = 2)</code></pre>
+<pre><code>## Error in right(x = 2): object 'h' not found</code></pre>
+<p>The body of a function, is usually a collection of statements in braces but it can be a single statement, a symbol or even a constant.</p>
+</div>
+<div id="environment-of-a-function" class="section level3">
+<h3>Environment of a function</h3>
+<p>Environments are a fundamental concept in R and their knowledge is essential for advanced programming.</p>
+<p>Environments have the following fundamental concepts:</p>
+<ul>
+<li><p>The environment of a function is the environment that was active at the time that the function was created. Generally, for user defined function, the Global environment:</p>
+<pre class="r"><code>f &lt;- function(x){x+1}
+environment(f)</code></pre>
+<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+<p>or, when a function is defined within a package, the environment associated to that package:</p>
+<pre class="r"><code>environment(mean)</code></pre>
+<pre><code>## &lt;environment: namespace:base&gt;</code></pre></li>
+<li><p>Objects defined within a function, exists in the environment of the function itself.</p>
+<pre class="r"><code>f &lt;- function(x){x+1}
+x</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object 'x' not found</code></pre></li>
+</ul>
+</div>
+</div>
+<div id="function-examples" class="section level2">
+<h2>Function Examples</h2>
 <p>There are lots of function types, let us see some examples.</p>
 <div id="mathematical-functions" class="section level3">
 <h3>Mathematical Functions</h3>
@@ -423,8 +505,8 @@ x + y + z</code></pre>
 <pre class="r"><code>round(3.19, digits = 1)</code></pre>
 <pre><code>## [1] 3.2</code></pre>
 </div>
-<div id="probabilistic-functions" class="section level2">
-<h2>Probabilistic Functions</h2>
+<div id="probabilistic-functions" class="section level3">
+<h3>Probabilistic Functions</h3>
 <p>Probabilistic functions in R fall into four categories:</p>
 <ol style="list-style-type: decimal">
 <li><code>r*</code> functions for generating random numbers,</li>
@@ -435,19 +517,19 @@ x + y + z</code></pre>
 <p>The asterisk indicates the distribution which is used: <code>norm</code> for normal distribution, <code>t</code> for Student’s t-distribution, <code>binom</code> for binomial distribution, <code>gamma</code> distribution, <code>beta</code> distribution, <code>weibull</code> distribution, etc. R integrates numerous statistical distributions. The list of all the probability distributions included in the base R can be obtained by typing <code>help(Distributions)</code>. Other probability distributions become available when loading additional packages.</p>
 <p>The following functions:</p>
 <pre class="r"><code>rnorm(n = 10)</code></pre>
-<pre><code>##  [1] -0.3329234  1.3631137 -0.4691473  0.8428756 -1.4579937 -0.4003059 -0.7764173 -0.3692965  1.2401015
-## [10] -0.1074338</code></pre>
+<pre><code>##  [1] -0.50219235  0.13153117 -0.07891709  0.88678481  0.11697127  0.31863009 -0.58179068  0.71453271
+##  [9] -0.82525943 -0.35986213</code></pre>
 <pre class="r"><code>rnorm(n = 20, mean = 3, sd = 5)</code></pre>
-<pre><code>##  [1]  3.86296753  4.27300634 -0.07266914 -4.14607548  1.34512283  3.64193032  8.09059996  1.72213154
-##  [9]  1.48729495 11.07595341 -0.86856677  5.12001201  0.08026509  5.07517839 -4.72630828  0.40625248
-## [17]  1.60104223  8.03728691  0.65215023  4.48948519</code></pre>
+<pre><code>##  [1]  3.4494307  3.4813723  1.9918302  6.6992025  3.6168975  2.8534165  1.0557288  5.5542813 -1.5690709
+## [10] 14.5514841  0.8095501  6.8203031  4.3098065  6.8670230 -1.0718956  0.8077472 -0.6011078  4.1547227
+## [19] -2.7886473  4.2353800</code></pre>
 <pre class="r"><code>rbinom(n = 50, size = 20, prob = 0.8)</code></pre>
-<pre><code>##  [1] 17 14 18 15 15 14 17 18 14 13 15 15 16 18 15 15 16 18 15 17 17 17 19 17 16 15 15 13 18 17 18 15 17 15
-## [35] 17 18 15 15 16 16 14 15 13 16 16 12 16 15 16 13</code></pre>
+<pre><code>##  [1] 16 15 13 15 16 17 16 16 17 15 16 17 16 13 15 16 14 15 14 18 16 16 13 12 19 16 15 17 17 15 14 17 17 16
+## [35] 14 17 16 18 19 15 17 17 19 17 16 15 12 15 19 16</code></pre>
 <pre class="r"><code>rweibull(n = 30, shape = 5, scale = 3)</code></pre>
-<pre><code>##  [1] 2.9997846 1.9945284 2.8602040 2.7936399 2.8510382 2.5919418 2.6157584 2.2568736 2.6979975 2.2962057
-## [11] 2.9411133 2.7706815 2.7499327 1.1192084 2.9004878 0.9941732 2.2551540 2.7622912 2.7836324 1.8636385
-## [21] 3.1761919 3.3550978 2.9474701 2.7257877 3.2118703 2.9870258 2.6563625 3.2814013 2.2191625 2.5550999</code></pre>
+<pre><code>##  [1] 2.125305 2.205189 3.607440 3.223220 1.530881 3.804215 1.842126 2.388484 3.297971 2.114892 2.953375
+## [12] 2.959757 2.831958 2.650630 3.025382 3.867061 1.036544 1.601608 2.703966 3.538599 3.225095 2.054704
+## [23] 2.363420 2.792281 2.656922 3.982723 2.832641 3.776435 2.846984 2.570738</code></pre>
 <p>generate, respectively:</p>
 <ul>
 <li>10 pseudorandom values from a normal distribution with parameters (0, 1);</li>
@@ -486,6 +568,7 @@ x + y + z</code></pre>
 <li>the quantile with which a 0.5 probability on the left is obtained in a standard normal distribution;</li>
 <li>The quantile with which a 0.5 probability on the left is obtained in a binomial distribution with parameters <span class="math inline">\(n = 20\)</span> and <span class="math inline">\(\pi = 0.8\)</span>.</li>
 </ul>
+</div>
 <div id="statistical-functions" class="section level3">
 <h3>Statistical Functions</h3>
 <p>Any kind of statistical analysis can be performed in R thanks to the built-in functions of the base version or the numerous additional packages. The functions enabling the calculation of the main descriptive statistical analyses are explained below.</p>

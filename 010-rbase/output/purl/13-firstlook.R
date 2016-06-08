@@ -31,11 +31,20 @@ ls(pattern = "x")
 rm(x2)
 ls()
 
-## ---- setwd, eval=FALSE--------------------------------------------------
-## setwd("C:/Documents and Settings/Data")
+## ----howRworks-029-------------------------------------------------------
+gc()
+
+## ---- setwd1, eval=FALSE-------------------------------------------------
+## setwd("C:/User/Andrea/Documents and Settings/Data")
 
 ## ---- getwd, eval=FALSE--------------------------------------------------
 ## getwd()
+
+## ---- setwd2, eval=FALSE-------------------------------------------------
+## setwd("./Statistics")
+
+## ---- setwd3, eval=FALSE-------------------------------------------------
+## setwd("./../Maths")
 
 ## ---- help1, eval=FALSE--------------------------------------------------
 ## help(mean)

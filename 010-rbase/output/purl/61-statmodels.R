@@ -1,7 +1,6 @@
 ## ---- options, echo=FALSE, results='hide', message=FALSE, warning=FALSE----
 require(knitr)
 options(width = 108)
-opts_knit$set(root.dir = "../data")
 
 ## ----first, message=FALSE------------------------------------------------
 require(qdata)
