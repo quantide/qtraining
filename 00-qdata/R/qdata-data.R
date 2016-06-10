@@ -83,7 +83,6 @@ NULL
 #' 
 #' 
 #' @name bank
-#' @aliases bank1 bank2
 #' 
 #' 
 #' @description This dataset is related with direct marketing campaigns of a Portuguese
@@ -99,12 +98,6 @@ NULL
 #' @format \code{bank} is a tbl data frame with 45211 observations on 20 variables.
 #' 
 #' The data is ordered by call id (and also by date, from May 2008 to November 2010). 
-#' 
-#' \code{bank1} is a tbl data frame with all \code{bank} observations on 11 variables: the first 10 variables of \code{bank} and \code{duration}.
-#' 
-#' \code{bank2} is a tbl data frame with all \code{bank} observations on 11 variables: \code{id} and the last 10 variables of \code{bank}.
-#' 
-#' Differently from \code{bank}, \code{bank1} and \code{bank2} are not sorted by \code{id}.
 #' 
 #' 
 #' @details 
@@ -194,7 +187,9 @@ NULL
 #' @name bimetal1
 #' 
 #' 
-#' @description The \code{bimetal1} data was extracted from the analogous data frame of package \code{MSQC}.
+#' @description The \code{bimetal1} data was extracted from the analogous data frame of package \code{MSQC}. 
+#' The dataset contains measurements of the deflection, the curvature, the resistivity and the hardness in low 
+#' and high expansion sides, from brass and steel bimetal thermostats. The manufacturing process is assumed to be "in-control".
 #' 
 #'  
 #' @usage data(bimetal1)
@@ -206,8 +201,11 @@ NULL
 #' @details 
 #' The 5 variables of the \code{bimetal1} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{car} car model (character);
-#' \item \code{disp} displacement (cu.in.) (numeric).
+#' \item \code{deflection} the deflection level in 10^-6 1/Kl (numeric);
+#' \item \code{curvature} the curvature level in 10^-6 1/K (numeric);
+#' \item \code{resistivity} the resistivity level in 10 ^-1ohm x mm^2/m (numeric);
+#' \item \code{Hardness.low.side} the hardness of the low expansion side in 10 N/mm^2 (numeric);
+#' \item \code{Hardness.high.side} the hardness of the high expansion side in 10 N/mm^3 (numeric).
 #' }
 #' 
 #' 
@@ -573,7 +571,6 @@ NULL
 #' 
 #' 
 #' @name italia
-#' @aliases comuni province regioni ripartizioni
 #' 
 #' 
 #' @description The \code{italia} dataset is related with information on the 8003 Italian districts ("comuni") updated at 2016-01-01. 
@@ -583,18 +580,7 @@ NULL
 #' @usage data(italia) 
 #' 
 #' 
-#' @format \code{italia} is a tbl data frame with 8003 observations on 14 variables. It contains information on the 8003 Italian "comuni" and
-#' all variables contained present also in the other tbl data frames (\code{comuni}, \code{province}, \code{regioni} and \code{ripartizioni}).
-#' 
-#' \code{comuni} is a tbl data frame with 8003 observations on 9 variables; it contains information on the 8003 Italian "comuni" and the codes of their major districts
-#' ("province", "regioni", "ripartizioni").
-#' 
-#' \code{province} is a tbl data frame with 110 observations on 5 variables; it contains information on the 110 Italian "province" and on the 9 Italian metropolitan cities
-#' ("città metropolitane").
-#' 
-#' \code{regioni} is a tbl data frame with 20 observations on 2 variables; it contains information on the 20 Italian "regioni".
-#' 
-#' \code{ripartizioni} is a tbl data frame with 5 observations on 2 variables; it contains information on the 5 Italian "ripartizioni".
+#' @format \code{italia} is a tbl data frame with 8003 observations on 14 variables.
 #' 
 #' 
 #' @details 
@@ -618,6 +604,124 @@ NULL
 #' 
 #' 
 #' @source This dataset was downloaded in the Istat website: \href{http://www.istat.it/it/archivio/6789}{Istituto nazionale di statistica (Istat)}.
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Data on Italian Districts (Comuni)
+#' 
+#' 
+#' @name comuni
+#' 
+#' 
+#' @description The \code{comuni} dataset is related with information on the 8003 Italian districts ("comuni") updated at 2016-01-01. 
+#' In particular information on "province", "regioni, "ripartizioni" ("major" Italian districts) related to "comuni" is available.
+#' 
+#'  
+#' @usage data(comuni) 
+#' 
+#' 
+#' @format \code{comuni} is a tbl data frame with 8003 observations on 9 variables.
+#' 
+#' 
+#' @details 
+#' The 9 variables of the \code{italia} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{cod_comune} codes of the Italian "comuni" (character);
+#' \item \code{comune} names of the Italian "comuni" (character);
+#' \item \code{comune_cap_prov} if a "comune" is the administrative center of the "provincia" (logical);
+#' \item \code{pop_legale} legal population living in the "comuni" at the last "Censimento" (2011-10-09) (integer);
+#' \item \code{progr_comune} progressive codes of the Italian "comuni" (it restarts from 1 for each "provincia") (character);
+#' \item \code{cod_provincia} codes of the Italian "province"; note that \code{cod_comune} is \code{cod_provincia} pasted to \code{progr_comune} (character);
+#' \item \code{cod_citta_metro} codes of the Italian "città metropolitane" (character);
+#' \item \code{cod_regione} codes of the Italian "regioni" (character);
+#' \item \code{cod_rip_geo} codes of the Italian "ripartizioni geografiche" (character).
+#' }
+#' 
+#' 
+#' @source Istat website: \href{http://www.istat.it/it/archivio/6789}{Istituto nazionale di statistica (Istat)}.
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Data on Italian Districts (Province)
+#' 
+#' 
+#' @name province
+#' 
+#' 
+#' @description The \code{province} dataset is related with information on the 110 Italian province and on the 9 Italian metropolitan cities
+#' ("città metropolitane"), updated at 2016-01-01. 
+#' 
+#'  
+#' @usage data(province) 
+#' 
+#' 
+#' @format \code{province} is a tbl data frame with 110 observations on 5 variables.
+#'  
+#' 
+#' @details 
+#' The 5 variables of the \code{italia} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{cod_provincia} codes of the Italian "province"; 
+#' \item \code{provincia} names of the Italian "province" (character);
+#' \item \code{sigla_auto} automotive initials ("targa automobilistica") of the Italian "province" (character);
+#' \item \code{cod_citta_metro} codes of the Italian "città metropolitane" (character);
+#' \item \code{citta_metro} names of the Italian "città metropolitane" (character);
+#' }
+#' 
+#' 
+#' @source Istat website: \href{http://www.istat.it/it/archivio/6789}{Istituto nazionale di statistica (Istat)}.
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Data on Italian Districts (Regioni)
+#' 
+#' @name regioni
+#' 
+#' @description The \code{regioni} dataset is related with information on the 20 Italian "regioni", updated at 2016-01-01. 
+#' 
+#' @usage data(regioni) 
+#' 
+#' @format \code{regioni} is a tbl data frame with 20 observations on 2 variables.
+#' 
+#' @details 
+#' The 2 variables of the \code{regioni} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{cod_regione} codes of the Italian "regioni" (character);
+#' \item \code{regione} names of the Italian "regioni" (character);
+#' }
+#' 
+#' 
+#' @source Istat website: \href{http://www.istat.it/it/archivio/6789}{Istituto nazionale di statistica (Istat)}.
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Data on Italian Districts (Ripartizioni)
+#' 
+#' 
+#' @name ripartizioni
+#' 
+#' 
+#' @description The \code{ripartizioni} dataset is related with information on the 5 Italian "ripartizioni".
+#'  
+#' @usage data(ripartizioni) 
+#' 
+#' 
+#' @format \code{ripartizioni} is a tbl data frame with 5 observations on 2 variables.
+#' 
+#' 
+#' @details 
+#' The 2 variables of the \code{italia} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{cod_rip_geo} codes of the Italian "ripartizioni geografiche" (character);
+#' \item \code{rip_geo} names of the Italian "ripartizioni geografiche" (character).
+#' }
+#' 
+#' 
+#' @source Istat website: \href{http://www.istat.it/it/archivio/6789}{Istituto nazionale di statistica (Istat)}.
 NULL
 ##################################################################################################################################
 
@@ -1046,24 +1150,22 @@ NULL
 
 
 ##################################################################################################################################
-#' Open era: U.S. Open and Wimbledon tournaments
+#' Open era: Wimbledon tournaments
 #' 
 #' 
-#' @name tennis
-#' @aliases usopen wimbledon
+#' @name wimbledon
 #' 
 #' 
-#' @description The \code{tennis} datasets contain information about the gentlemen U.S. Open
-#' (the \code{usopen} tbl data frame) and Wimbledon (the \code{wimbledon} tbl data frame) finals from 1968 to 2015.
+#' @description The \code{wimbledon} datasets contain information about the gentlemen Wimbledon finals from 1968 to 2015.
 #'  
-#' @usage data(tennis)
+#' @usage data(wimbledon)
 #' 
 #' 
-#' @format Both \code{usopen} and \code{wimbledon} are tbl data frames with 48 observations and 10 variables.
+#' @format \code{wimbledon} is a tbl data frames with 48 observations and 10 variables.
 #' 
 #' 
 #' @details 
-#' The 10 variables of the two data frames are the following ones:
+#' The 10 variables of the \code{wimbledon} tbl data frame are the following ones:
 #' \itemize{
 #' \item \code{year} Tournament year (numeric)
 #' \item \code{champion_country} champion's country (character)
@@ -1076,6 +1178,34 @@ NULL
 NULL
 ##################################################################################################################################
 
+##################################################################################################################################
+#' Open era: U.S. Open tournaments
+#' 
+#' 
+#' @name usopen
+#' 
+#' 
+#' @description The \code{usopen} datasets contain information about the gentlemen U.S. Open from 1968 to 2015.
+#'  
+#' @usage data(usopen)
+#' 
+#' 
+#' @format \code{usopen} is a tbl data frames with 48 observations and 10 variables.
+#' 
+#' 
+#' @details 
+#' The 10 variables of the \code{usopen} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{year} Tournament year (numeric)
+#' \item \code{champion_country} champion's country (character)
+#' \item \code{champion} champion's name and surname (character)
+#' \item \code{runner_up_country} runner's country (character)
+#' \item \code{runner_up} runner's name and surname (character)
+#' \item \code{s1,s2,s3,s4,s5} scores in the five sets (character)
+#' }
+#' 
+NULL
+##################################################################################################################################
 
 ##################################################################################################################################
 #' Distance Matrix between 12 Country Leaders of II World War
@@ -2071,7 +2201,7 @@ NULL
 #' 
 #' 
 #' @details 
-#' The 2 variables of the \code{titanic} tbl data frame are the following ones:
+#' The 2 variables of the \code{carseat} tbl data frame are the following ones:
 #' \itemize{
 #' \item \code{Operator} operator which performed the measurement (factor with levels: \code{Michelle}, \code{Kevin} and \code{Rob})
 #' \item \code{Strength} breaking load of the fabric (in kg) (numeric)
@@ -2079,6 +2209,72 @@ NULL
 #' 
 #' 
 #' @source 
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Frequency Table from a Copenhagen Housing Conditions Survey 
+#' 
+#' 
+#' @name housing
+#' 
+#' 
+#' @description \code{housing} contains information on housing conditions in Copenhagen of 1681 householders who were surveyed on: 
+#' the type of rental accommodation they occupied, the degree of contact they had with other residents, their feeling of influence on apartment management,
+#' and on their level of satisfaction with their housing conditions.
+#' 
+#'  
+#' @usage data(housing)
+#' 
+#' 
+#' @format \code{housing} is a tbl data frame with 72 observations on 5 variables.
+#' 
+#' 
+#' @details 
+#' The 5 variables of the \code{housing} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Sat} Satisfaction of householders with their present housing circumstances (factor with levels: \code{High}, \code{Medium} and \code{Low})
+#' \item \code{Infl} Perceived degree of influence householders have on the management of the property (factor with levels: \code{High}, \code{Medium} and \code{Low})
+#' \item \code{Type} Type of rental accommodation (factor with levels: \code{Tower}, \code{Atrium}, \code{Apartment} and \code{Terrace})
+#' \item \code{Cont} Contact residents are afforded with other residents (factor with levels: \code{(Low} and \code{High})
+#' \item \code{Freq} Frequencies: the numbers of residents in each class (numeric)
+#' }
+#' 
+#' 
+#' @source he complete \code{housing} help page is in the \code{MASS} package: \code{\link[MASS]{housing}}
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Absenteeism from School in Rural New South Wales
+#' 
+#' 
+#' @name quine
+#' 
+#' 
+#' @description The \code{quine} contains information about children from Walgett, New South Wales, 
+#' Australia, who were classified by Culture, Age, Sex and Learner status and the number of days absent 
+#' from school in a particular school year.
+#' 
+#'  
+#' @usage data(quine)
+#' 
+#' 
+#' @format \code{quine} is a tbl data frame with 146 observations on 5 variables.
+#' 
+#' 
+#' @details 
+#' The 5 variables of the \code{quine} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Eth} ethnic background: Aboriginal or Not (factor with levels: \code{A} and \code{N})
+#' \item \code{Sex} sex (factor with levels: \code{F} and \code{M})
+#' \item \code{Age} age group (factor with levels: \code{F0}, \code{F1}, \code{F2} and \code{F3})
+#' \item \code{Lrn} learner status (factor with levels: \code{(AL} (Average learner) and \code{SL} (Slow learner))
+#' \item \code{Days} days absent from school in the year
+#' }
+#' 
+#' 
+#' @source he complete \code{quine} help page is in the \code{MASS} package: \code{\link[MASS]{quine}}
 NULL
 ##################################################################################################################################
 
