@@ -10,7 +10,7 @@ opts_chunk$set(list(dev = 'png',fig.cap='',fig.show='hold',dpi=100,fig.width=7, 
 
 ```{r, message=FALSE}
 require(ggplot2)
-require(MASS) # For quine data
+require(MASS) 
 require(qdata)
 ```
 

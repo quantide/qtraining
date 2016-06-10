@@ -4,7 +4,7 @@ require(qdata)
 require(dplyr)
 
 ## ------------------------------------------------------------------------
-data(sample)
+data(ds)
 str(ds)
 head(ds)
 

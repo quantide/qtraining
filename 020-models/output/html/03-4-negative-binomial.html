@@ -359,7 +359,7 @@ $(document).ready(function () {
 </div>
 
 <pre class="r"><code>require(ggplot2)
-require(MASS) # For quine data
+require(MASS) 
 require(qdata)</code></pre>
 <div id="example-quine-data" class="section level2">
 <h2>Example: Quine data</h2>
@@ -388,7 +388,7 @@ head(quine)</code></pre>
 ## 5   A   M  F0  AL    5
 ## 6   A   M  F0  AL   13</code></pre>
 <pre class="r"><code>str(quine)</code></pre>
-<pre><code>## 'data.frame':    146 obs. of  5 variables:
+<pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    146 obs. of  5 variables:
 ##  $ Eth : Factor w/ 2 levels &quot;A&quot;,&quot;N&quot;: 1 1 1 1 1 1 1 1 1 1 ...
 ##  $ Sex : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 2 2 2 2 2 2 2 2 2 2 ...
 ##  $ Age : Factor w/ 4 levels &quot;F0&quot;,&quot;F1&quot;,&quot;F2&quot;,..: 1 1 1 1 1 1 1 1 2 2 ...

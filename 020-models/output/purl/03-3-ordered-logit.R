@@ -4,7 +4,7 @@ require(nnet)
 require(vcd)
 require(faraway)
 require(ggplot2)
-require(MASS) # for housing data
+require(MASS) 
 require(qdata)
 
 ## ------------------------------------------------------------------------

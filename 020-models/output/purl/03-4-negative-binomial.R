@@ -1,6 +1,6 @@
 ## ---- message=FALSE------------------------------------------------------
 require(ggplot2)
-require(MASS) # For quine data
+require(MASS) 
 require(qdata)
 
 ## ------------------------------------------------------------------------

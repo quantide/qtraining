@@ -16,7 +16,7 @@ require(dplyr)
 Let us consider a simple relation between height and weight in a sample of young people:
 
 ```{r}
-data(sample)
+data(ds)
 str(ds)
 head(ds)
 ```
