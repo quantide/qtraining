@@ -1,0 +1,147 @@
+---
+title: "combining"
+author: "Veronica"
+date: "June 10, 2016"
+output: html_document
+---
+
+<!---
+
+
+# Set Operations
+
+Set operations expect the `x` and `y` inputs to have the same variables, and treat the observations like sets:
+
+* `intersect(x, y)`: return only observations in both `x` and `y`;
+* `union(x, y)`: return unique observations in `x` and `y`;
+* `setdiff(x, y)`: return observations in `x`, but not in `y`.
+
+Given this simple data:
+
+```{r}
+ripartizioni2 <-
+  data.frame(cod_rip_geo = c("1","2"), rip_geo = rep("Nord",2)) %>%
+  bind_rows(ripartizioni)
+ripartizioni3 <- ripartizioni2 %>% slice(c(1,5,6))
+ripartizioni3$rip_geo[3] <- "Mezzogiorno"
+ripartizioni
+ripartizioni3
+```
+
+The four possibilities are:
+
+```{r}
+intersect(ripartizioni, ripartizioni3)
+union(ripartizioni, ripartizioni3) # Note that we get 7 rows, not 8
+setdiff(ripartizioni, ripartizioni3)
+setdiff(ripartizioni3, ripartizioni)
+```
+
+-->
+
+<!---
+# Coercion Rules
+
+When joining tables, `dplyr` is a little more conservative than base `R` about the types of variable that it considers equivalent. This is mostly likely to surprise you when working with factors:
+
+* Factors with different levels are coerced to character with a warning:
+
+```{r}
+# First data frame
+ripartizioni4 <- ripartizioni
+ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo)
+ripartizioni4
+ripartizioni4 %>% str
+# Second data frame
+ripartizioni5 <- ripartizioni3
+ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo)
+ripartizioni5
+ripartizioni5 %>% str
+# Join
+(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
+joined_df %>% str()
+```
+
+* Factors with the same levels in a different order are coerced to character with a warning:
+
+```{r}
+# First data frame
+ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo,
+                                levels = c("Centro","Isole","Nord-est","Nord-ovest","Sud",
+                                           "Nord","Mezzogiorno"))
+ripartizioni4
+ripartizioni4 %>% str
+# Second data frame
+ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo,
+                                levels = c("Nord","Centro","Mezzogiorno",
+                                           "Isole","Nord-est","Nord-ovest","Sud"))
+ripartizioni5
+ripartizioni5 %>% str
+# Join
+(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
+joined_df %>% str()
+```
+
+* Factors are preserved only if the levels match exactly:
+
+```{r}
+# First data frame
+ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo,
+                                levels = c("Nord","Centro","Mezzogiorno",
+                                           "Nord-est","Nord-ovest","Sud","Isole"))
+ripartizioni4
+ripartizioni4 %>% str
+# Second data frame
+ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo,
+                                levels = c("Nord","Centro","Mezzogiorno",
+                                           "Nord-est","Nord-ovest","Sud","Isole"))
+ripartizioni5
+ripartizioni5 %>% str
+# Join
+(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
+joined_df %>% str()
+``` 
+
+* A factor and a character are coerced to character with a warning:
+
+```{r}
+# First data frame
+ripartizioni
+ripartizioni %>% str
+# Second data frame
+ripartizioni4
+ripartizioni4 %>% str
+# Join
+(joined_df <- ripartizioni %>% full_join(ripartizioni4))
+joined_df %>% str()
+```
+
+* Otherwise logicals will be silently upcast to integer, and integer to numeric, but coercing to character will raise an error:
+
+```{r}
+# First data frame
+ripartizioni6 <- ripartizioni3
+ripartizioni6$cod_rip_geo <- as.numeric(ripartizioni6$cod_rip_geo)
+ripartizioni6
+ripartizioni6 %>% str
+# Second data frame
+ripartizioni7 <- ripartizioni6
+ripartizioni7$cod_rip_geo[3] <- 4.5
+ripartizioni7
+ripartizioni7 %>% str
+# Join
+(joined_df <- ripartizioni6 %>% full_join(ripartizioni7))
+joined_df %>% str()
+```
+
+```{r, error=TRUE}
+# First data frame
+ripartizioni6
+ripartizioni6 %>% str
+# Second data frame
+ripartizioni3
+ripartizioni3 %>% str
+# Join
+(joined_df <- full_join(ripartizioni6, ripartizioni3))
+```
+-->
