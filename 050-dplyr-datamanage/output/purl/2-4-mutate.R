@@ -2,7 +2,6 @@
 require(dplyr)
 require(qdata)
 data(bank)
-bank <- tbl_df(bank)
 
 ## ------------------------------------------------------------------------
 df <- data.frame(x = 1:3, y = 3:1)

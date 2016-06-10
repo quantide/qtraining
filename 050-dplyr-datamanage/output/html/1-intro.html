@@ -365,23 +365,26 @@ require(tidyr)</code></pre>
 <p>Most of the examples of this course require the dataset <code>bank</code> which is included in the <code>qdata</code> package.</p>
 <pre class="r"><code>require(qdata)
 data(bank)
-head(bank)</code></pre>
-<pre><code>##   id age          job marital education default balance housing loan contact day month year       date
-## 1  1  58   management married  tertiary      no    2143     yes   no unknown   5   may 2008 2008-05-05
-## 2  2  44   technician  single secondary      no      29     yes   no unknown   5   may 2008 2008-05-05
-## 3  3  33 entrepreneur married secondary      no       2     yes  yes unknown   5   may 2008 2008-05-05
-## 4  4  47  blue-collar married   unknown      no    1506     yes   no unknown   5   may 2008 2008-05-05
-## 5  5  33      unknown  single   unknown      no       1      no   no unknown   5   may 2008 2008-05-05
-## 6  6  35   management married  tertiary      no     231     yes   no unknown   5   may 2008 2008-05-05
-##   duration campaign pdays previous poutcome  y
-## 1      261        1    -1        0  unknown no
-## 2      151        1    -1        0  unknown no
-## 3       76        1    -1        0  unknown no
-## 4       92        1    -1        0  unknown no
-## 5      198        1    -1        0  unknown no
-## 6      139        1    -1        0  unknown no</code></pre>
+bank</code></pre>
+<pre><code>## Source: local data frame [45,211 x 20]
+## 
+##       id   age          job  marital education default balance housing   loan contact   day  month  year
+##    (int) (int)       (fctr)   (fctr)    (fctr)  (fctr)   (int)  (fctr) (fctr)  (fctr) (int) (fctr) (int)
+## 1      1    58   management  married  tertiary      no    2143     yes     no unknown     5    may  2008
+## 2      2    44   technician   single secondary      no      29     yes     no unknown     5    may  2008
+## 3      3    33 entrepreneur  married secondary      no       2     yes    yes unknown     5    may  2008
+## 4      4    47  blue-collar  married   unknown      no    1506     yes     no unknown     5    may  2008
+## 5      5    33      unknown   single   unknown      no       1      no     no unknown     5    may  2008
+## 6      6    35   management  married  tertiary      no     231     yes     no unknown     5    may  2008
+## 7      7    28   management   single  tertiary      no     447     yes    yes unknown     5    may  2008
+## 8      8    42 entrepreneur divorced  tertiary     yes       2     yes     no unknown     5    may  2008
+## 9      9    58      retired  married   primary      no     121     yes     no unknown     5    may  2008
+## 10    10    43   technician   single secondary      no     593     yes     no unknown     5    may  2008
+## ..   ...   ...          ...      ...       ...     ...     ...     ...    ...     ...   ...    ...   ...
+## Variables not shown: date (time), duration (int), campaign (int), pdays (int), previous (int), poutcome
+##   (fctr), y (fctr)</code></pre>
 <pre class="r"><code>str(bank)</code></pre>
-<pre><code>## 'data.frame':    45211 obs. of  20 variables:
+<pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    45211 obs. of  20 variables:
 ##  $ id       : int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ age      : int  58 44 33 47 33 35 28 42 58 43 ...
 ##  $ job      : Factor w/ 12 levels &quot;admin.&quot;,&quot;blue-collar&quot;,..: 5 10 3 2 12 5 5 3 6 10 ...
@@ -502,7 +505,7 @@ italia</code></pre>
 <ul>
 <li><code>usopen</code> and <code>wimbledon</code>, which contain information about the gentlemen U.S. Open nd Wimbledon finals from 1968 to 2015:</li>
 </ul>
-<pre class="r"><code>data(tennis)
+<pre class="r"><code>data(usopen)
 usopen</code></pre>
 <pre><code>## Source: local data frame [48 x 10]
 ## 
@@ -532,7 +535,8 @@ usopen</code></pre>
 ##  $ s3               : chr  &quot; 6–3&quot; &quot; 6–2&quot; &quot; 7–6(5–2)&quot; &quot; 6–2&quot; ...
 ##  $ s4               : chr  &quot; 3–6&quot; &quot; 6–2&quot; &quot; 6–3[f]&quot; &quot; 7–6(5–3)&quot; ...
 ##  $ s5               : chr  &quot; 6–3&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...</code></pre>
-<pre class="r"><code>wimbledon</code></pre>
+<pre class="r"><code>data(wimbledon)
+wimbledon</code></pre>
 <pre><code>## Source: local data frame [48 x 10]
 ## 
 ##     year champion_country      champion runner_up_country      runner_up    s1        s2    s3    s4    s5
@@ -565,7 +569,12 @@ usopen</code></pre>
 ?people
 ?mtcars
 ?italia
-?tennis</code></pre>
+?comuni
+?province
+?regioni
+?ripartizioni
+?usopen
+?wimbledon</code></pre>
 </div>
 </div>
 

@@ -36,7 +36,7 @@ Most of the examples of this course require the dataset `bank` which is included
 ```{r bank, message=FALSE}
 require(qdata)
 data(bank)
-head(bank)
+bank
 str(bank)
 ```
 
@@ -76,9 +76,10 @@ str(italia)
 * `usopen` and `wimbledon`, which contain information about the gentlemen U.S. Open nd Wimbledon finals from 1968 to 2015:
 
 ```{r tennis, message=FALSE}
-data(tennis)
+data(usopen)
 usopen
 str(usopen)
+data(wimbledon)
 wimbledon
 str(wimbledon)
 ```
@@ -90,5 +91,10 @@ For a complete description of these datasets please refer to the help:
 ?people
 ?mtcars
 ?italia
-?tennis
+?comuni
+?province
+?regioni
+?ripartizioni
+?usopen
+?wimbledon
 ```

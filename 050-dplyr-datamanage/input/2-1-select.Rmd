@@ -12,7 +12,6 @@ options(width = 108)
 require(dplyr)
 require(qdata)
 data(bank) 
-bank <- tbl_df(bank)
 ```
 
 

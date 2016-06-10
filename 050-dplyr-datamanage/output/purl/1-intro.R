@@ -5,7 +5,7 @@ require(tidyr)
 ## ----bank, message=FALSE-------------------------------------------------
 require(qdata)
 data(bank)
-head(bank)
+bank
 str(bank)
 
 ## ----people, message=FALSE-----------------------------------------------
@@ -24,9 +24,10 @@ italia
 str(italia)
 
 ## ----tennis, message=FALSE-----------------------------------------------
-data(tennis)
+data(usopen)
 usopen
 str(usopen)
+data(wimbledon)
 wimbledon
 str(wimbledon)
 
@@ -35,5 +36,10 @@ str(wimbledon)
 ## ?people
 ## ?mtcars
 ## ?italia
-## ?tennis
+## ?comuni
+## ?province
+## ?regioni
+## ?ripartizioni
+## ?usopen
+## ?wimbledon
 

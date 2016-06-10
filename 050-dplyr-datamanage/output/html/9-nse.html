@@ -427,26 +427,38 @@ fun4(mtcars, x = disp, threshold = 450)</code></pre>
 <p>These functions work very similarly to their NSE counterparts, but the inputs must be “quoted”.</p>
 <p>That is, the NSE version of <code>summarise()</code>:</p>
 <pre class="r"><code>summarise(bank, mean_balance = mean(balance, na.rm = TRUE))</code></pre>
-<pre><code>##   mean_balance
+<pre><code>## Source: local data frame [1 x 1]
+## 
+##   mean_balance
+##          (dbl)
 ## 1     1362.272</code></pre>
 <p>corrensponds to three possible SE versions:</p>
 <ul>
 <li>with a formula:</li>
 </ul>
 <pre class="r"><code>summarise_(bank, mean_balance = ~mean(balance, na.rm = TRUE))</code></pre>
-<pre><code>##   mean_balance
+<pre><code>## Source: local data frame [1 x 1]
+## 
+##   mean_balance
+##          (dbl)
 ## 1     1362.272</code></pre>
 <ul>
 <li>with <code>quote()</code>:</li>
 </ul>
 <pre class="r"><code>summarise_(bank, mean_balance = quote(mean(balance, na.rm = TRUE))) </code></pre>
-<pre><code>##   mean_balance
+<pre><code>## Source: local data frame [1 x 1]
+## 
+##   mean_balance
+##          (dbl)
 ## 1     1362.272</code></pre>
 <ul>
 <li>as a string:</li>
 </ul>
 <pre class="r"><code>summarise_(bank, mean_balance = &quot;mean(balance, na.rm = TRUE)&quot;)</code></pre>
-<pre><code>##   mean_balance
+<pre><code>## Source: local data frame [1 x 1]
+## 
+##   mean_balance
+##          (dbl)
 ## 1     1362.272</code></pre>
 <!--- da capire
 
@@ -459,8 +471,11 @@ summarise_(bank, constant1(4))
 ```
 
 ```
-##   n
-## 1 4
+## Source: local data frame [1 x 1]
+## 
+##       n
+##   (dbl)
+## 1     4
 ```
 
 Using anything other than a formula will fail because it doesn't know which environment to look in:
@@ -479,11 +494,17 @@ summarise_(bank, constant2(4))
 <pre class="r"><code>n &lt;- 10
 dots &lt;- list(~mean(balance, na.rm = TRUE), ~n)
 summarise_(bank, .dots = dots)</code></pre>
-<pre><code>##   mean(balance, na.rm = TRUE)  n
-## 1                    1362.272 10</code></pre>
+<pre><code>## Source: local data frame [1 x 2]
+## 
+##   mean(balance, na.rm = TRUE)     n
+##                         (dbl) (dbl)
+## 1                    1362.272    10</code></pre>
 <p>Better results can be gained using function <code>setNames()</code>: a convenience function that sets the names on an object and returns the object.</p>
 <pre class="r"><code>summarise_(bank, .dots = setNames(dots, c(&quot;mean&quot;, &quot;count&quot;))) </code></pre>
-<pre><code>##       mean count
+<pre><code>## Source: local data frame [1 x 2]
+## 
+##       mean count
+##      (dbl) (dbl)
 ## 1 1362.272    10</code></pre>
 </div>
 <div id="mixing-constants-and-variables" class="section level1">

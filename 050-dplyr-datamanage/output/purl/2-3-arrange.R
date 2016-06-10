@@ -2,7 +2,6 @@
 require(dplyr)
 require(qdata)
 data(bank)
-bank <- tbl_df(bank)
 
 ## ------------------------------------------------------------------------
 # Order `bank` data frame by date and age in ascending order

@@ -71,9 +71,6 @@ df1 %>% semi_join(df2)
 df1 %>% anti_join(df2)
 
 ## ------------------------------------------------------------------------
-data(tennis) 
-
-## ------------------------------------------------------------------------
 usopen %>% 
   anti_join(wimbledon, by = "champion") %>%
   select(year, champion_country, champion)
@@ -131,104 +128,4 @@ df1 %>% bind_cols(df2)
 df1 <- data.frame(x1 = 1:3, y1 = 3:1)
 df2 <- data.frame(x2 = 4:6, y2 = 6:4, z2 = 0)
 df1 %>% bind_cols(df2)
-
-## ------------------------------------------------------------------------
-ripartizioni2 <-
-  data.frame(cod_rip_geo = c("1","2"), rip_geo = rep("Nord",2)) %>%
-  bind_rows(ripartizioni)
-ripartizioni3 <- ripartizioni2 %>% slice(c(1,5,6))
-ripartizioni3$rip_geo[3] <- "Mezzogiorno"
-ripartizioni
-ripartizioni3
-
-## ------------------------------------------------------------------------
-intersect(ripartizioni, ripartizioni3)
-union(ripartizioni, ripartizioni3) # Note that we get 7 rows, not 8
-setdiff(ripartizioni, ripartizioni3)
-setdiff(ripartizioni3, ripartizioni)
-
-## ------------------------------------------------------------------------
-# First data frame
-ripartizioni4 <- ripartizioni
-ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo)
-ripartizioni4
-ripartizioni4 %>% str
-# Second data frame
-ripartizioni5 <- ripartizioni3
-ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo)
-ripartizioni5
-ripartizioni5 %>% str
-# Join
-(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
-joined_df %>% str()
-
-## ------------------------------------------------------------------------
-# First data frame
-ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo,
-                                levels = c("Centro","Isole","Nord-est","Nord-ovest","Sud",
-                                           "Nord","Mezzogiorno"))
-ripartizioni4
-ripartizioni4 %>% str
-# Second data frame
-ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo,
-                                levels = c("Nord","Centro","Mezzogiorno",
-                                           "Isole","Nord-est","Nord-ovest","Sud"))
-ripartizioni5
-ripartizioni5 %>% str
-# Join
-(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
-joined_df %>% str()
-
-## ------------------------------------------------------------------------
-# First data frame
-ripartizioni4$rip_geo <- factor(ripartizioni4$rip_geo,
-                                levels = c("Nord","Centro","Mezzogiorno",
-                                           "Nord-est","Nord-ovest","Sud","Isole"))
-ripartizioni4
-ripartizioni4 %>% str
-# Second data frame
-ripartizioni5$rip_geo <- factor(ripartizioni5$rip_geo,
-                                levels = c("Nord","Centro","Mezzogiorno",
-                                           "Nord-est","Nord-ovest","Sud","Isole"))
-ripartizioni5
-ripartizioni5 %>% str
-# Join
-(joined_df <- ripartizioni4 %>% full_join(ripartizioni5))
-joined_df %>% str()
-
-## ------------------------------------------------------------------------
-# First data frame
-ripartizioni
-ripartizioni %>% str
-# Second data frame
-ripartizioni4
-ripartizioni4 %>% str
-# Join
-(joined_df <- ripartizioni %>% full_join(ripartizioni4))
-joined_df %>% str()
-
-## ------------------------------------------------------------------------
-# First data frame
-ripartizioni6 <- ripartizioni3
-ripartizioni6$cod_rip_geo <- as.numeric(ripartizioni6$cod_rip_geo)
-ripartizioni6
-ripartizioni6 %>% str
-# Second data frame
-ripartizioni7 <- ripartizioni6
-ripartizioni7$cod_rip_geo[3] <- 4.5
-ripartizioni7
-ripartizioni7 %>% str
-# Join
-(joined_df <- ripartizioni6 %>% full_join(ripartizioni7))
-joined_df %>% str()
-
-## ---- error=TRUE---------------------------------------------------------
-# First data frame
-ripartizioni6
-ripartizioni6 %>% str
-# Second data frame
-ripartizioni3
-ripartizioni3 %>% str
-# Join
-(joined_df <- full_join(ripartizioni6, ripartizioni3))
 
