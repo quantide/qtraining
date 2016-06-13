@@ -30,7 +30,6 @@ dfg
 class(dfg)
 
 ## ------------------------------------------------------------------------
-bank <- tbl_df(bank)
 by_year <- group_by(bank, year)
 summarise(by_year,
           count = n(),
