@@ -413,8 +413,7 @@ dfg</code></pre>
 <pre class="r"><code>class(dfg)</code></pre>
 <pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <p>In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (<code>count = n()</code>) and computing the average duration call (<code>dist = mean(duration, na.rm = TRUE)</code>) and balance (<code>delay = mean(balance, na.rm = TRUE)</code>):</p>
-<pre class="r"><code>bank &lt;- tbl_df(bank)
-# Split the complete dataset (bank) into years (group the df) 
+<pre class="r"><code># Split the complete dataset (bank) into years (group the df) 
 by_year &lt;- group_by(bank, year)
 # Summarise each year applying summarise() verb to the grouped df (by_year)
 summarise(by_year,

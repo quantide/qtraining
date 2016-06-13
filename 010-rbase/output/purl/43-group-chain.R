@@ -30,7 +30,6 @@ dfg
 class(dfg)
 
 ## ----group_by_1----------------------------------------------------------
-bank <- tbl_df(bank)
 # Split the complete dataset (bank) into years (group the df) 
 by_year <- group_by(bank, year)
 # Summarise each year applying summarise() verb to the grouped df (by_year)

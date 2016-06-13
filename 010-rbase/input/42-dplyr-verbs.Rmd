@@ -36,7 +36,6 @@ In the following examples we will refer to `bank` data set which contains inform
 
 ```{r bank_tbl_df}
 data(bank) 
-bank <- tbl_df(bank)
 ```
 
 # `select()`

@@ -4,7 +4,6 @@ require(qdata)
 
 ## ----bank_tbl_df---------------------------------------------------------
 data(bank) 
-bank <- tbl_df(bank)
 
 ## ----select--------------------------------------------------------------
 # Select columns: year, month and day of bank data frame

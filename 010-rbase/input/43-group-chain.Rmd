@@ -48,7 +48,6 @@ class(dfg)
 In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (`count = n()`) and computing the average duration call (`dist = mean(duration, na.rm = TRUE)`) and balance (`delay = mean(balance, na.rm = TRUE)`):
 
 ```{r group_by_1}
-bank <- tbl_df(bank)
 # Split the complete dataset (bank) into years (group the df) 
 by_year <- group_by(bank, year)
 # Summarise each year applying summarise() verb to the grouped df (by_year)
