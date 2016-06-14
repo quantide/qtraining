@@ -8,8 +8,6 @@ options(width = 108)
 ```
 
 
-## Introduction to functions structure
-
 When working with R we all make constant use of functions and, when developing, we create new functions so that functions look like very familiar R objects. Nevertheless, understanding the theory and the rationals underlying R functions may help to create much more efficient and possibly elegant coding.
 
 We can create and assign functions to a variable name as we do with any other object:
@@ -36,7 +34,7 @@ environment(f)
 ```
 
 
-### Formals
+## Formals
 
 Formals are the formal arguments of a function returned as an object of class `pairlist` where a `pairlist` can be thought as something similar to a list with an important difference:
 
@@ -148,7 +146,7 @@ ggp2 <- plot_depth(df, time_var_name = "time", depth_var_name = "depth", size = 
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-### Body of a function
+## Body of a function
 
 The body of a function is a parsed R statement. In practice, this implies that the body of a function needs to be correct from a formal point of view but no evaluation of the body of a function occurred yet. 
 
@@ -173,7 +171,7 @@ right(x = 2)
 ```
 The body of a function, is usually a collection of statements in braces but it can be a single statement, a symbol or even a constant.
 
-### Environment of a function
+## Environment of a function
 Environments are a fundamental concept in R and their knowledge is essential for advanced programming.
 
 Environments are not threated here, but the following fundamental concepts:

@@ -100,7 +100,7 @@ gc()
 If you want to read files from a specific location or write files to a specific location without typing (on Windows, usually very long) path names you will need to set working directory in R. 
 
 You can set a working directory with `setwd()` function, using absolute or relative paths.
-The following example shows an example how to set the working directory in R using an absolute path. The working directory is set to the folder "Data" within the folder "Documents and Settings" on the C drive.
+The following example shows how to set the working directory in R using an absolute path. The working directory is set to the folder "Data" within the folder "Documents and Settings" on the C drive.
 
 ```{r, setwd1, eval=FALSE}
 setwd("C:/User/Andrea/Documents and Settings/Data")

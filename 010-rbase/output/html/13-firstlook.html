@@ -429,13 +429,13 @@ ls()</code></pre>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>##          used (Mb) gc trigger (Mb) max used (Mb)
 ## Ncells 301299 16.1     592000 31.7   460000 24.6
-## Vcells 495931  3.8    1023718  7.9   786332  6.0</code></pre>
+## Vcells 495927  3.8    1023718  7.9   786332  6.0</code></pre>
 </div>
 </div>
 <div id="the-working-directory" class="section level2">
 <h2>The Working Directory</h2>
 <p>If you want to read files from a specific location or write files to a specific location without typing (on Windows, usually very long) path names you will need to set working directory in R.</p>
-<p>You can set a working directory with <code>setwd()</code> function, using absolute or relative paths. The following example shows an example how to set the working directory in R using an absolute path. The working directory is set to the folder “Data” within the folder “Documents and Settings” on the C drive.</p>
+<p>You can set a working directory with <code>setwd()</code> function, using absolute or relative paths. The following example shows how to set the working directory in R using an absolute path. The working directory is set to the folder “Data” within the folder “Documents and Settings” on the C drive.</p>
 <pre class="r"><code>setwd(&quot;C:/User/Andrea/Documents and Settings/Data&quot;)</code></pre>
 <p>Remember that you must use the forward slash / or double backslash \\ in R! The Windows format of single backslash will not work.</p>
 <p>It is a nice approach, but things get complicated if you move files to different computers, say from home to your office, and have different directory structures, disk names etc. Of course you can change it every time. Using relative paths solves this problem. Relative paths are more convenient than absolute paths as they makes your R script or RStudio project independent of the directory structure in which it resides thus facilitating the reproducibility of your work on a different PC.</p>
