@@ -1,5 +1,5 @@
 ---
-title: "lm-exercises"
+title: "models-exercises"
 author: "Veronica"
 date: "July 5, 2016"
 output: html_document
@@ -10,13 +10,77 @@ require(dplyr)
 require(ggplot2)
 require(GGally)
 require(MASS)
+require(qdata)
 ```
 
 ```{r solution, include=FALSE}
 show_solution <- TRUE 
 ```
 
-# Exercise 1
+## Anova
+
+### Exercise 1
+
+A society that produces ballpoint pens uses a multi-head machine for the production of caps for pens. The productor wants to compare the means and the variances on all 16 heads and to determine if there are variations on the means of the different heads.
+
+```{r data_import_an1}
+data(pencap)
+head(pencap)
+```
+
+1. Let us compute descriptive statistics and generate the BW plot of `Width` for each head (`Cavity`).
+
+```{r desc_stats_an1, echo=show_solution}
+# Descriptive Statistics
+summary_stat <- pencap %>% group_by(Cavity) %>% 
+  summarise(n=n(),
+  min = min(Width), 
+  first_qu = quantile(Width, 0.25),
+  median = median(Width),
+  mean = mean(Width),
+  third_qu = quantile(Width, 0.75),
+  max = max(Width),
+  sd = sd(Width))
+
+print(summary_stat)
+
+# BW Plot
+pencap <- pencap %>% mutate(Cavity=factor(Cavity))
+ggp <- ggplot(data=pencap, mapping = aes(x=Cavity, y=Width, fill=Cavity)) +
+  geom_boxplot(show.legend = FALSE) 
+print(ggp)
+```
+
+2. Let us fit a model to check if there are differences between the means of the different groups.
+Let us use `options(contrasts = c("contr.treatment", "contr.poly"))` contrasts type and comment the results.  
+
+```{r data_analysis_an1, echo=show_solution}
+options(contrasts = c("contr.treatment", "contr.poly"))
+fm <- aov(Width~Cavity, data = pencap)
+summary(fm)
+# aov()’s predefined output gives a global p-value of 5.92e-16 on Cavity effect.
+summary.lm(fm)
+# Results interpretation: Cavity1 mean appears significantly different from 0 (B0 = 9.981200, p = 2e-16), Cavity2 mean seems significantly different from Cavity1 (0.034150 greater, p-value=0.00148), ...
+```
+
+3. Let us check models residuals.
+
+```{r data_analysis_an2, echo=show_solution}
+op <- par(mfrow = c(2,2))
+plot(fm)
+par(op)
+# The residual plots confirm that normality and homoscedasticity assumptions are met, and no outliers appear.
+```
+
+
+### Exercise 2
+
+
+
+
+## Linear models
+
+### Exercise 1
 
 The number of impurities (lumps) present in the containers of paint depends on the rate of agitation applied to the container. A researcher wants to determine the relation between the rate of agitation and the number of lumps, so he conducts an experiment. He applies different rates of agitation (`Stirrate`) to 12 containers of paint and he counts the number of impurities (lumps) present in the containers of paint (`Impurity`).  
 
@@ -78,10 +142,9 @@ par(op)
 ```
 
 
-# Exercise 2
+### Exercise 2
 
-A pressure switch has a membrane whose thickness (in mm) influences the pressure required to trigger the switch itself. The aim is to determine the thickness of the membrane for which the switch "trig"
-with a pressure equal to 165 ± 15 KPa. 25 switches with different thickness (`DThickness`) of the membrane was analysed, measuring the the pressure at which each switch opens (KPa) (`SetPoint`).
+A pressure switch has a membrane whose thickness (in mm) influences the pressure required to trigger the switch itself. The aim is to determine the thickness of the membrane for which the switch "trig" with a pressure equal to 165 ± 15 KPa. 25 switches with different thickness (`DThickness`) of the membrane was analysed, measuring the the pressure at which each switch opens (KPa) (`SetPoint`).
 
 ```{r ex_2_data_import, echo=show_solution}
 data(switcht)
@@ -170,7 +233,7 @@ anova(fm1, fm2)
 # This analysis confirms that the contribution of quadratic term is significant.
 ```
 
-<!--
+
 # Exercise 3
 
 The engeneers want to reduce the knocking of the engines. Before doing this, they have to identify which variables influence this phenomenon. Data are randomly collected from 13 engines and contains the following variables:
@@ -227,9 +290,9 @@ plot(fm3)
 par(op)
 
 ```
--->
 
-# Exercise 3
+
+### Exercise 4
 
 A researcher wants to determine which variables are related with the percentage of mortality.
 Data conatins the following variables:
@@ -317,7 +380,7 @@ summary(fm11)
 anova(fm10, fm11)
 ```
 
-# Exercise 4
+### Exercise 5
 
 A researcher wants to establish if there is a relation between the weight of the body and the weight of the brain of fifteen mammal (african elephant, cow, monkey, man, gray wolf, red fox, armadillo, chinchilla and so on).
 
@@ -416,3 +479,151 @@ plot(fm2)
 par(op)
 # In the model that considers logarithmic transformation the hypothesis of residual normality seems to be accepted.
 ```
+
+## Generalized Linear models
+
+### Exercise 1
+
+A researcher is interested in how variables, such as `GRE` (Graduate Record Exam scores), `GPA` (grade point average) and prestige of the undergraduate institution, effect admission into graduate school. The response variable, admit/don't admit, is a binary variable.
+
+```{r ex_5_data_import, echo=show_solution}
+data(admission)
+head(admission)
+```
+
+This dataset has a binary response (outcome, dependent) variable called `admit`. There are three predictor variables: `gre`, `gpa` and `rank`. We will treat the variables gre and gpa as continuous. The variable `rank` takes on the values 1 through 4. Institutions with a rank of 1 have the highest prestige, while those with a rank of 4 have the lowest. 
+
+1. Let us compute the descriptive statistics of the variables.
+
+```{r ex_5_desc_stats, echo=show_solution}
+# Descriptive Statistics
+summary(admission)
+admission %>% summarise_each(funs="sd")
+
+# Graphs
+ggp1 <- ggplot(data = admission, mapping = aes(x = gre, y= admit)) +
+  geom_jitter(mapping = aes(y=admit), colour="red", height = 0.01) +
+  geom_smooth(method = "loess", colour="blue", se = FALSE, span=2/3) +
+  facet_wrap(facets = ~rank) 
+print(ggp1)
+
+ggp2 <- ggplot(data = admission, mapping = aes(x = gpa, y= admit)) +
+  geom_jitter(mapping = aes(y=admit), colour="red", height = 0.01) +
+  geom_smooth(method = "loess", colour="blue", se = FALSE, span=2/3) +
+  facet_wrap(facets = ~rank) 
+print(ggp2)
+```
+
+2.  Let us estimate a logistic regression model using the `glm` (generalized linear model) function. First, we convert `rank` to a factor to indicate that rank should be treated as a categorical variable.
+
+```{r ex_5_data_analysis1, echo=show_solution}
+admission <- admission %>% mutate(rank=factor(rank)) 
+fm1 <- glm(admit ~ gre + gpa + rank, data = admission, family = "binomial")
+summary(fm1)
+
+# For every one unit change in gre, the log odds of admission (versus non-admission) increases by 0.002
+# For a one unit increase in gpa, the log odds of being admitted to graduate school increases by 0.804.
+# The indicator variables for rank have a slightly different interpretation. For example, having attended an undergraduate institution with rank of 2, versus an institution with a rank of 1, changes the log odds of admission by -0.675.
+
+op <- par(mfrow = c(2,2))
+plot(fm1)
+par(op)
+```
+
+3. Let us compute model predictions.
+
+```{r predictions_ex_5, echo=show_solution}
+# Predicted probability of admission at each value of rank
+newdata1 <- with(admission,
+  data.frame(gre = mean(gre), gpa = mean(gpa), rank = factor(1:4)))
+newdata1$rankP <- predict(fm1, newdata = newdata1, type = "response")
+newdata2 <- with(admission,
+  data.frame(gre = rep(seq(from = 200, to = 800, length.out = 100), 4),
+  gpa = mean(gpa), rank = factor(rep(1:4, each = 100))))
+
+newdata3 <- cbind(newdata2, predict(fm1, newdata = newdata2, type="link", se=TRUE))
+newdata3 <- within(newdata3, {
+  PredictedProb <- plogis(fit)
+  LL <- plogis(fit - (1.96 * se.fit))
+  UL <- plogis(fit + (1.96 * se.fit))
+})
+
+ggp <- ggplot(newdata3, aes(x = gre, y = PredictedProb)) +
+  geom_ribbon(aes(ymin = LL, ymax = UL, fill = rank), alpha = .2) +
+  geom_line(aes(colour = rank), size=1)
+print(ggp)
+```
+
+
+
+### Exercise 2
+
+The number of awards earned by students at one high school. Predictors of the number of awards earned include the type of program in which the student was enrolled (e.g., vocational, general or academic) and the score on their final exam in math.
+
+`num_awards` is the outcome variable and indicates the number of awards earned by students at a high school in a year, `math` is a continuous predictor variable and represents students' scores on their math final exam, and `prog` is a categorical predictor variable with three levels indicating the type of program in which the students were enrolled. It is coded as 1 = "General", 2 = "Academic" and 3 = "Vocational".
+
+```{r ex_6_data_import, echo=show_solution}
+data(awards)
+head(awards)
+
+# Convert prog and id variables as factors
+awards <- awards %>% mutate(prog=factor(prog, levels=1:3, labels=c("General", "Academic", "Vocational")),
+            id = factor(id))
+```
+
+1. Let us compute some descriptive statistics.
+
+```{r ex_6_desc_stats, echo=show_solution, warning=FALSE}
+# Descriptive Statistics
+summary(awards)
+awards %>% summarise_each(funs(sd))
+
+# Graphs
+ggp <- ggplot(awards, aes(num_awards, fill = prog)) +
+  geom_histogram(binwidth=.5, position="dodge")
+ggp
+```
+
+2.  Let us perform a Poisson model analysis using the `glm` function, considering the complete model.
+
+```{r ex_6_data_analysis1, echo=show_solution}
+fm1 <- glm(num_awards ~ prog + math, family="poisson", data=awards)
+summary(fm1)
+
+## update m1 model dropping prog
+fm2 <- update(fm1, . ~ . - prog)
+summary(fm2)
+## test model differences with chi square test
+anova(fm2, fm1, test="Chisq")
+
+```
+
+3. Let us try to improve the model removing non significant variable/s. Compares this model with the previous one. 
+```{r ex_6_data_analysis2, echo=show_solution}
+## update m1 model dropping prog
+fm2 <- update(fm1, . ~ . - prog)
+summary(fm2)
+## test model differences with chi square test
+anova(fm2, fm1, test="Chisq")
+
+```
+
+4. Let us compure predictions of the best fitted model.
+```{r predictions_ex_6}
+## calculate and store predicted values
+awards$phat <- predict(fm1, type="response")
+
+## order by program and then by math
+awards <- awards %>% arrange(prog, math)
+
+## create the plot
+ggp <- ggplot(awards, aes(x = math, y = phat, colour = prog)) +
+  geom_point(aes(y = num_awards), alpha=.5, position=position_jitter(h=.2)) +
+  geom_line(size = 1) +
+  labs(x = "Math Score", y = "Expected number of awards")
+print(ggp)
+```
+
+
+
+
