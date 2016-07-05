@@ -2252,7 +2252,7 @@ NULL
 #' @name quine
 #' 
 #' 
-#' @description The \code{quine} contains information about children from Walgett, New South Wales, 
+#' @description \code{quine} contains information about children from Walgett, New South Wales, 
 #' Australia, who were classified by Culture, Age, Sex and Learner status and the number of days absent 
 #' from school in a particular school year.
 #' 
@@ -2278,3 +2278,224 @@ NULL
 NULL
 ##################################################################################################################################
 
+##################################################################################################################################
+#' Impurities in paints
+#' 
+#' 
+#' @name paint
+#' 
+#' 
+#' @description \code{paint} contains the results of an experiment which has the aim to determine the relation between the rate 
+#' of agitation applied to the container of paint and the number of lumps present in the containers.
+#' 
+#'  
+#' @usage data(paint)
+#' 
+#' 
+#' @format \code{paint} is a tbl data frame with 12 observations on 2 variables.
+#' 
+#' 
+#' @details 
+#' The 2 variables of the \code{paint} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Stirrate} rate of agitation (revolution) applied to the container (rpm, revolutions per minute) (numeric)
+#' \item \code{Impurity} number of impurities (lumps) present in the containers of paint (numeric)
+#' }
+#' 
+#' 
+#' @source 
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Pressure Switch
+#' 
+#' 
+#' @name switcht
+#' 
+#' 
+#' @description \code{switcht} contains the measures of the pression (KPa) applied to 25 switches with different thickness of the membrane 
+#' necessary for their open.
+#' 
+#'  
+#' @usage data(switcht)
+#' 
+#' 
+#' @format \code{switcht} is a tbl data frame with 25 observations on 2 variables.
+#' 
+#' 
+#' @details 
+#' The 2 variables of the \code{switcht} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{DThickness} indicates the thickness of the diaphragm (mm) (numeric)
+#' \item \code{SetPoint} indicates the pressure at which the switch opens (KPa) (numeric)
+#' }
+#' 
+#' 
+#' @source 
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Knocking of the engine
+#' 
+#' 
+#' @name knock
+#' 
+#' 
+#' @description The engeneers want to reduce the knocking of the engines. Before doing this, 
+#' they have to identify which variables included in \code{knock} dataset influence this phenomenon. 
+#' Data are randomly collected from 13 engines.
+#' 
+#'  
+#' @usage data(knock)
+#' 
+#' 
+#' @format \code{knock} is a tbl data frame with 13 observations on 5 variables.
+#' 
+#' 
+#' @details 
+#' The 5 variables of the \code{knock} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Spark} time of advance of the spark plug ignition (numeric)
+#' \item \code{AFR} air fuel ratio (Air Fuel Ratio) (numeric)
+#' \item \code{Intake} inlet temperature (numeric)
+#' \item \code{Exhaust} exhaust temperature (numeric)
+#' \item \code{Knock} knocking of the engine (numeric)
+#' }
+#' 
+#' 
+#' @source 
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Mortality in the most important american cities
+#' 
+#' 
+#' @name mortality
+#' 
+#' 
+#' @description \code{mortality} dataset contains information related to the percentage of mortality.
+#' 
+#'  
+#' @usage data(mortality)
+#' 
+#' 
+#' @format \code{mortality} is a tbl data frame with 60 observations on 15 variables.
+#' 
+#' 
+#' @details 
+#' The 15 variables of the \code{mortality} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Rain} annual average rainfall (numeric)
+#' \item \code{JanTemp} average temperatures in January (numeric)
+#' \item \code{JulyTemp} average temperatures in July (numeric)
+#' \item \code{PctOver65} percentage of the population over 65 years (numeric)
+#' \item \code{HHSize} average size of housing (numeric)
+#' \item \code{Education} years of education (numeric)
+#' \item \code{PctHomesLiveable} percentage of “habitable” homes (numeric)
+#' \item \code{PopDensity} density of population (numeric)
+#' \item \code{PctLowIncome} percentage of low-income families (numeric)
+#' \item \code{PctWhiteCollar} percentage of employees (numeric)
+#' \item \code{Hydrocarbon} pollution level by hydrocarbons (numeric)
+#' \item \code{NititeOxide} pollution level of nitrite oxide (numeric)
+#' \item \code{SulphurDioxide} pollution level of sulfur dioxide (numeric)
+#' \item \code{RelHum} annual average relative humidity at 1 PM (numeric)
+#' \item \code{MortalityRate} mortality rate for 100000 people (numeric)
+#' }
+#' 
+#' 
+#' @source Data was adapted from StatLib Website. 
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Body weight and brain weight
+#' 
+#' 
+#' @name brainbod
+#' 
+#' 
+#' @description \code{brainbod} dataset contains information about the weight of body and brain of different species of animals.
+#' 
+#'  
+#' @usage data(brainbod)
+#' 
+#' 
+#' @format \code{brainbod} is a tbl data frame with 15 observations on 3 variables.
+#' 
+#' 
+#' @details 
+#' The 3 variables of the \code{brainbod} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Species} animal species (character)
+#' \item \code{Body} weight of the animal (in kg) (numeric)
+#' \item \code{Brain} weight of the brain of the animal (in g) (numeric)
+#' }
+#' 
+#' 
+#' @source 
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Students awards number
+#' 
+#' 
+#' @name awards
+#' 
+#' 
+#' @description \code{awards} dataset contains information about the number of awards earned by students at one high school, 
+#' the type of program in which the student was enrolled (e.g., vocational, general or academic) and the score on their final exam in math.
+#' 
+#'  
+#' @usage data(awards)
+#' 
+#' 
+#' @format \code{awards} is a tbl data frame with 200 observations on 4 variables.
+#' 
+#' 
+#' @details 
+#' The 4 variables of the \code{awards} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{id} students id (factor)
+#' \item \code{num_awrds} number of awards earned by students at a high school in a year (numeric)
+#' \item \code{prog} students' scores on their math final exam (numeric)
+#' \item \code{math}  type of program in which the students were enrolled (factor with levels: \code{(1} (General), \code{(2} (Academic) and \code{3} (Vocational))
+#' }
+#' 
+#' 
+#' @source \url{http://www.ats.ucla.edu/stat/r/dae/poissonreg.htm}
+NULL
+##################################################################################################################################
+
+##################################################################################################################################
+#' Graduate school admission
+#' 
+#' 
+#' @name admission
+#' 
+#' 
+#' @description \code{admission} dataset contains information about how GRE (Graduate Record Exam scores), 
+#' GPA (grade point average) and prestige of the undergraduate institution, affect admission into graduate school.
+#'  
+#' @usage data(admission)
+#' 
+#' 
+#' @format \code{admission} is a tbl data frame with 400 observations on 4 variables.
+#' 
+#' 
+#' @details 
+#' The 4 variables of the \code{admission} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{admit} admission into graduate school (binary variable: \code{0} (Not admitted) and \code{1} (Admitted))
+#' \item \code{gre} GRE (Graduate Record Exam scores) (numeric)
+#' \item \code{gpa} GPA (grade point average)  (numeric)
+#' \item \code{rank} prestige of the undergraduate institution (factor with levels: \code{(1} (highest prestige), \code{(2}, \code{3} and \code{4} (lowest prestige))
+#' }
+#' 
+#' 
+#' @source \url{http://www.ats.ucla.edu/stat/r/dae/logit.htm}
+NULL
+##################################################################################################################################
