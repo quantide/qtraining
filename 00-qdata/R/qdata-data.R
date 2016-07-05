@@ -2499,3 +2499,30 @@ NULL
 #' @source \url{http://www.ats.ucla.edu/stat/r/dae/logit.htm}
 NULL
 ##################################################################################################################################
+
+##################################################################################################################################
+#' Multi-head machine
+#' 
+#' 
+#' @name pencap
+#' 
+#' 
+#' @description \code{pencap} dataset contains information about the width of caps for pens produced by 16 different heads.
+#'  
+#' @usage data(pencap)
+#' 
+#' 
+#' @format \code{pencap} is a tbl data frame with 320 observations on 2 variables.
+#' 
+#' 
+#' @details 
+#' The 2 variables of the \code{pencap} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Cavity} number of head (factor)
+#' \item \code{Width} measurement (in mm) (numeric)
+#' }
+#' 
+#' 
+#' @source 
+NULL
+##################################################################################################################################
