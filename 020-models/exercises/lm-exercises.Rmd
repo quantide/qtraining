@@ -1,7 +1,7 @@
 ---
-title: "models-exercises"
+title: "Exercises of Models Course"
 author: "Quantide Srl"
-date: "July 5, 2016"
+date: "July 6, 2016"
 output: html_document
 ---
 
@@ -13,15 +13,15 @@ require(MASS)
 require(qdata)
 ```
 
-```{r solution, include=FALSE}
-show_solution <- TRUE 
+```{r solution, echo=FALSE}
+show_solution <- TRUE
 ```
 
 ## Anova
 
 ### Exercise 1
 
-A society that produces ballpoint pens uses a multi-head machine for the production of caps for pens. The productor wants to compare the means and the variances on all 16 heads and to determine if there are variations on the means of the different heads.
+A society that produces ballpoint pens uses a multi-head machine for the production of caps for pens. The productor wants to determine if there are differences on the means of the different heads.
 
 ```{r data_import_an1}
 data(pencap)
@@ -30,7 +30,7 @@ head(pencap)
 
 1. Let us compute descriptive statistics and generate the BW plot of `Width` for each head (`Cavity`).
 
-```{r desc_stats_an1, echo=show_solution}
+```{r desc_stats_an1, echo=show_solution, eval=show_solution}
 # Descriptive Statistics
 summary_stat <- pencap %>% group_by(Cavity) %>% 
   summarise(n=n(),
@@ -54,7 +54,7 @@ print(ggp)
 2. Let us fit a model to check if there are differences between the means of the different groups.
 Let us use `options(contrasts = c("contr.treatment", "contr.poly"))` contrasts type and comment the results.  
 
-```{r data_analysis_an1, echo=show_solution}
+```{r data_analysis_an1, echo=show_solution, eval=show_solution}
 options(contrasts = c("contr.treatment", "contr.poly"))
 fm <- aov(Width~Cavity, data = pencap)
 summary(fm)
@@ -63,9 +63,9 @@ summary.lm(fm)
 # Results interpretation: Cavity1 mean appears significantly different from 0 (B0 = 9.981200, p = 2e-16), Cavity2 mean seems significantly different from Cavity1 (0.034150 greater, p-value=0.00148), ...
 ```
 
-3. Let us check models residuals.
+3. Let us check model residuals.
 
-```{r data_analysis_an2, echo=show_solution}
+```{r data_analysis_an2, echo=show_solution, eval=show_solution}
 op <- par(mfrow = c(2,2))
 plot(fm)
 par(op)
@@ -75,7 +75,7 @@ par(op)
 
 ### Exercise 2
 
-A chemists conducts an experiment to evaluate the efficacy of a solvent to dissolve stains of nail
+A chemist conducts an experiment to evaluate the efficacy of a solvent to dissolve stains of nail
 varnish from fabrics. He uses two types of solvent and three types of varnish. The experiment consists of immersing 5 stained fabrics by a certain type of varnish into a bowl with a solvent, measuring the time
 (in minutes) necessary to dissolve the stain.
 
@@ -86,7 +86,7 @@ head(varnish)
 
 1. Let us compute descriptive statistics and generate the BW plot of `Time` for each level of `Solvent` and `Varnish`. Let us draw also a  BW plot for each combination of `Solvent` and `Varnish` factor levels.
 
-```{r desc_stats_an1, echo=show_solution}
+```{r desc_stats_an2, echo=show_solution, eval=show_solution}
 # Descriptive Statistics of Time for each level of Solvent 
 summary_stat <- varnish %>% group_by(Solvent) %>% 
   summarise(n=n(),
@@ -134,9 +134,9 @@ ggp <- ggplot(data = varnish, mapping = aes(x=Varnish, y=Time, fill=Solvent)) +
 print(ggp)
 ```
 
-2. Let us evaluate also if there are differences in the types of solvent in respect of the types varnish that produced the stain (Considerer also the interaction in model formulation).
+2. Let us evaluate also if there are differences in solvent types in respect of the varnish types that produced the stain (Considerer also the interaction in model formulation).
 
-```{r data_analysis_an21, echo=show_solution}
+```{r data_analysis_an21, echo=show_solution, eval=show_solution}
 fm <- aov(Time ~ Varnish * Solvent, data = varnish)
 summary(fm)
 
@@ -145,7 +145,7 @@ summary(fm)
 
 3. Let us improve the model, dropping non significant terms (one by one).
 
-```{r data_analysis_an22, echo=show_solution}
+```{r data_analysis_an22, echo=show_solution, eval=show_solution}
 # Drop the interaction from model formulation Varnish:Solvent
 fm1 <- update(fm, . ~ . -Varnish:Solvent)
 summary(fm1)
@@ -156,14 +156,14 @@ summary(fm2)
 
 4. Let us check if the removed effect/s are not significant (models comparison).
 
-```{r data_analysis_an23, echo=show_solution}
+```{r data_analysis_an23, echo=show_solution, eval=show_solution}
 anova(fm, fm2)
 # The removed effects are not significant.
 ```
 
 5. Let us check (final) models residuals.
 
-```{r data_analysis_an24, echo=show_solution}
+```{r data_analysis_an24, echo=show_solution, eval=show_solution}
 op <- par(mfrow = c(2,2))
 plot(fm2)
 par(op)
@@ -177,14 +177,14 @@ par(op)
 
 The number of impurities (lumps) present in the containers of paint depends on the rate of agitation applied to the container. A researcher wants to determine the relation between the rate of agitation and the number of lumps, so he conducts an experiment. He applies different rates of agitation (`Stirrate`) to 12 containers of paint and he counts the number of impurities (lumps) present in the containers of paint (`Impurity`).  
 
-```{r data_import_lm1, echo=show_solution}
+```{r data_import_lm1}
 data(paint)
 head(paint)
 ```
 
-1. Let us compute the main descriptive statistics and generate the BW plot of `Impurity`. let us compute also the correlation and the correlation plot between `Impurity` and `Stirrate`.
+1. Let us compute the main descriptive statistics and generate the BW plot of `Impurity`. Let us compute also the correlation and the correlation plot between `Impurity` and `Stirrate`.
 
-```{r desc_stats_lm1, echo=show_solution}
+```{r desc_stats_lm1, echo=show_solution, eval=show_solution}
 # Descriptive Statistics
 summary_stat <- paint %>% summarise(n=n(),
   min = min(Impurity), 
@@ -212,7 +212,7 @@ print(pl)
 
 2. Let us graphically represent the relation between these variables (add regression line to the graph).
 
-```{r reg_plot_lm1, echo=show_solution}
+```{r reg_plot_lm1, echo=show_solution, eval=show_solution}
 pl <- ggplot(data = paint, mapping = aes(x = Stirrate, y=Impurity)) +
   geom_point(color="blue") + 
   geom_smooth(method = "lm", colour="red", se = FALSE)
@@ -223,7 +223,7 @@ print(pl)
 
 3. Let us compute a simple linear regression between `Impurity` and `Stirrate`. Does `Stirrate` influence `Impurity`? How? 
 
-```{r data_analysis_lm11, echo=show_solution}
+```{r data_analysis_lm11, echo=show_solution, eval=show_solution}
 # Fit the linear model
 fm <- lm(formula = Impurity ~ Stirrate, data = paint)
 summary(fm)
@@ -233,7 +233,7 @@ summary(fm)
 
 4. Let us check (final) models residuals.
 
-```{r data_analysis_lm12, echo=show_solution}
+```{r data_analysis_lm12, echo=show_solution, eval=show_solution}
 # Residuals analysis
 op <- par(mfrow = c(2,2))
 plot(fm)
@@ -245,14 +245,14 @@ par(op)
 
 A pressure switch has a membrane whose thickness (in mm) influences the pressure required to trigger the switch itself. The aim is to determine the thickness of the membrane for which the switch "trig" with a pressure equal to 165 ± 15 KPa. 25 switches with different thickness (`DThickness`) of the membrane was analysed, measuring the the pressure at which each switch opens (KPa) (`SetPoint`).
 
-```{r data_import_lm2, echo=show_solution}
+```{r data_import_lm2}
 data(switcht)
 head(switcht)
 ```
 
 1. Let us compute the descriptive statistics and generate the BW-plot of the variable `SetPoint`.
 
-```{r desc_stats_lm2, echo=show_solution}
+```{r desc_stats_lm2, echo=show_solution, eval=show_solution}
 # Descriptive Statistics
 summary_stat <- switcht %>% summarise(n=n(),
   min = min(SetPoint), 
@@ -275,7 +275,7 @@ print(ggp)
 
 2. Let us graphically represent the relation between `DThickness` and `SetPoint`(add regression line to the graph).
 
-```{r reg_plot_lm2, echo=show_solution}
+```{r reg_plot_lm2, echo=show_solution, eval=show_solution}
 pl <- ggplot(data = switcht, mapping = aes(x = DThickness, y=SetPoint)) +
   geom_point(color="blue") + 
   geom_smooth(method = "lm", colour="red", se = FALSE)
@@ -285,7 +285,7 @@ print(pl)
 
 3. Let us compute a linear regression between `DThickness` and `SetPoint` and check the residuals of the fitted model. Does `DThickness` influences `SetPoint`? Is the model correct?
 
-```{r data_analysis_lm2, echo=show_solution}
+```{r data_analysis_lm2, echo=show_solution, eval=show_solution}
 # Fit the linear model
 fm1 <- lm(formula = SetPoint ~ DThickness, data = switcht)
 summary(fm1)
@@ -302,7 +302,7 @@ par(op)
 
 4. Let us improve the model and compare it with the previous model, if necessary. 
 
-```{r mod_improve_lm21, echo=show_solution}
+```{r mod_improve_lm21, echo=show_solution, eval=show_solution}
 # Improve the model 
 fm2 <- update(fm1,.~. + I(DThickness^2))
 summary(fm2)
@@ -323,7 +323,7 @@ anova(fm1, fm2)
 
 5. Let us produce the graph of predicted values from the best model estimated.
 
-```{r mod_improve_lm22, echo=show_solution}
+```{r mod_improve_lm22, echo=show_solution, eval=show_solution}
 # Plot of predition from quadratic model
 newdata <- data.frame(DThickness = seq(min(switcht$DThickness), 
   max(max(switcht$DThickness)), length = 100))
@@ -346,14 +346,14 @@ The engeneers want to reduce the knocking of the engines. Before doing this, the
 * `Exhaust`: indicates the exhaust temperature;
 * `Knock`: indicates the knocking of the engine.
 
-```{r data_import_lm3, echo=show_solution}
+```{r data_import_lm3}
 data(knock)
 head(knock)
 ```
 
 1. Let us produce a matrix of scatterplots and comment the results.
 
-```{r desc_stats_lm3, echo=show_solution}
+```{r desc_stats_lm3, echo=show_solution, eval=show_solution}
 ggpairs(data = knock)
 
 # Knock and Spark seem to be negatively correlated; Knock is positively correlated with each of other predictors.
@@ -361,7 +361,7 @@ ggpairs(data = knock)
 
 2. Let us compute a multiple linear regression between `Knock` and the predictors (additive model).
 
-```{r data_analysis_lm3, echo=show_solution}
+```{r data_analysis_lm3, echo=show_solution, eval=show_solution}
 # Fit the linear model
 fm1 <- lm(formula = Knock ~ Spark + AFR + Intake + Exhaust, data = knock)
 summary(fm1)
@@ -381,7 +381,7 @@ par(op)
 
 3. Is It possible to improve the resulting model? How?
 
-```{r mod_improve_lm3, echo=show_solution}
+```{r mod_improve_lm31, echo=show_solution, eval=show_solution}
 # Improve the model: remove the variable Spark, which is not significant, from the model
 fm3 <- update(fm1,.~. - Spark)
 summary(fm3)
@@ -395,7 +395,7 @@ par(op)
 
 4. Compare the initial with the final model.
 
-```{r mod_improve_lm3, echo=show_solution}
+```{r mod_improve_lm32, echo=show_solution, eval=show_solution}
 anova(fm1, fm3)
 # There is a non-significant difference between the two models. fm3 seems the better model.
 ```
@@ -422,14 +422,14 @@ Data contains the following variables:
 * `MortalityRate`: indicates the mortality rate for 100000 people.
 
 
-```{r data_import_lm4, echo=show_solution}
+```{r data_import_lm4}
 data(mortality)
 head(mortality)
 ```
 
 1. Let us build the complete model, with all the regressors (additive model).
 
-```{r data_analysis_lm41, echo=show_solution}
+```{r data_analysis_lm41, echo=show_solution, eval=show_solution}
 # Fit the linear model
 fm1 <- lm(formula = MortalityRate ~ RelHum + SulphurDioxide + NititeOxide + Hydrocarbon + PctWhiteCollar + PctLowIncome + PopDensity + PctHomesLiveable + Education + HHSize + PctOver65 + JulyTemp + JanTemp + Rain, data = mortality)
 
@@ -438,7 +438,7 @@ summary(fm1)
 
 2. Let us reach to a model in which all the regressors have significant terms at the 5% level, by eliminating a regressor at a time.
 
-```{r data_analysis_lm42, echo=show_solution}
+```{r data_analysis_lm42, echo=show_solution, eval=show_solution}
 # Remove RelHum
 fm2 <- update(fm1,.~. -RelHum)
 summary(fm2)
@@ -482,7 +482,7 @@ summary(fm11)
 
 3. Let us check the residuals of the final model.
 
-```{r data_analysis_lm43, echo=show_solution}
+```{r data_analysis_lm43, echo=show_solution, eval=show_solution}
 # Residual Analysis of the final model
 op <- par(mfrow = c(2,2))
 plot(fm10)
@@ -491,7 +491,7 @@ par(op)
 
 4. Let us compare the initial and the final model.
 
-```{r data_analysis_lm44, echo=show_solution}
+```{r data_analysis_lm44, echo=show_solution, eval=show_solution}
 # Models Comparison 
 anova(fm1, fm11)
 ```
@@ -500,14 +500,14 @@ anova(fm1, fm11)
 
 A researcher wants to establish if there is a relation between the weight of the body and the weight of the brain of fifteen mammal (african elephant, cow, monkey, man, gray wolf, red fox, armadillo, chinchilla and so on).
 
-```{r data_import_lm5, echo=show_solution}
+```{r data_import_lm5, echo=show_solution, eval=show_solution}
 data(brainbod)
 head(brainbod)
 ```
 
 1. Let us show the descriptive univariate graphics (histograms and BW plot) of the `Body` and `Brain` variables.
 
-```{r desc_stats_lm51, echo=show_solution}
+```{r desc_stats_lm51, echo=show_solution, eval=show_solution, message=FALSE}
 # Body
 pl1 <- ggplot(data = brainbod, mapping = aes(x=Body)) +
   geom_histogram(fill="pink", col="black")
@@ -532,7 +532,7 @@ print(pl2)
 2. Let us show a scatterplot of the two variable. Let us estimate a linear regression model and check the model residuals. 
 The linear model between the two variables is adequate? Why?
 
-```{r data_analysis_lm51, echo=show_solution}
+```{r data_analysis_lm51, echo=show_solution, eval=show_solution, warning=FALSE}
 # Scatterplot
 pl3 <- ggplot(data = brainbod, mapping = aes(y=Brain, x=Body)) +
   geom_point(col="blue") + geom_smooth(method = "lm", colour= "red", se=FALSE)
@@ -555,7 +555,7 @@ par(op)
 
 3. How could the model be improved? What variable transformation can be applied? Generate BW plot, histograms and scatterplot of the transformed variables.
 
-```{r desc_stats_lm52, echo=show_solution}
+```{r desc_stats_lm52, echo=show_solution, eval=show_solution, message=FALSE}
 # Body
 pl1 <- ggplot(data = brainbod, mapping = aes(x=log(Body))) +
   geom_histogram(fill="pink", col="black")
@@ -585,7 +585,7 @@ print(pl4)
 ```
 
 5. Let us estimate a linear regression model with the transformed variables and check the model residuals.
-```{r data_analysis_lm52, echo=show_solution}
+```{r data_analysis_lm52, echo=show_solution, eval=show_solution, warning=FALSE}
 # Fit the linear model of the tarnsformed variables
 fm2 <- lm(formula = log(Brain) ~ log(Body), data = brainbod)
 summary(fm2)
@@ -604,27 +604,28 @@ par(op)
 
 A researcher is interested in how variables, such as `GRE` (Graduate Record Exam scores), `GPA` (grade point average) and prestige of the undergraduate institution, effect admission into graduate school. The response variable, admit/don't admit, is a binary variable.
 
-```{r ex_5_data_import, echo=show_solution}
+```{r data_import_glm1}
 data(admission)
 head(admission)
 ```
 
-This dataset has a binary response (outcome, dependent) variable called `admit`. There are three predictor variables: `gre`, `gpa` and `rank`. We will treat the variables gre and gpa as continuous. The variable `rank` takes on the values 1 through 4. Institutions with a rank of 1 have the highest prestige, while those with a rank of 4 have the lowest. 
+This dataset has a binary response (outcome, dependent) variable called `admit`. There are three predictor variables: `gre`, `gpa` and `rank`. We will treat the variables `gre` and `gpa` as continuous. The variable `rank` takes on the values 1 through 4. Institutions with a rank of 1 have the highest prestige, while those with a rank of 4 have the lowest. 
 
-1. Let us compute the descriptive statistics of the variables.
+1. Let us compute the descriptive statistics for all variables. Let us produce the plots showing the relation between `admit` and `GPA` by `rank`, with lowess lines and the plots showing the relation between `admit` and `GRE` by `rank`, with lowess lines.
 
-```{r ex_5_desc_stats, echo=show_solution}
+```{r desc_stats_glm1, echo=show_solution, eval=show_solution}
 # Descriptive Statistics
 summary(admission)
 admission %>% summarise_each(funs="sd")
 
-# Graphs
+# Graphs of admit and GRE by rank
 ggp1 <- ggplot(data = admission, mapping = aes(x = gre, y= admit)) +
   geom_jitter(mapping = aes(y=admit), colour="red", height = 0.01) +
   geom_smooth(method = "loess", colour="blue", se = FALSE, span=2/3) +
   facet_wrap(facets = ~rank) 
 print(ggp1)
 
+# Graphs of admit and GPA by rank
 ggp2 <- ggplot(data = admission, mapping = aes(x = gpa, y= admit)) +
   geom_jitter(mapping = aes(y=admit), colour="red", height = 0.01) +
   geom_smooth(method = "loess", colour="blue", se = FALSE, span=2/3) +
@@ -632,9 +633,9 @@ ggp2 <- ggplot(data = admission, mapping = aes(x = gpa, y= admit)) +
 print(ggp2)
 ```
 
-2.  Let us estimate a logistic regression model using the `glm` (generalized linear model) function. First, we convert `rank` to a factor to indicate that rank should be treated as a categorical variable.
+2.  Let us estimate a logistic regression model using the `glm` (generalized linear model) function. First, we convert `rank` to a factor to indicate that `rank` should be treated as a categorical variable.
 
-```{r ex_5_data_analysis1, echo=show_solution}
+```{r data_analysis_glm11, echo=show_solution, eval=show_solution}
 admission <- admission %>% mutate(rank=factor(rank)) 
 fm1 <- glm(admit ~ gre + gpa + rank, data = admission, family = "binomial")
 summary(fm1)
@@ -642,15 +643,43 @@ summary(fm1)
 # For every one unit change in gre, the log odds of admission (versus non-admission) increases by 0.002
 # For a one unit increase in gpa, the log odds of being admitted to graduate school increases by 0.804.
 # The indicator variables for rank have a slightly different interpretation. For example, having attended an undergraduate institution with rank of 2, versus an institution with a rank of 1, changes the log odds of admission by -0.675.
+```
 
+3. Check the model residuals.
+
+```{r data_analysis_glm12, echo=show_solution, eval=show_solution}
 op <- par(mfrow = c(2,2))
 plot(fm1)
 par(op)
+# The diagnostic graphs are not really nice, but similar configurations of points is not infrequent, when the response variable is a Bernoulli (not Binomial) one.
 ```
 
-3. Let us compute model predictions.
 
-```{r predictions_ex_5, echo=show_solution}
+4. Let us compute model predictions.
+
+```{r predictions_glm1, echo=show_solution, eval=show_solution}
+admission$prob <- predict(fm1, type = "response")
+admission <- admission %>% arrange(prob)
+
+# Prediction of admit vs gre by rank 
+ggp <- ggplot(data = admission, mapping = aes(x = gre, y = admit)) +
+  geom_point(colour="blue") + 
+  geom_line(mapping = aes(x = gre, y = prob), colour="red") +
+  facet_wrap(facets = ~rank)
+print(ggp)
+
+# Prediction of admit vs gpa by rank
+ggp <- ggplot(data = admission, mapping = aes(x = gpa, y = admit)) +
+  geom_point(colour="blue") + 
+  geom_line(mapping = aes(x = gpa, y = prob), colour="red") +
+  facet_wrap(facets = ~rank)
+print(ggp)
+```
+
+<!--
+```{r, echo=show_solution, eval=show_solution}
+# previsioni con intervalli (interessante ma + articolato)
+
 # Predicted probability of admission at each value of rank
 newdata1 <- with(admission,
   data.frame(gre = mean(gre), gpa = mean(gpa), rank = factor(1:4)))
@@ -670,17 +699,15 @@ ggp <- ggplot(newdata3, aes(x = gre, y = PredictedProb)) +
   geom_ribbon(aes(ymin = LL, ymax = UL, fill = rank), alpha = .2) +
   geom_line(aes(colour = rank), size=1)
 print(ggp)
+
 ```
-
-
+-->
 
 ### Exercise 2
 
 The number of awards earned by students at one high school. Predictors of the number of awards earned include the type of program in which the student was enrolled (e.g., vocational, general or academic) and the score on their final exam in math.
 
-`num_awards` is the outcome variable and indicates the number of awards earned by students at a high school in a year, `math` is a continuous predictor variable and represents students' scores on their math final exam, and `prog` is a categorical predictor variable with three levels indicating the type of program in which the students were enrolled. It is coded as 1 = "General", 2 = "Academic" and 3 = "Vocational".
-
-```{r ex_6_data_import, echo=show_solution}
+```{r data_import_glm2}
 data(awards)
 head(awards)
 
@@ -689,14 +716,16 @@ awards <- awards %>% mutate(prog=factor(prog, levels=1:3, labels=c("General", "A
             id = factor(id))
 ```
 
-1. Let us compute some descriptive statistics.
+`num_awards` is the outcome variable and indicates the number of awards earned by students at a high school in a year, `math` is a continuous predictor variable and represents students' scores on their math final exam, and `prog` is a categorical predictor variable with three levels indicating the type of program in which the students were enrolled. It is coded as 1 = "General", 2 = "Academic" and 3 = "Vocational".
 
-```{r ex_6_desc_stats, echo=show_solution, warning=FALSE}
+1. Let us compute some descriptive statistics of all variables and generate an histogram of the number of awards earned by students by program type. 
+
+```{r desc_stats_glm2, echo=show_solution, eval=show_solution, warning=FALSE}
 # Descriptive Statistics
 summary(awards)
 awards %>% summarise_each(funs(sd))
 
-# Graphs
+# Histogram
 ggp <- ggplot(awards, aes(num_awards, fill = prog)) +
   geom_histogram(binwidth=.5, position="dodge")
 ggp
@@ -704,30 +733,25 @@ ggp
 
 2.  Let us perform a Poisson model analysis using the `glm` function, considering the complete model.
 
-```{r ex_6_data_analysis1, echo=show_solution}
+```{r data_analysis_glm21, echo=show_solution, eval=show_solution}
 fm1 <- glm(num_awards ~ prog + math, family="poisson", data=awards)
 summary(fm1)
 
-## update m1 model dropping prog
-fm2 <- update(fm1, . ~ . - prog)
-summary(fm2)
-## test model differences with chi square test
-anova(fm2, fm1, test="Chisq")
-
+#  The coefficient for math is .07. This means that the expected log count for a one-unit increase in math is .07. The indicator variable progAcademic compares between prog = "Academic" and prog = "General", the expected log count for prog = "Academic" increases by about 1.1. The indicator variable prog.Vocational is the expected difference in log count (approx .37) between prog = "Vocational" and the reference group (prog = "General").
 ```
 
 3. Let us try to improve the model removing non significant variable/s. Compares this model with the previous one. 
-```{r ex_6_data_analysis2, echo=show_solution}
+```{r data_analysis_glm22, echo=show_solution, eval=show_solution}
 ## update m1 model dropping prog
 fm2 <- update(fm1, . ~ . - prog)
 summary(fm2)
 ## test model differences with chi square test
 anova(fm2, fm1, test="Chisq")
-
+# The best model is the complete model (first)
 ```
 
 4. Let us compure predictions of the best fitted model.
-```{r predictions_ex_6}
+```{r predictions_glm2, echo=show_solution, eval=show_solution}
 ## calculate and store predicted values
 awards$phat <- predict(fm1, type="response")
 
