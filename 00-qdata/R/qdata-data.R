@@ -2526,3 +2526,33 @@ NULL
 #' @source 
 NULL
 ##################################################################################################################################
+
+##################################################################################################################################
+#' Solvent for varnish
+#' 
+#' 
+#' @name varnish
+#' 
+#' 
+#' @description \code{varnish} dataset contains information about an experiment to evaluate the efficacy of a solvent to dissolve stains of nail
+#' varnish from fabrics. The experiment consists in immersing 5 stained fabrics by a certain type of varnish into a bowl with a
+#'  solvent, measuring the time (in minutes) necessary to dissolve the stain.
+#'  
+#' @usage data(varnish)
+#' 
+#' 
+#' @format \code{varnish} is a tbl data frame with 30 observations on 3 variables.
+#' 
+#' 
+#' @details 
+#' The 3 variables of the \code{varnish} tbl data frame are the following ones:
+#' \itemize{
+#' \item \code{Solvent} type of solvent (factor with levels: \code{1} and \code{2})
+#' \item \code{Varnish} type of varnish (factor with levels: \code{1}, \code{2} and \code{3})
+#'  \item \code{Time} time necessary to dissolve the stain (minutes) (numeric)
+#' }
+#' 
+#' 
+#' @source 
+NULL
+##################################################################################################################################

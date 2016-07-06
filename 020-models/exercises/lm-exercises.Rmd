@@ -1,6 +1,6 @@
 ---
 title: "models-exercises"
-author: "Veronica"
+author: "Quantide Srl"
 date: "July 5, 2016"
 output: html_document
 ---
@@ -75,7 +75,100 @@ par(op)
 
 ### Exercise 2
 
+A chemists conducts an experiment to evaluate the efficacy of a solvent to dissolve stains of nail
+varnish from fabrics. He uses two types of solvent and three types of varnish. The experiment consists of immersing 5 stained fabrics by a certain type of varnish into a bowl with a solvent, measuring the time
+(in minutes) necessary to dissolve the stain.
 
+```{r data_import_an2}
+data(varnish)
+head(varnish)
+```
+
+1. Let us compute descriptive statistics and generate the BW plot of `Time` for each level of `Solvent` and `Varnish`. Let us draw also a  BW plot for each combination of `Solvent` and `Varnish` factor levels.
+
+```{r desc_stats_an1, echo=show_solution}
+# Descriptive Statistics of Time for each level of Solvent 
+summary_stat <- varnish %>% group_by(Solvent) %>% 
+  summarise(n=n(),
+  min = min(Time), 
+  first_qu = quantile(Time, 0.25),
+  median = median(Time),
+  mean = mean(Time),
+  third_qu = quantile(Time, 0.75),
+  max = max(Time),
+  sd = sd(Time))
+
+print(summary_stat)
+
+# BW Plot of Time for each level of Solvent
+varnish <- varnish %>% mutate(Solvent=factor(Solvent))
+ggp <- ggplot(data=varnish, mapping = aes(x=Solvent, y=Time, fill=Solvent)) +
+  geom_boxplot(show.legend = FALSE) 
+print(ggp)
+
+
+
+# Descriptive Statistics of Time for each level of Varnish 
+summary_stat <- varnish %>% group_by(Varnish) %>% 
+  summarise(n=n(),
+  min = min(Time), 
+  first_qu = quantile(Time, 0.25),
+  median = median(Time),
+  mean = mean(Time),
+  third_qu = quantile(Time, 0.75),
+  max = max(Time),
+  sd = sd(Time))
+
+print(summary_stat)
+
+# BW Plot of Time for each level of Solvent
+varnish <- varnish %>% mutate(Varnish=factor(Varnish))
+ggp <- ggplot(data=varnish, mapping = aes(x=Varnish, y=Time, fill=Varnish)) +
+  geom_boxplot(show.legend = FALSE) 
+print(ggp)
+
+# BW plot for each combination of Solvent and Varnish factor levels
+ggp <- ggplot(data = varnish, mapping = aes(x=Varnish, y=Time, fill=Solvent)) + 
+  geom_boxplot()
+
+print(ggp)
+```
+
+2. Let us evaluate also if there are differences in the types of solvent in respect of the types varnish that produced the stain (Considerer also the interaction in model formulation).
+
+```{r data_analysis_an21, echo=show_solution}
+fm <- aov(Time ~ Varnish * Solvent, data = varnish)
+summary(fm)
+
+# Actually, only main effects Solvent seems to influence the time necessary to dissolve the stain.  Interaction seem not significant: we can start to drop it.
+```
+
+3. Let us improve the model, dropping non significant terms (one by one).
+
+```{r data_analysis_an22, echo=show_solution}
+# Drop the interaction from model formulation Varnish:Solvent
+fm1 <- update(fm, . ~ . -Varnish:Solvent)
+summary(fm1)
+# Drop Varnish effect from model formulation
+fm2 <- update(fm1, . ~ . -Varnish)
+summary(fm2)
+```
+
+4. Let us check if the removed effect/s are not significant (models comparison).
+
+```{r data_analysis_an23, echo=show_solution}
+anova(fm, fm2)
+# The removed effects are not significant.
+```
+
+5. Let us check (final) models residuals.
+
+```{r data_analysis_an24, echo=show_solution}
+op <- par(mfrow = c(2,2))
+plot(fm2)
+par(op)
+# The residual plots confirm that normality and homoscedasticity assumptions are met, and no outliers appear.
+```
 
 
 ## Linear models
@@ -84,14 +177,14 @@ par(op)
 
 The number of impurities (lumps) present in the containers of paint depends on the rate of agitation applied to the container. A researcher wants to determine the relation between the rate of agitation and the number of lumps, so he conducts an experiment. He applies different rates of agitation (`Stirrate`) to 12 containers of paint and he counts the number of impurities (lumps) present in the containers of paint (`Impurity`).  
 
-```{r ex_1_data_import, echo=show_solution}
+```{r data_import_lm1, echo=show_solution}
 data(paint)
 head(paint)
 ```
 
-1. Let us compute the main descriptive statistics of `Impurity` and the correlation between `Impurity` and `Stirrate`.
+1. Let us compute the main descriptive statistics and generate the BW plot of `Impurity`. let us compute also the correlation and the correlation plot between `Impurity` and `Stirrate`.
 
-```{r ex_1_desc_stats, echo=show_solution}
+```{r desc_stats_lm1, echo=show_solution}
 # Descriptive Statistics
 summary_stat <- paint %>% summarise(n=n(),
   min = min(Impurity), 
@@ -108,52 +201,58 @@ print(summary_stat)
 ggp <- ggplot(data = paint, mapping = aes(x="0", y=Impurity)) +
   geom_boxplot(fill="blue") + theme(axis.text.x=element_blank(), axis.title.x = element_blank(),
     axis.ticks.x=element_blank()) 
-
 print(ggp)
 
 # Correlation
-cor(paint$Stirrate, paint$Impurity)
+paint %>% summarise(cor=cor(Stirrate, Impurity))
+
 pl <- ggpairs(data = paint)
 print(pl)
 ```
 
-2. Let us graphically represent the relation between these variables.
+2. Let us graphically represent the relation between these variables (add regression line to the graph).
 
-```{r ex_1_reg_plot, echo=show_solution}
+```{r reg_plot_lm1, echo=show_solution}
 pl <- ggplot(data = paint, mapping = aes(x = Stirrate, y=Impurity)) +
   geom_point(color="blue") + 
   geom_smooth(method = "lm", colour="red", se = FALSE)
   
 print(pl)  
+# A simple straight linear regression is a good choice to describe the relation
 ```
 
-3. Let us compute a simple linear regression between `Impurity` and `Stirrate` and check the residuals of the fitted model. Does `Stirrate` influence `Impurity`? How? 
+3. Let us compute a simple linear regression between `Impurity` and `Stirrate`. Does `Stirrate` influence `Impurity`? How? 
 
-```{r ex_1_data_analysis, echo=show_solution}
+```{r data_analysis_lm11, echo=show_solution}
 # Fit the linear model
 fm <- lm(formula = Impurity ~ Stirrate, data = paint)
 summary(fm)
+
+# The relation that "links" the revolution rate seems to be well described by a simple linear regression, at least for the considered interval of Stirrate. It appears that if we increase Stirrate by one unit, impurities increase by 0.46 on average, and this growth is significant. The p-value for the significativity of the coefficient of Stirrate is extremely low. This fact confirms the "non random"" existing relation between the two variables. The p-value of the intercept estimate is 0.817. This would indicate an intercept potentially equal to 0. Keeping the intercept value equal to the estimate, with value of Stirrate=0, the mean number of imputities would be negative: the results of the regression couldn’t be "extended" too outside experimental field. R^2 value is equal to 0.9338; this fact confirms that the model explais well the observed data.
+```
+
+4. Let us check (final) models residuals.
+
+```{r data_analysis_lm12, echo=show_solution}
 # Residuals analysis
 op <- par(mfrow = c(2,2))
 plot(fm)
 par(op)
-
-# The relation that "links" the revolution rate seems to be well described by a simple linear regression, at least for the considered interval of Stirrate. The p-value for the significativity of the coefficient of Stirrate is extremely low. This fact confirms the "non random"" existing relation between the two variables. The p-value of the intercept estimate is 0.817. This would indicate an intercept potentially equal to 0. Keeping the intercept value equal to the estimate, with value of Stirrate=0, the mean number of imputities would be negative: the results of the regression couldn’t be "extended" too outside experimental field. R^2 value is equal to 0.9338; this fact confirms that the model explais well the observed data.
+# Plots do not evidence particular problems.
 ```
-
 
 ### Exercise 2
 
 A pressure switch has a membrane whose thickness (in mm) influences the pressure required to trigger the switch itself. The aim is to determine the thickness of the membrane for which the switch "trig" with a pressure equal to 165 ± 15 KPa. 25 switches with different thickness (`DThickness`) of the membrane was analysed, measuring the the pressure at which each switch opens (KPa) (`SetPoint`).
 
-```{r ex_2_data_import, echo=show_solution}
+```{r data_import_lm2, echo=show_solution}
 data(switcht)
 head(switcht)
 ```
 
-1. Let us compute the descriptive statistics of the variable `SetPoint`.
+1. Let us compute the descriptive statistics and generate the BW-plot of the variable `SetPoint`.
 
-```{r ex_2_desc_stats, echo=show_solution}
+```{r desc_stats_lm2, echo=show_solution}
 # Descriptive Statistics
 summary_stat <- switcht %>% summarise(n=n(),
   min = min(SetPoint), 
@@ -174,9 +273,9 @@ ggp <- ggplot(data = switcht, mapping = aes(x="0", y=SetPoint)) +
 print(ggp)
 ```
 
-2. Let us graphically represent the relation `DThickness` and `SetPoint`.
+2. Let us graphically represent the relation between `DThickness` and `SetPoint`(add regression line to the graph).
 
-```{r ex_2_reg_plot, echo=show_solution}
+```{r reg_plot_lm2, echo=show_solution}
 pl <- ggplot(data = switcht, mapping = aes(x = DThickness, y=SetPoint)) +
   geom_point(color="blue") + 
   geom_smooth(method = "lm", colour="red", se = FALSE)
@@ -186,7 +285,7 @@ print(pl)
 
 3. Let us compute a linear regression between `DThickness` and `SetPoint` and check the residuals of the fitted model. Does `DThickness` influences `SetPoint`? Is the model correct?
 
-```{r ex_2_data_analysis, echo=show_solution}
+```{r data_analysis_lm2, echo=show_solution}
 # Fit the linear model
 fm1 <- lm(formula = SetPoint ~ DThickness, data = switcht)
 summary(fm1)
@@ -203,7 +302,7 @@ par(op)
 
 4. Let us improve the model and compare it with the previous model, if necessary. 
 
-```{r ex_2_mod_improve, echo=show_solution}
+```{r mod_improve_lm21, echo=show_solution}
 # Improve the model 
 fm2 <- update(fm1,.~. + I(DThickness^2))
 summary(fm2)
@@ -217,6 +316,14 @@ par(op)
 
 # The graphic of the estimated values vs residuals doesn’t show any systematic trend of the residuals and the variance seems to be the same for each estimated value. The residuals are quite well aligned on the line representing the quantile of the normal distribution: It is reasonable to assume that they are then normally distributed.
 
+# Comparison with the previous model
+anova(fm1, fm2)
+# This analysis confirms that the contribution of quadratic term is significant.
+```
+
+5. Let us produce the graph of predicted values from the best model estimated.
+
+```{r mod_improve_lm22, echo=show_solution}
 # Plot of predition from quadratic model
 newdata <- data.frame(DThickness = seq(min(switcht$DThickness), 
   max(max(switcht$DThickness)), length = 100))
@@ -227,12 +334,7 @@ ggp <- ggplot(data=switcht, mapping = aes(x=DThickness, y=SetPoint)) +
   geom_line(data=newdata, mapping=aes(x=DThickness, y=predict), colour="mediumvioletred")
 
 print(ggp)
-
-# Comaprison with the previous model
-anova(fm1, fm2)
-# This analysis confirms that the contribution of quadratic term is significant.
 ```
-
 
 # Exercise 3
 
@@ -244,22 +346,22 @@ The engeneers want to reduce the knocking of the engines. Before doing this, the
 * `Exhaust`: indicates the exhaust temperature;
 * `Knock`: indicates the knocking of the engine.
 
-```{r ex__data_import, echo=show_solution}
+```{r data_import_lm3, echo=show_solution}
 data(knock)
 head(knock)
 ```
 
-1. Let us produce a matrix of scatterplots.
+1. Let us produce a matrix of scatterplots and comment the results.
 
-```{r ex_3_desc_stats, echo=show_solution}
+```{r desc_stats_lm3, echo=show_solution}
 ggpairs(data = knock)
 
 # Knock and Spark seem to be negatively correlated; Knock is positively correlated with each of other predictors.
 ```
 
-2. Let us compute a multiple linear regression between `Knock` and the predictors.
+2. Let us compute a multiple linear regression between `Knock` and the predictors (additive model).
 
-```{r ex__data_analysis, echo=show_solution}
+```{r data_analysis_lm3, echo=show_solution}
 # Fit the linear model
 fm1 <- lm(formula = Knock ~ Spark + AFR + Intake + Exhaust, data = knock)
 summary(fm1)
@@ -279,7 +381,7 @@ par(op)
 
 3. Is It possible to improve the resulting model? How?
 
-```{r ex__mod_improve, echo=show_solution}
+```{r mod_improve_lm3, echo=show_solution}
 # Improve the model: remove the variable Spark, which is not significant, from the model
 fm3 <- update(fm1,.~. - Spark)
 summary(fm3)
@@ -291,11 +393,17 @@ par(op)
 
 ```
 
+4. Compare the initial with the final model.
+
+```{r mod_improve_lm3, echo=show_solution}
+anova(fm1, fm3)
+# There is a non-significant difference between the two models. fm3 seems the better model.
+```
 
 ### Exercise 4
 
 A researcher wants to determine which variables are related with the percentage of mortality.
-Data conatins the following variables:
+Data contains the following variables:
 
 * `Rain`: indicates the annual average rainfall;
 * `JanTemp`: indicates the average temperatures in January;
@@ -314,14 +422,14 @@ Data conatins the following variables:
 * `MortalityRate`: indicates the mortality rate for 100000 people.
 
 
-```{r ex_3_data_import, echo=show_solution}
+```{r data_import_lm4, echo=show_solution}
 data(mortality)
 head(mortality)
 ```
 
-1. Let us build the complete model, with all the regressors.
+1. Let us build the complete model, with all the regressors (additive model).
 
-```{r ex_3_data_analysis1, echo=show_solution}
+```{r data_analysis_lm41, echo=show_solution}
 # Fit the linear model
 fm1 <- lm(formula = MortalityRate ~ RelHum + SulphurDioxide + NititeOxide + Hydrocarbon + PctWhiteCollar + PctLowIncome + PopDensity + PctHomesLiveable + Education + HHSize + PctOver65 + JulyTemp + JanTemp + Rain, data = mortality)
 
@@ -330,7 +438,7 @@ summary(fm1)
 
 2. Let us reach to a model in which all the regressors have significant terms at the 5% level, by eliminating a regressor at a time.
 
-```{r ex_3_data_analysis2, echo=show_solution}
+```{r data_analysis_lm42, echo=show_solution}
 # Remove RelHum
 fm2 <- update(fm1,.~. -RelHum)
 summary(fm2)
@@ -367,34 +475,42 @@ summary(fm9)
 fm10 <- update(fm9,.~. -HHSize)
 summary(fm10)
 
+# Using other criterions to determine the significant variables, the resulting model could be different.
+fm11 <- stepAIC(object = fm1)
+summary(fm11)
+```
+
+3. Let us check the residuals of the final model.
+
+```{r data_analysis_lm43, echo=show_solution}
 # Residual Analysis of the final model
 op <- par(mfrow = c(2,2))
 plot(fm10)
 par(op)
+```
 
-# Using other criterions to determine the significant variables, the resulting model could be different.
-fm11 <- stepAIC(object = fm1)
-summary(fm11)
+4. Let us compare the initial and the final model.
 
+```{r data_analysis_lm44, echo=show_solution}
 # Models Comparison 
-anova(fm10, fm11)
+anova(fm1, fm11)
 ```
 
 ### Exercise 5
 
 A researcher wants to establish if there is a relation between the weight of the body and the weight of the brain of fifteen mammal (african elephant, cow, monkey, man, gray wolf, red fox, armadillo, chinchilla and so on).
 
-```{r ex_4_data_import, echo=show_solution}
+```{r data_import_lm5, echo=show_solution}
 data(brainbod)
 head(brainbod)
 ```
 
 1. Let us show the descriptive univariate graphics (histograms and BW plot) of the `Body` and `Brain` variables.
 
-```{r ex_4_desc_stats1, echo=show_solution}
+```{r desc_stats_lm51, echo=show_solution}
 # Body
 pl1 <- ggplot(data = brainbod, mapping = aes(x=Body)) +
-  geom_histogram()
+  geom_histogram(fill="pink", col="black")
 print(pl1)
 
 pl2 <- ggplot(data = brainbod, mapping = aes(y=Body, x="0")) +
@@ -404,7 +520,7 @@ print(pl2)
 
 # Brain
 pl1 <- ggplot(data = brainbod, mapping = aes(x=Brain)) +
-  geom_histogram()
+  geom_histogram(fill="pink", col="black")
 print(pl1)
 
 pl2 <- ggplot(data = brainbod, mapping = aes(y=Brain, x="0")) +
@@ -413,12 +529,13 @@ pl2 <- ggplot(data = brainbod, mapping = aes(y=Brain, x="0")) +
 print(pl2)
 ```
 
-2. Let us show a scatterplot of the two variables and let us estimate a linear regression model. 
+2. Let us show a scatterplot of the two variable. Let us estimate a linear regression model and check the model residuals. 
+The linear model between the two variables is adequate? Why?
 
-```{r ex_4_data_analysis1, echo=show_solution}
+```{r data_analysis_lm51, echo=show_solution}
 # Scatterplot
 pl3 <- ggplot(data = brainbod, mapping = aes(y=Brain, x=Body)) +
-  geom_point() + geom_smooth(method = "lm", colour= "red", se=FALSE)
+  geom_point(col="blue") + geom_smooth(method = "lm", colour= "red", se=FALSE)
 
 print(pl3)
 
@@ -436,12 +553,12 @@ par(op)
 # The hypothesis of residual normality seems not to be accepted.
 ```
 
-3. The linear model between the two variables is adequate? Why? How could it been improved?
+3. How could the model be improved? What variable transformation can be applied? Generate BW plot, histograms and scatterplot of the transformed variables.
 
-```{r ex_4_desc_stats2, echo=show_solution}
+```{r desc_stats_lm52, echo=show_solution}
 # Body
 pl1 <- ggplot(data = brainbod, mapping = aes(x=log(Body))) +
-  geom_histogram()
+  geom_histogram(fill="pink", col="black")
 print(pl1)
 
 pl2 <- ggplot(data = brainbod, mapping = aes(y=log(Body), x="0")) +
@@ -451,24 +568,25 @@ print(pl2)
 
 # Brain
 pl1 <- ggplot(data = brainbod, mapping = aes(x=log(Brain))) +
-  geom_histogram()
+  geom_histogram(fill="pink", col="black")
 print(pl1)
 
 pl2 <- ggplot(data = brainbod, mapping = aes(y=log(Brain), x="0")) +
   geom_boxplot() + theme(axis.text.x=element_blank(), axis.title.x = element_blank(),
     axis.ticks.x=element_blank()) 
 print(pl2)
-```
 
-```{r ex_4_data_analysis2, echo=show_solution}
 # Scatterplot
 pl4 <- ggplot(data = brainbod, mapping = aes(y=log(Brain), x=log(Body))) +
-  geom_point() + geom_smooth(method = "lm", colour= "red", se=FALSE)
+  geom_point(col="blue") + geom_smooth(method = "lm", colour= "red", se=FALSE)
 print(pl4)
 
 # The scatterplot of the logarithms of the weights seems to be more clear than in the same graph on the original data.
+```
 
-# Fit the linear model
+5. Let us estimate a linear regression model with the transformed variables and check the model residuals.
+```{r data_analysis_lm52, echo=show_solution}
+# Fit the linear model of the tarnsformed variables
 fm2 <- lm(formula = log(Brain) ~ log(Body), data = brainbod)
 summary(fm2)
 # A linear regression seems to exist between the two variables. An high value of the R^2 (95.16%) implies that the link between body weight and brain weight is well explained by a linear regression.
