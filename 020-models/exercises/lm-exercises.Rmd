@@ -14,10 +14,10 @@ require(qdata)
 ```
 
 ```{r solution, echo=FALSE}
-show_solution <- TRUE
+show_solution <- FALSE
 ```
 
-## Anova
+## ANOVA
 
 ### Exercise 1
 
@@ -76,7 +76,7 @@ par(op)
 ### Exercise 2
 
 A chemist conducts an experiment to evaluate the efficacy of a solvent to dissolve stains of nail
-varnish from fabrics. He uses two types of solvent and three types of varnish. The experiment consists of immersing 5 stained fabrics by a certain type of varnish into a bowl with a solvent, measuring the time
+varnish from fabrics. He uses two types of solvent and three types of varnish. The experiment consists of immersing 5 stained fabrics by a certain type of varnish into a bowl with a solvent and of measuring the time
 (in minutes) necessary to dissolve the stain.
 
 ```{r data_import_an2}
@@ -228,7 +228,7 @@ print(pl)
 fm <- lm(formula = Impurity ~ Stirrate, data = paint)
 summary(fm)
 
-# The relation that "links" the revolution rate seems to be well described by a simple linear regression, at least for the considered interval of Stirrate. It appears that if we increase Stirrate by one unit, impurities increase by 0.46 on average, and this growth is significant. The p-value for the significativity of the coefficient of Stirrate is extremely low. This fact confirms the "non random"" existing relation between the two variables. The p-value of the intercept estimate is 0.817. This would indicate an intercept potentially equal to 0. Keeping the intercept value equal to the estimate, with value of Stirrate=0, the mean number of imputities would be negative: the results of the regression couldn’t be "extended" too outside experimental field. R^2 value is equal to 0.9338; this fact confirms that the model explais well the observed data.
+# The relation that "links" the revolution rate seems to be well described by a simple linear regression, at least for the considered interval of Stirrate. It appears that if we increase Stirrate by one unit, impurities increase by 0.46 on average, and this growth is significant. The p-value for the significativity of the coefficient of Stirrate is extremely low. This fact confirms the "non random" existing relation between the two variables. The p-value of the intercept estimate is 0.817. This would indicate an intercept potentially equal to 0. Keeping the intercept value equal to the estimate, with value of Stirrate=0, the mean number of imputities would be negative: the results of the regression couldn’t be "extended" too outside experimental field. R^2 value is equal to 0.9338; this fact confirms that the model explais well the observed data.
 ```
 
 4. Let us check (final) models residuals.
@@ -336,7 +336,7 @@ ggp <- ggplot(data=switcht, mapping = aes(x=DThickness, y=SetPoint)) +
 print(ggp)
 ```
 
-# Exercise 3
+### Exercise 3
 
 The engeneers want to reduce the knocking of the engines. Before doing this, they have to identify which variables influence this phenomenon. Data are randomly collected from 13 engines and contains the following variables:
 
@@ -500,12 +500,12 @@ anova(fm1, fm11)
 
 A researcher wants to establish if there is a relation between the weight of the body and the weight of the brain of fifteen mammal (african elephant, cow, monkey, man, gray wolf, red fox, armadillo, chinchilla and so on).
 
-```{r data_import_lm5, echo=show_solution, eval=show_solution}
+```{r data_import_lm5}
 data(brainbod)
 head(brainbod)
 ```
 
-1. Let us show the descriptive univariate graphics (histograms and BW plot) of the `Body` and `Brain` variables.
+1. Let us show the descriptive graphics (histogram and BW plot) of the `Body` and `Brain` variables.
 
 ```{r desc_stats_lm51, echo=show_solution, eval=show_solution, message=FALSE}
 # Body
@@ -529,7 +529,7 @@ pl2 <- ggplot(data = brainbod, mapping = aes(y=Brain, x="0")) +
 print(pl2)
 ```
 
-2. Let us show a scatterplot of the two variable. Let us estimate a linear regression model and check the model residuals. 
+2. Let us show a scatterplot of the two variables. Let us estimate a linear regression model and check the model residuals. 
 The linear model between the two variables is adequate? Why?
 
 ```{r data_analysis_lm51, echo=show_solution, eval=show_solution, warning=FALSE}
@@ -553,7 +553,7 @@ par(op)
 # The hypothesis of residual normality seems not to be accepted.
 ```
 
-3. How could the model be improved? What variable transformation can be applied? Generate BW plot, histograms and scatterplot of the transformed variables.
+3. How could the model be improved? What variable transformation can be applied? Generate BW plot, histogram and scatterplot of the transformed variables.
 
 ```{r desc_stats_lm52, echo=show_solution, eval=show_solution, message=FALSE}
 # Body
@@ -602,7 +602,7 @@ par(op)
 
 ### Exercise 1
 
-A researcher is interested in how variables, such as `GRE` (Graduate Record Exam scores), `GPA` (grade point average) and prestige of the undergraduate institution, effect admission into graduate school. The response variable, admit/don't admit, is a binary variable.
+A researcher is interested in how variables, such as GRE (Graduate Record Exam scores), GPA (grade point average) and prestige of the undergraduate institution, effect admission into graduate school. The response variable, admit/don't admit, is a binary variable.
 
 ```{r data_import_glm1}
 data(admission)
@@ -705,7 +705,7 @@ print(ggp)
 
 ### Exercise 2
 
-The number of awards earned by students at one high school. Predictors of the number of awards earned include the type of program in which the student was enrolled (e.g., vocational, general or academic) and the score on their final exam in math.
+We want to analyze if the number of awards earned by students at one high school are related to the type of program in which the student was enrolled (e.g., vocational, general or academic) and to the score on their final exam in math.
 
 ```{r data_import_glm2}
 data(awards)
@@ -731,7 +731,7 @@ ggp <- ggplot(awards, aes(num_awards, fill = prog)) +
 ggp
 ```
 
-2.  Let us perform a Poisson model analysis using the `glm` function, considering the complete model.
+2.  Let us perform a Poisson model analysis using the `glm` function, considering the complete (additive) model.
 
 ```{r data_analysis_glm21, echo=show_solution, eval=show_solution}
 fm1 <- glm(num_awards ~ prog + math, family="poisson", data=awards)
