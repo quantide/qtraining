@@ -5,12 +5,18 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-show_solution <- T
+show_solution <- F
 ```
 
 Please reply to the following questions in an R Markdown, called "surname_name.Rmd" and with title "Surname Name". Produce a pdf document and send both files (rmd and pdf) by mail to veronica.giro@quantide.com within Monday 25 July.
 
-Before starting the exam, load the following packages:
+Before starting the exam install the version 0.24 of `qdata` package: 
+
+```{r install, eval=FALSE}
+install.packages(pkgs = "path-to-package/qdata_0.24.tar.gz", repos = NULL)
+```
+
+and load the following packages:
 
 ```{r librarues, message=FALSE}
 require(qdata)
