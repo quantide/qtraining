@@ -1,0 +1,135 @@
+---
+title: "Statistics Exam"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+show_solution <- T
+```
+
+Please reply to the following questions in an R Markdown, called "surname_name.Rmd" and with title "Surname Name". Produce a pdf document and send both files (rmd and pdf) by mail to veronica.giro@quantide.com within Monday 25 July.
+
+Before starting the exam, load the following packages:
+
+```{r librarues, message=FALSE}
+require(qdata)
+require(dplyr)
+require(nortest)
+```
+
+## Exercise 1
+
+A chemist conducts an experiment to evaluate the efficacy of a solvent to dissolve stains of nail varnish from fabrics. He/She wants to test two types of solvent (`1` and `2`). The experiment consists of immersing 5 stained fabrics into a bowl with a solvent and of measuring the time (in minutes) necessary to dissolve the stain.
+
+```{r data_import_tt}
+# Load data
+data(varnish)
+head(varnish)
+```
+
+Consider the following variables:
+
+* `Time` indicates time necessary to dissolve the stain (minutes) 
+* `Solvent` is a categorical variable with two levels and indicates the solvent type  (`1` and `2`)
+
+1. Test the normality of `Time` variable for solvent `1` and for solvent `2`. Comment the results.  
+(Use the command: `tapply(X = varnish$Time, INDEX = varnish$Solvent, ad.test)`).
+
+```{r data_analysis_tt1, echo=show_solution, eval=show_solution}
+tapply(X = varnish$Time, INDEX = varnish$Solvent, ad.test)
+```
+
+
+2. Check the hypothesys that the mean time necessary to dissolve nail varnish is the same for the two types of solvent and comment the results (use `t.test()` function).
+
+```{r data_analysis_tt2, echo=show_solution, eval=show_solution}
+t.test(varnish$Time ~ varnish$Solvent)
+```
+
+\clearpage
+
+## Exercise 2
+
+The headmaster of a high school is interested in how the number of awards earned this year by each student and the type of program in which he/she was enrolled influence the score obtained on the final math exam.
+
+```{r data_import_lm}
+# Load data
+data(awards)
+head(awards)
+```
+
+Consider the following variables:
+
+* `math` represents students’ scores on their math final exam
+* `num_awards` indicates the number of awards earned by each student in a year
+* `prog` is a categorical variable with three levels indicating the type of program in which the students were enrolled. It is coded as `1` = "General", `2` = "Academic" and `3` = "Vocational".
+
+First of all, you have to convert `prog` variable as a factor: 
+```{r factor}
+awards <- awards %>% mutate(prog =as.factor(prog))
+```
+
+1. Fit a linear model to estimate the relation between `math` (as dependent variable) and the variables `prog` and `num_awards` (use `lm()` function). Compute the summary (use `summary.lm()` function) and comment the results. How the model coefficients have to be interpreted?
+
+```{r data_analysis_lm1, echo=show_solution, eval=show_solution}
+fm <- lm(math ~ prog + num_awards, data=awards)
+summary.lm(fm)
+```
+
+2. Compute model summary using `summary.aov()` function and comment the result. What is the difference between `summary.lm()` and `summary.aov()`?
+
+```{r data_analysis_lm2, echo=show_solution, eval=show_solution}
+summary.aov(fm)
+```
+
+3. Fit the model removing the intercept from the model formula. Compute the summary (use `summary.lm()` function) and comment the results. How the model coefficients have to be interpreted? What is the difference between this model and that estimated at point 1.?
+
+```{r data_analysis_lm3, echo=show_solution, eval=show_solution}
+fm1 <- lm(math ~ prog + num_awards -1, data=awards)
+summary.lm(fm1)
+```
+
+4. Perform the residual analysis of the model estimated and comment the results.
+
+```{r data_analysis_lm4, echo=show_solution, eval=show_solution}
+op = par(mfrow=c(2,2))
+plot(fm)
+par(op)
+```
+
+\clearpage
+
+## Exercise 3
+
+A researcher is interested in how GRE (Graduate Record Exam scores) influences admission into graduate school. 
+
+```{r data_import_glm1}
+# Load data
+data(admission)
+head(admission)
+```
+
+Consider the following variables:
+
+* `admit` is a binary variable (`0` (Not admitted) and `1` (Admitted)) and represents admission into graduate school 
+* `gre` represents Graduate Record Exam scores
+
+1. Fit a logistic regression model between `admit` (as dependent variable) and `gre` (as independent variable) (use `glm()` function and specify the `family` parameter as `"binomial"`) and compute the summary of the fitted model. Comment the results, explaining the coefficients meaning.    
+
+```{r data_analysis_glm1, echo=show_solution, eval=show_solution}
+fm1 <- glm(admit ~ gre, data = admission, family = "binomial")
+summary(fm1)
+
+# For every one unit change in gre, the log odds of admission (versus non-admission) increases by 0.0036
+```
+
+2. Perform the residual analysis of the model estimated and comment the results.
+
+```{r data_analysis_glm2, echo=show_solution, eval=show_solution}
+op <- par(mfrow = c(2,2))
+plot(fm1)
+par(op)
+# The diagnostic graphs are not really nice, but similar configurations of points is not infrequent, when the response variable is a Bernoulli (not Binomial) one.
+```
+
