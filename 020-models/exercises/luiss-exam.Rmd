@@ -5,7 +5,7 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-show_solution <- F
+show_solution <- T
 ```
 
 Please reply to the following questions in an R Markdown, called "surname_name.Rmd" and with title "Surname Name". Produce a pdf document and send both files (rmd and pdf) by mail to veronica.giro@quantide.com within Monday 25 July.
