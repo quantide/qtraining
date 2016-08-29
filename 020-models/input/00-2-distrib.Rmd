@@ -134,7 +134,7 @@ dpois(x = 2, lambda = 1)
 `dpois()` function computes the density function of a poisson distribution. The argument `x` represents the number of successes, in this case is 2 homes sold, and the argument `lambda` represents the mean of the poisson distribution or the average number of successes, in this case is 1, the average number of house sold per day. 
 
 
-## Continue Distributions
+## Continuous Distributions
 
 Among them, the distribution most frequently used and the most useful one for the experimental research, which is the basis of the parametric
 statistics, is the $normal$ $or$ $Gaussian$ distribution.
