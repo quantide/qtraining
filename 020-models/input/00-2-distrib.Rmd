@@ -137,7 +137,7 @@ dpois(x = 2, lambda = 1)
 ## Continuous Distributions
 
 Among them, the distribution most frequently used and the most useful one for the experimental research, which is the basis of the parametric
-statistics, is the $normal$ $or$ $Gaussian$ distribution.
+statistics, is the $Normal$ or $Gaussian$ distribution.
 
 Other continuous distributions are:
 
