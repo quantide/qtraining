@@ -313,14 +313,14 @@ This is a graphical representation of a Student’s $t$-distribution:
 
 ### F-distribution
   
-Another interesting distribution, from which it is founded the inference of a big part of the parametric statistics, is the $F$-distribution.
+Another interesting distribution, on which a big part of the parametric statistics is founded, is the $F$-distribution.
 It corresponds to the distribution of the ratio of 2 $\chi^2$ indipendent random variables ($A$ e $B$), divided by its corresponding degrees of freedom ($m$ e $n$).
 
 This ratio $F$ is defined between 0 and $+\infty$.
 
-The $F$ distribution represents a generalization of the $t$ distribution.
-The $t$ and $\chi^2$ distribution have only one parameter, the $F$ has two parameters: the number of degrees of freedom both of the numerator and of the denominator.
-The square of a random variable $t$ of Student with $n$ degrees of freedom is equal to a $F$ of Fisher distribution with degrees of freedom $1$ and $n$.
+The $F$ distribution ca be seen as a generalization of the $t$ distribution.
+The $t$ and $\chi^2$ distribution uses only one parameter, the $F$ has two parameters: the number of degrees of freedom both of the numerator and of the denominator.
+The square of a Student's $t$ random variable with $n$ degrees of freedom is equal to an $F$ distribution with $1$ and $n$ degrees of freedom.
 
 This is the graphical representation of a $F$-distribution
 
