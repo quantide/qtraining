@@ -149,7 +149,7 @@ Other continuous distributions are:
 
 ### Normal distribution
 
-The most important continuous distribution is the normal curve. The name normal curve comes from the convinction (not always correct) that a great number of phenomena, both the biological ones and the physical one, are usually distributed according the Gaussian curve.  
+The most important continuous distribution is the normal curve. The name normal curve comes from the convinction (not always correct) that a great number of biological or physical phenomena are usually distributed according the Gaussian curve.  
 
 <!--
 Its name curve of accidental errors, mainly spread in the phisical subjects, comes from the experimental observations where the distribution
@@ -275,11 +275,11 @@ This is a graphical representation of a Gamma distribution for different scale a
 
 ![Gamma distribution](./images/Gamma_distribution_pdf.png)
 
-### Chi-squared distribution
+### Chi-square distribution
 
-Given $n$ independent random variables $Z_1,\;Z_2,\;  \dots,\; Z_n$, normally distributed with $\mu = 0$ and $\sigma = 1$, the $\chi_\nu^2$, where $\nu = n$, is a random variable obtained by the sum of their squares.
-The density function of the $\chi^2$ is obtained only from the parameter $\nu$, the number of degrees of freedom ($df$).
-The distribution is defined between $0$ and $+\infty$, and when the number of degrees of freedom increases, it tends to have a shape similar to that of the normal.
+Given $n$ independent random variables $Z_1,\;Z_2,\;  \dots,\; Z_n$, normally distributed with $\mu = 0$ and $\sigma = 1$, the sum of squares of $Z_i$ is called a Chi-square random variable; in symbols: $\chi_\nu^2$, where $\nu = n$.
+The density function of the $\chi^2$ depends only from the parameter $\nu$, the so called number of _degrees of freedom_ ($df$).
+The Chi-square distribution is defined between $0$ and $+\infty$, and when the number of degrees of freedom increases, it tends to have a shape similar to that of the Normal distribution.
 
 Graphical representation of the distribution $\chi^2$ for different values of $df$:
   
