@@ -286,11 +286,10 @@ Graphical representation of the distribution $\chi^2$ for different values of $d
 ![Chi-Squared distribution](./images/2_37.png)
 
 
-### Student's t distribution
+### Student's _t_ distribution
 
-The Student’s $t$-distribution takes into consideration the relations among the mean and the variance estimations, in little size samples, when the sample variance is used.  
-The choice between the use of the normal distribution and the Student’s $t$-distribution in the comparison among means comes from the knowledge
-of the $\sigma^2$ variance of the population or from the fact that it is unknown. In this last case, it is necessary to use the $s^2$ sample variance.
+<!--- The Student’s $t$-distribution takes into consideration the relations among the mean and the variance estimations, in small sample sizes, when the sample variance is used.  
+--->
 The Student’s $t$ random variable is defined as the ratio between a standard normal random variable and the square root of a $\chi^2$ divided by its degrees
 of freedom:
 
@@ -300,8 +299,11 @@ If a series of $n$ observations ($X_1, \cdots , X_n$) is drawn by a normal distr
 
   $$t_{n-1}=\frac{\overline{X}-\mu}{s/\sqrt{n}}$$
 
-is distributed as a Student's $t$ with $n - 1$ degrees of freedom.  
-The corresponding curve is defined between $-\infty$ and $+\infty$, symmetric, little lowly that the normal and with higher frequencies in the extremes, when the number of df ($\nu$) is really small.
+where $s^2$ is the so called sample variance, is distributed as a Student's $t$ with $n - 1$ degrees of freedom.  
+The corresponding curve is defined between $-\infty$ and $+\infty$, is symmetric, little lower than the normal around the median, and with higher frequencies in the extremes.
+
+In statistical tests, the choice between the use of the Normal distribution or the Student’s $t$-distribution in comparisons between means depends on the fact that
+the $\sigma^2$ variance is known or not. If $\sigma^2$ is unlknown, the $s^2$ sample variance and the $t$ distribution must be used.
 
 Starting from a number of degrees of freedom around 30, the Student's $t$-distribution tends to a normal distribution.
 
