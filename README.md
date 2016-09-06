@@ -39,7 +39,7 @@ The number to be assigned to the course name must consist of three digits.
 These folders have the same base structure:
 
 1. _input_ folder, which contains source files of course material  
-2. _output_ folder, which contains built course materials 
+2. _output_ folder, which contains built course material files
 3. _exercises_ folder, which contains source files of exercises 
 4. _docs_ folder, which contains documents useful for course development  
 5. _Makefile_, which is a text file containg code written in Linux kernel. It is a simple way to organize code compilation. It contains the instructions for building the content of `output` folder
@@ -88,7 +88,7 @@ This folder contains courses data organized as an R package, named `qdata`.
 It is structured in the following way:
 
 * _data_ folder, which contains data in .RData format included in `qdata` package
-* _R_ folder, which contains two R script: `qdata.R` and `qdata-data.R` with package and data documentation (written in roxigen2)
+* _R_ folder, which contains two R script: `qdata.R` and `qdata-data.R` with package and data documentation (written with roxigen2)
 * _pkgs_ folder, which contains `qdata` package versions realized
 * _doc_ folder, which contains an R script `raw-data.R`. This script includes some commands of operations done on data before including them in package.  
 * _rowdata_ folder, which contains original data files
