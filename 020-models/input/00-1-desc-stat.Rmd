@@ -16,6 +16,7 @@ options(width = 120)
 
 ## Statistical Indices
 
+
 Types of statistical indices which can be calculated for data description are three:
 
 * centrality indices
