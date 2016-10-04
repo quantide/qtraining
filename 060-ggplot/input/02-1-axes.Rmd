@@ -1,0 +1,431 @@
+---
+title: "More on Axis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+require(ggplot2)
+require(scales)
+require(qdata)
+data(bands)
+```
+
+
+Axes are more important that one think because they provide context for interpreting the displayed data. Ggplot2 will display the axes with defaults that look good in most cases, but you might want to control, for example, the axis labels, the number and placement of tick marks, the tick mark labels, the axis scales and so on. 
+
+In this chapter we will cover how to fine-tune the appearance of the axes and we will use two important `ggplot2` elements: 
+
+* `scale`, which controls the mapping from data to aestethics attributes 
+* `themes`, which controls the non-data elements of the plot 
+
+# Scales transformation
+## Swapping x and y axis
+
+Let us consider `bands` dataset. Supposing you are interested in the differences of ink percentage accordingly to the type of press, you can build four box plots to compare distributions.
+
+```{r, warning=FALSE, message=FALSE}
+pl <- ggplot(data=bands, aes(x=press_type, y=ink_pct)) + geom_boxplot(fill="#74a9cf", colour="#034e7b")
+pl
+```
+
+Swapping x and y axis is simple if you are generating a scatterplot. If you want to change what goes on the vertical axis and what goes on the horizontal axis you just have to exchange the variables mapped to x and y aesthetics, as `geom_point()` treats the x- and y-axes equally. However, the same cannot be said for Box Plot which summarize the data
+along the y-axis or for Line Plots, which move the the lines in only one direction along the x-axis. To swap the axis of these and more others geoms which not treats the x- and y-axes equally, you have to use `coord_flip()` function as we learn in "Creating a Bar Plot" chapter.
+
+```{r, warning=FALSE, message=FALSE}
+pl + coord_flip()
+```
+
+
+## Change axis order
+
+Let us consider a categorical (or discrete) axis with a factor mapped to it.
+
+Sometimes when the axes are swapped, as in the previous example, the order of items will be the reverse of what you want.  
+On a graph with standard x- and y-axes, the x items start at the left and go to the right, which corresponds to the normal way of reading, from left to right. When you swap the axes, the items still go from the origin outward, which in this case will be from bottom to top—but this conflicts with the normal way of reading, from top to bottom.  
+Sometimes this can be a problem, and it necessary to reverse the axis order. 
+
+This can be done by using `scale_x_discrete()` with `limits=rev(levels(...))` in this way:
+
+```{r, warning=FALSE, message=FALSE}
+pl + coord_flip() + scale_x_discrete(limits=rev(levels(bands$press_type)))
+```
+
+
+In general, to manually change the order of items in a categorical (or discrete) axis with a factor mapped to it, you have to specify `limits` argument in `scale_x_discrete()` or `scale_y_discrete()` functions with a vector of the levels in the desired order:
+
+```{r, warning=FALSE, message=FALSE}
+pl + coord_flip() + scale_x_discrete(limits=c("MOTTER70","WOODHOE70","ALBERT70", "MOTTER94"))
+```
+
+You can also omit items with this vector:
+
+```{r, warning=FALSE, message=FALSE}
+pl + coord_flip() + scale_x_discrete(limits=c("MOTTER70","WOODHOE70"))
+```
+
+_Note:_ the changes on axis order works also without `coord_flip()` function.
+
+
+## Setting the Range of a Continuous Axis
+
+`ggplot2` computes the limits of an axes from the range of the data. But sometimes you could be interested in making the limits smaller that the range of the data to focus on an interesting area of the plot or to make the limits larger because you want multiple plots to match up.  
+`ggplot2` provides two ways of setting the range of the axes. The first way is to modify the scale, and the second is to apply a coordinate transformation. The first way is the most used. Let us analyze it.
+
+To change the limits in x and/or y axes you could use `scale_y_continuous()` and/or `scale_x_continuous()`, setting the `limits` argument. `limits` argument has to be set equal to vector of lenght two:   
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_y_continuous(limits=c(0, max(bands$ink_pct)))
+```
+
+Because modifying limits is such a common task, `ggplot2` provides three shorthand: `ylim()`, `xlim()` and `lims()`.
+
+The following two code lines produces equal results than the previous example:
+```{r, warning=FALSE, message=FALSE}
+pl + ylim(0, max(bands$ink_pct))
+pl + lims(y= c(0, max(bands$ink_pct)))
+```
+
+If you want to set only one limit, the other has to be set equal to `NA`:
+
+```{r, warning=FALSE, message=FALSE}
+pl + ylim(limits=c(NA, 100))
+```
+
+Sometimes using `ylim()` and `scale_y_continuous()` to set other properties can create problems (the same goes for `scale_x_continuous()` and `xlim`), because only the last of the directives will have an effect. In these two examples, `ylim(0, 100)` should set the y range from 0 to 100, and `scale_y_continuous(breaks=c(0, 50, 100))` should put tick marks at 0, 50, and 100. However, in both cases, only the second directive has any effect:
+
+```{r, warning=FALSE, message=FALSE}
+pl + ylim(0, 100) + scale_y_continuous(breaks=c(0, 50, 100))
+pl + scale_y_continuous(breaks=c(0, 50, 100)) + ylim(0, 100)
+```
+
+To make both changes work, we suggest you to set both limits and breaks in `scale_y_continuous()`:
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_y_continuous(limits=c(0, 100), breaks=c(0, 50, 100))
+```
+
+Modifying the scale for changing axes limits works well but when you modify the limits of the x or y scale, any data outside of the limits is removed—that is, the out-of-range data is not only not displayed, it is removed from consideration entirely.   
+With the box plots in these examples, if you restrict the y range so that some of the original data is clipped, the box plot statistics will be computed based on clipped data, and the shape of the box plots will change.
+With a coordinate transformation for changing limits, the data is not clipped; in essence, it zooms in or out to
+the specified range. Let us see the difference between the two methods:
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_y_continuous(limits = c(50, 60))
+# Same as using ylim()
+pl + coord_cartesian(ylim = c(50, 60))
+```
+
+<!--
+
+Parlare anche di expand_limits?
+
+Finally, it’s also possible to expand the range in one direction, using expand_limits()
+(Figure 8-5). You can’t use this to shrink the range, however:
+
+
+pl + expand_limits(y=0)
+
+-->
+
+## Reverse a continuous axis order
+
+To reverse a continuous axes the function to use are: `scale_y_reverse()` or `scale_x_reverse()`:
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_y_reverse()
+```
+
+You can use also `ylim()` in this way:
+
+```{r, warning=FALSE, message=FALSE}
+pl + ylim(70, 34)
+```
+
+Like `scale_y_continuous()`, `scale_y_reverse()` does not work with `ylim()`. (The same is true for the x-axis properties.) If you want to reverse an axis and set its range, you must do it within the `scale_y_reverse()` statement, by setting the limits in reversed order:
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_y_reverse(limits=c(100, 0))
+```
+
+
+## Axis scale transformations
+
+`brainbod` dataset contains information about the weight of body and brain of different species of animals. We wants to visualize the relationship between body weight and brain weight in 15 species: 
+
+```{r, warning=FALSE, message=FALSE}
+data(brainbod)
+
+p <- ggplot(brainbod, aes(x=Body, y=Brain, label=Species)) +
+geom_text(size=3)
+p
+```
+
+With the default linearly scaled axes, it’s hard to make much sense of this graph. Because of the presence of elephant, the rest of the animals get squished into the lower-left corner of the graphs. This is a
+case where the data is distributed exponentially on both axes, so a logarithmic transformations is the best solution. `scale_x_log10()` and `scale_y_log10()` functions transform x and y axis scales respectively.
+
+```{r}
+p + scale_x_log10() + scale_y_log10()
+```
+
+Now the plot results are intrepretable, we clearly see a linear relationship between brain weight and body weight  of the analyzed species.  
+
+With a log axis, a given visual distance represents a constant proportional change; for example, each centimeter on the y-axis might represent a multiplication of the quantity by 10. In contrast, with a linear axis, a given visual distance represents a constant quantity change; each centimeter might represent adding 10 to the quantity.
+
+
+<!--
+inserire tabella con le possibili trasformazioni?
+-->
+
+
+Ggplot2 will try to make good decisions about where to place the tick marks, but if you
+don’t like them, you can change them by specifying breaks and, optionally, labels . In
+the example here, the automatically generated tick marks are spaced farther apart than
+is ideal. For the y-axis tick marks, we can get a vector of every power of 10 from 10 0 to
+10 3 like this:
+10^(0:3)
+
+```{r}
+p + scale_x_log10(breaks=10^(-1:5)) + scale_y_log10(breaks=10^(0:3))
+```
+
+To instead use exponential notation for the break labels, use the `trans_format()` function, from the scales package:
+
+```{r}
+p + scale_x_log10(breaks=10^(-1:5),
+labels=trans_format("log10", math_format(10^.x))) +
+scale_y_log10(breaks=10^(0:3),
+labels=trans_format("log10", math_format(10^.x)))
+```
+
+The previous examples used a $log_{10}$ transformation, but it is possible to use other transformations, such as $log_{2}$ and natural log. `scale_x_log10()` (and similarly for y) is a shortcut as it is one of the most common trasformations. A wide variety of transformations can be applied to scales of continuous axes, by setting `trans` argument of `scale_x_continuous()` and/or `scale_y_continuous()`: 
+
+Let us apply natural logarithmic transformation to x axis and $log_{2}$ transformation to y axis:
+
+```{r}
+p + scale_x_continuous(trans = log_trans()) +
+scale_y_continuous(trans = log2_trans())
+```
+
+Ticks labels must be settled with `scales` packeges functions:
+
+```{r}
+p + scale_x_continuous(trans = log_trans(),
+breaks = trans_breaks("log", function(x) exp(x)),
+labels = trans_format("log", math_format(e^.x))) +
+scale_y_continuous(trans = log2_trans(),
+breaks = trans_breaks("log2", function(x) 2^x),
+labels = trans_format("log2", math_format(2^.x)))
+```
+
+
+
+Adding Ticks for a Logarithmic Axis
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(Animals, aes(x=body, y=brain, label=rownames(Animals))) +
+geom_text(size=3) +
+annotation_logticks() +
+scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
+labels = trans_format("log10", math_format(10^.x))) +
+scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+labels = trans_format("log10", math_format(10^.x)))
+```
+
+## Using Dates on an Axis
+
+```{r, warning=FALSE, message=FALSE}
+econ <- subset(economics, date >= as.Date("1992-05-01") &
+date < as.Date("1993-06-01"))
+
+p <- ggplot(econ, aes(x=date, y=psavert)) + geom_line()
+p
+
+
+datebreaks <- seq(as.Date("1992-06-01"), as.Date("1993-06-01"), by="2 month")
+
+p + scale_x_date(breaks=datebreaks) +
+theme(axis.text.x = element_text(angle=30, hjust=1))
+
+library(scales)
+p + scale_x_date(breaks=datebreaks, labels=date_format("%Y %b")) +
+theme(axis.text.x = element_text(angle=30, hjust=1))
+```
+
+Relative Dates on Axis??
+
+
+
+
+# Theme transformation
+## Modifying axis appearance: tick labels, tick marks, and the grid lines
+
+There are actually three related items that can be controlled: tick labels, tick marks, and the grid lines. For continuous axes, `ggplot()` normally places a tick label, tick mark, and major grid line at each value of breaks. For categorical axes, these things go at each value of limits.
+
+### Tick marks position
+
+Usually `ggplot()` does a good job of deciding where to put the tick marks, but if you want to change them, set breaks in the scale in this way:
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_y_continuous(breaks=c(41, 45, 51, 55, 60, 71, 77))
+```
+
+The location of the tick marks defines where major grid lines are drawn. If the axis represents a continuous variable, minor grid lines, which are fainter and unlabeled, will by default be drawn halfway between each major grid line. If the axis is discrete instead of continuous, then there is by default a tick mark for each item.  
+
+For discrete axes, you can change the order of items or remove them by specifying the limits as learn in "Change axis order" paragraph. Setting breaks will change which of the levels are labeled, but will not remove them or change their order.
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_x_discrete(limits=c("MOTTER70","WOODHOE70", "MOTTER94", "ALBERT70"), breaks="WOODHOE70")
+```
+
+### Removing Tick Marks and Labels
+
+`axis.text.x`, `axis.text.y` and `axis.text` controls the text of x, y or both axis ticks.
+
+To remove just the tick labels of both exes use `theme(axis.text = element_blank())`, and to remove the tick labels of y axes use `theme(axis.text.y = element_blank())` (or do the same for `axis.text.x`). This will work for both continuous and categorical axes:
+
+```{r, warning=FALSE, message=FALSE}
+pl + theme(axis.text.y = element_blank())
+pl + theme(axis.text = element_blank())
+```
+
+`axis.ticks.x`, `axis.ticks.y` and `axis.ticks` controls the ticks of x, y or both axis ticks.
+
+To remove the tick marks on both axes, use `theme(axis.ticks=element_blank())`, and to remove the tick marks of y axes use `theme(axis.ticks.y=element_blank())`. This will remove the tick marks.
+
+```{r, warning=FALSE, message=FALSE}
+pl + theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())
+pl + theme(axis.ticks = element_blank(), axis.text = element_blank())
+```
+
+To remove the tick marks, the labels, and the grid lines for continuous axis, set `breaks` to `NULL` in `scale_y_continuous` (the same for `scale_x_continuous`).
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_y_continuous(breaks=NULL)
+```
+
+
+### Changing the Text of Tick Labels
+
+Let us consider the scatterplot showing the relationship between humidity and viscosity in cylinder banding process in rotogravure printing.
+
+```{r, warning=FALSE, message=FALSE}
+pl_1 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
+```
+
+To change the text of ticks marks in continuous axes, set `breaks` and `labels` in `scale_y_continuous` function:
+
+```{r, warning=FALSE, message=FALSE}
+pl_1 + scale_y_continuous(breaks=c(40, 50, 60, 70), labels=c("Less", "Medium-\nLess", "Medium-\nHigh", "High"))
+```
+
+<!--
+Instead of setting completely arbitrary labels, it is more common to have your data
+stored in one format, while wanting the labels to be displayed in another.
+
+trovare esempio n cui cambaire la labels ad una scala numerica 
+
+parlare del packages scales per le trasformazioni di label
+
+-->
+
+To change the text of ticks marks in discrete axes, set the `labels` argument in `scale_x_discrete()` function.
+
+```{r, warning=FALSE, message=FALSE}
+pl + scale_x_discrete(labels=c("Albert70", "Motter70", "Motter94", "Woodhoe70"))
+```
+
+### Changing the Appearance of Tick Labels
+
+Text properties like rotation, size, style (bold/italic/normal), and the font family (such as Times or Helvetica) can be set with `element_text()` theme function: 
+
+```{r, warning=FALSE, message=FALSE}
+pl + theme(axis.text.x = element_text(angle=90, hjust=1, vjust=.5))
+pl + theme(axis.text.x = element_text(angle=30, hjust=1, vjust=1))
+pl + theme(axis.text.x = element_text(family="Times", face="italic",
+colour="darkred", size=rel(0.9)))
+```
+
+### Changing the Appearance of Tick marks
+
+```{r, warning=FALSE, message=FALSE}
+pl + theme(axis.ticks.x = element_line(colour="green", size=4), axis.ticks.y=element_line(colour="red"))
+```
+
+## Changing the Text of Axis Labels
+
+```{r, warning=FALSE, message=FALSE}
+pl + xlab("Pressure type") + ylab("Ink percentage")
+pl + labs(x= "Pressure type", y = "Ink percentage")
+pl + scale_y_continuous(name="Ink percentage")
+```
+
+## Removing Axis Labels
+
+```{r, warning=FALSE, message=FALSE}
+pl + xlab("")
+pl + theme(axis.title.x=element_blank())
+```
+
+Differenza spazi
+
+
+
+
+
+
+## Setting the Scaling Ratio of the X- and Y-Axes
+
+`coord_fixed()` performs a 1:1 scaling between the x- and y-axes:
+
+```{r, warning=FALSE, message=FALSE}
+
+
+pl_1 + coord_fixed()
+```
+
+It’s also helpful to set the tick spacing to be the same, by setting breaks in `scale_y_continuous()` and `scale_x_continuous()`:
+
+```{r, warning=FALSE, message=FALSE}
+pl_1 + coord_fixed() +
+scale_y_continuous(breaks=seq(0, 120, 5)) +
+scale_x_continuous(breaks=seq(0, 120, 5))
+```
+
+If, instead of an equal ratio, you want some other fixed ratio between the axes, set the ratio parameter.
+
+```{r, warning=FALSE, message=FALSE}
+pl_1 + coord_fixed(ratio=1/2) +
+scale_y_continuous(breaks=seq(0, 120, 5)) +
+scale_x_continuous(breaks=seq(0, 120, 5))
+```
+
+
+
+## Showing Lines Along the Axes
+
+```{r, warning=FALSE, message=FALSE}
+pl_1 + theme(axis.line = element_line(colour="black"))
+pl + theme_bw() +
+theme(panel.border = element_blank(),
+axis.line = element_line(colour="black"))
+
+pl + theme_bw() +
+theme(panel.border = element_blank(),
+axis.line = element_line(colour="black", size=4, lineend="square"))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

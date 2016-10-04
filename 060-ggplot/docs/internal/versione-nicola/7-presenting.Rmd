@@ -1,0 +1,132 @@
+---
+title: "Presenting Plots"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(dplyr)
+require(ggplot2)
+require(qdata)
+data(bands)
+```
+
+Winston Chang wrote on his book:
+
+> Broadly speaking, visualizations of data serve two purposes: discovery and communication. In the discovery phase, you’ll create exploratory graphics, and when you do this, it’s important to be able try out different things quickly. In the communication phase, you’ll present your graphics to others. When you do that, you’ll need to tweak the appearance of the graphics, and you’ll usually need to put them somewhere other than on your computer screen.
+
+This chapter show how to output your plots for presentation.
+
+<!--
+# Integrating R code and presentation: the R Markdown way
+
+According to its authors, R Markdown is _an authoring format that enables easy creation of dynamic documents, presentations, and reports from R. It combines the core syntax of markdown (an easy to write plain text format) with embedded R code chunks that are run so their output can be included in the final document._
+
+This section cannot provide a full introduction to R Markdown. If you are new to R Markdown, you can start from the [official website](http://rmarkdown.rstudio.com/). If you already know R Markdown, you will find here some guideline to manage plots in your reports.
+
+-->
+
+# Reassembling Plots for Printing
+
+When you produce plots for printing, you may want several plots in a single image. The `grid.arrange()` function from `gridExtra` package, provide an easy-to-use solution. You just provide `ggplot` objects and the number of columns (or rows). Before you use the `gridExtra` package for the first time, may be you need to install it.
+
+The following example returns the first plot of the previous chapter, with two box plots put side by side. 
+
+```{r presenting_gridArrange, message=FALSE, warning=FALSE}
+gp0 <- ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#3690c0") +
+  ylab("Continuos variable") + xlab("Grouping variable") + 
+  theme(
+    axis.text.x = element_blank(), axis.text.y = element_blank()
+  )
+
+gp1 <- gp0 + theme(axis.ticks.x = element_blank())
+  
+gp2 <- gp0 + theme(axis.ticks.y = element_blank()) + coord_flip()
+
+gp <- gridExtra::grid.arrange(gp1, gp2, ncol=2)
+```
+
+Notice that you have to use the `plot()` function to get the object saved by `grid.arrange()`.
+
+```{r presenting_recall, message=FALSE, warning=FALSE}
+gp
+
+plot(gp)
+```
+
+
+# Outputting Plots to Vectorial Images
+
+A _vectorial_ image is a file containing the instructions to draw a plot. You can reshape images without any quality loss. Most used vectorial formats are PDF and SVG. Vectorial images can be edited with the well known commercial software "Adobe Illustrator" or its most famous free alternative "Inkscape".
+
+To save an image to PDF, you can use `pdf()` or `cairo_pdf()` functions to open a new graphical device. The last uses the Cairo device that returns better images also on Mac and Linux. However sometimes `cairo_pdf` may return a _bitmap_ PDF. If you want to be sure a vectorial PDF is produced, use `pdf()` function. To save an image to SVG, you can use `svg()`. 
+
+All plots called after the device is open, will be redirect to the file. At the end, you must close the device with `dev.off()`. If something goes wrong and plots are not returned, you must execute `dev.off()` to be sure that the graphical device is closed. Notice that you can open the file only after you run `dev.off()`.
+
+```{r presenting_save_pdf, message=FALSE, warning=FALSE, results='hide'}
+pdf("gp1.pdf")
+plot(gp)
+dev.off()
+```
+
+```{r presenting_save_cairopdf, message=FALSE, warning=FALSE, results='hide'}
+cairo_pdf("gp2.pdf")
+plot(gp)
+dev.off()
+```
+
+```{r presenting_save_svg, message=FALSE, warning=FALSE, results='hide'}
+svg("gp.svg")
+plot(gp)
+dev.off()
+```
+
+The most commonly options are `width` and `height` to set image dimension in inches.
+
+```{r presenting_save_pdf_width, message=FALSE, warning=FALSE, results='hide'}
+cairo_pdf("gp3.pdf", width=12, height=8)
+plot(gp)
+dev.off()
+```
+
+An alternative to `pdf()`, `cairo_pdf()` and `svg()` functions is `ggsave()`. `ggsave` redirect the plot to an external file, and does not require opening and closing a new device. It guess the right device from file name extension. Unfortunately, it can save only one plot at time, so it does not work with `grid.arrange()` outputs.
+
+By default `ggsave()` saves the last plot:
+```{r presenting_ggsave1, message=FALSE, warning=FALSE, results='hide'}
+ggsave("boxplot1.pdf", width = 20, height = 20, units = "cm")
+```
+
+If you want to save another plot, you must specify its name:
+```{r presenting_ggsave2, message=FALSE, warning=FALSE, results='hide'}
+ggsave("boxplot2.pdf", plot=gp1, width = 20, height = 20, units = "cm")
+```
+
+# Outputting Plots to Bitmap Images
+
+A _bitmap_ image is a file containing which colour should be returned for each pixel. When you increase the size of a bitmap image, you get a loss of quality. Most used vectorial formats are PNG and TIFF. TIFF is an high quality bitmap format and may be required by your publisher. R supports other bitmap formats (BMP, JPEG, ...) but there is no reason to use them. Bitmap images can be edited with the well known commercial software "Adobe Photoshop" or its most famous free alternative "The Gimp".
+
+Images with geometric objects should always saved as vectorial images, while images with a lot of details (e.g. photos) are bitmap images. Following this rule, it is better to save a plot as a vectorial image but there is one main exception. If you have one million points overlapped, the vectorial file contains one million instructions to draw points and the file will be much larger than bitmap image that should draw only a single point.
+
+```{r presenting_save_png, message=FALSE, warning=FALSE, results='hide'}
+png("gp.png", width=1200, height=800, res=300)
+plot(gp)
+dev.off()
+```
+
+By default with bitmap formats, `width` and `height` are not in inches but in pixel. You can change the `units`. You must also specify resolution (`res`), that is how many pixels there are in an inch. Increasing the `res` value, you get better plots but bigger files. Good choices are 72 for screen use (e.g. presentations or web sites) and 300 or 600 when printing.
+
+When only one plot should be saved, `ggsave()` can be used. Note that `width` and `height` are in `inch`es, but you can change the `units`. You can also specify resolution (`dpi`, dot per inch).
+
+```{r presenting_ggsave_png, message=FALSE, warning=FALSE, results='hide'}
+ggsave("boxplot.png", width = 4, height = 3, dpi = 300)
+```
+
+
+```{r presenting_delete, include=FALSE, purl=FALSE}
+# Remove all files created by this RMD at the end
+file.remove("boxplot.png", "boxplot1.pdf", "boxplot2.pdf", "gp.png", "gp.svg", "gp1.pdf", "gp2.pdf", "gp3.pdf")
+```
