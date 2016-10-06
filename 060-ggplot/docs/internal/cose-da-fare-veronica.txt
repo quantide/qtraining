@@ -1,3 +1,17 @@
+Adv ggplot2:
+
+* More on axis (02-1-axes)
+* More on legend
+* More on facets
+* More on themes
+* Geom vs Stat
+* ggfamily
+
+Appendix: teoria
+
+index: rifare il disegno del flow (evidenziare solo la parte di data visualization) --> prendere quello che c'è in rforbeginners
+
+
 02-1-axes:
 
 * trovare un altro esempio per assi mappati a date. Per ora uso dati MASS (al massimo inserirli in qdata)
