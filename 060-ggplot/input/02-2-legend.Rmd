@@ -1,0 +1,5 @@
+---
+title: "More on legend"
+output: html_document
+---
+
