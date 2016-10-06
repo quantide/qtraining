@@ -1,0 +1,7 @@
+02-1-axes:
+
+* trovare un altro esempio per assi mappati a date. Per ora uso dati MASS (al massimo inserirli in qdata)
+* eliminare da 01-5-boxplot l'ultima parte che è uguale a questa
+* inserire paragrafo sulle date-ore (ore relative)
+* trovare un esempio più consono alla rimozione della label asse x (paragrafo: "Changing the Text of Tick Labels")
+* aggiungere percent ai tick labels "percent()" function di "scales" (paragrafo: "Changing the Text of Tick Labels")
