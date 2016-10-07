@@ -3,3 +3,162 @@ title: "More on legend"
 output: html_document
 ---
 
+```{r, echo=FALSE}
+require(ggplot2)
+require(qdata)
+data(bands)
+```
+
+A legend is a guide which tells us how to map visual (aesthetic) properties back to original data values. 
+`ggplot2` automatically generates the legend according to the aesthetics mapped.
+
+<!--
+aggiungere immagine legenda (come per assi)
+-->
+
+Let us see some examples.
+
+Considering the `bands` data. Supposing you are interested in the differences of ink percentage accordingly to the type of press, you can build four box plots to compare distributions.
+
+```{r}
+pl <- ggplot(data=bands, aes(x=press_type, y=ink_pct, fill=press_type)) + geom_boxplot()
+pl
+```
+
+As you can see from the plot, the legend is automatically built showing `press_type` variable levels. 
+
+<!--
+scrivere come utilizza la legenda (theme, guides, scale)
+-->
+
+In the following paragraphs we will see how to handle with the most common questions on legend customization.
+
+## Removing the legend
+
+Sometimes a legend is redundant, or it is supplied in another graph that will be displayed with the current one. In these cases, it can be useful to remove the legend from a graph.
+
+To remove the legend you have three possibilities that work in the same way:
+
+* use `guide()` function and specify the scale that should have its legend removed
+* set `guide` argument to `FALSE` in the scale
+* use the theming system specifying `legend.position` to `"none"`
+
+```{r}
+pl + guides(fill=FALSE)
+pl + scale_fill_discrete(guide=FALSE)
+pl + theme(legend.position="none")
+```
+
+The third is the better option if you have more than one aesthetic mapping with a legend (color and shape, for example) because this will remove legends for all of them.
+
+In the example used here, the colors provide the same information that is on the x-axis, so the legend is unnecessary. Notice that with the legend removed, the area used for graphing the data is larger.
+
+In this case, `press_type` variable is mapped to `fill` aesthetic. When a variable is mapped to an aesthetic it is automatically set to a scale. The default scale in this case is `scale_fill_discrete()`. There are other scales for `fill`, such as `scale_fill_manual()`. If you use scales for other aesthetics, such as `colour` (for lines and points) or `shape` (for points), you must use the appropriate scale. Commonly used
+scales include:
+
+* `scale_fill_discrete()`
+* `scale_fill_hue()`
+* `scale_fill_manual()`
+* `scale_fill_grey()`
+* `scale_fill_brewer()`
+* `scale_colour_discrete()`
+* `scale_colour_hue()`
+* `scale_colour_manual()`
+* `scale_colour_grey()`
+* `scale_colour_brewer()`
+* `scale_shape_manual()`
+* `scale_linetype()`
+
+<!--
+tabella scales nel sito http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/
+tenerla per il capitolo More on scales?
+--> 
+
+## Chnaging the position of a legend
+
+If you want to move the legend from its default place on the right side you have to use `theme` function. The legend can be put on the top, left, right, or bottom by using one of those strings as value of `legend.position` argument.
+
+Suppose we want to place the position on top:
+
+```{r}
+pl + theme(legend.position="top")
+```
+
+The legend can also be placed inside the graphing area by specifying a coordinate position. 
+
+```{r}
+pl + theme(legend.position=c(0.95,0.95))
+```
+
+The coordinate space starts at (0, 0) in the bottom left and goes to (1, 1) in the top right.
+
+You can also use `legend.justification` arguemnt to set which part of the legend box is set to the position at `legend.position`. By default, the center of the legend (.5, .5) is placed at the coordinate, but it is often useful to specify a different point.
+
+```{r}
+pl + theme(legend.position=c(1,1), legend.justification=c(1,1))
+```
+
+<!--
+modificare questo esempio. si capisce a cosa serve legend.justification? 
+-->
+
+When placing the legend inside of the graphing area, it may be helpful to add an opaque border to set it apart by setting `legend.background` argument of `theme` function:
+
+```{r}
+pl + theme(legend.position=c(1,1), legend.justification=c(1,1)) +
+theme(legend.background=element_rect(fill="white", colour="black"))
+```
+
+`element_rect()` function allows us to customize backgrounds and borders.
+
+You can also remove the border around its elements so that it blends in:
+
+```{r}
+pl + theme(legend.position=c(1,1), legend.justification=c(1,1)) +
+theme(legend.background=element_blank()) + # Remove overall border
+theme(legend.key=element_blank()) # Remove border around each item
+```
+
+`legend.key` argument of theme function refers to the customization of the border around each item.
+
+## Change the order of items in a legend
+
+To change the order of the items in a legend set the limits in the scale to the desired order:
+
+```{r}
+pl + scale_fill_discrete(limits=c("MOTTER94", "MOTTER70", "WOODHEADE70", "ALBERT70"))
+```
+
+Note that the order of the items on the x-axis did not change. To do that, you would have to set the limits of `scale_x_discrete()` or change the data to have a different factor level order. For more detail see "Change axis order" paragraph in "More on axis" chapter.
+
+## Reversing the order of items in a legend
+
+Add `guides(fill=guide_legend(reverse=TRUE))` to reverse the order of the legend (for other aesthetics, replace fill with the name of the aesthetic, such as colour or size):
+
+```{r}
+pl + guides(fill=guide_legend(reverse=TRUE))
+```
+
+
+
+
+<!--
+decidere se lasciarlo un paragrafo o metterlo insieme a "Change the order of items in a legend"
+-->
+
+## Change a legend title
+
+## Changing the appearance of a legend title
+
+## Removing a legend title
+
+## Change the labelsin a legend
+
+## Changing the appearance of a legend label
+
+## Using labels with a multiple lines of text
+
+
+
+
+
