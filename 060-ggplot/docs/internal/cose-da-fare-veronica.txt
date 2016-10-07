@@ -26,3 +26,5 @@ index: rifare il disegno del flow (evidenziare solo la parte di data visualizati
 02-2: legend:
 
 * grafico iniziale
+* usare package grid per mettere due grafici affiancati (quelli che mostrano la stressa cosa)
+

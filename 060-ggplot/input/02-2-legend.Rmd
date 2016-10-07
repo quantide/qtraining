@@ -148,7 +148,61 @@ decidere se lasciarlo un paragrafo o metterlo insieme a "Change the order of ite
 
 ## Change a legend title
 
+The title of a legend can be changed in two ways:
+
+* using `labs()` function and set the value of `fill`, `colour`, `shape`, or whatever aesthetic is appropriate for the legend
+* in the scale specification settimg `name` argument
+* guides function
+
+```{r}
+pl + labs(fill="Pressure Type")
+pl + scale_fill_discrete(name="Pressure Type")
+pl + guides(fill=guide_legend(title="Pressure Type"))
+```
+
+The controlling of the legend title by using the `guides()` function is a little more verbose, but it can be useful when you’re already using it to control other properties.
+
+If there are multiple variables mapped to aesthetics with a legend (those other than x and y), you can set the title of each individually.
+
+Suppose you are interested in the relationship between the humidity, the viscosity, the ink percentage and band type in the `bands` dataset. 
+```{r}
+p <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct, colour=band_type)) +
+  geom_point()
+p
+```
+
+Change the legends title:
+
+```{r}
+p + labs(colour="Band Type", size="Ink \n Percentage")
+```
+
+If you have one variable mapped to two separate aesthetics, the default is to have a single legend that combines both:
+
+```{r}
+p_1 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=band_type, colour=band_type)) +
+  geom_point()
+p_1
+```
+
+To change the title, you need to set the name for both of them. If you change the name for just one, it will result in two separate legends:
+
+```{r}
+p_1 + labs(shape = "Band Type")
+p_1 + labs(shape = "Band Type", colour = "Band Type")
+```
+
 ## Changing the appearance of a legend title
+
+The appearance of the legend title can be changed by:
+
+```{r}
+pl + theme(legend.title=element_text(face="italic", family="Times", colour="red", size=14))
+```
+
+<!--
+non metto che si può cambiare anche con guides (più complicato)
+-->
 
 ## Removing a legend title
 
