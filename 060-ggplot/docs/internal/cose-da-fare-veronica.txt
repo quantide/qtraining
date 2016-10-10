@@ -2,7 +2,7 @@ Adv ggplot2:
 
 * More in scales (mi sa che è necessaria)
 * More on axis (02-1-axes)
-* More on legend
+* More on legend (02-2-legends)
 * More on facets
 * More on themes
 * Geom vs Stat
@@ -27,4 +27,12 @@ index: rifare il disegno del flow (evidenziare solo la parte di data visualizati
 
 * grafico iniziale
 * usare package grid per mettere due grafici affiancati (quelli che mostrano la stressa cosa)
+* fare più esempi con multiple legend 
+* dal sito: http://www.sthda.com/english/wiki/ggplot2-legend-easy-steps-to-change-the-position-and-the-appearance-of-a-graph-legend-in-r-software#change-the-legend-position
+   prendere "Change the background color of the legend box" (fatto), "Remove slashes in the legend of a bar plot" (forse), "Change the order for multiple guides" (fatto), "Remove a legend for a particular aesthetic" (c'è già spiegato)
 
+
+<!--
+tabella scales nel sito http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/
+tenerla per il capitolo More on scales?
+--> 
