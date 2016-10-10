@@ -3,8 +3,9 @@ Adv ggplot2:
 * More in scales (mi sa che è necessaria)
 * More on axis (02-1-axes)
 * More on legend (02-2-legends)
-* More on facets
-* More on themes
+* More on facets (02-3-facet)
+* More on coordinates?
+* More on themes 
 * Geom vs Stat
 * ggfamily
 
@@ -36,3 +37,5 @@ index: rifare il disegno del flow (evidenziare solo la parte di data visualizati
 tabella scales nel sito http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/
 tenerla per il capitolo More on scales?
 --> 
+
+
