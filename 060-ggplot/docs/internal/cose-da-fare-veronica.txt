@@ -26,8 +26,7 @@ index: rifare il disegno del flow (evidenziare solo la parte di data visualizati
 
 02-2: legend:
 
-* grafico iniziale
-* usare package grid per mettere due grafici affiancati (quelli che mostrano la stressa cosa)
+* usare package grid per mettere due grafici affiancati (quelli che mostrano la stressa cosa) o mostrarne solo uno
 * fare più esempi con multiple legend 
 * dal sito: http://www.sthda.com/english/wiki/ggplot2-legend-easy-steps-to-change-the-position-and-the-appearance-of-a-graph-legend-in-r-software#change-the-legend-position
    prendere "Change the background color of the legend box" (fatto), "Remove slashes in the legend of a bar plot" (forse), "Change the order for multiple guides" (fatto), "Remove a legend for a particular aesthetic" (c'è già spiegato)
@@ -38,4 +37,11 @@ tabella scales nel sito http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/
 tenerla per il capitolo More on scales?
 --> 
 
+03-3: facets
 
+* si può aggiungere qualcosa anche in merito al positioning?
+* rovesciare righe e colonne negli esempi?
+* aggiungere esempio su geom_blank()
+* capire as.table di facet_wrap
+* cambiare gli ultimi due esempi 
+* sostituire ink_pct perchè ha gli NA

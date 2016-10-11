@@ -78,7 +78,7 @@ già detto?
 -->
 
 Let us consider a plot with multiple legends in plot.  
-Suppose we want to analyze the relationship between humidity, viscosity, ink percentage and band type in `bands` dataset: 
+Suppose we want to analyze the relationship between humidity, viscosity, ink percentage and band typen `bands` dataset: 
 
 ```{r, warning=FALSE}
 pl_2 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct, colour=band_type)) +

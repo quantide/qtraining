@@ -1,5 +1,341 @@
 ---
-title: "More on facet"
+title: "More on facets"
 output: html_document
 ---
+
+```{r, message=FALSE}
+require(ggplot2)
+require(dplyr)
+require(qdata)
+data(bands)
+```
+
+<!--
+One of the most useful techniques in data visualization is rendering groups of data alongside each other, making it easy to compare the groups. With ggplot2, one way to do this is by mapping a discrete variable to an aesthetic, like x position, color, or shape. Another way of doing this is to create a subplot for each group and draw the subplots side by side.
+These kinds of plots are known as Trellis displays. They’re implemented in the lattice package as well as in the ggplot2 package. In ggplot2, they’re called facets. In this chapter I’ll explain how to use them.
+-->
+
+Faceting is one of the most useful techniques in data visualization for rendering groups of data alongside each other,  and making it easy to compare them. In particular, faceting is a mechanism for automatically laying out multiple plots in a page, splitting the data into subsets and then plots each subset in a different panel. It is an alternative to the use of aesthetics (like colour, shape or size) to differentiate groups and it is the right choice when groups overlap a lot. 
+
+<!--
+trovare un'immagine del faceting
+parlare di/accennare a trellis?
+-->
+
+In `ggplot2` there are three functions for faceting:
+
+* `facet_null()`, which is the default and produces a single plot
+* `facet_wrap()`, which "wraps" a 1d ribbon of panels into 2d
+* `facet_grid()`, which produces a 2d grid of panels defined by variables which form the rows and columns
+
+We mentioned faceting in "How to make an histogram" chapter. In the following paragraphs we will examine in depth to handle with the most common questions on faceting customization.
+
+## Splitting data into subplots
+
+Let us review the basic use of faceting.  
+
+Suppose you are interested in analysing the distribution of `ink_pct` by categorical variables like `press_type` or `band_type` in `bands` dataset:
+
+```{r, warning=FALSE, message=FALSE}
+# ink_pct by presss_type
+ggplot(data=bands, mapping=aes(x=ink_pct, fill=press_type)) +
+  geom_histogram() 
+```
+
+The previous plot is difficult to interpret. It is better to split data in four different histograms.
+
+We will analyze `facet_grid()` and `facet_wrap()` functions. Both functions plot subsets of data in separate panels.
+The difference between them is schematized in the following figure:
+
+\includegraphics[]{./images/facet.png}
+
+With `facet_grid()`, you can use faceting with one or two variables. A variable to split the data into vertical subpanels and another variable to split it into horizontal subpanels are specified in a formula style way: `rows ~ columns`. If you want to specify only one dimension (either row or column), you have to indicate with a dot the dimension for which there should be no faceting.
+
+In particular:
+
+* `. ~ press_type`: spreads the values of `press_type` across the columns. The direction facilitates the comparison of y position because the vertical scales are aligned:
+
+    ```{r, warning=FALSE, message=FALSE}
+# base plot 
+pl <- ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") 
+
+# Faceted by press_type, in horizontally arranged subpanels
+pl + facet_grid(. ~ press_type)
+    ```
+
+* `band_type ~ .` spreads the values of `band_type` down the rows. The direction facilitates comparison of x position because the horizontal sclaes are aligned. It is particularly useful for comparing distributions: 
+
+    ```{r, warning=FALSE, message=FALSE}
+# Faceted by press_type, in vertically arranged subpanels
+pl + facet_grid(band_type ~ .)
+    ```
+
+* `band_type ~ press_type` spreads `press_type` across the columns and `band_type` down the rows. Usually we put the variable with the greatest number of levels in the columns, to take advantage of the aspect ratio of the screen:  
+
+    ```{r, warning=FALSE, message=FALSE}
+# Faceted by press_type and band_type
+pl + facet_grid(band_type ~ press_type)
+    ```
+
+With `facet_wrap()`, you can use faceting only with one variable. The subplots are laid out horizontally and wrap around:
+
+```{r, warning=FALSE, message=FALSE}
+pl + facet_wrap(~ press_type)
+```
+
+It is useful if you have a single variable with many levels and you want to arrange the plots in a more space efficient manner.
+
+The choice of faceting direction depends on the kind of comparison you would like to encourage. For example, if you want to compare heights of bars, it's useful to make the facets go horizontally. If, on the other hand, you want to compare the horizontal distribution of histograms, it makes sense to make the facets go vertically. Sometimes both kinds of comparisons are important, there may not be a clear answer as to which faceting direction is best. It may turn out that displaying the groups in a single plot by mapping the grouping variable to an aesthetic like color works better than using facets. In these situations, you'll have to rely on your judgment.
+
+<!--
+modificare un pò questa frase (si potrebbe anche togliere)
+-->
+
+## Multiple combinations
+
+You can add multiple variables in the rows or columns, by "adding" them together in this way:
+
+```{r, warning=FALSE, message=FALSE, fig.height=8, fig.width=8}
+# by usign facet_grid()
+pl + facet_grid(band_type + ink_type ~ press_type)
+```
+
+Variables appearing together on the rows or on columns are nested in the sense that only combinations that appear in the data will appear in the plot. Variables which are specified on rows and columns will be crossed: all combinations will be shown, inclusing that those doesn't appear in the original dataset: this may result in enpty panels.
+
+<!--
+Looking at the plot, you see that there is no combination 
+If you want to visualize combinations between variables that do not appear in the data, set `drop` argument to `FALSE`
+
+```{r, warning=FALSE, message=FALSE}
+pl + facet_grid(band_type  + paper_type ~ press_type, drop=FALSE)
+```
+-->
+
+Multiple combinations are posssible also by using `facet_wrap()`:
+
+```{r, warning=FALSE, message=FALSE, fig.height=9, fig.width=9}
+# by using facet_wrap()
+pl + facet_wrap(~ band_type + ink_type + press_type)
+```
+
+
+## Change the order of plot in faceting
+
+With `facet_wrap()`, the default is to use the same number of rows and columns. To change this, you can pass a value for `nrow` or `ncol` arguments:
+
+```{r, warning=FALSE, message=FALSE}
+pl + facet_wrap(~ press_type, nrow = 1)
+pl + facet_wrap(~ press_type, ncol = 3)
+```
+
+Moreover, the default wrapping direction is horizontal, but you can change it by setting `dir` argument:
+
+```{r, warning=FALSE, message=FALSE}
+pl + facet_wrap(~ press_type, dir = "v")
+```
+
+<!--
+
+```{r, warning=FALSE, message=FALSE}
+pl + facet_wrap(~ press_type, as.table = TRUE)
+pl + facet_wrap(~ press_type, as.table = FALSE)
+```
+
+as.table non lo capisco (valido sia x facet_wrap che per facet_grid)
+-->
+
+
+## Using facets with different axes
+
+If you want subplots with different ranges or items on their axes, set `scales` argument. It is available for both `facet_wrap()` and `facet_grid()`.    
+It can be set as:
+
+* `"fixed"`: default, x and y scales are fixed across all panels 
+* `"free_x"`: x scale is free and y scale is fixed
+* `"free_y"`: y scale is free and x scale is fixed
+* `"free"`: x and y scales vary across panels
+
+Let us see how `scales` argument works with `facet_grid()`:
+
+```{r, warning=FALSE, message=FALSE}
+# free x scale
+pl + facet_grid(band_type ~ press_type, scales = "free_y")
+# free y scale
+pl + facet_grid(band_type ~ press_type, scales = "free")
+# free x and y scales
+pl + facet_grid(band_type ~ press_type, scales = "free_x")
+```
+
+It's not possible to directly set the range of each row or column, but you can control the ranges by dropping unwanted data (to reduce the ranges), or by adding `geom_blank()` (to expand the ranges).
+
+<!--
+esempio geom_blank
+vedi: http://stackoverflow.com/questions/30280499/different-y-limits-on-ggplot-facet-grid-bar-graph
+-->
+
+
+Let us see how `scales` argument works with `facet_wrap()`:
+
+```{r, warning=FALSE, message=FALSE}
+# free x scale
+pl + facet_wrap( ~ press_type, scales = "free_x")
+# free y scale
+pl + facet_wrap( ~ press_type, scales = "free_y")
+# free x and y scales
+pl + facet_wrap( ~ press_type, scales = "free")
+```
+
+Fixed scales make it easier to see pattern across panels and free scales make it easier to see patterns within panels.
+
+<!--
+si può fare un esempio
+-->
+
+
+## Controlling the space of each panel
+
+The reserved space for each panel (width) is fixed by default but it can vary according to the range of scale for that column (or row), setting `space` argument of `facet_grid()` to `"free"`:
+
+```{r, warning=FALSE, message=FALSE, fig.height=7.5, fig.width=7.5}
+pl + facet_grid(press_type ~ ., space  = "free", scales = "free")
+```
+
+Remember that also `scales` argument must be set to `"free"`. 
+
+In this way, the scales are equal across the plot: 1 cm on each panel maps tot he same range of data. 
+
+## Faceting with continuous variables
+
+Until now, we have seen how faceting categorical variables, but it is possible to facet also continuous variables, once discretised.  
+`ggplot2` provides three helper functions to discretise continuous variables:
+
+* `cut_interval(x,n)`, which divides the data into `n` bins of the same length
+* `cut_width(x, width)`, which divides the data into bins of width `width`
+* `cut_number(x, n=10)`, which divides data into `n` bins each containing (approximately) the same number of points
+
+Let us consider the relationship between humidity and viscosity in `bands` dataset:
+
+```{r, warning=FALSE, message=FALSE}
+bands5 <- bands
+pl1 <- ggplot(data = bands5, mapping = aes(x = humidity, y = viscosity)) +
+  geom_point()
+pl1
+```
+
+We want to verify the influence of ink percentage in this relationship. Firstly let us discretize `ink_pct`:
+
+```{r, warning=FALSE, message=FALSE}
+bands5 <- bands5 %>% mutate(
+  ink_pct_w = cut_width(x = ink_pct, width = 10),
+  ink_pct_i = cut_interval(x = ink_pct, n = 10),
+  ink_pct_n = cut_number(x = ink_pct, n = 5)
+)
+```
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(data = bands5, mapping = aes(x = humidity, y = viscosity)) +
+  geom_point() + facet_wrap(~ ink_pct_w)
+
+ggplot(data = bands5, mapping = aes(x = humidity, y = viscosity)) +
+  geom_point() + facet_wrap(~ ink_pct_i)
+
+ggplot(data = bands5, mapping = aes(x = humidity, y = viscosity)) +
+  geom_point() + facet_wrap(~ ink_pct_n)
+```
+
+<!--
+non so perchè con pl1 non funziona
+-->
+
+## Changing the text of facets labels
+
+Unlike with scales where you can set the labels, to set facet labels you must change the data values.
+
+```{r, warning=FALSE, message=FALSE}
+# Make a copy of the original data
+bands2 <- bands
+
+# Rename "BAND" to "Band", "NOBAND" to "No Band"
+levels(bands2$band_type)[levels(bands2$band_type)=="BAND"] <- "Band"
+levels(bands2$band_type)[levels(bands2$band_type)=="NOBAND"] <- "No Band"
+```
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(data=bands2, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") + facet_grid(band_type ~ .)
+```
+
+With `facet_grid()` and also with `facet_wrap()`, it’s possible to set a function to labeller argument for setting the labels:
+
+The most important labeller functions are:
+
+* `label_value`, the default
+
+    ```{r, warning=FALSE, message=FALSE}
+pl + facet_grid(band_type ~ press_type, labeller = label_value)
+    ```
+
+* `label_both`, which prints out both the name of the variable and the value of the variable in each facet
+
+    ```{r, warning=FALSE, message=FALSE}
+pl + facet_grid(band_type ~ press_type, labeller = label_both)
+    ```
+
+Now instead of the facet labels at the top being `"ALBERT70"`, `"MOTTER70"`, `"MOTTER94"` and `"WWODHOE70"`they are `"press_type: ALBERT70"`, `"press_type:  MOTTER70"`, `"press_type:  MOTTER94"` and `"press_type:  WOODHOE70"`. Similarly, the vertical labels are `"band_type: BAND"`, `"band_type:  NOBAND"`. There is not a way to set the labels for the horizontal and vertical separately.
+
+* `label_parsed`, which takes strings and treats them as R math expressions 
+
+    ```{r, warning=FALSE, message=FALSE}
+# modify the dataset
+bands3 <- bands
+levels(bands3$band_type)[levels(bands3$band_type)=="BAND"] <- "alpha"
+levels(bands3$band_type)[levels(bands3$band_type)=="NOBAND"] <- "sum(x[i], i==1, n)"
+
+ggplot(data=bands3, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F")  + facet_grid(band_type ~ ., labeller = label_parsed)
+    ```
+
+It is also possible to write labeller functions and pass them to `labeller` argument.
+
+The following is an example of a labeller which wraps long labels at a fixed character count so that they take up less space. This can be useful since the space for facets is not expanded to guarantee that the entire label is visible.
+
+```{r, warning=FALSE, message=FALSE}
+label_wrap <- function(variable, value) {
+  lapply(strwrap(as.character(value), width=25, simplify=FALSE), 
+        paste, collapse="\n")
+}  
+```
+
+The structure of a labeller is a function that takes two arguments: `variable` and `value`. `variable` is a length 1 character vector with the name of the variable which is being faceted on. `value` is the ordered (not necessarily unique) values of the facets.
+
+```{r, warning=FALSE, message=FALSE}
+# modify the dataset
+bands4 <- bands
+levels(bands4$band_type)[levels(bands4$band_type)=="BAND"] <- "The type of these cylider bands is BAND"
+levels(bands4$band_type)[levels(bands4$band_type)=="NOBAND"] <- "The type of these cylider bands is NOBAND"
+
+ggplot(data=bands4, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F")  + facet_grid(band_type ~ ., labeller = label_wrap)
+```
+
+
+## Changing the appearance of facet labels and headers 
+
+If you want to change the appearance of facet labels and headers, you have to use the theming system, setting `strip.text`, which control the text appearance, equal to `element_text()` function and `strip.background`, which control the background appearance, equal to `element_rect()` fucntion:
+
+```{r, warning=FALSE, message=FALSE}
+pl + facet_grid(. ~ band_type) + 
+  theme(strip.text = element_text(face="bold", size=rel(1.5)), 
+        strip.background = element_rect(fill="lightblue", colour="black", size=1))
+```
+
+Using `rel(1.5)` makes the label text 1.5 times the size of the base text size for the theme.
+Using `size=1` for the background makes the outline of the facets 1 mm thick.
+
+
+
+
+
+
 
