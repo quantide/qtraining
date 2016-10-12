@@ -37,9 +37,13 @@ tabella scales nel sito http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/
 tenerla per il capitolo More on scales?
 --> 
 
-03-3: facets
+02-3: facets
 
 * si può aggiungere qualcosa anche in merito al positioning?
 * aggiungere esempio su geom_blank()
 * capire as.table di facet_wrap
 
+02-4: themes
+
+* ragionare sulla struttura del capitolo
+* modificare la struttura delle tabelle 
