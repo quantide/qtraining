@@ -40,8 +40,6 @@ tenerla per il capitolo More on scales?
 03-3: facets
 
 * si può aggiungere qualcosa anche in merito al positioning?
-* rovesciare righe e colonne negli esempi?
 * aggiungere esempio su geom_blank()
 * capire as.table di facet_wrap
-* cambiare gli ultimi due esempi 
-* sostituire ink_pct perchè ha gli NA
+
