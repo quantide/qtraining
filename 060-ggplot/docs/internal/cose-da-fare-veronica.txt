@@ -1,3 +1,9 @@
+Introduction
+
+https://www.analyticsvidhya.com/blog/2016/03/questions-ggplot2-package-r/
+https://www.analyticsvidhya.com/blog/2015/05/data-visualization-resource/
+
+
 Adv ggplot2:
 
 * More in scales (mi sa che è necessaria)
@@ -5,7 +11,7 @@ Adv ggplot2:
 * More on legend (02-2-legends)
 * More on facets (02-3-facet)
 * More on coordinates?
-* More on themes 
+* More on themes (02-4-theme)
 * Geom vs Stat
 * ggfamily
 
