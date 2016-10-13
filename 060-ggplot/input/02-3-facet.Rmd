@@ -346,7 +346,17 @@ pl + facet_grid(. ~ press_type) +
 Using `rel(1.2)` makes the label text 1.2 times the size of the base text size for the theme and using `size=1` for the background makes the outline of the facets 1 mm thick.
 
 
+## Modify the margin between panels
 
+If you want to modify the margin between panels you have to set `panel.margin` argument of `theme()` function by using `unit()` function in this way:  
+
+```{r}
+pl + facet_grid(band_type ~ press_type) + theme(panel.margin = unit(2, "cm"))
+```
+
+`unit()` is a function that creates a unit object of the correct length to use for setting margins. You have to specify the margin length and its units (of measure).
+
+It works both for `facet_grid()` and `facet_wrap()`.
 
 
 
