@@ -29,8 +29,7 @@ Scales, `theme()` and `guides()` functions are the tools of `ggplot2` used to cu
 frase di collegamento con il disegno 
 -->
 
-\includegraphics[]{./images/legend.png}
-
+![](./images/legend.png)
 
 In the following paragraphs we will see how to handle with the most common questions on legend customization.
 
