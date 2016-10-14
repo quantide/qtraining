@@ -18,7 +18,7 @@ Axes are more important than one thinks as they provide context for interpreting
 
 \includegraphics[]{./images/axes.png}
 
-[](./images/axes.png)
+![](./images/axes.png)
 
 `ggplot2` allows one to handle with the appearance of the axes by using two important elements of its grammar: 
 

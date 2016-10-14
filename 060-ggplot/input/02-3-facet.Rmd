@@ -34,8 +34,8 @@ We mentioned faceting in "How to make an histogram" chapter. In the following pa
 
 Let us review the basic use of `facet_grid()` and `facet_wrap()` faceting functions. Both functions plot subsets of data in separate panels. The difference between them is schematized in the following figure:
 
-\includegraphics[]{./images/facet.png}
- 
+![](./images/facet.png)
+
 Suppose you are interested in analysing the distribution of `ink_pct` by categorical variables like `press_type` or `band_type` in `bands` dataset:
 
 ```{r, warning=FALSE, message=FALSE}
