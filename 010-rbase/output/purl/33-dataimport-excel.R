@@ -16,16 +16,10 @@ exc <- loadWorkbook(filename = file_xls, create = TRUE)
 createSheet(object = exc, name = 'Input')
 saveWorkbook(exc)
 
-## ----g1, echo=FALSE, fig.width=6-----------------------------------------
-include_graphics("images/excel-emptySheet.png")
-
 ## ----add.input, comment=FALSE--------------------------------------------
 df <- data.frame('inputType'=c('Day','Month'),'inputValue'=c(1,3))
 writeWorksheet(object = exc, data = df, sheet = "Input", startRow = 1, startCol = 2)
 saveWorkbook(exc)
-
-## ----g2, echo=FALSE, fig.width=3-----------------------------------------
-include_graphics("images/excel-inputSheet.png")
 
 ## ----add.airquality, comment=FALSE---------------------------------------
 # Add a sheet named Airquality to exc object
@@ -39,9 +33,6 @@ airquality$isCurrent<-NA
 createName(exc, name='Airquality',formula='Airquality!$A$1')
 writeNamedRegion(exc, airquality, name = 'Airquality', header = TRUE)
 saveWorkbook(exc)
-
-## ----g3, echo=FALSE, fig.width=3-----------------------------------------
-include_graphics("images/excel-airqualitySheet.png")
 
 ## ----add.formula, comment=FALSE------------------------------------------
 # Define the column index of the cell to edit
@@ -68,9 +59,6 @@ formula_xls <- paste('IF(AND(',
                     ',1,0)',sep='')
 setCellFormula(exc, sheet='Airquality', row = 2:(nrow(airquality)+1), col = col_index, formula = formula_xls)
 saveWorkbook(exc)
-
-## ----g4, echo=FALSE, fig.width=4-----------------------------------------
-include_graphics("images/excel-addFormula.png")
 
 ## ----excel_file_name, eval=FALSE-----------------------------------------
 ## # Excel file (with path) to be loaded into R
@@ -103,6 +91,14 @@ saveWorkbook(exc2)
 # Remove the graph file created 
 file.remove(fileGraph)
 
-## ----g5, echo=FALSE, fig.width=6-----------------------------------------
-include_graphics("images/excel-ozonePlot.png")
+## ----readxl, message=FALSE-----------------------------------------------
+require(readxl)
+
+## ----excel_file_name_readxl, eval=FALSE----------------------------------
+## # Excel file (with path) to be loaded into R
+## file_xls <- "./xlsx/newFile.xlsx"
+
+## ----load.xlsx_readxl----------------------------------------------------
+ds <-read_excel(path = file_xls, sheet = 'Airquality', col_names = TRUE)
+head(ds)
 

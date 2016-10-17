@@ -20,7 +20,7 @@ data(bands)
 
 `ggplot2` is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, `ggplot2` is an implementation of Leland Wilkinson's Grammar of Graphics, a general scheme for data visualization which breaks up graphs into semantic independent components, such as scales and layers, that can be composed in many different ways. This makes `ggplot2` very powerful, because there are no limitations due to a set of pre-specified graphics, so it is possible to create new graphics that are precisely tailored for the problem in analysis. 
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, purl=FALSE}
 require(ggplot2)
 ```
 

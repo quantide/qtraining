@@ -3,7 +3,7 @@ title: "Models with R"
 output: html_document
 ---
 
-```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl = FALSE}
 require(knitr)
 options(width = 108)
 ```
