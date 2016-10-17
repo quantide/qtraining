@@ -30,144 +30,168 @@ Supposing the package is already installed, first of all `ggplot2` must be loade
 require(ggplot2)
 ```
 
-## An overview on grammar of graphics
+## An overview of ggplot2 grammar
 
-In order to unlock the full power of `ggplot2`, you need to have an overview of its undelying grammar. 
-By understanding the grammar and how its components fit together, you can create a wider range of visualization, combine miltiple source of data,
-and customize to your heart's content.
+In order to unlock the full power of `ggplot2`, you need an overview of its undelying grammar. 
+By understanding the grammar and how its components fit together, you can create a wider range of visualization, combine miltiple source of data, and customize to your heart's content.
 
 `ggplot2` grammar is called layered as it is structured in building blocks. Its basic idea is to independently specify plot building blocks and combine them to create just about any kind of graphical display you want. 
 
-Let us see an example:
+<!--
+cambiare iris
+-->
 
-```{r}
-require(ggplot2)
+Let us see an example.   
+Let us consider `iris` dataset. `iris` dataset gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. Suppose we want to visualize the relationship between the length and the width of sepal according to the different species of iris: 
+
+```{r, fig.width= 8}
+# Load iris dataset
 data(iris)
 levels(iris$Species) <- c("Setosa", "Versicolor", "Virginica")
+
+# Generate plot
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
-  geom_point(alpha = 0.8) +
+  geom_point() +
   facet_grid(. ~ Species) +
   stat_smooth(method = "lm", se = F, col = "darkslateblue") +
   scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
-scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
-coord_equal() + ggtitle("Scatterplot of lenght and width of iris sepal by species") +
-
+  scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
+  scale_colour_brewer(palette = "Set1") + 
+  coord_equal() + ggtitle("Scatterplot of lenght and width of iris sepal by species") +
   theme(plot.background = element_blank(),
-axis.text = element_text(colour = "black"),
-axis.ticks = element_line(colour = "black"),
-axis.line.x = element_line(colour = "black"),
-axis.line.y = element_line(colour = "black"),
-axis.title = element_text(colour = "black", size = 14, face = "bold.italic"),
-strip.background = element_rect(colour = "black"),
-strip.text = element_text(colour = "black", face = "bold.italic", size = 12),
-plot.title = element_text(colour = "black", size = 20, face = "bold.italic"),
-panel.margin = unit(1, "lines"),
-legend.position="none"
+    axis.text = element_text(colour = "black"),
+    axis.ticks = element_line(colour = "black"),
+    axis.line.x = element_line(colour = "black"),
+    axis.line.y = element_line(colour = "black"),
+    axis.title = element_text(colour = "black", size = 14, face = "bold.italic"),
+    strip.background = element_rect(colour = "black"),
+    strip.text = element_text(colour = "black", face = "bold.italic", size = 12),
+    plot.title = element_text(colour = "black", size = 20, face = "bold.italic"),
+    panel.margin = unit(1, "lines"),
+    legend.position="none"
 )
 ```
 
-This plot is composed by building blocks that are added to the plot one after the other as displayed in the following scheme:
-
+The previous plot is composed of building blocks that are added to the plot one after the other.   
+The complete scheme of the most important building blocks of `ggplot2` grammar is displayed in the following scheme:
 
 ![](./images/schema-layer-ggplot2.png)
 
-1. data: the dataset being plotted
+The scheme must be read from down to top. Starting from down, the first three building blocks (Data, Aestethics and Geometries) are essential to build a simple plot, meanwhile the remaining (Statistics, Scales, Facet, Coordinates and Theme) allows us to build a complex plot and to customize it. The scheme order is recommended but it is not compulsory. 
+
+<!--
+dire che non è obbligatorio utilizzare tutti i layer
+-->
+
+Let us briefly describe the task of each element of the scheme and how it helps build the previous plot: 
+
+1. <b> <span style="color:#FFBF00">Data</span> </b>: the dataset being plotted
+
+![](./images/schema-layer-ggplot2-data.png)
 
 
 ```{r}
-head(iris)
+# iris dataset
+    head(iris)
 ```
 
-<!--
-immagine data
--->
 
 
-2. aestethics: the scales onto which we map our data
+2. <b> <span style="color:#FF8000">Aestethics</span> </b> : the scales onto which we map our data
+
+![](./images/schema-layer-ggplot2-aes.png)
 
 
 | Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species|  
 |--------------|-------------|--------------|-------------|--------|
 | x | y |   |  | colour |
 
-<!--
-immagine aestethics
--->
 
 
-3. geometries: the visual elements used for our data
+3. <b> <span style="color:#FF0000">Geometries</span> </b>: the visual elements used for our data
 
+![](./images/schema-layer-ggplot2-geom.png)
 
 ```{r}
+# Scatterplot of the realtionship between sepal length and sepal width by iris species 
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
-  geom_point(alpha = 0.8) 
+  geom_point() 
 ```
 
 
-<!--
-immagine geometries
--->
+4. <b> <span style="color:#9A2EFE">Statistics</span> </b>: representations of our data to aid understanding
 
-4. statistics: representations of our data to aid understanding
+![](./images/schema-layer-ggplot2-stat.png)
 
 ```{r}
+# Add a regression line to the plot
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
-  geom_point(alpha = 0.8) +
+  geom_point() +
   stat_smooth(method = "lm", se = F, col = "darkslateblue")
 ```
 
-<!--
-immagine statistics
--->
 
-5. scales: control the mapping from data to aestethic attributes
+5. <b> <span style="color:#08298A">Scales</span> </b>: control the mapping from data to aestethic attributes
+
+![](./images/schema-layer-ggplot2-scales.png)
 
 ```{r}
+# Change scale attributes 
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
-  geom_point(alpha = 0.8) +
+  geom_point() +
   stat_smooth(method = "lm", se = F, col = "darkslateblue") +
   scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
-  scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) 
+  scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
+  scale_colour_brewer(palette = "Set1")
 ```
 
 
-6. facets: plotting small multiples
+6. <b> <span style="color:#2E9AFE">Facets</span> </b>: plotting small multiples
+
+![](./images/schema-layer-ggplot2-facet.png)
 
 ```{r}
+# Generate a plot for each iris species
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
   geom_point(alpha = 0.8) +
   stat_smooth(method = "lm", se = F, col = "darkslateblue") +
   scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
   scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
+  scale_colour_brewer(palette = "Set1") + 
   facet_grid(. ~ Species)
 ```
 
-<!--
-immagine facets
--->
 
-7. coordinates: the space on which the data will be plo!ed
+7. <b> <span style="color:#0B6121">Coordinates</span> </b>: the space on which the data will be plotted
+
+![](./images/schema-layer-ggplot2-coord.png)
 
 ```{r}
+# change the cartesian coordinates of the plot axes
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
   geom_point(alpha = 0.8) +
   stat_smooth(method = "lm", se = F, col = "darkslateblue") +
   scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
   scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
+  scale_colour_brewer(palette = "Set1") +
   stat_smooth(method = "lm", se = F, col = "darkslateblue") + 
   facet_grid(. ~ Species) +
   coord_equal()
 ```
 
 
-8. theme: all non-data elements
+8. <b> <span style="color:#01DF01">Theme</span> </b>: all non-data elements
 
-```{r}
+![](./images/schema-layer-ggplot2.png)
+
+```{r, fig.width= 8}
+# Customize the appearance of the plot
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
   geom_point(alpha = 0.8) +
   stat_smooth(method = "lm", se = F, col = "darkslateblue") +
   scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
   scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
+  scale_colour_brewer(palette = "Set1") + 
   facet_grid(. ~ Species) +
   coord_equal() + 
   ggtitle("Scatterplot of lenght and width of iris sepal by species") +
@@ -186,12 +210,16 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
 ```
 
 
-![](./images/schema-layer-ggplot2.png)
+## Manual index
+
+This manual is divided in three sections.  
+The first section, "Base ggplot2", introduces some basic concepts about `ggplot2` grammar. 
+In particular, it explains how building the most important plots and deepens the first three building blocks of `ggplot2` grammar. It hints also at the most important concepts of the other building blocks.   
+The second section, "Advanced ggplot2" explains how dealing with the most common questions about plot customization and deepens the remaining building blocks of `ggplot2` grammar.  
+The third section, "More on Plots", shows how to prepare plots for presentations, and save them to files and shows other graphical systems.  
+
 
 <!--
-positioning?
-non l'ho inserito al momento
--->
 
 Each of the following chapters introduces a different plot with one or more related geometric object (`geom`). Moreover, each chapter introduces some basic concept about `ggplot2`, according to the following table.
 
@@ -204,13 +232,13 @@ Each of the following chapters introduces a different plot with one or more rela
 | Box plots     | `geom_boxplot`                                     | titles and theme (plot title and axes ticks/titles)    |
 
 The last chapter of the section shows how to prepare plots for presentations, and save them to files.
+-->
 
+## Datasets
 
-# Datasets
+The following datasets are used in the examples of this section.
 
-The following data sets are used in the examples of this section.
-
-## `bands`
+### `bands`
 
 `bands` provides data about process delays known as cylinder banding in rotogravure printing.
 
@@ -225,7 +253,7 @@ head(bands)
 For a complete description of data, refer to the help (`?bands`).
 
 
-## `ChickWeight`
+### `ChickWeight`
 
 `ChickWeight` provides weight versus age of chicks on different diets.
 
@@ -234,7 +262,7 @@ For a complete description of data, refer to the help (`?bands`).
 For a description of data, refer to the help (`?ChickWeight`).
 
 
-## `ToothGrowth`
+### `ToothGrowth`
 
 `ToothGrowth` provides the effect of Vitamin C on Tooth Growth in Guinea Pigs.
 
@@ -244,7 +272,7 @@ For a description of data, refer to the help (`?ToothGrowth`).
 
 
 
-# Bibliography and References
+## Bibliography and References
 
 To take a deeper look about `ggplot2` you can refer to:
 

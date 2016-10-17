@@ -2,7 +2,7 @@ Introduction
 
 https://www.analyticsvidhya.com/blog/2016/03/questions-ggplot2-package-r/
 https://www.analyticsvidhya.com/blog/2015/05/data-visualization-resource/
-
+rendere trasparenti i layer dei grafici di cui non si parla
 
 Adv ggplot2:
 
