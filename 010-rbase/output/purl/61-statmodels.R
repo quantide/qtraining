@@ -1,15 +1,7 @@
-## ---- options, echo=FALSE, results='hide', message=FALSE, warning=FALSE----
-require(knitr)
-options(width = 108)
-
 ## ----first, message=FALSE------------------------------------------------
 require(qdata)
 require(ggplot2)
 require(dplyr)
-
-## ----model, eval=FALSE---------------------------------------------------
-## linear_model <- lm(formula, data)
-## anova_model <- aov(formula, data)
 
 ## ---- drug---------------------------------------------------------------
 data(drug)

@@ -4,9 +4,6 @@ require(ggplot2)
 require(qdata)
 data(bands)
 
-## ---- eval=FALSE---------------------------------------------------------
-## require(ggplot2)
-
 ## ----scatterplot_first, message=FALSE, warning=FALSE---------------------
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
 

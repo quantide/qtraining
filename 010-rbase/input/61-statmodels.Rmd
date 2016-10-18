@@ -23,7 +23,7 @@ There are lots of different types of regression models in statistics but R manta
 
 The `lm` and `aov` functions are used in R to fit respectively linear regression and analysis of variance model and their syntax is:
 
-```{r model, eval=FALSE}
+```{r model, eval=FALSE, purl=FALSE}
 linear_model <- lm(formula, data)
 anova_model <- aov(formula, data)
 ```

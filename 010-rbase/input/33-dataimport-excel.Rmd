@@ -144,7 +144,7 @@ include_graphics("images/excel-addFormula.png")
 
 To read an existing excel file, the syntax is:
 
-```{r excel_file_name, eval=FALSE}
+```{r excel_file_name}
 # Excel file (with path) to be loaded into R
 file_xls <- "./xlsx/newFile.xlsx"
 ```
@@ -199,7 +199,7 @@ include_graphics("images/excel-ozonePlot.png")
 
 ## readxl
 
-Another R packege for importing excel files into R is `readxl`.
+Another R package for importing excel files into R is `readxl`.
 Let us see how `readxl` works.
 
 ```{r require_readxl, message=FALSE}
