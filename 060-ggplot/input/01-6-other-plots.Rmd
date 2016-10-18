@@ -1,0 +1,12 @@
+---
+title: "Creating other plots"
+output: html_document
+---
+
+* density plot 
+* density plot by group
+* surface 2d
+* violin plot
+
+
+* dot plot? (Non lo capisco)
