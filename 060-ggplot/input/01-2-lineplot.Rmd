@@ -33,29 +33,22 @@ This chapter presents how to build line plots and introduces other basic concept
 `ChickWeight` data contains the body weight of 50 chicks over time. Suppose you are interested to the growth of the first chick.
 
 ```{r linegraph_first, message=FALSE}
-ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + geom_line()
+ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + 
+  geom_line()
 ```
 
-Points can be easily added with `geom_point()`.
-
-```{r linegraph_geompoint, message=FALSE}
-ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + geom_line() + geom_point()
-```
-
-You can change the appearance of the plot setting an aesthetic to a value. For example, the following plot has a dark blue line with squared and bigger points.
+You can change the appearance of the line setting `geom_line()` aestethic arguments. For example, you can set dark blue color for line and chenge the size in this way:
 
 ```{r linegraph_set, message=FALSE}
 ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
-  geom_line(colour="darkblue") + geom_point(shape=15, size=2)
+  geom_line(colour="darkblue", size = 2) 
 ```
 
-Available aesthetic are `x`, `y`, `alpha`, `colour` and `size` with the same (intuitive) meaning already seen for `geom_point()`.
-
-To choose the style of the line you can use `linetype`. If you are experienced with R basic graphic, `linetype` has the same meaning that `lty`.
+You can also choose the style of the line setting `linetype` argument. If you are experienced with R basic graphic, `linetype` has the same meaning that `lty`.
 
 ```{r linegraph_linetype, message=FALSE}
 ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
-  geom_line(colour="darkblue", linetype=2)
+  geom_line(colour="darkblue", size = 2, linetype=2)
 ```
 
 The `linetype` can be a number (0-6) or a description (like `"solid"` or `"dashed"`). Available line types are:
@@ -94,13 +87,24 @@ text(x = x0, y = 1, labels = '6. "twodash"', cex = cex0, pos = pos0)
 lines(x = c(xs, xe), y = c(1, 1), lty = 6, lwd = lwd0)
 ```
 
+Available aestethics arguments for `geom_line()` are `alpha`, `colour`, `size` and `linetype`. The first three arguments have the same (intuitive) meaning already seen for `geom_point()`.
+
+You can also add points to the plot with `geom_point()`:
+
+```{r linegraph_geompoint, message=FALSE}
+ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + 
+  geom_line() + 
+  geom_point()
+```
 
 # Mapping variables to line plots
 
 If you are interested in the average growth of chicks for the different diets, you must first summarize data.
 
 ```{r linegraph_ChickWeightMean, message=FALSE}
-ChickWeightMean <- ChickWeight %>% group_by(Time, Diet) %>% summarize(weight=mean(weight))
+ChickWeightMean <- ChickWeight %>% 
+  group_by(Time, Diet) %>% 
+  summarize(weight=mean(weight))
 ChickWeightMean
 ```
 
@@ -108,20 +112,24 @@ If you draw the same plot as above with new data, you will obtain a figure like 
 
 ```{r linegraph__sawtooth, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
-  geom_line() + geom_point()
+  geom_line() + 
+  geom_point()
 ```
 
 A jagged line appears when there are multiple data at each `x` and you tell ggplot to connect them. A plot like this one should sounds as a warning that something is wrong. In order to have a single point for each `x` you can summarize your data, or you can draw several lines, accordingly to a third variable, just adding a new aesthetic.
 
 ```{r linegraph_aes, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line() + geom_point()
+  geom_line() + 
+  geom_point()
 ```
 
 Sometimes, the `x` variable can be a categorical variable. This is the case when you have numerical values that are conceived as categorical ones. The `ToothGrowth` data set can be a good case in point. Data can be summarized as follow:
 
 ```{r linegraph_tg, message=FALSE}
-tg <- ToothGrowth %>% group_by(supp, dose) %>% summarize(length=mean(len))
+tg <- ToothGrowth %>% 
+  group_by(supp, dose) %>% 
+  summarize(length=mean(len))
 tg
 ```
 
@@ -129,39 +137,55 @@ You can plot a line for each `supp` value:
 
 ```{r linegraph_numericx, message=FALSE}
 ggplot(data=tg, mapping=aes(x=dose, y=length, colour=supp)) +
-  geom_line() + geom_point()
+  geom_line() + 
+  geom_point()
 ```
 
 The plot is good but since `dose` level are fixed the space between 0.5-1.0 and 1.0-2.0 should be the same. You can fix this issue, transforming `dose` into a factor.
 
-```{r linegraph_factorx, message=FALSE}
-ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
-  geom_line() + geom_point()
+```{r linegraph_factorx, message=TRUE}
+ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp)) +
+  geom_line() + 
+  geom_point()
 ```
 
-Notice the use of `group=supp`. This is required to tell ggplot how to group data when it draws the lines. As [Hadley himself said](https://groups.google.com/forum/#!topic/ggplot2/Pwq6hO7r90w):
+As you can see from the plot no lines are drawn and a warning message is returned. Probably, this is one of the most frequently asked about `geom_line()`. This appens because `geom_line()` tries to connect data points that belong to same group and the combinations of different levels of factor variables belong to different group. 
 
-> The important thing [for a line plot with a factor on the horizontal axis] is to manually specify the grouping. By default `ggplot2` uses the combination of all categorical variables in the plot to group geoms - that doesn't work for this plot because you get an individual line for each point. Manually specify `group = 1` indicates you want a single line connecting all the points.
+To resolve this problem, you have to manually specify the grouping, setting `group` argument:
+
+```{r linegraph_factorx, message=FALSE}
+ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
+  geom_line() + 
+  geom_point()
+```
+
+`group=supp` in `aes()` tells ggplot how to group data when it draws the lines. 
+
+Otherwise, if you want a single line than connects all data points, you have to specify `group=1`.
 
 ```{r linegraph_group1, message=FALSE}
 ggplot(data=(tg%>%filter(supp=="OJ")), mapping=aes(x=factor(dose), y=length, group=1)) +
-  geom_line() + geom_point()
+  geom_line() + 
+  geom_point()
 ```
 
 When points overlap, you can _dodge_ them. Dodging adjusts points left and right and must be applied to both lines and points, to avoid misalignment.
 
 ```{r linegraph_dodge, message=FALSE}
 ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
-  geom_line(position=position_dodge(0.15)) + geom_point(position=position_dodge(0.15))
+  geom_line(position=position_dodge(0.15)) + 
+  geom_point(position=position_dodge(0.15))
 ```
 
+`position` argument of both `geom_line()` and `geom_point()` is set equal to `position_dodge()`. `position_dodge()` is a `ggplot2` function that adjust position by dodging overlaps to the side. 0.15 is the `width` specified. 
 
 # Changing the Appearance of Mapped Aesthetics
 
 When you feed your chicks, you use the "A" fodder for diet 1, the "B" fodder for diet 2, the "C" for diet 3 and the "D" for diet 4. 
 
 ```{r linegraph_labels, message=FALSE}
-ChickWeightMean <- ChickWeightMean %>% mutate(Diet = factor(Diet, levels=1:4, labels=c("A","B","C","D")))
+ChickWeightMean <- ChickWeightMean %>%
+  mutate(Diet = factor(Diet, levels=1:4, labels=c("A","B","C","D")))
 ```
 
 "A" fodder is sold in red bags and farmers immediately identify this product with the red colour. In the same way, B is associated with the blue, C with the green and D with the orange. To improve the readability of the plot, lines for each diet should be of the colour that identify the fodder maker.
@@ -170,22 +194,30 @@ You cannot set the colour inside `ggplot()` or `geom_line()` using the `colour` 
 
 ```{r linegraph_setcolourmanual, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line() + geom_point() + scale_color_manual(values=c("red", "blue", "green", "orange"))
+  geom_line() + 
+  geom_point() + 
+  scale_color_manual(values=c("red", "blue", "green", "orange"))
 ```
 
 Colours in the `values` string vector must appear in the same order as they appear in the legend. You can pass a named vector to be sure of the correspondence between colour and data.
 
 ```{r linegraph_setcolourmanual_order, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line() + geom_point() + 
+  geom_line() + 
+  geom_point() + 
   scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green"))
 ```
+
+<!--
+togliere la parte successiva?
+-->
 
 There are as many `scale_*_manual` function as aesthetics for which values can be set manually.
 
 ```{r linegraph_setshape_order, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line(mapping=aes(linetype=Diet)) + geom_point(mapping=aes(shape=Diet)) + 
+  geom_line(mapping=aes(linetype=Diet)) + 
+  geom_point(mapping=aes(shape=Diet)) + 
   scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green")) +
   scale_shape_manual(values=c(16,18,20,22)) + 
   scale_linetype_manual(values=c(1,3,5,6))
@@ -199,14 +231,18 @@ Line plots often contains horizontal or vertical lines.
 It may be interesting to analyse the average daily growth for each diet type.
 
 ```{r linegraph_ChickWeightGrowthMean, message=FALSE}
-ChickWeightGrowth <- ChickWeight %>% group_by(Chick) %>%
-  mutate(growth=c(0,diff(weight))) %>% filter(growth != 0)
+ChickWeightGrowth <- ChickWeight %>% 
+  group_by(Chick) %>%
+  mutate(growth=c(0,diff(weight))) %>% 
+  filter(growth != 0)
   
-ChickWeightGrowthMean <- ChickWeightGrowth %>% group_by(Time, Diet) %>%
+ChickWeightGrowthMean <- ChickWeightGrowth %>% 
+  group_by(Time, Diet) %>%
   summarize(growth=mean(growth)) 
 
 ggp <- ggplot(data=ChickWeightGrowthMean, mapping=aes(x=Time, y=growth, colour=Diet)) +
-  geom_line(mapping=aes(linetype=Diet)) + geom_point(mapping=aes(shape=Diet))
+  geom_line(mapping=aes(linetype=Diet)) + 
+  geom_point(mapping=aes(shape=Diet))
 
 ggp
 ```
@@ -214,14 +250,19 @@ ggp
 At this point you may want to add the average growth to the plot.
 
 ```{r linegraph_hline, message=FALSE}
-growth_avg <- ChickWeightGrowth %>% magrittr::use_series(growth) %>% mean
-ggp1 <- ggp + geom_hline(yintercept = growth_avg, colour="grey20")
+growth_avg <- ChickWeightGrowth %>%
+  magrittr::use_series(growth) %>% 
+  mean
+
+ggp1 <- ggp + 
+  geom_hline(yintercept = growth_avg, colour="grey20")
 ggp1
 ```
 
 Data refers to a three-weeks period. It may be interesting to highlight each week adding a vertical line at days 7, 14 and 21.
 
 ```{r linegraph_vline, message=FALSE}
-ggp1 + geom_vline(xintercept = c(7,14,21), colour="grey40", linetype=3)
+ggp1 + 
+  geom_vline(xintercept = c(7,14,21), colour="grey40", linetype=3)
 ```
 

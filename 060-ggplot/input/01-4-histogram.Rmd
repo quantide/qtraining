@@ -105,6 +105,10 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   facet_wrap(~ press_type)
 ```
 
+<!--
+
+Lo tolgo perchè si approfondirà nel capitolo facet 
+
 Mapping `fill` to the faceting variable (`press_type`) returns a different coloured histogram for each panel.
 
 ```{r histogram_facetwrap_fill, message=FALSE, warning=FALSE}
@@ -114,27 +118,36 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   facet_wrap(~ press_type)
 ```
 
+-->
 
 # Making a density histogram
 
-To show densities instead than count (frequencies) on the y axis, the special word `..density..` must be used.
+To show densities instead than count (frequencies) on the y axis, the special variable `..density..` must be used.
 
 ```{r histogram_density, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf")
 ```
 
-A density curve can be added.
+The special variables in ggplot with double periods around them, as `..density..`, are returned by a `stat` transformation of the original dataset. 
+
+A density curve can be added to compare the theoretical and observed distributions.
 
 ```{r histogram_geomdensity, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + geom_density(colour="#034e7b")
 ```
 
-The `geom_density()` function draws a closed polygon. If you do not like the lines along the side and bottom, you can draw a density curve using `geom_line` with `stat="density"`.
+`geom_density()` function draws a kernel density curve, which is an estimate of the population distribution, based on the sample
+data. The amount of smoothing depends on the kernel bandwidth: the larger the bandwidth, the more smoothing there is. The bandwidth can be set with the `adjust` parameter, which has a default value of 1.
+
+`geom_density()` function draws a closed polygon. If you do not like the lines along the side and bottom, you can draw a density curve using `geom_line` with `stat="density"`.
 
 ```{r histogram_geomline_density, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + geom_line(stat="density", colour="#034e7b")
 ```
+
+
+
 

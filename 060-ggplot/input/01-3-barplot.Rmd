@@ -43,24 +43,28 @@ This chapter presents how to build bar plots and introduces other basic concepts
 As seen in the previous chapter, chicks receive one of four diets (see `ChickWeight` data set). A graphical summary about how chicks receive each diet can be obtained.
 
 ```{r bargraph_first, message=FALSE}
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar()
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + 
+  geom_bar()
 ```
 
 If you prefer horizontal bars, just flip the plot with `coord_flip()`.
 
 ```{r bargraph_coordflip, message=FALSE}
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar() + coord_flip()
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + 
+  geom_bar() + 
+  coord_flip()
 ```
 
 Another way to distinguish bar plots and histograms are tiny bars, to increase the space among bars.
 
 ```{r bargraph_width, message=FALSE}
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar(width=0.5)
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + 
+  geom_bar(width=0.5)
 ```
 
 # Setting and mapping variables to line plots
 
-Colours and other available aesthetics (`linetype` and `size`) can be set or mapped as usual. Remember that `colour` controls the bar outline, while `fill` controls the bar colour.
+Colours and other available aesthetic settings (`linetype` and `size`) can be set or mapped as usual. Remember that `colour` controls the bar outline, while `fill` controls the bar colour.
 
 ```{r bargraph_setcolour, message=FALSE}
 ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
@@ -88,6 +92,9 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b"), guide=FALSE)
 ```
 
+<!--
+
+già scritto nel capitolo legende
 Alternatively, you can use the `guides` function to hide the legend, just setting to `FALSE` the related aesthetic, in this case `fill`.
 
 ```{r bargraph_nolegend_guides, message=FALSE}
@@ -97,6 +104,8 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   guides(fill=FALSE)
 ```
 
+-->
+
 `ggplot2` provides some functions (e.g. `scale_*_brewer` or `scale_*_gradient`) to choose a palette (i.e. a set of coherent colours), but these functions are not shown in this chapter. You can still use `scale_*_manual` functions and refer to some on-line tool like [Color Brewer](http://colorbrewer2.org/) or [Paletton](http://paletton.com/) for a better choice of colours.
 
 
@@ -105,25 +114,30 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
 Sometimes data comes already summarized. As an example, you can have the following frequency tables without the original data.
 
 ```{r bargraph_ChickWeightFreq, message=FALSE}
-ChickWeightFreq <- ChickWeight %>% group_by(Diet) %>% summarize(n=n())
+ChickWeightFreq <- ChickWeight %>% 
+  group_by(Diet) %>% 
+  summarize(n=n())
+
 ChickWeightFreq
 ```
 
 You can try to build the previous plot in the same way.
 
 ```{r bargraph_error, message=FALSE}
-ggplot(data=ChickWeightFreq, mapping=aes(x=Diet)) + geom_bar()
+ggplot(data=ChickWeightFreq, mapping=aes(x=Diet)) + 
+  geom_bar()
 ```
 
 The result is a plot with four bars of length 1. Why? The reason is quite simple. By default, `geom_bar()` scans the `Diet` column counting how many observations have Diet=1, how many have Diet=2 and so on. In this case, you must tell `ggplot` you already have the count.
 
 ```{r bargraph_identity, message=FALSE}
-ggplot(data=ChickWeightFreq, mapping=aes(x=Diet, y=n)) + geom_bar(stat="identity")
+ggplot(data=ChickWeightFreq, mapping=aes(x=Diet, y=n)) + 
+  geom_bar(stat="identity")
 ```
 
 Since you have an `y` variable containing frequencies, you tell `ggplot` the variable containing counts (`y=n` in the example) and to `geom_bar` that `stat="identity"` must be used. 
 
-A statistical transformation, or `stat`, transforms the data, typically by summarizing it in some manner. By default, almost all `geom`s seen until now uses `stat="identity"`, that do not transform data. As just seen, by default `geom_bar()` uses `stat="count"` that counts the number of cases at each `x` position. If you do not want to transform your data, `stat="identity"` must be supplied.
+A statistical transformation, or `stat`, transforms the data, typically by summarizing it in some manner. All `geom`s are based on a statistical transformation. By default, almost all `geom`s seen until now uses `stat="identity"`, that do not transform data. As just seen, by default `geom_bar()` uses `stat="count"` that counts the number of cases at each `x` position. If you do not want to transform your data, `stat="identity"` must be supplied.
 
 
 # Stacked and grouped bar plots
@@ -131,7 +145,8 @@ A statistical transformation, or `stat`, transforms the data, typically by summa
 If you are a quality engineer analysing the `bands` data, you may be interested to the number of presses for each type, distinguishing them by the cylinder size.
 
 ```{r bargraph_stack, message=FALSE}
-ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar()
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + 
+  geom_bar()
 ```
 
 Mapping `fill` to `cylinder_size` does the job. Notice a small gray area at the top of the last two bars: this means there are few cases in which `cylinder_size` is missing. 
@@ -139,13 +154,15 @@ Mapping `fill` to `cylinder_size` does the job. Notice a small gray area at the 
 Sometimes you may be interested at the distribution of `cylinder_size` for each `press_type`.
 
 ```{r bargraph_fill, message=FALSE}
-ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar(position="fill")
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + 
+  geom_bar(position="fill")
 ```
 
 In the case you prefer a bar for each combination of `press_type` and `cylinder_size`, you can `dodge` the bars.
 
 ```{r bargraph_dodge, message=FALSE}
-ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar(position="dodge")
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + 
+  geom_bar(position="dodge")
 ```
 
 Notice that `position="dodge"` is a short key for `position=position_dodge()` with its default value and you can modify this value to add space between bars. In the case you want to add space between bars, you probably want also to modify the `width` in order to add spaces among each group of bars.
@@ -183,8 +200,12 @@ As you see in the previous plots, `cylinder_size` is a factor variable with thre
 To visualize also missing values (`NA`) as `cylinder_size` level in plots legend, you have to recode its levels, adding also `NA` as level.  
 
 ```{r bargraph_na_as_level, message=FALSE}
-bands <- bands %>% mutate(cylinder_size = as.character(cylinder_size), cylinder_size =ifelse(is.na(cylinder_size),"NA",cylinder_size),
-  cylinder_size = factor(cylinder_size, levels= c("CATALOG", "SPIEGEL", "TABLOID", "NA"), labels = c("CATALOG", "SPIEGEL", "TABLOID", "NA")))
+bands <- bands %>% 
+  mutate(cylinder_size = as.character(cylinder_size), 
+         cylinder_size =ifelse(is.na(cylinder_size),"NA",cylinder_size), 
+         cylinder_size = factor(cylinder_size, 
+                                levels= c("CATALOG", "SPIEGEL", "TABLOID", "NA"), 
+                                labels = c("CATALOG", "SPIEGEL", "TABLOID", "NA")))
 
 ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) +
   geom_bar() 

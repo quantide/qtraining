@@ -47,7 +47,8 @@ Appearance aesthetics work as seen until now; `fill` controls the box filling, w
 
 ```{r boxplot_colour, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
-  geom_boxplot(fill="#74a9cf", colour="#034e7b")
+  geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+  geom_jitter()
 ```
 
 There are also a few `outline.*` parameter to set aesthetics for outlier points.
@@ -56,6 +57,19 @@ There are also a few `outline.*` parameter to set aesthetics for outlier points.
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3)
 ```
+
+
+## Adding points to boxplot
+
+Boxplot summarises the bulk of distributions with only five numbers: median, first quartile, third quartile, minimum and maximum. You can also add points to boxplots by using `geom_jitter()` function:
+
+```{r boxplot_outlines, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3) +
+  geom_jitter()
+```
+
+`geom_jitter()` adds a little random noise to the plot which can help avoid overlapping. Hovewer, it works with only relatively small dataset. 
 
 
 # Making a single box plot
@@ -76,8 +90,9 @@ ggplot(data=bands, aes(x="0", y=ink_pct)) +
   theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
 ```
 
+x-axis tick marker and label are removed by using `theme()` function. We remind the functionalities and features of these functions to the chapters of "Advanced ggplot2" section.  
 
-# Customizing Titles and Axis
+# Adding Titles and Axis labels
 
 The last example reveals how to change the x-axis title. This is useful when the name of the variable is not enough clear. An analogous function `ylab()` set the y-axis title, while `ggtitle()` should be used when you want a title for the whole plot. Note the use of the escape code `\n` to break lines.
 
@@ -86,6 +101,12 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
   geom_boxplot(fill="#74a9cf", colour="#034e7b") +
   xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)")
 ```
+
+
+
+<!--
+
+rimando ai capitoli successivi (vedere se tenere qualcosa)
 
 You already saw a "preview" of the `theme()` function, that set many theme settings. Here only a few options regarding axis and titles are shown:
 
@@ -125,3 +146,9 @@ You already saw a "preview" of the `theme()` function, that set many theme setti
       theme(plot.title = element_text(face="bold", size=18))
     ```
     
+-->
+
+
+
+
+
