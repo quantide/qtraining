@@ -133,7 +133,7 @@ The special variables in ggplot with double periods around them, as `..density..
 
 A density curve can be added to compare the theoretical and observed distributions.
 
-```{r histogram_geomdensity, message=FALSE, warning=FALSE}
+```{r , message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + geom_density(colour="#034e7b")
 ```
@@ -143,9 +143,38 @@ data. The amount of smoothing depends on the kernel bandwidth: the larger the ba
 
 `geom_density()` function draws a closed polygon. If you do not like the lines along the side and bottom, you can draw a density curve using `geom_line` with `stat="density"`.
 
-```{r histogram_geomline_density, message=FALSE, warning=FALSE}
+```{r , message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + geom_line(stat="density", colour="#034e7b")
+```
+
+## Frequency polygon
+
+A frequency polygon appears similar to a kernel density estimate curve, see in the previous example, but it work in the same way and it shows the same information as a histogram. In particular, both bin the data and then count the number of observations in each bin. The only difference is the display: histograms use bars and frequency polygons use lines. 
+
+<!--
+That is, like a histogram, it shows what is in the data, whereas a kernel density estimate is just that an estimate and requires you to pick some value for the bandwidth.
+-->
+
+`ggplot2` function that draws a frequency polygon is `geom_freqpoly()`:
+
+```{r , message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_freqpoly(col = "darkgreen")
+```
+
+Also like a histogram, you can control the bin width for the frequency polygon:
+
+```{r , message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_freqpoly(col = "darkgreen", binwidth=10)
+```
+
+If you don't want evenly spaced bins you can set the `breaks` arguments:
+
+```{r , message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_freqpoly(col = "darkgreen", breaks=c(30, 32, 36, 41, 45, 53, 59, 64, 72, 77, 81, 87, 91))
 ```
 
 
