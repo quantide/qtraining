@@ -1,5 +1,5 @@
 ---
-title: "How making a surface plot"
+title: "How creating a Surface plot"
 author: "Veronica"
 date: "October 20, 2016"
 output: html_document
@@ -9,30 +9,67 @@ output: html_document
 
 `ggplot2` does not support true 3d surfaces. However it does support many common tools for representing 3d surfaces in 2d: contours, coloured tiles and bubble plots. These all works similarly, differing only in the aesthetic used for the third dimension  
 
+## Countours
+
+A contour plot is a graphical technique for representing a 3-dimensional surface by plotting constant z slices, called contours, on a 2-dimensional format. That is, given a value for z, lines are drawn for connecting the (x,y) coordinates where that z value occurs.
+The contour plot is an alternative to a 3-D surface plot.
+
+Countour can be plotted by `geom_contour()` function: 
+
 ```{r}
 data("faithful")
-v <- ggplot(faithfuld, aes(waiting, eruptions, z = density))
-v + geom_contour()
+ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
+  geom_contour()
+```
 
-
+Plotted also by using `geom_density_2d()` function
+```{r}
 ggplot(faithful, aes(waiting, eruptions)) +
   geom_density_2d()
+```
 
-v + geom_contour(bins = 2)
+<!--
+scrivere differenze tra geom_contour() e geom_density_2d() 
+-->
 
-v + geom_contour(bins = 10)
+Setting bins creates evenly spaced contours in the range of the data
+```{r}
+ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
+  geom_contour(bins = 2)
 
-v + geom_contour(binwidth = 0.01)
+ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
+ geom_contour(bins = 10)
 
+# Setting binwidth does the same thing, parameterised by the distance
+# between contours
+ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
+  geom_contour(binwidth = 0.01)
+```
 
-v + geom_contour(aes(colour = ..level..))
+It’s also possible to map the height of the density curve to the color of the contour lines, by mapping `..level..` to `colour` scale:
+```{r}
+# Other parameters
+ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
+  geom_contour(aes(colour = ..level..))
+```
 
-v + geom_raster(aes(fill = density)) +
+```{r}
+# Customize
+ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
+  geom_raster(aes(fill = density)) +
   geom_contour(colour = "white")
 
+```
 
+## Draw rectangles
+
+```{r}
+# The most common use for rectangles is to draw a surface. You always want
+# to use geom_raster here because it's so much faster, and produces
+# smaller output when saving to PDF
 ggplot(faithfuld, aes(waiting, eruptions)) +
  geom_raster(aes(fill = density))
+
 
 
 # Interpolation smooths the surface & is most helpful when rendering images.
@@ -59,3 +96,33 @@ df$z <- runif(nrow(df))
 ggplot(df, aes(x, y, fill = z)) + geom_raster()
 
 ```
+
+```{r}
+ggplot(data=bands, mapping=aes(x = humidity, y=viscosity)) + 
+  stat_density2d(aes(fill=..density..), geom="raster", contour=FALSE)
+```
+
+
+```{r}
+ggplot(data=bands, mapping=aes(x = humidity, y=viscosity)) + 
+  geom_point() +
+  stat_density2d(aes(alpha=..density..), geom="tile", contour=FALSE)
+```
+
+
+We used `geom="raster"` in the first of the preceding examples and `geom="tile"` in the second. The main difference is that the `"raster"` geom renders more efficiently than the `"tile"` geom. In theory they should appear the same, but in practice they often do not. If you are writing to a PDF file, the appearance depends on the PDF viewer. On some viewers, 
+when tile is used there may be faint lines between the tiles, and when raster is used the edges of the tiles 
+may appear blurry (although it doesn’t matter in this particular case).
+
+As with the one-dimensional density estimate, you can control the bandwidth of the estimate. 
+To do this, pass a vector for the x and y bandwidths to `h` argument. This argument gets passed on to the function that actually generates the density estimate, `kde2d()`. In the following example, we use a smaller bandwidth in the x and y directions, so that the density estimate is more closely fitted (perhaps overfitted) to the data:
+
+```{r}
+ggplot(data=bands, mapping=aes(x = humidity, y=viscosity)) + 
+  stat_density2d(aes(fill=..density..), geom="raster", contour=FALSE, h=c(.5,5))
+```
+
+
+
+
+
