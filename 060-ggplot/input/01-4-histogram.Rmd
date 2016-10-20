@@ -139,7 +139,7 @@ ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
 ```
 
 `geom_density()` function draws a kernel density curve, which is an estimate of the population distribution, based on the sample
-data. The amount of smoothing depends on the kernel bandwidth: the larger the bandwidth, the more smoothing there is. The bandwidth can be set with the `adjust` parameter, which has a default value of 1.
+data. 
 
 `geom_density()` function draws a closed polygon. If you do not like the lines along the side and bottom, you can draw a density curve using `geom_line` with `stat="density"`.
 
@@ -148,9 +148,48 @@ ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + geom_line(stat="density", colour="#034e7b")
 ```
 
+In particular, `geom_line()` and is used with `"density"` statistical transformation, which means that a statistical transformation is applied to data, in particulare `ink_pct` density is estimated. 
+
+<!--
+This is essentially the same as using `geom_density()`, except the former draws it with a closed polygon.
+-->
+
+<!--
+sistemare la frase sopra
+-->
+
+## Making a Density curve 
+
+As we said, a density curve, in particular a kernel density curve, is an estimate of the population distribution, based on the sample data.
+
+We have already seen how `geom_density()` works. Let us deepen its functionalities.
+
+Suppose we want to analyze the density distribution estimation of `ink_pct` variable. To better visualize the area under the curve you can customize it by setting `fill` and `alpha` arguments:
+
+```{r , message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_density(fill = "red", alpha = 0.6)
+```
+
+The amount of smoothing depends on the kernel bandwidth: the larger the bandwidth, the more smoothing there is. The bandwidth can be set with the adjust parameter, which has a default value of 1:
+
+```{r , message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_density(adjust = 0.5)
+```
+
+You can set a value for `adjust` also by using `geom_line(stat="density")`.
+
+`geom_density()` can be used also to compare density distribution estimations of grouped data. The grouping variable must be map to an aesthetic like `colour` or `fill`. The grouping variable must be a factor or character vector. In this case we consider `band_type` variable:    
+
+```{r , message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct, colour = band_type)) + 
+  geom_density(adjust = 0.5)
+```
+
 ## Frequency polygon
 
-A frequency polygon appears similar to a kernel density estimate curve, see in the previous example, but it work in the same way and it shows the same information as a histogram. In particular, both bin the data and then count the number of observations in each bin. The only difference is the display: histograms use bars and frequency polygons use lines. 
+A frequency polygon appears similar to a kernel density estimate curve, see in the previous examples, but it work in the same way and it shows the same information as a histogram. In particular, both bin the data and then count the number of observations in each bin. The only difference is the display: histograms use bars and frequency polygons use lines. 
 
 <!--
 That is, like a histogram, it shows what is in the data, whereas a kernel density estimate is just that an estimate and requires you to pick some value for the bandwidth.

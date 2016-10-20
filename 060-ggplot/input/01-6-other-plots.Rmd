@@ -1,5 +1,5 @@
 ---
-title: "Creating other plots"
+title: "Creating a density curve"
 output: html_document
 ---
 
@@ -43,12 +43,6 @@ The difference between the two methods is that of `geom_line(stat="density")` do
 
 In particular, `geom_line()` and is used with `"density"` statistical transformation, which means that a statistical transformation is applied to data, in particulare `ink_pct` density is estimated. This is essentially the same as the first method, using `geom_density()`, except the former draws it with a closed polygon.
 
-To better visualize the area under the curve you can customize it by setting `fill` and `alpha` arguments:
-
-```{r , message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct)) + 
-  geom_density(fill = "red", alpha = 0.6)
-```
 
 The amount of smoothing depends on the kernel bandwidth: the larger the bandwidth, the more smoothing there is. The bandwidth can be set with the adjust parameter, which has a default value of 1:
 
