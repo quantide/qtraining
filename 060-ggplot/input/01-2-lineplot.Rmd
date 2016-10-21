@@ -153,7 +153,7 @@ As you can see from the plot no lines are drawn and a warning message is returne
 
 To resolve this problem, you have to manually specify the grouping, setting `group` argument:
 
-```{r linegraph_factorx, message=FALSE}
+```{r , message=FALSE}
 ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
   geom_line() + 
   geom_point()

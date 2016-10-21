@@ -17,6 +17,8 @@ Adv ggplot2:
 
 Appendix: teoria
 
+# dealing with overplotting dove lo metto? In overall apeearance of the plot forse
+
 index: rifare il disegno del flow (evidenziare solo la parte di data visualization) --> prendere quello che c'è in rforbeginners
 
 

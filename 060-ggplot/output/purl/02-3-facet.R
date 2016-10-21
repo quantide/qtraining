@@ -15,36 +15,45 @@ pl <- ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(fill="#2B4C6F") 
 
 # Faceted by press_type, in horizontally arranged subpanels
-pl + facet_grid(. ~ press_type)
+pl + 
+  facet_grid(. ~ press_type)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 # Faceted by press_type, in vertically arranged subpanels
-pl + facet_grid(band_type ~ .)
+pl + 
+  facet_grid(band_type ~ .)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 # Faceted by press_type and band_type
-pl + facet_grid(band_type ~ press_type)
+pl + 
+  facet_grid(band_type ~ press_type)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + facet_wrap(~ press_type)
+pl + 
+  facet_wrap(~ press_type)
 
 ## ---- warning=FALSE, message=FALSE, fig.height=8, fig.width=8------------
 # by usign facet_grid()
-pl + facet_grid(band_type + ink_type ~ press_type)
+pl + 
+  facet_grid(band_type + ink_type ~ press_type)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 pl + facet_grid(band_type  + paper_type ~ press_type, drop=FALSE)
 
 ## ---- warning=FALSE, message=FALSE, fig.height=9, fig.width=9------------
 # by using facet_wrap()
-pl + facet_wrap(~ band_type + ink_type + press_type)
+pl + 
+  facet_wrap(~ band_type + ink_type + press_type)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + facet_wrap(~ press_type, nrow = 1)
-pl + facet_wrap(~ press_type, ncol = 3)
+pl + 
+  facet_wrap(~ press_type, nrow = 1)
+pl + 
+  facet_wrap(~ press_type, ncol = 3)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + facet_wrap(~ press_type, dir = "v")
+pl + 
+  facet_wrap(~ press_type, dir = "v")
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 pl + facet_wrap(~ press_type, as.table = TRUE)
@@ -52,22 +61,29 @@ pl + facet_wrap(~ press_type, as.table = FALSE)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 # free x scale
-pl + facet_grid(band_type ~ press_type, scales = "free_x")
+pl + 
+  facet_grid(band_type ~ press_type, scales = "free_x")
 # free y scale
-pl + facet_grid(band_type ~ press_type, scales = "free_y")
+pl + 
+  facet_grid(band_type ~ press_type, scales = "free_y")
 # free x and y scales
-pl + facet_grid(band_type ~ press_type, scales = "free")
+pl + 
+  facet_grid(band_type ~ press_type, scales = "free")
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 # free x scale
-pl + facet_wrap( ~ press_type, scales = "free_x")
+pl + 
+  facet_wrap( ~ press_type, scales = "free_x")
 # free y scale
-pl + facet_wrap( ~ press_type, scales = "free_y")
+pl + 
+  facet_wrap( ~ press_type, scales = "free_y")
 # free x and y scales
-pl + facet_wrap( ~ press_type, scales = "free")
+pl + 
+  facet_wrap( ~ press_type, scales = "free")
 
 ## ---- warning=FALSE, message=FALSE, fig.height=7.5, fig.width=7.5--------
-pl + facet_grid(press_type ~ ., space  = "free", scales = "free")
+pl + 
+  facet_grid(press_type ~ ., space  = "free", scales = "free")
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 # Make a copy of the original data
@@ -89,13 +105,16 @@ bands2 <- bands2 %>% mutate(
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 # 4 interval with "equal" range
 ggplot(data = bands2, mapping = aes(x = humidity, y = viscosity)) +
-  geom_point() + facet_wrap(~ press_i)
+  geom_point() + 
+  facet_wrap(~ press_i)
 # intervals of width 10
 ggplot(data = bands2, mapping = aes(x = humidity, y = viscosity)) +
-  geom_point() + facet_wrap(~ press_w)
+  geom_point() + 
+  facet_wrap(~ press_w)
 # 5 intervals with the "same" number of points
 ggplot(data = bands2, mapping = aes(x = humidity, y = viscosity)) +
-  geom_point() + facet_wrap(~ press_n)
+  geom_point() + 
+  facet_wrap(~ press_n)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 # Make a copy of the original data
@@ -109,13 +128,16 @@ levels(bands3$press_type)[levels(bands3$press_type)=="WOODHOE70"] <- "Woodhoe 70
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 ggplot(data=bands3, mapping=aes(x=ink_pct)) +
-  geom_histogram(fill="#2B4C6F") + facet_grid(. ~ press_type)
+  geom_histogram(fill="#2B4C6F") +
+  facet_grid(. ~ press_type)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + facet_grid(band_type ~ press_type, labeller = label_value)
+pl + 
+  facet_grid(band_type ~ press_type, labeller = label_value)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + facet_grid(band_type ~ press_type, labeller = label_both)
+pl + 
+  facet_grid(band_type ~ press_type, labeller = label_both)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 # modify the dataset
@@ -126,7 +148,8 @@ levels(bands4$press_type)[levels(bands4$press_type)=="MOTTER94"] <- "sqrt(x)"
 levels(bands4$press_type)[levels(bands4$press_type)=="WOODHOE70"] <- "pi"
 
 ggplot(data=bands4, mapping=aes(x=ink_pct)) +
-  geom_histogram(fill="#2B4C6F")  + facet_grid(. ~ press_type, labeller = label_parsed)
+  geom_histogram(fill="#2B4C6F")  + 
+  facet_grid(. ~ press_type, labeller = label_parsed)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 label_wrap <- function(variable, value) {
@@ -143,13 +166,17 @@ levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER94"] <- "The pressur
 levels(bands5$press_type)[levels(bands5$press_type)=="WOODHOE70"] <- "The pressure type for these obs is WOODHOE70"
 
 ggplot(data=bands5, mapping=aes(x=ink_pct)) +
-  geom_histogram(fill="#2B4C6F")  + facet_grid(. ~ press_type, labeller = label_wrap)
+  geom_histogram(fill="#2B4C6F") + 
+  facet_grid(. ~ press_type, labeller = label_wrap)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + facet_grid(. ~ press_type) + 
+pl + 
+  facet_grid(. ~ press_type) + 
   theme(strip.text = element_text(face="bold",family = "Times", size=rel(1.2)), 
         strip.background = element_rect(fill="lightblue", colour="black", size=1))
 
-## ------------------------------------------------------------------------
-pl + facet_grid(band_type ~ press_type) + theme(panel.margin = unit(2, "cm"))
+## ---- warning=FALSE, message=FALSE---------------------------------------
+pl + 
+  facet_grid(band_type ~ press_type) + 
+  theme(panel.margin = unit(2, "cm"))
 

@@ -54,11 +54,35 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf")
 
-## ----histogram_geomdensity, message=FALSE, warning=FALSE-----------------
+## ---- message=FALSE, warning=FALSE---------------------------------------
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + geom_density(colour="#034e7b")
 
-## ----histogram_geomline_density, message=FALSE, warning=FALSE------------
+## ---- message=FALSE, warning=FALSE---------------------------------------
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + geom_line(stat="density", colour="#034e7b")
+
+## ---- message=FALSE, warning=FALSE---------------------------------------
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_density(fill = "red", alpha = 0.6)
+
+## ---- message=FALSE, warning=FALSE---------------------------------------
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_density(adjust = 0.5)
+
+## ---- message=FALSE, warning=FALSE---------------------------------------
+ggplot(data=bands, mapping=aes(x=ink_pct, colour = band_type)) + 
+  geom_density()
+
+## ---- message=FALSE, warning=FALSE---------------------------------------
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_freqpoly(col = "darkgreen")
+
+## ---- message=FALSE, warning=FALSE---------------------------------------
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_freqpoly(col = "darkgreen", binwidth=10)
+
+## ---- message=FALSE, warning=FALSE---------------------------------------
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_freqpoly(col = "darkgreen", breaks=c(30, 32, 36, 41, 45, 53, 59, 64, 72, 77, 81, 87, 91))
 

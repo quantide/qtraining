@@ -1,20 +1,19 @@
 ## ----intro_require_ggplot, message=FALSE---------------------------------
 require(ggplot2)
 
-## ---- fig.width= 8-------------------------------------------------------
+## ---- fig.width= 8, echo=FALSE-------------------------------------------
 # Load iris dataset
 data(iris)
-levels(iris$Species) <- c("Setosa", "Versicolor", "Virginica")
 
 # Generate plot
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
+  stat_smooth(method = "lm", se = F) +
+  coord_equal() +
   facet_grid(. ~ Species) +
-  stat_smooth(method = "lm", se = F, col = "darkslateblue") +
-  scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
-  scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
-  scale_colour_brewer(palette = "Set1") + 
-  coord_equal() + ggtitle("Scatterplot of lenght and width of iris sepal by species") +
+  ggtitle("Scatterplot of lenght and width of iris sepal by species") + 
+    xlab("Sepal Length (cm)") +
+    ylab("Sepal Width (cm)") +
   theme(plot.background = element_blank(),
     axis.text = element_text(colour = "black"),
     axis.ticks = element_line(colour = "black"),
@@ -30,61 +29,48 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
 
 ## ------------------------------------------------------------------------
 # iris dataset
-    head(iris)
+head(iris)
 
 ## ------------------------------------------------------------------------
-# Scatterplot of the realtionship between sepal length and sepal width by iris species 
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
-  geom_point() 
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species))
 
 ## ------------------------------------------------------------------------
-# Add a regression line to the plot
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
+# Scatterplot of the relationship between sepal length and sepal width with regression line
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length)) +
+  geom_point() + # layer 1 
+  stat_smooth(method = "lm", se = FALSE) # layer 2 
+
+## ------------------------------------------------------------------------
+# Add a scale scale (map Species to colour scale)
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
-  stat_smooth(method = "lm", se = F, col = "darkslateblue")
+  geom_smooth(method = "lm", se = FALSE) 
 
-## ------------------------------------------------------------------------
-# Change scale attributes 
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
+## ----fig.height= 4-------------------------------------------------------
+# Change coordinate system 
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
-  stat_smooth(method = "lm", se = F, col = "darkslateblue") +
-  scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
-  scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
-  scale_colour_brewer(palette = "Set1")
+  stat_smooth(method = "lm", se = FALSE) +
+  coord_equal()
 
 ## ------------------------------------------------------------------------
 # Generate a plot for each iris species
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
-  geom_point(alpha = 0.8) +
-  stat_smooth(method = "lm", se = F, col = "darkslateblue") +
-  scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
-  scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
-  scale_colour_brewer(palette = "Set1") + 
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  coord_equal() +
   facet_grid(. ~ Species)
-
-## ------------------------------------------------------------------------
-# change the cartesian coordinates of the plot axes
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
-  geom_point(alpha = 0.8) +
-  stat_smooth(method = "lm", se = F, col = "darkslateblue") +
-  scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
-  scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
-  scale_colour_brewer(palette = "Set1") +
-  stat_smooth(method = "lm", se = F, col = "darkslateblue") + 
-  facet_grid(. ~ Species) +
-  coord_equal()
 
 ## ---- fig.width= 8-------------------------------------------------------
 # Customize the appearance of the plot
-ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, colour = Species)) +
-  geom_point(alpha = 0.8) +
-  stat_smooth(method = "lm", se = F, col = "darkslateblue") +
-  scale_y_continuous(name = "Sepal Width (cm)", limits = c(2,5), expand = c(0,0)) +
-  scale_x_continuous(name = "Sepal Length (cm)", limits = c(4,8), expand = c(0,0)) +
-  scale_colour_brewer(palette = "Set1") + 
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  coord_equal() +
   facet_grid(. ~ Species) +
-  coord_equal() + 
-  ggtitle("Scatterplot of lenght and width of iris sepal by species") +
+  ggtitle("Scatterplot of lenght and width of iris sepal by species") + 
+    xlab("Sepal Length (cm)") +
+    ylab("Sepal Width (cm)") +
   theme(plot.background = element_blank(),
     axis.text = element_text(colour = "black"),
     axis.ticks = element_line(colour = "black"),

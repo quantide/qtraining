@@ -5,13 +5,17 @@ require(qdata)
 data(bands)
 
 ## ----bargraph_first, message=FALSE---------------------------------------
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar()
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + 
+  geom_bar()
 
 ## ----bargraph_coordflip, message=FALSE-----------------------------------
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar() + coord_flip()
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + 
+  geom_bar() + 
+  coord_flip()
 
 ## ----bargraph_width, message=FALSE---------------------------------------
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar(width=0.5)
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + 
+  geom_bar(width=0.5)
 
 ## ----bargraph_setcolour, message=FALSE-----------------------------------
 ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
@@ -38,23 +42,31 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   guides(fill=FALSE)
 
 ## ----bargraph_ChickWeightFreq, message=FALSE-----------------------------
-ChickWeightFreq <- ChickWeight %>% group_by(Diet) %>% summarize(n=n())
+ChickWeightFreq <- ChickWeight %>% 
+  group_by(Diet) %>% 
+  summarize(n=n())
+
 ChickWeightFreq
 
 ## ----bargraph_error, message=FALSE---------------------------------------
-ggplot(data=ChickWeightFreq, mapping=aes(x=Diet)) + geom_bar()
+ggplot(data=ChickWeightFreq, mapping=aes(x=Diet)) + 
+  geom_bar()
 
 ## ----bargraph_identity, message=FALSE------------------------------------
-ggplot(data=ChickWeightFreq, mapping=aes(x=Diet, y=n)) + geom_bar(stat="identity")
+ggplot(data=ChickWeightFreq, mapping=aes(x=Diet, y=n)) + 
+  geom_bar(stat="identity")
 
 ## ----bargraph_stack, message=FALSE---------------------------------------
-ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar()
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + 
+  geom_bar()
 
 ## ----bargraph_fill, message=FALSE----------------------------------------
-ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar(position="fill")
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + 
+  geom_bar(position="fill")
 
 ## ----bargraph_dodge, message=FALSE---------------------------------------
-ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar(position="dodge")
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + 
+  geom_bar(position="dodge")
 
 ## ----bargraph_manualdodge, message=FALSE---------------------------------
 ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) +
@@ -75,8 +87,12 @@ ggplot(data=bands_freq_na, mapping=aes(x=press_type, y=n, fill=cylinder_size)) +
   geom_bar(stat="identity", position="dodge")
 
 ## ----bargraph_na_as_level, message=FALSE---------------------------------
-bands <- bands %>% mutate(cylinder_size = as.character(cylinder_size), cylinder_size =ifelse(is.na(cylinder_size),"NA",cylinder_size),
-  cylinder_size = factor(cylinder_size, levels= c("CATALOG", "SPIEGEL", "TABLOID", "NA"), labels = c("CATALOG", "SPIEGEL", "TABLOID", "NA")))
+bands <- bands %>% 
+  mutate(cylinder_size = as.character(cylinder_size), 
+         cylinder_size =ifelse(is.na(cylinder_size),"NA",cylinder_size), 
+         cylinder_size = factor(cylinder_size, 
+                                levels= c("CATALOG", "SPIEGEL", "TABLOID", "NA"), 
+                                labels = c("CATALOG", "SPIEGEL", "TABLOID", "NA")))
 
 ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) +
   geom_bar() 

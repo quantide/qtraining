@@ -11,11 +11,13 @@ pl <- ggplot(data = bands, mapping = aes(x= humidity, y = viscosity, colour =pre
 pl
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(axis.line.x = element_line(colour = "black"),
+pl + 
+  theme(axis.line.x = element_line(colour = "black"),
            axis.line.y = element_line(colour = "black"))
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme_bw()
+pl + 
+  theme_bw()
 
 ## ---- echo=FALSE, results='asis'-----------------------------------------
 dt_format_table <- data.frame(Argument = c("family", "face", "colour", "size", "hjust", "vjust", "angle", "lineheight"),
@@ -58,7 +60,8 @@ tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: 
 print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + labs(title = "Plot title") +
+pl + 
+  labs(title = "Plot title") +
   theme(plot.title = element_text(size = 20, vjust = 2),
         plot.background = element_rect(
           fill = "lightblue",
@@ -81,14 +84,15 @@ tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: 
 print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
-  axis.line.x = element_line(colour = "red", size = 2),
-  axis.line.y = element_line(colour = "orange", linetype = "dashed"),
-  axis.text = element_text(color = "blue", size = 15, face = "italic"),
-  axis.text.y = element_text(angle = 90, size = rel(0.7), hjust = 0),
-  axis.ticks = element_line(colour = "violet"),
-  axis.ticks.x = element_line(size = rel(2)),
-  axis.title = element_text(size = 20, color = "orangered")
+pl + 
+  theme(
+    axis.line.x = element_line(colour = "red", size = 2),
+    axis.line.y = element_line(colour = "orange", linetype = "dashed"),
+    axis.text = element_text(color = "blue", size = 15, face = "italic"),
+    axis.text.y = element_text(angle = 90, size = rel(0.7), hjust = 0),
+    axis.ticks = element_line(colour = "violet"),
+    axis.ticks.x = element_line(size = rel(2)),
+    axis.title = element_text(size = 20, color = "orangered")
 )
 
 ## ---- echo=FALSE, results='asis'-----------------------------------------
@@ -109,20 +113,21 @@ tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: 
 print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
-  legend.position = "top",
-  legend.box = "horizontal",
-  legend.background = element_rect(
+pl + 
+  theme(
+    legend.position = "top",
+    legend.box = "horizontal",
+    legend.background = element_rect(
       fill = "lemonchiffon",
       color = "black",
       size = 1,
       linetype = "longdash"
     ),
-  legend.key = element_rect(fill = "lemonchiffon", color = "magenta"),
-  legend.key.width = unit(0.5, "in"),
-  legend.key.height = unit(0.2, "in"),
-  legend.text = element_text(size = 8),
-  legend.title = element_text(face = "bold", size = 10, colour = "magenta"))
+    legend.key = element_rect(fill = "lemonchiffon", color = "magenta"),
+    legend.key.width = unit(0.5, "in"),
+    legend.key.height = unit(0.2, "in"),
+    legend.text = element_text(size = 8),
+    legend.title = element_text(face = "bold", size = 10, colour = "magenta"))
 
 ## ---- echo=FALSE, results='asis'-----------------------------------------
 dt_format_table <- data.frame(Element = c("panel.background", "panel.border", "panel.grid.major", "panel.grid.major.x", "panel.grid.major.y", 
@@ -140,11 +145,12 @@ tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: 
 print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
-  panel.background = element_rect(fill = "navy", color = "orange", size = 2),
-  panel.border = element_rect(fill = NA, colour = "orange", size = 2),
-  panel.grid.major = element_line(color = "gray60", size = 0.8),
-  panel.grid.major.x = element_blank())
+pl + 
+  theme(
+    panel.background = element_rect(fill = "navy", color = "orange", size = 2),
+    panel.border = element_rect(fill = NA, colour = "orange", size = 2),
+    panel.grid.major = element_line(color = "gray60", size = 0.8),
+    panel.grid.major.x = element_blank())
 
 ## ---- echo=FALSE, results='asis'-----------------------------------------
 dt_format_table <- data.frame(Element = c("strip.background", "strip.text", "strip.text.x", "strip.text.y"),
@@ -167,48 +173,58 @@ ggplot(data = bands, mapping = aes(x= humidity, y = viscosity)) +
   )
 
 ## ---- eval =FALSE--------------------------------------------------------
-## pl + ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
-## pl + labs(title = "Scatterplot of humidity vs viscosity \n by Pressure type")
+## pl +
+##   ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
+## pl +
+##   labs(title = "Scatterplot of humidity vs viscosity \n by Pressure type")
 
 ## ---- echo=FALSE, warning=FALSE, message=FALSE---------------------------
-pl + ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
+pl + 
+  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type") +
+pl + 
+  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type") +
   theme(plot.title=element_text(size=rel(2), lineheight=.9, family="Times", face="bold.italic", colour="red"))
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
+pl + 
+  theme(
     panel.background = element_rect(fill="lightblue"),
     panel.border = element_rect(colour="blue", fill=NA, size=2)
 )
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
+pl + 
+  theme(
     panel.grid.major = element_line(colour="red"),
     panel.grid.minor = element_line(colour="red", linetype="dashed", size=0.2)
 )
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
+pl + 
+  theme(
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
 )
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
+pl + 
+  theme(
     panel.grid.major.x = element_blank(), # remove horizontal grid major lines 
     panel.grid.minor.y = element_blank()  # remove vertical grid minor lines
 )
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
-  plot.background = element_rect(fill = "green")
+pl + 
+  theme(
+    plot.background = element_rect(fill = "green")
 )
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + theme(
-  plot.margin = unit(c(2,2,2,2), "cm")
+pl + 
+  theme(
+    plot.margin = unit(c(2,2,2,2), "cm")
 )
 
 ## ---- warning=FALSE, message=FALSE, fig.width=10, fig.height=10----------
@@ -247,5 +263,6 @@ theme(text = element_text(colour="red"),
       axis.title = element_text(size = rel(1.25)))
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl + mytheme
+pl + 
+  mytheme
 

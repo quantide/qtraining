@@ -1,0 +1,81 @@
+---
+title: "More on scales customization"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message =FALSE)
+```
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(ggplot2)
+require(qdata)
+data(bands)
+```
+
+Scales control the mapping from data to aestethics. The take your data and turn into something that you can see like colour, shape, position or
+size. Scales provide also the tools that allow you to read the plot: legends and axes. 
+
+In this chapter we discuss the scales functionalities and customization. We will talk about axes and legends in "More on Axis" and "More on scales" chapters, respectively.  
+
+## Scales scheme
+
+A scale is required for every aestethic used on a plot. 
+For example, when you write:
+
+```{r}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
+  geom_point(mapping = aes(colour=band_type))
+```
+
+What actually happens is:
+
+```{r}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
+  geom_point(mapping = aes(colour=band_type)) +
+  scale_x_continuous() +
+  scale_y_continuous() +
+  scale_color_discrete()
+```
+
+Default scales are named according to the aesthetic and the variable type. It would be tedious to manually add a scale every time a new aestethic is added, so `ggplot2` does it for you.
+
+Note: the previous two specifications are equal.
+
+Each scale has default values for its argument, this means that if you want to modify one or more feature of this scale you have to overwrite it/s default value. To overwrite its default value/s you have to manually add that scale.
+
+For example, let us suppose that you want to increase the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We modify the luminance in this way:
+
+```{r}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
+  geom_point(mapping = aes(colour=band_type)) +
+  scale_color_discrete(l = 90)
+```
+
+The use of `+` to "add" a scale is a little misleading. Remember that when you `+` a scale you are not adding it but ovverwriting it.
+
+### Scales naming scheme
+
+The name for scaling scheme is made up by three pieces separated by `_`:
+
+1. `scale`
+2. the name of the aestethic (e.g., `colour`, `shape`, ...)
+3. the name of the scale (e.g., `continuous`, `discrete`, `brewer`, ...)
+
+## Scales family
+
+Scales can be divided roughtly in four families:
+
+1. Continuous position scale, used to map data into `x` and `y` position
+2. Colour scales, used to map continuous and discrete data to colours
+3. Manual scales, used to map discrete variables to your choice of size, linetype, shape or colour
+4. Identity scale, used to plot avriables without scaling them
+
+
+
+
+
+
+
+However, if you want to modify a feature linked to a scale you have to manually add the scale that you want to modify, oveeriding its default
+

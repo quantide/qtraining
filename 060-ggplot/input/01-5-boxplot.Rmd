@@ -31,8 +31,7 @@ ggp2 <- ggp + theme(axis.ticks.y = element_blank()) + coord_flip()
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-This chapter presents how to build box plots and show how to customize: main titles, axes labels and legend titles.
-
+This chapter presents how to build box plots and violin plots. It show also how to add title and axis labels.
 
 # The first box plot
 
@@ -47,8 +46,7 @@ Appearance aesthetics work as seen until now; `fill` controls the box filling, w
 
 ```{r boxplot_colour, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
-  geom_boxplot(fill="#74a9cf", colour="#034e7b") +
-  geom_jitter()
+  geom_boxplot(fill="#74a9cf", colour="#034e7b") 
 ```
 
 There are also a few `outline.*` parameter to set aesthetics for outlier points.
@@ -63,7 +61,7 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 
 Boxplot summarises the bulk of distributions with only five numbers: median, first quartile, third quartile, minimum and maximum. You can also add points to boxplots by using `geom_jitter()` function:
 
-```{r boxplot_outlines, message=FALSE, warning=FALSE}
+```{r , message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3) +
   geom_jitter()
@@ -105,12 +103,12 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 
 ## Making a Violin Plot
 
-A much more flexible extension of the basic boxplot is the violin plot, constructed by combining the concept of the boxplot with that of nonparametric density estimates. Like box plots, violin plots are used to represent comparison of a variable distribution (or sample distribution) across different categories. A violin plot is more informative than a plain box plot. In fact while a box plot only shows summary statistics such as mean/median and interquartile ranges, the violin plot shows the full distribution of the data. The difference is particularly useful when the data distribution is multimodal (more than one peak). In this case a violin plot clearly shows the presence of different peaks, their position and relative amplitude. This information could not be represented with a simple box plot which only reports summary statistics. The inner part of a violin plot usually shows the mean (or median) and the interquartile range. In other cases, when the number of samples is not too high, the inner part can show all sample points (with a dot or a line for each sample).
+A much more flexible extension of the basic boxplot is the violin plot, constructed by combining the concept of the boxplot with that of nonparametric density estimates. Like box plots, violin plots are used to represent comparison of a variable distribution (or sample distribution) across different categories. A violin plot is more informative than a plain box plot. In fact while a box plot only shows summary statistics such as mean/median and interquartile ranges, the violin plot shows the full distribution of the data. The difference is particularly useful when the data distribution is multimodal (more than one peak). In this case a violin plot clearly shows the presence of different peaks, their position and relative amplitude. 
 
 <!--
 Suppose we want to compare the density distribution of `ink_pct` by `press_type`: 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, colour = press_type)) + 
   geom_density()
 ```
@@ -124,38 +122,38 @@ As you can see, with a violin plot, it's easier to compare several distributions
 
 Suppose we want to compare the density distribution of `ink_pct` by `press_type`:
 
-```{r}
+```{r violinplot_first, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
-  geom_violin()
+  geom_violin(fill ="lightgreen", colour = "mediumseagreen")
 ```
 
 `geom_violin()` is the function that draws violin plot. Like for a boxplot, usually the continuous variable is mapped on `y` axis and the categorical variable on `x` axis.
 
 The default range of violin plot goes from the minimum to maximum data values; the flat ends of the violins are at the extremes of the data. It’s possible to keep the tails, by setting `trim=FALSE`:
 
-```{r}
+```{r violinplot_with_tails, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
-  geom_violin(trim=FALSE)
+  geom_violin(fill ="lightgreen", colour = "mediumseagreen", trim=FALSE)
 ```
 
 By default, the violins are scaled so that the total area of each one is the same. Instead of equal areas, you can use `scale="count"` to scale the areas proportionally to the number of observations in each group:
 
-```{r}
+```{r violinplot_scaled_area, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
-   geom_violin(scale="count")
+   geom_violin(fill ="lightgreen", colour = "mediumseagreen", scale="count")
 ```
 
 To change the amount of smoothing, use the `adjust` parameter. The default value is 1; use larger values for more smoothing and smaller values for less smoothing:
 
-```{r}
+```{r violinplot_smooth, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
-   geom_violin(adjust=0.5)
+   geom_violin(fill ="lightgreen", colour = "mediumseagreen", adjust=0.5)
 ```
 
 
 If you also need the median and interquartile range, you can overlay boxplot on violin plot: 
 
-```{r}
+```{r violinplot_boxplot, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) +
 geom_violin(aes(fill = press_type), width=0.9, bw=1.5) +
 geom_boxplot(width=0.4, outlier.shape = NA)

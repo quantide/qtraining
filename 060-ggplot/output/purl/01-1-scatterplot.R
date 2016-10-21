@@ -5,16 +5,22 @@ require(qdata)
 data(bands)
 
 ## ----scatterplot_first, message=FALSE------------------------------------
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point()
 
 ## ----scatterplot_geompoint, message=FALSE, warning=FALSE-----------------
-ggplot() + geom_point(data=bands, mapping=aes(x=humidity, y=viscosity))
+ggplot() + 
+  geom_point(data=bands, mapping=aes(x=humidity, y=viscosity))
 
 ## ----scatterplot_geomsmooth, message=FALSE, warning=FALSE----------------
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point() + geom_smooth(method="lm")
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point() + 
+  geom_smooth(method="lm")
 
 ## ----scatterplot_noinherit, message=FALSE, warning=FALSE-----------------
-ggplot() + geom_point(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_smooth(method="lm")
+ggplot() + 
+  geom_point(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_smooth(method="lm")
 
 ## ----scatterplot_settinggeoms, message=FALSE, warning=FALSE--------------
 ggplot() + 
@@ -22,13 +28,15 @@ ggplot() +
   geom_smooth(data=bands, mapping=aes(x=humidity, y=viscosity), method="lm")
 
 ## ----scatterplot_assignment1, message=FALSE, warning=FALSE---------------
-gp1 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point() 
+gp1 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point() 
 
 ## ----scatterplot_assignment2, message=FALSE, warning=FALSE---------------
 gp1
 
 ## ----scatterplot_assignment3, message=FALSE, warning=FALSE---------------
-gp2 <- gp1 + geom_smooth(method="lm")
+gp2 <- gp1 + 
+  geom_smooth(method="lm")
 gp2
 
 ## ----scatterplot_shape, message=FALSE, warning=FALSE---------------------
@@ -53,7 +61,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
 
 ## ----scatterplot_fill, message=FALSE, warning=FALSE----------------------
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point(shape=21, colour="red", fill="#FF0000")
+  geom_point(shape=21, colour="red", fill="#2b439a")
 
 ## ----scatterplot_alpha, message=FALSE, warning=FALSE---------------------
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
@@ -89,7 +97,8 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type)) +
 
 ## ----scatterplot_map_colour_onesmooth, message=FALSE, warning=FALSE------
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
-  geom_point(mapping=aes(colour=band_type)) + geom_smooth(method="lm")
+  geom_point(mapping=aes(colour=band_type)) + 
+  geom_smooth(method="lm")
 
 ## ----scatterplot_map_colour_threesmooth, message=FALSE, warning=FALSE----
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +

@@ -28,7 +28,7 @@ ggp2 <- ggp + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins = 8) + ylab(
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-This chapter presents how to build histograms and introduces a basic concepts of `ggplot2` graphics: faceting. 
+This chapter presents how to build histograms and introduces a basic concepts of `ggplot2` graphics: faceting. It shows also how to build density curves and plots and frequency polygons. 
 
 
 # The first histogram
@@ -178,13 +178,15 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_density(adjust = 0.5)
 ```
 
+<!--
 You can set a value for `adjust` also by using `geom_line(stat="density")`.
+-->
 
 `geom_density()` can be used also to compare density distribution estimations of grouped data. The grouping variable must be map to an aesthetic like `colour` or `fill`. The grouping variable must be a factor or character vector. In this case we consider `band_type` variable:    
 
 ```{r , message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, colour = band_type)) + 
-  geom_density(adjust = 0.5)
+  geom_density()
 ```
 
 ## Frequency polygon
