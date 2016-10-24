@@ -201,6 +201,10 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
 
 Colours in the `values` string vector must appear in the same order as they appear in the legend. You can pass a named vector to be sure of the correspondence between colour and data.
 
+Mapped Aesthetics customization will be deepen in "Mapped Aesthetics Customization" chapter.
+
+<!--
+
 ```{r linegraph_setcolourmanual_order, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   geom_line() + 
@@ -208,9 +212,6 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green"))
 ```
 
-Mapped Aesthetics customization will be deepen in "Mapped Aesthetics Customization" chapter.
-
-<!--
 There are as many `scale_*_manual` function as aesthetics for which values can be set manually.
 
 ```{r linegraph_setshape_order, message=FALSE}
