@@ -1,5 +1,5 @@
 ---
-title: "More on Axis"
+title: "Axes Customization"
 output: html_document
 ---
 

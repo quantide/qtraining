@@ -9,9 +9,10 @@ Creating a Box Plot      | 01-5-boxplot.Rmd
 Creating a Surface Plot  | 01-7-surface-plot.Rmd
 
 Advanced ggplot2
-More on axes             | 02-1-axes.Rmd
-More on legend           | 02-2-legend.Rmd
-More on facet            | 02-3-facet.Rmd
+MApped Aesthetics Customization        | 02-5-scales.Rmd
+Axes Customization                     | 02-1-axes.Rmd
+Legend Customization                   | 02-2-legend.Rmd
+Facet Customization                    | 02-3-facet.Rmd
 More on the overall appearance of plot | 02-4-theme.Rmd
 
 More on Plots

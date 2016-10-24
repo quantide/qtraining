@@ -1,5 +1,5 @@
 ---
-title: "More on facets"
+title: "Facets Customization"
 output: html_document
 ---
 

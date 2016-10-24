@@ -1,5 +1,5 @@
 ---
-title: "More on legend"
+title: "Legend Customization"
 output: html_document
 ---
 
