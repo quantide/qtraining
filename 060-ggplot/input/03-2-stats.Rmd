@@ -7,6 +7,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
 ```
 
+
+```{r}
+require(ggplot2)
+require(qdata)
+data(bands)
+```
+
 As we said in the introduction, layer building block contains two elements of ggplot2 grammar: `stat`s and `geom`s.
 
 In particular, stat functions and geom functions both combine a stat with a geom to make a layer, i.e. `stat_bin(geom="bar")` does the same as `geom_bar(stat="bin")`:
