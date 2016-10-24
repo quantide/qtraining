@@ -13,7 +13,7 @@ require(qdata)
 data(bands)
 ```
 
-Scales control the mapping from data to aestethics. The take your data and turn into something that you can see like colour, shape, position or
+Scales control the mapping from data to aestethics. They take your data and turn into something that you can see like colour, shape, position or
 size. Scales provide also the tools that allow you to read the plot: legends and axes. 
 
 In this chapter we discuss the scales functionalities and customization. We will talk about axes and legends in "More on Axis" and "More on scales" chapters, respectively.  
@@ -38,9 +38,9 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   scale_color_discrete()
 ```
 
-Default scales are named according to the aesthetic and the variable type. It would be tedious to manually add a scale every time a new aestethic is added, so `ggplot2` does it for you.
-
 Note: the previous two specifications are equal.
+
+Default scales are named according to the aesthetic and the variable type. It would be tedious to manually add a scale every time a new aestethic is added, so `ggplot2` does it for you.
 
 Each scale has default values for its argument, this means that if you want to modify one or more feature of this scale you have to overwrite it/s default value. To overwrite its default value/s you have to manually add that scale.
 
@@ -54,6 +54,10 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
 
 The use of `+` to "add" a scale is a little misleading. Remember that when you `+` a scale you are not adding it but ovverwriting it.
 
+<!--
+However, if you want to modify a feature linked to a scale you have to manually add the scale that you want to modify, oveeriding its default
+-->
+
 ### Scales naming scheme
 
 The name for scaling scheme is made up by three pieces separated by `_`:
@@ -66,10 +70,202 @@ The name for scaling scheme is made up by three pieces separated by `_`:
 
 Scales can be divided roughtly in four families:
 
-1. Continuous position scale, used to map data into `x` and `y` position
+1. Continuous position scales, used to map data into `x` and `y` position
 2. Colour scales, used to map continuous and discrete data to colours
 3. Manual scales, used to map discrete variables to your choice of size, linetype, shape or colour
-4. Identity scale, used to plot avriables without scaling them
+4. Identity scale, used to plot variables without scaling them
+
+
+In the following paragraph we will discuss the most frequent questions about the previously listed scales family, aside continuous position scales which will widely discussed in "More on axis chapter".
+
+## Customizing colours
+
+Do you know aomothing about colour theory? If the answer is no, you should read this paragraph.
+
+At the physical level, colour is produced by a mixture of wavelenghts of lights. To characterise a colour completely we need to know the complete mixture of wavelenghts. Human eye has only three different colour receptors, so the perception of any colour can be summarised with just three numbers. 
+You may be familiar with the RGB encoding of colour space, which defines a colour by the intensities of red, green and blue light needed to produce it.
+One problem with this space is that it is not percentually uniform and this make it difficult to create a mapping from a continuous variable to a set of colours. 
+There have been many attemps to come up with colours spaces that are more percentually uniform. 
+
+We use a modern attemp called hcl colour space, which has three components of _h_ (hue), _c_ (chroma) amd _l_ (luminance):
+
+* hue is a number between 0 and 360 (an angle) which gives the "colour" of the colour: like blue, red, orange, etc. 
+* luminance is the lightness of the colour. A luminance of 0 produces black, amd a lumimance of 1 produces white
+* chroma is the purity of a coloyr. A chroma of 0 is grey, and the maximum value of chroma varies with luminance.
+
+Hues are not perceived as being ordered, but chroma and luminance are ordered.   
+
+![](./images/dimensions.png)
+
+
+<!--
+nozioni generiche sui colori
+-->
+
+### Use different colors for a discrete mapped variable
+
+Suppose we are interested in the relationship between `humidity` and `viscosity` by `press_type` in `bands` dataset:
+
+```{r}
+pl <- ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point()
+```
+
+You want to use different colour for `press_type` levels so you want to change the default palette. A palette is a range of colours; changing a palette is a modification of the color (or fill) scale: it involves a change in the mapping from numeric or categorical values to aesthetic attributes.
+
+There are two types of scales that use colors: fill scales and color scales.  
+You can change the default colours used in the graph by choosing a function from the following table:   
+
+Fill scale | Colour scale | Description                                                     
+-----------|--------------|-------------------------------------------------------------
+`scale_fill_discrete()` | `scale_colour_discrete()` | Colors evenly spaced around the color wheel (same as hue)
+`scale_fill_hue()` | `scale_colour_hue()` | Colors evenly spaced around the color wheel (same as discrete)
+`scale_fill_grey()` | `scale_colour_grey()` | Greyscale palette
+`scale_fill_brewer()` | `scale_colour_grey()` | ColorBrewer palettes
+`scale_fill_manual()` | `scale_colour_manual()` | Manually specified colors
+
+
+By default, the colors for discrete scales are evenly spaced around a HSL color circle. For example, if there are two colors, then they will be selected from opposite points on the circle; if there are three colors, they will be 120° apart on the color circle; and so on. 
+The default colors used for different numbers of levels are shown here:
+
+![](./images/default-colour-scheme.png)
+
+The default color selection uses `scale_fill_hue()` and `scale_colour_hue()`:
+
+```{r}
+pl <- ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point() +
+  scale_color_hue()
+```
+
+The previous two graph are equal and in the second graph definition `scale_color_hue()` is redundant
+
+With `scale_colour_hue()`, the colors are taken from around the color wheel in the HCL (hue-chroma-lightness) color space. 
+We saw that the default lightness value is 65 on a scale from 0–100. This is good for filled areas, but it’s a bit light for points and lines. To make the
+colors darker for points and lines, set the value of `l` (luminance/ lightness):
+
+```{r}
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point() +
+  scale_colour_hue(l=45)
+```
+
+You can also use other color scales, such as ones taken from the RColorBrewer package:
+
+![](./images/palette.png)
+
+
+
+The `ColorBrewer` palettes can be selected by name:
+
+```{r}
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point() +
+  scale_colour_brewer(palette="Oranges")
+```
+
+
+You can also use a palette of greys. This is useful for print when the output is in black and white. 
+
+
+```{r}
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point() +
+  scale_colour_grey()
+```
+
+The default is to start at 0.2 and end at 0.8, on a scale from 0 (black) to 1 (white), but you can change the range:
+
+```{r}
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point() +
+  scale_colour_grey(start=0.7, end=0)
+```
+
+### Using a Manually Defined Palette for a Discrete Variable 
+
+Colour can be also manually specified by using `scale_colour_manual()` function. The colors can be named, or they can be specified with RGB values:
+
+```{r}
+# named colours
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point() +
+  scale_colour_manual(values = c("magenta", "dark turquoise", "dodger blue", "lime green"))
+
+# RGB colour code
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point() +
+  scale_colour_manual(values = c("#FF00FF", "#00CED1", "#1E90FF", "#32CD32"))
+```
+
+The order of the items in the values vector matches the order of the factor levels for the discrete scale. 
+
+```{r}
+#bands %>% do(data.frame(levels(.$press_type)))
+levels(bands$press_type)
+```
+
+In the preceding example, the order of `press_type` is "ALBERT70", then  "MOTTER70", then "MOTTER94" and "WOODHOE70", so the first in `values` argument goes with 
+"ALBERT70", the second goes with "MOTTER70", the third with "MOTTER94" and the fourth with "WOODHOE70".
+If the variable is a character vector, not a factor, it will automatically be converted to a factor, and by default the levels will appear in alphabetical order.
+
+It’s possible to specify the colors in a different order by using a named vector:
+
+```{r}
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
+  geom_point() +
+  scale_colour_manual(values = c(ALBERT70 = "lime green", MOTTER70 = "dark turquoise", MOTTER94 = "magenta", WOODHOE70 = "dodger blue"))
+```
+
+There is a large set of named colors in R, which you can see by running `colors()`. Some basic color names are useful: `"white"`, `"black"`, `"grey80"`, `"red"`,
+`"blue"`, `"darkred"`, and so on. There are many other named colors, but their names are generally not very informative, for example `"thistle3"` and `"seashell"`, 
+so it is often easier to use numeric RGB values for specifying colors. RGB colors are specified as six-digit hexadecimal (base-16) numbers of the form
+`"#RRGGBB"`. In hexadecimal, the digits go from 0 to 9, and then continue with A (10 in base 10) to F (15 in base 10). Each color is represented by two digits 
+and can range from 00 to FF (255 in base 10). So, for example, the color `"#FF0099"` has a value of 255 for red, 0 for green, and 153 for blue, resulting in a shade of magenta. The hexadecimal numbers for each color channel often repeat the same digit because it makes them a little easier to read, and because the precise value of 
+the second digit has a relatively insignificant effect on appearance.
+
+Here are some rules of thumb for specifying and adjusting RGB colors:
+
+* In general, higher numbers are brighter and lower numbers are darker.
+* To get a shade of grey, set all the channels to the same value.
+* The opposites of RGB are CMY: Cyan, Magenta, and Yellow. Higher values for the red channel make it more red, and lower values make it more cyan. The same is
+true for the pairs green and magenta, and blue and yellow.
+
+### Using a Manually Defined Palette for a Continuous Variable
+
+You want to use different colors for a continuous variable.
+
+Mapping continuous values to a color scale requires a continuously changing palette of colors. 
+The following table lists the continuous color and fill scales:
+
+Fill scale | Colour scale | Description                               
+-----------|--------------|-------------------------------------------
+`scale_fill_gradient()`  | `scale_colour_gradient()`  | Two-color gradient 
+`scale_fill_gradient2()` | `scale_colour_gradient2()` | Gradient with a middle color and two colors that diverge from it
+`scale_fill_gradientn()` | `scale_colour_gradientn()` | Gradient with n colors, equally spaced
+
+
+In the example here, we’ll specify the colors for a continuous variable using various
+gradient scales (Figure 12-12). The colors can be named, or they can be specified with
+RGB values:
+
+Supposing we are interested in the relationship between 
+
+```{r, eval = FALSE}
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
+  geom_point()
+
+
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
+  geom_point() + 
+  scale_colour_gradient(low="black", high="white")
+
+
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
+  geom_point() + 
+  scale_colour_gradient2(low=muted("red"), mid="white", high=muted("blue"),
+midpoint=110)
+```
 
 
 
@@ -77,5 +273,4 @@ Scales can be divided roughtly in four families:
 
 
 
-However, if you want to modify a feature linked to a scale you have to manually add the scale that you want to modify, oveeriding its default
 
