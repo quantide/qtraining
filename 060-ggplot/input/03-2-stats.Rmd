@@ -1,0 +1,70 @@
+---
+title: "Stats vs geoms"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
+```
+
+As we said in the introduction, layer building block contains two elements of ggplot2 grammar: `stat`s and `geom`s.
+
+In particular, stat functions and geom functions both combine a stat with a geom to make a layer, i.e. `stat_bin(geom="bar")` does the same as `geom_bar(stat="bin")`:
+
+```{r}
+ggplot(data=ChickWeight, mapping=aes(x=weight)) + 
+  geom_bar(stat="bin", col="blue", fill ="dodger blue")
+
+ggplot(data=ChickWeight, mapping=aes(x=weight)) + 
+  stat_bin(geom="bar", col="blue", fill ="dodger blue")
+```
+
+These plots visualize a transformation of the original data set.
+
+Each stat creates additional variables to map aesthetics to. These variables use a common `..name..` syntax. 
+We can use these variables for building the plot:
+
+```{r}
+ggplot(bands, aes(humidity, viscosity)) + 
+         stat_density2d(aes(fill = ..level..), geom = "polygon", n = 100)
+```
+
+Each geom has a default statistical transformation that can be changed.
+
+The most important geoms and their statistical transformations are schematized in the following table:
+
+geom | default stat | other value for stat
+-----|--------------|-----------------------
+abline | abline | identity
+hline | hline | 
+vline | vline |
+text | identity |
+point | identity |
+jitter| identity |
+line | identity |
+bar | bin | identity
+histogram | bin | identity
+boxplot | boxplot | identity
+density | density | identity
+density2d | density2d | identity
+contour | contour | identity
+freqpoly | bin | identity
+smooth | smooth | identity
+
+
+
+
+
+
+
+
+
+
+
+
+
+The following table sumamrize the most important functions:
+
+
+
+

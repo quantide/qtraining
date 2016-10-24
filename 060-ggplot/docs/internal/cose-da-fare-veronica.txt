@@ -55,3 +55,7 @@ tenerla per il capitolo More on scales?
 
 * ragionare sulla struttura del capitolo
 * modificare la struttura delle tabelle 
+
+02-5: scales
+
+migliorare la parte scale, linetype, shape (approfondire)

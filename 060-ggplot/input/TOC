@@ -8,12 +8,12 @@ Creating a Histogram     | 01-4-histogram.Rmd
 Creating a Box Plot      | 01-5-boxplot.Rmd
 Creating a Surface Plot  | 01-7-surface-plot.Rmd
 
-Advanced ggplot2
+Plots Customization
 Mapped aes Customization        | 02-5-scales.Rmd
 Axes Customization              | 02-1-axes.Rmd
 Legend Customization            | 02-2-legend.Rmd
 Facet Customization             | 02-3-facet.Rmd
 Overall appearance of plot      | 02-4-theme.Rmd
 
-More on Plots
+Advanced ggplot2
 Presenting Plots         | 03-1-presenting.Rmd
