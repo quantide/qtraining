@@ -1,0 +1,46 @@
+---
+title: "ggfamily"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GGally
+
+GGally is a convenient package built upon `ggplot2` that contains templates for different plots to be combined into a plot matrix through the function ggpairs. It is a nice alternative to the more limited pairs function.
+
+
+```{r}
+require(GGally)
+data(tips, package="reshape")
+ 
+ggpairs(data=tips, # data.frame with variables
+        columns=1:3, # columns to plot, default to all.
+        title="tips data", # title of the plot
+        colour = "sex") # aesthetics, ggplot2 style
+```
+
+Plots like the one above are very helpful, among others things, in the pre-processing stage of a classification problem, where you want to analyze your predictors given the class labels. It is particularly amazing that we can now use the arguments colour, shape, size and alpha provided by ggplot2.
+
+```{r}
+pm = ggpairs(data=tips,
+             columns=1:3, 
+             upper = list(continuous = "density"),
+             lower = list(combo = "facetdensity"),
+             title="tips data",
+             colour = "sex")
+print(pm)
+```
+
+creates Figure 2, which uses the same data used in Figure 1, but with a density plot in the upper diagonal for continuous vs. continuous variables and a density plot faceted by a discrete variable in a continuous vs. discrete scenario.
+
+----------------
+
+ extends 'ggplot2' by adding several functions to reduce the complexity of combining geometric objects with transformed data. Some of these functions include a pairwise plot matrix, a two group pairwise plot matrix, a parallel coordinates plot, a survival plot, and several functions to plot networks.
+
+author  Barret Schloerke
+
+
+
