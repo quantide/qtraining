@@ -59,3 +59,8 @@ tenerla per il capitolo More on scales?
 02-5: scales
 
 migliorare la parte scale, linetype, shape (approfondire)
+
+
+03-2: stats
+
+rivedere l'introduzione (aggiungere parte di stat identity)
