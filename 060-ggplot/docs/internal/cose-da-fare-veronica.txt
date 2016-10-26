@@ -60,7 +60,9 @@ tenerla per il capitolo More on scales?
 
 migliorare la parte scale, linetype, shape (approfondire)
 
+03-3 : ggplot2 community
 
-03-2: stats
+inserire italy in qdata e rivedere la parte iniziale in cui descriviamo i dati utilizzati 
+correggere aplulia in puglia nei dati a tradurre in italiano tutto
 
-rivedere l'introduzione (aggiungere parte di stat identity)
+

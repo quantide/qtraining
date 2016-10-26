@@ -1,5 +1,5 @@
 ---
-title: "ggfamily"
+title: "ggplot2 community"
 output: html_document
 ---
 
@@ -7,12 +7,24 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-There are lots of packages which are `ggplot2` extensions.  
-In this chapter we will anlyze the most important:
 
-* `GGally`
-* `ggmap`
+```{r, message=FALSE}
+require(ggplot2)
+require(GGally)
+require(ggmap)
+require(qdata)
+require(survival)
+load("./../data/italy_loc_info.RData")
+data(bottlecap)
+data(istat)
+```
 
+`ggplot2` is a community that is flourishing day by day. There are packages developed starting from `ggplot2` grammar, the so-called `ggplot2` extensions, like `GGally` and packages designed to work with `ggplot2`, like `ggmap`. All of them contribute to the growth of `ggplot2` community.  This means that also you can easily create your own stats, geoms and positions, and provide them in other packages, which will become `ggplot2` extensions. You can find a list of the official `ggplot2` extensions at [www.ggplot2-exts.org](https://www.ggplot2-exts.org). These packages are available on CRAN and/or on Github. Enjoy yorself with them!
+
+In this chapter we will analyze the two most important packages linked to `ggplot2`:
+
+* `GGally`, an extension of `ggplot2` for correlation matrix and survival plots
+* `ggmap`, for Spatial Visualization with `ggplot2`
 
 ## GGally
 
@@ -20,11 +32,11 @@ In this chapter we will anlyze the most important:
 
 `GGally` extends `ggplot2` by providing several functions including:
 
-`ggcor()`: for pairwise correlation matrix plot
-`ggpairs()`: for scatterplot plot matrix
-`ggsurv()`: for survival plot
+* `ggcor()`: for pairwise correlation matrix plot
+* `ggpairs()`: for scatterplot plot matrix
+* `ggsurv()`: for survival plot
 
-Supposing you have already installed it, you have to load it:
+Supposing the package is already installed, first of all `GGally` must be loaded.  
 
 ```{r}
 require(GGally)
@@ -34,21 +46,19 @@ require(GGally)
 
 The function `ggcorr()` draws a correlation matrix plot using `ggplot2`.
 
-The simplified format is:
+Let us see an example considering `bottlecap` dataset. `bottlecap` contains measures of the mean diameter of the caps produced by 8 different cavity of a forging machine during the quality control phase. Suppose we want to know if there is correlation between the measures performed by the 8 cavity in order to verify if it is possible to reduce the measuring cavity.  
 
 ```{r}
-ggcorr(mtcars, palette = "RdBu", label = TRUE)
+ggcorr(data = bottlecap, palette = "RdBu", label = TRUE)
 ```
 
-<!--
-cambiare i dati?
--->
+`label` argument is set to `TRUE` in order to add correlation coefficients to the plot. 
 
 ## `ggpairs()`: for scatterplot plot matrix
 
 `ggpairs()` function contains templates for different plots to be combined into a plot matrix. It is a nice alternative to the more limited `pairs` function of `graphics` package.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 ggpairs(data=istat, # dataframe with variables
         columns = 2:4, # columns to be used to make plots
         title="Matrix Plot of istat data") # title of the plot
@@ -56,7 +66,7 @@ ggpairs(data=istat, # dataframe with variables
 
 Plots like the one above are very helpful, among others things, in the pre-processing stage of a classification problem, where you want to analyze your predictors given the class labels. It is particularly amazing that we can now use the arguments `colour`, `shape`, `size` and `alpha` provided by `ggplot2`:
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 ggpairs(data=istat, # data.frame with variables
         mapping = aes(colour=Area), # esthetic mapping (besides x and y)
         columns = 2:4, # columns to be used to make plots
@@ -65,9 +75,9 @@ ggpairs(data=istat, # data.frame with variables
 
 We have some control over which type of plots to use. We can choose which type of graph will be used for continuous vs. continuous (`continuous`) and discrete vs. discrete (`discrete`) and continuous vs. discrete (`combo`). We can also have different plots for the upper diagonal (`upper`), for the diagonal (`diagonal`) and for the lower diagonal (`lower`).
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 ggpairs(data=istat,
-        mapping = aes(colour=Area), # esthetic mapping (besides x and y)
+        mapping = aes(colour=Area), 
         columns=2:4, 
         upper=list(continuous = 'cor', discrete = 'facetbar', combo ='facethist'),
         lower=list(continuous = 'smooth', discrete = 'facetbar', combo ='dot'),
@@ -84,7 +94,6 @@ For example, the code above, set to use in the upper diagonal: correlations for 
 Let us see an example, considering `lung` data from package `survival`:
 
 ```{r}
-require(survival)
 data(lung, package = "survival")
 ```
 
@@ -106,7 +115,7 @@ We consider only the following variables:
 
 As a first argument `ggsurv()` needs a survfit object, created by the `survival` package:
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 # Fit survival functions
 surv <- survfit(Surv(time, status) ~ sex, data = lung)
 # Plot survival curves
@@ -115,4 +124,78 @@ ggsurv(surv) +
   scale_colour_discrete(name   = 'Sex', breaks = c(1,2), 
                       labels = c('Male', 'Female'))
 ```
+
+
+## ggmap
+
+`ggmap` is a package for Spatial Visualization with `ggplot2` written by David Kahle and Hadley Wickham.
+
+In particular, `ggmap` enables such visualization by combining the spatial information of static maps from Google Maps, OpenStreetMap, Stamen Maps or CloudMade Maps with the layered grammar of graphics implementation of `ggplot2`.
+
+<!--
+Since `ggplot2` is an implementation of the layered grammar of graphics, every plot made with `ggplot2` has each of the above elements. 
+-->
+
+`ggmap` plots have the same elements of `ggplot2`, but certain elements are fixed to map components : 
+
+* the `x` aesthetic is fixed to longitude, 
+* the `y` aesthetic is fixed to latitude, 
+* the coordinate system is fixed to the Mercator projection
+
+The basic idea driving `ggmap` is to take a downloaded map image, plot it as a context layer using `ggplot2`, and then plot additional content layers of data, statistics, or models on top of the map. 
+
+In `ggmap` this process is broken into two pieces:
+
+1. downloading the images and formatting them for plotting, done with `get_map()`
+2. making the plot, done with `ggmap()`. 
+
+
+Let us see an example.
+
+We want to identificate the positions of italian most important cities.
+
+1. First of all we download italian map:
+```{r}
+# get italy map
+italy_map <- get_map(location="Italy", zoom = 6, maptype = "satellite")
+```
+
+`location` argument is specified as an "address", it can be specified also by a latitude/longitude pair.  
+`zoom` argument specify the level of map zoom; it can be spacified from 3 (continent) to 21 (building) the default is 10 (city). 6 level of zoom returns countries.  
+`maptype` specify map theme. Some of the options are: "terrain", "toner", "watercolor", "roadmap", "satellite", "hybrid".  
+
+<!--
+```{r, eval=FALSE}
+italy_map <- get_map(location="Italy", zoom = 6, maptype = "terrain")
+italy_map <- get_map(location="Italy", zoom = 6, maptype = "toner")
+italy_map <- get_map(location="Italy", zoom = 6, maptype = "satellite")
+italy_map <- get_map(location="Italy", zoom = 6, maptype = "hybrid")
+```
+-->
+
+2. We make the plot visualizing firstly only the downloaded map, by using `ggmap()` function:
+
+```{r}
+ggmap(italy_map)
+```
+
+We can add information about the location of most important cities included in  `italy` dataset:
+
+```{r}
+head(italy)
+```
+
+```{r, fig.width=9, fig.height=9}
+ggmap(italy_map) + 
+  geom_point(aes(colour = province), data = italy)+
+  geom_text(aes(label = city, colour = province), data = italy, size = 4, check_overlap = T,
+            hjust = 0, nudge_x = 0.05) +
+  ggtitle("Map of most the important italian cities")+
+  labs(colour="Region", label ="Region") + 
+  theme(axis.title=element_blank(),
+        plot.title=element_text(size = 22, face = "bold"),
+        legend.title=element_text(size = 16))
+```
+
+
 
