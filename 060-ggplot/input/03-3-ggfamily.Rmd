@@ -7,40 +7,112 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+There are lots of packages which are `ggplot2` extensions.  
+In this chapter we will anlyze the most important:
+
+* `GGally`
+* `ggmap`
+
+
 ## GGally
 
-GGally is a convenient package built upon `ggplot2` that contains templates for different plots to be combined into a plot matrix through the function ggpairs. It is a nice alternative to the more limited pairs function.
+`GGally` is a convenient package built upon `ggplot2` for correlation matrix and survival plots written and mantained by Barret Schloerke. It reduces the complexity of combining geometric objects with transformed data.
 
+`GGally` extends `ggplot2` by providing several functions including:
+
+`ggcor()`: for pairwise correlation matrix plot
+`ggpairs()`: for scatterplot plot matrix
+`ggsurv()`: for survival plot
+
+Supposing you have already installed it, you have to load it:
 
 ```{r}
 require(GGally)
-data(tips, package="reshape")
- 
-ggpairs(data=tips, # data.frame with variables
-        columns=1:3, # columns to plot, default to all.
-        title="tips data", # title of the plot
-        colour = "sex") # aesthetics, ggplot2 style
 ```
 
-Plots like the one above are very helpful, among others things, in the pre-processing stage of a classification problem, where you want to analyze your predictors given the class labels. It is particularly amazing that we can now use the arguments colour, shape, size and alpha provided by ggplot2.
+### ggcorr(): Plot a correlation matrix
+
+The function `ggcorr()` draws a correlation matrix plot using `ggplot2`.
+
+The simplified format is:
 
 ```{r}
-pm = ggpairs(data=tips,
-             columns=1:3, 
-             upper = list(continuous = "density"),
-             lower = list(combo = "facetdensity"),
-             title="tips data",
-             colour = "sex")
-print(pm)
+ggcorr(mtcars, palette = "RdBu", label = TRUE)
 ```
 
-creates Figure 2, which uses the same data used in Figure 1, but with a density plot in the upper diagonal for continuous vs. continuous variables and a density plot faceted by a discrete variable in a continuous vs. discrete scenario.
+<!--
+cambiare i dati?
+-->
 
-----------------
+## `ggpairs()`: for scatterplot plot matrix
 
- extends 'ggplot2' by adding several functions to reduce the complexity of combining geometric objects with transformed data. Some of these functions include a pairwise plot matrix, a two group pairwise plot matrix, a parallel coordinates plot, a survival plot, and several functions to plot networks.
+`ggpairs()` function contains templates for different plots to be combined into a plot matrix. It is a nice alternative to the more limited `pairs` function of `graphics` package.
 
-author  Barret Schloerke
+```{r}
+ggpairs(data=istat, # dataframe with variables
+        columns = 2:4, # columns to be used to make plots
+        title="Matrix Plot of istat data") # title of the plot
+```
 
+Plots like the one above are very helpful, among others things, in the pre-processing stage of a classification problem, where you want to analyze your predictors given the class labels. It is particularly amazing that we can now use the arguments `colour`, `shape`, `size` and `alpha` provided by `ggplot2`:
 
+```{r}
+ggpairs(data=istat, # data.frame with variables
+        mapping = aes(colour=Area), # esthetic mapping (besides x and y)
+        columns = 2:4, # columns to be used to make plots
+        title="Matrix Plot of istat data") # title of the plot
+```
+
+We have some control over which type of plots to use. We can choose which type of graph will be used for continuous vs. continuous (`continuous`) and discrete vs. discrete (`discrete`) and continuous vs. discrete (`combo`). We can also have different plots for the upper diagonal (`upper`), for the diagonal (`diagonal`) and for the lower diagonal (`lower`).
+
+```{r}
+ggpairs(data=istat,
+        mapping = aes(colour=Area), # esthetic mapping (besides x and y)
+        columns=2:4, 
+        upper=list(continuous = 'cor', discrete = 'facetbar', combo ='facethist'),
+        lower=list(continuous = 'smooth', discrete = 'facetbar', combo ='dot'),
+        diag=list(continuous = 'barDiag', discrete = 'barDiag'),
+        title="Matrix Plot of istat data")
+```
+
+For example, the code above, set to use in the upper diagonal: correlations for continuous vs. continuous variables, faceted bar plot for discrete vs. discrete variables and faceted histograms for continuous vs. discrete variables.
+
+## `ggsurv()`: for survival plot
+
+`ggsurv()` produces Kaplan-Meier plots using `ggplot2`.
+
+Let us see an example, considering `lung` data from package `survival`:
+
+```{r}
+require(survival)
+data(lung, package = "survival")
+```
+
+`lung` data is about survival in patients with advanced lung cancer. 
+
+```{r, eval=FALSE}
+lung <- lung[, c(2,3,5)]
+```
+
+<!--
+salvare lung in qdata (solo le tre colonne di interesse)
+-->
+
+We consider only the following variables:  
+
+* `time`: Survival time in days
+* `status`: censoring status 1 = censored, 2 = dead
+* `sex`: Male = 1; Female = 2
+
+As a first argument `ggsurv()` needs a survfit object, created by the `survival` package:
+
+```{r}
+# Fit survival functions
+surv <- survfit(Surv(time, status) ~ sex, data = lung)
+# Plot survival curves
+ggsurv(surv) + 
+  guides(linetype = FALSE) +
+  scale_colour_discrete(name   = 'Sex', breaks = c(1,2), 
+                      labels = c('Male', 'Female'))
+```
 
