@@ -31,33 +31,37 @@ gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 This chapter presents how to build histograms and introduces a basic concepts of `ggplot2` graphics: faceting. It shows also how to build density curves and plots and frequency polygons. 
 
 
-# The first histogram
+## The first histogram
 
 As a quality engineer, you are interested to the distribution of ink percentage in `bands` data.
 
 ```{r histogram_first, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram()
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_histogram()
 ```
 
 As usual,  aesthetics can be set to modify the appearance of plot.
 
 ```{r histogram_aes, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0")
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_histogram(fill="#2B4C6F", colour="#3690c0")
 ```
 
 By default, the data is grouped into 30 bins. You can modify the number of bins:
 
  - setting the number of bins:
     ```{r histogram_bins, message=FALSE, warning=FALSE}
-    ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins=6)
+    ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+      geom_histogram(fill="#2B4C6F", colour="#3690c0", bins=6)
     ```
     
  - setting the width of each bin:
     ```{r histogram_binwidth, message=FALSE, warning=FALSE}
-    ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0", binwidth=7)
+    ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+      geom_histogram(fill="#2B4C6F", colour="#3690c0", binwidth=7)
     ```  
     
-# Mapping variables to histograms and faceting
+## Mapping variables to histograms and faceting
 
 May be interesting analysing the distribution of ink percentage for each level of `proof_on_ctd_ink`. 
 
@@ -120,7 +124,7 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
 
 -->
 
-# Making a density histogram
+## Making a density histogram
 
 To show densities instead than count (frequencies) on the y axis, the special variable `..density..` must be used.
 
@@ -135,7 +139,8 @@ A density curve can be added to compare the theoretical and observed distributio
 
 ```{r , message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
-  geom_histogram(fill="#74a9cf") + geom_density(colour="#034e7b")
+  geom_histogram(fill="#74a9cf") + 
+  geom_density(colour="#034e7b")
 ```
 
 `geom_density()` function draws a kernel density curve, which is an estimate of the population distribution, based on the sample
@@ -145,10 +150,11 @@ data.
 
 ```{r , message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
-  geom_histogram(fill="#74a9cf") + geom_line(stat="density", colour="#034e7b")
+  geom_histogram(fill="#74a9cf") + 
+  geom_line(stat="density", colour="#034e7b")
 ```
 
-In particular, `geom_line()` and is used with `"density"` statistical transformation, which means that a statistical transformation is applied to data, in particulare `ink_pct` density is estimated. 
+In particular, `geom_line()`is used with `"density"` statistical transformation, which means that a statistical transformation is applied to data, in particular `ink_pct` density is estimated. 
 
 <!--
 This is essentially the same as using `geom_density()`, except the former draws it with a closed polygon.

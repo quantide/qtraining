@@ -13,9 +13,9 @@ Visualizing data is crucial in today's world. Without powerful visualizations, i
 grafico export versus explanatory
 -->
 
-R is well supported to make data visualization. It provides at least three main graphical systems: `graphics` that comes with base R, `lattice` that is an R implementation of William Cleveland's trellis graphics and `ggplot2` that is an R implementation of Leland Wilkinson's Grammar of Graphics. The Grammar of Graphics is a formal and structured perspective on how to describe data graphics. CRAN provides a [Task View on Graphics](https://cran.r-project.org/web/views/Graphics.html), that is an organized list of all R packages about graphics, that includes not only the three main graphical systems but also packages to produce specialized plots.
+R is well supported to make data visualization. It provides at least three main graphical systems: `graphics` that comes with base R, `lattice` that is an R implementation of William Cleveland's trellis graphics and `ggplot2` that is an R implementation of Leland Wilkinson's Grammar of Graphics. CRAN provides a [Task View on Graphics](https://cran.r-project.org/web/views/Graphics.html), that is an organized list of all R packages about graphics, that includes not only the three main graphical systems but also packages to produce specialized plots.
 
-In the following chapters, `ggplot2` graphics are shown. `ggplot2` package has become a synonym for data visualization in R and there are at least two main reasons to prefer it that other graphic systems:
+In the following chapters, `ggplot2` graphics are shown. `ggplot2` package has become a synonym for data visualization in R and there are at least two main reasons to prefer it than other graphic systems:
 
  - `ggplot2` is newer than other graphic systems;
  - `ggplot2` is built on the idea of a semantics for graphics and there is much more emphasis on reshaping data, transformation, and assembling the elements of a plot.
@@ -35,7 +35,7 @@ require(ggplot2)
 In order to unlock the full power of `ggplot2`, you need an overview of its undelying grammar. 
 By understanding the grammar and how its components fit together, you can create a wider range of visualization, combine miltiple source of data, and customize to your heart's content.
 
-`ggplot2` grammar is called layered as it is structured in building blocks. Its basic idea is to independently specify plot building blocks and combine them to create just about any kind of graphical display you want. 
+As we said, `ggplot2` is an R implementation of Leland Wilkinson's Grammar of Graphics, which is a formal and structured perspective on how to describe data graphics. `ggplot2` grammar is called layered as it is structured in building blocks. Its basic idea is to independently specify plot building blocks and combine them to create just about any kind of graphical display you want. 
 
 <!--
 cambiare iris
@@ -43,7 +43,7 @@ cambiare iris
 
 Let us see an example.   
 
-Let us consider `iris` dataset. `iris` dataset gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. Suppose we want to visualize the relationship between the length and the width of sepal according to the different species of iris: 
+Let us consider `iris` dataset. `iris` dataset gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. Suppose we want to visualize the relationship between the length and the width of iris sepals according to the different species: 
 
 ```{r, fig.width= 8, echo=FALSE}
 # Load iris dataset
@@ -77,7 +77,7 @@ The complete scheme of the most important building blocks of `ggplot2` grammar i
 
 ![](./images/schema-layer-ggplot2.png)
 
-The scheme must be read from down to top. Starting from down, the first three building blocks (Data, Aestethic Mappings and Layers) are essential to build a simple plot, meanwhile the remaining (Scales, Coordinates, Facet and Theme) allows us to build a complex plot and to customize it. The scheme order is recommended but it is not compulsory. 
+The scheme must be read from down to top. Starting from down, the first three building blocks (Data, Aestethic Mappings and Layers) are essential to build a simple plot, they are called "key" building blocks, meanwhile the remaining (Scales, Coordinates, Facet and Theme) allows us to build a complex plot and to customize it. The scheme order is recommended but it is not compulsory. 
 
 <!--
 dire che non è obbligatorio utilizzare tutti i layer
@@ -89,6 +89,10 @@ Let us briefly describe the task of each element of the scheme and how it helps 
 
 ![](./images/schema-layer-ggplot2-data.png)
 
+
+```{r, eval=FALSE}
+data(iris)
+```
 
 ```{r}
 # iris dataset
@@ -108,7 +112,7 @@ head(iris)
 
 
 ```{r}
-ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species))
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length))
 ```
 
 3. <b> <span style="color:#FF0000">Layers</span> </b>: are made up by geometric elements and statistical transformations. In details, geometric objects (`geom`s) represent what you actually see on the plot: points, lines, polygons, etc. Statistical transformations (`stat`s) summarise data in many useful ways. For example, binning and counting observations to create an histogram, or summarising a 2d relationship with a linear model.       
@@ -203,7 +207,7 @@ The first section, "Base ggplot2", explains how building the most important kind
 
 The second section, "Advanced ggplot2" explains how dealing with the most common questions about plot customization and deepens the remaining components of `ggplot2` grammar.  
 
-The third section, "More on Plots", shows how to prepare plots for presentations, and save them to files and shows other graphical systems.  
+The third section, "Other Topics", shows how to prepare plots for presentations, and save them to files and talk about the `ggplot2` community and the packages built starting from it.  
 
 
 <!--
@@ -258,6 +262,31 @@ For a description of data, refer to the help (`?ChickWeight`).
 For a description of data, refer to the help (`?ToothGrowth`).
 
 
+### istat
+
+`istat` provides the measures of weight, height, gender and geographical area ("Nord", "Centro", "Sud" and "Isole") from 1806 Italian people.
+
+`istat` is included in `qdata` package.
+
+For a complete description of data, refer to the help (`?istat`).
+
+### italy
+
+`italy` provides information about longitude, latitude and region of the most important italian cities. 
+
+`italy` is included in `qdata` package.
+
+For a complete description of data, refer to the help (`?italy`).
+
+### lung
+
+`lung` provides information about survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. 
+
+`lung` is included in `survival` package. 
+
+<!--
+metterlo in qdata
+-->
 
 ## Bibliography and References
 

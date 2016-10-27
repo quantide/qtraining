@@ -33,7 +33,7 @@ gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 
 This chapter presents how to build box plots and violin plots. It show also how to add title and axis labels.
 
-# The first box plot
+## The first box plot
 
 Supposing you are interested in the differences of ink percentage accordingly to the type of press, you can build four box plots to compare distributions.
 
@@ -59,7 +59,7 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 
 ## Adding points to boxplot
 
-Boxplot summarises the bulk of distributions with only five numbers: median, first quartile, third quartile, minimum and maximum. You can also add points to boxplots by using `geom_jitter()` function:
+Boxplot summarises the bulk of distributions with only five numbers: median, first quartile, third quartile, minimum and maximum. You can also add points to boxplots to identify the observations by using `geom_jitter()` function:
 
 ```{r , message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
@@ -70,7 +70,7 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 `geom_jitter()` adds a little random noise to the plot which can help avoid overlapping. Hovewer, it works with only relatively small dataset. 
 
 
-# Making a single box plot
+## Making a single box plot
 
 Surprisingly, it is more complicated to draw a single box plot. This is because `geom_boxplot()` requires an `x` value that is used as grouping variable. You have to set a single value for `x` when you do not have a grouping variable.
 
@@ -88,11 +88,11 @@ ggplot(data=bands, aes(x="0", y=ink_pct)) +
   theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
 ```
 
-x-axis tick marker and label are removed by using `theme()` function. We remind the functionalities and features of these functions to the chapters of "Advanced ggplot2" section.  
+x-axis tick marker and label are removed by using `theme()` function. We remind the functionalities and features of these functions to "Axes Customization" chapter.  
 
-# Adding Titles and Axis labels
+## Adding Titles and Axis labels
 
-The last example reveals how to change the x-axis title. This is useful when the name of the variable is not enough clear. An analogous function `ylab()` set the y-axis title, while `ggtitle()` should be used when you want a title for the whole plot. Note the use of the escape code `\n` to break lines.
+The last example reveals how to remove the x-axis title. If the name of the variable in axes title are not enough clear, you can change them by using functions `ylab()` to set the y-axis title and `xlab()` to set the x-axis title, while `ggtitle()` should be used when you want a title for the whole plot. Note the use of the escape code `\n` to break lines.
 
 ```{r boxplot_ylab, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
@@ -103,7 +103,11 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 
 ## Making a Violin Plot
 
-A much more flexible extension of the basic boxplot is the violin plot, constructed by combining the concept of the boxplot with that of nonparametric density estimates. Like box plots, violin plots are used to represent comparison of a variable distribution (or sample distribution) across different categories. A violin plot is more informative than a plain box plot. In fact while a box plot only shows summary statistics such as mean/median and interquartile ranges, the violin plot shows the full distribution of the data. The difference is particularly useful when the data distribution is multimodal (more than one peak). In this case a violin plot clearly shows the presence of different peaks, their position and relative amplitude. 
+A much more flexible extension of the basic boxplot is the violin plot, constructed by combining the concept of the boxplot with that of nonparametric density estimates. Like box plots, violin plots are used to represent comparison of a variable distribution (or sample distribution) across different categories. A violin plot is more informative than a plain box plot. In fact while a box plot only shows summary statistics such as mean/median and interquartile ranges, the violin plot shows the full distribution of the data. 
+
+<!--
+The difference is particularly useful when the data distribution is multimodal (more than one peak). In this case a violin plot clearly shows the presence of different peaks, their position and relative amplitude. 
+-->
 
 <!--
 Suppose we want to compare the density distribution of `ink_pct` by `press_type`: 

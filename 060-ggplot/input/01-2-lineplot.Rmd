@@ -28,7 +28,7 @@ gridExtra::grid.arrange(ggp+geom_point(colour="#2B4C6F"), ggp, ncol=2)
 This chapter presents how to build line plots and introduces other basic concepts of `ggplot2` graphics: `group` aesthetic and manual scales.
 
 
-# The first line plot
+## The first line plot
 
 `ChickWeight` data contains the body weight of 50 chicks over time. Suppose you are interested to the growth of the first chick.
 
@@ -37,7 +37,7 @@ ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
   geom_line()
 ```
 
-You can change the appearance of the line setting `geom_line()` aestethic arguments. For example, you can set dark blue color for line and chenge the size in this way:
+You can change the appearance of the line setting `geom_line()` aestethic arguments. For example, you can set dark blue color for line and change the size in this way:
 
 ```{r linegraph_set, message=FALSE}
 ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
@@ -97,7 +97,7 @@ ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
   geom_point()
 ```
 
-# Mapping variables to line plots
+## Mapping variables to line plots
 
 If you are interested in the average growth of chicks for the different diets, you must first summarize data.
 
@@ -149,7 +149,7 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp)) +
   geom_point()
 ```
 
-As you can see from the plot no lines are drawn and a warning message is returned. Probably, this is one of the most frequently asked about `geom_line()`. This appens because `geom_line()` tries to connect data points that belong to same group and the combinations of different levels of factor variables belong to different group. 
+As you can see from the plot no lines are drawn and a warning message is returned. Probably, this is one of the most frequently asked questions about `geom_line()`. This appens because `geom_line()` tries to connect data points that belong to same group and the combinations of different levels of factor variables belong to different group. 
 
 To resolve this problem, you have to manually specify the grouping, setting `group` argument:
 
@@ -179,7 +179,7 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) 
 
 `position` argument of both `geom_line()` and `geom_point()` is set equal to `position_dodge()`. `position_dodge()` is a `ggplot2` function that adjust position by dodging overlaps to the side. 0.15 is the `width` specified. 
 
-# Changing the Appearance of Mapped Aesthetics
+## Changing the Appearance of Mapped Aesthetics
 
 When you feed your chicks, you use the "A" fodder for diet 1, the "B" fodder for diet 2, the "C" for diet 3 and the "D" for diet 4. 
 
@@ -224,7 +224,7 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
 ```
 -->
 
-# Adding horizontal and vertical lines
+## Adding horizontal and vertical lines
 
 Line plots often contains horizontal or vertical lines.
 
@@ -256,6 +256,7 @@ growth_avg <- ChickWeightGrowth %>%
 
 ggp1 <- ggp + 
   geom_hline(yintercept = growth_avg, colour="grey20")
+
 ggp1
 ```
 

@@ -38,7 +38,7 @@ gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 This chapter presents how to build bar plots and introduces other basic concepts of `ggplot2` graphics: `stat`.
 
 
-# The first bar plot
+## The first bar plot
 
 As seen in the previous chapter, chicks receive one of four diets (see `ChickWeight` data set). A graphical summary about how chicks receive each diet can be obtained.
 
@@ -62,7 +62,7 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   geom_bar(width=0.5)
 ```
 
-# Setting and mapping variables to line plots
+## Setting and mapping variables to bar plots
 
 Colours and other available aesthetic settings (`linetype` and `size`) can be set or mapped as usual. Remember that `colour` controls the bar outline, while `fill` controls the bar colour.
 
@@ -106,10 +106,10 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
 
 -->
 
-`ggplot2` provides some functions (e.g. `scale_*_brewer` or `scale_*_gradient`) to choose a palette (i.e. a set of coherent colours), but these functions are not shown in this chapter. You can still use `scale_*_manual` functions and refer to some on-line tool like [Color Brewer](http://colorbrewer2.org/) or [Paletton](http://paletton.com/) for a better choice of colours.
+`ggplot2` provides some functions (e.g. `scale_*_brewer` or `scale_*_gradient`) to choose a palette (i.e. a set of coherent colours), but these functions will be shown in "Legend Customization" chapter. You can still use `scale_*_manual` functions and refer to some on-line tool like [Color Brewer](http://colorbrewer2.org/) or [Paletton](http://paletton.com/) for a better choice of colours.
 
 
-# Summarized data and `stat`s
+## Summarized data and `stat`s
 
 Sometimes data comes already summarized. As an example, you can have the following frequency tables without the original data.
 
@@ -140,7 +140,7 @@ Since you have an `y` variable containing frequencies, you tell `ggplot` the var
 A statistical transformation, or `stat`, transforms the data, typically by summarizing it in some manner. All `geom`s are based on a statistical transformation. By default, almost all `geom`s seen until now uses `stat="identity"`, that do not transform data. As just seen, by default `geom_bar()` uses `stat="count"` that counts the number of cases at each `x` position. If you do not want to transform your data, `stat="identity"` must be supplied.
 
 
-# Stacked and grouped bar plots
+## Stacked and grouped bar plots
 
 If you are a quality engineer analysing the `bands` data, you may be interested to the number of presses for each type, distinguishing them by the cylinder size.
 
@@ -212,7 +212,7 @@ ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) +
 ```
 
 
-# Adding text to plots
+## Adding text to plots
 
 Plots are useful to catch the eye of your audience but sometimes they cannot replace numbers or text. Adding text to a plot can help you to integrate information in your plot.
 

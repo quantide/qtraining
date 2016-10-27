@@ -28,7 +28,7 @@ ggplot(data=ds) + geom_point(aes(x=X1, y=X2, size=X3*1), colour="#2B4C6F", show.
 This chapter presents how to build scatter plots and introduces some basic concept of `ggplot2` graphics: aesthetics and geoms.
 
 
-# The first scatter plot
+## The first scatter plot
 
 Suppose you are interested in the relationship between the humidity and the viscosity in the `bands` dataset. 
 
@@ -94,7 +94,7 @@ ggplot() +
 To sum up, data and aesthetics specified in ggplot are used by default by all layers. Layers are like tracing papers, you can overlay them. Each layer contains a geometry. If a layer has its own data and/or aesthetics, that layer will ignore the default values.
 
 
-# Assigning `ggplot`s to a variable
+## Assigning `ggplot`s to a variable
 
 From a formal point of view, a ggplot is an R object like anything else; so you can assign it to a variable.
 
@@ -117,7 +117,7 @@ gp2
 ```
 
 
-# Changing the shape and size of points
+## Changing the shape and size of points
 
 At this point, you probably are interested to change the aspect of points like shape or size: it suffices to set the `shape` or the `size` as a parameter of `geom_point()`.
 
@@ -169,7 +169,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
 ```
 
 
-# Changing the colour of points
+## Changing the colour of points
 
 Colour can be set in a similar way than `shape` and `size`: setting `colour` as a `geom_point()` parameters. Both UK and US spellings (`color`) can be used.
 
@@ -199,7 +199,7 @@ Since `alpha=0.25` (and 0.25 is 1/4) a point will be drawn as solid when four po
 If you are familiar with base graphics in R, `shape` substitutes `pch`, `size` substitutes `cex`, `colour` substitutes `col` and `fill` substitutes `bg`. The base syntax can be used also in `ggplot2` but it is strongly suggested to migrate to the new and more intuitive syntax.
 
 
-# Mapping a third variable to scatter plots
+## Mapping a third variable to scatter plots
 
 Scatter plots were born to visualize the relationship between two variables: one mapped to the x-axis and one mapped to the y-axis. Sometimes, a third variable should be visualized. In these case, you can map a third variable to other aesthetics: size, shape or colour.
 
@@ -279,7 +279,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
 ```
 
 
-# Mapping four variables to scatter plots
+## Mapping four variables to scatter plots
 
 Although the interpretation may be difficult, different variable can map to different aesthetics at the same time. From a theoretical point of view you can map as many variable as the number of aesthetics, but it is not suggested map more than four variable.
 
