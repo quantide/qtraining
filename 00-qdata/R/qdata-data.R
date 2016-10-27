@@ -2556,3 +2556,33 @@ NULL
 #' @source 
 NULL
 ##################################################################################################################################
+
+##################################################################################################################################
+#' Longitude and Latitude about italian cities
+#' 
+#' 
+#' @name italy
+#' 
+#' 
+#' @description \code{italy} dataset contains information about latitude, longitude, population and region of the most important italian cities. 
+#'  
+#' @usage data(italy)
+#' 
+#' 
+#' @format \code{italy} is a tbl data frame with 56 observations on 5 variables.
+#' 
+#' 
+#' @details 
+#' The 5 variables of the \code{italy} tbl data frame are the following ones:
+#' \itemize{
+#'  \item \code{city} city name (character)
+#'  \item \code{lat} latitude (numeric)
+#'  \item \code{lon} longitude (numeric)
+#'  \item \code{pop} population (numeric)
+#'  \item \code{region} region (character)
+#' }
+#' 
+#' 
+#' @source \url{http://simplemaps.com/resources/world-cities-data}
+##################################################################################################################################
+
