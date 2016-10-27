@@ -288,6 +288,15 @@ For a complete description of data, refer to the help (`?italy`).
 metterlo in qdata
 -->
 
+## brainbod
+
+`brainbod` provides information about the weight of body and brain of different species of animals.
+
+`brainbod` is included in `qdata` package.
+
+For a complete description of data, refer to the help (`?brainbod`).
+
+
 ## Bibliography and References
 
 To take a deeper look about `ggplot2` you can refer to:

@@ -17,9 +17,9 @@ data(bands)
 You can change the appearance of mapped aesthetics by using scales.  
 Scales control the mapping from data to aestethics. They take your data and turn into something that you can see like colour, shape, position or size. Scales provide also the tools that allow you to read the plot: legends and axes. 
 
-In this chapter we will discuss how customize the appearance of mapped aesthetics by exploring scales functionalities. Legends and axes will not discussed here but in "More on Axis" and "More on scales" chapters, respectively. 
+In this chapter we will discuss how customize the appearance of mapped aesthetics by exploring scales functionalities. Legends and axes will not discussed here but in "Axes Customization" and "Legend Customization" chapters, respectively. 
 
-But firstly, let us introduce some theoretical concepts on the scales.
+But firstly, let us introduce some theoretical concepts about scales.
 
 ## Some theory about scales
 
@@ -41,13 +41,13 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   scale_color_discrete()
 ```
 
-Note: the previous two specifications are equal.
+The previous two specifications are equal.
 
 Default scales are named according to the aesthetic and the variable type. It would be tedious to manually add a scale every time a new aestethic is added, so `ggplot2` does it for you.
 
-Each scale has default values for its argument, this means that if you want to modify one or more feature of this scale you have to overwrite it/s default value. To overwrite its default value/s you have to manually add that scale.
+Each scale has default values for its argument, this means that if you want to modify one or more features of this scale you have to overwrite it/s default value. To overwrite its default value/s you have to manually add that scale.
 
-For example, let us suppose that you want to increase the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We modify the luminance in this way:
+For example, let us suppose that you want to increase the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to increase the luminance and set it to 90 in this way:
 
 ```{r}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
@@ -106,7 +106,7 @@ We use a modern attemp called hcl colour space, which has three components of __
 
 * hue is a number between 0 and 360 (an angle) which gives the "colour" of the colour: like blue, red, orange, etc. 
 * chroma is the purity of a coloyr. A chroma of 0 is grey, and the maximum value of chroma varies with luminance
-* luminance is the lightness of the colour. A luminance of 0 produces black, amd a lumimance of 1 produces white
+* luminance is the lightness of the colour. A luminance of 0 produces black, and a lumimance of 1 produces white
 
 Hues are not perceived as being ordered, but chroma and luminance are ordered.   
 
@@ -154,7 +154,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_color_hue()
 ```
 
-The previous two graph are equal and in the second graph definition `scale_color_hue()` is redundant
+The previous two graph are equal and in the second graph definition `scale_color_hue()` is redundant.
 
 With `scale_colour_hue()`, the colors are taken from around the color wheel in the HCL (hue-chroma-lightness) color space. 
 We saw that the default lightness value is 65 on a scale from 0–100. This is good for filled areas, but it’s a bit light for points and lines. To make the

@@ -9,7 +9,7 @@ Creating a Box Plot      | 01-5-boxplot.Rmd
 Creating a Surface Plot  | 01-7-surface-plot.Rmd
 
 Advanced ggplot2
-Mapped aes Customization        | 02-5-scales.Rmd
+Mapped Aes Customization        | 02-5-scales.Rmd
 Axes Customization              | 02-1-axes.Rmd
 Legend Customization            | 02-2-legend.Rmd
 Facet Customization             | 02-3-facet.Rmd
