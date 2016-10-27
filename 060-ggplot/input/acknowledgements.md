@@ -4,8 +4,8 @@ title: "Acknowledgements"
 
 This web book is the result of work of my colleagues:
 
-* Nicola Sturaro, who wrote most parts of this book
-* Veronica Giro, who finished and reviewed this book.
+* Nicola Sturaro, who wrote the first version of this book
+* Veronica Giro, who wrote the current version of this book.
 
 ![](images/EF5C8766.jpg)
 
