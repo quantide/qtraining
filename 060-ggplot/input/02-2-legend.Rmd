@@ -24,7 +24,7 @@ pl_1
 
 As you can see from the plot, the legend is automatically built showing `press_type` variable levels. In this case, `press_type` variable is mapped to `fill` aesthetic. When a variable is mapped to an aesthetic it is automatically set to a scale. The default scale in this case is `scale_fill_discrete()`, but there are also other scales according to aesthetics mapped, such as `colour` (for lines and points) or `shape` (for points).
 
-Scales, `theme()` and `guides()` functions are the tools of `ggplot2` used to customize the appearance of the legend.
+Scales, `theme()` and `guides()` functions are the tools of `ggplot2` used to customize the appearance of the legend components.
 
 <!--
 frase di collegamento con il disegno 
@@ -135,7 +135,7 @@ pl_1 +
   scale_fill_discrete(limits=c("MOTTER94", "MOTTER70", "WOODHEADE70", "ALBERT70"))
 ```
 
-Note that the order of the items on the x-axis did not change. To do that, you would have to set the limits of `scale_x_discrete()` or change the data to have a different factor level order. For more detail see "Change axis order" paragraph in "More on axis" chapter.
+Note that the order of the items on the x-axis did not change. To do that, you would have to set the limits of `scale_x_discrete()` or change the data to have a different factor level order. For more detail see "Change axis order" paragraph in "Axes Customization" chapter.
 
 ### Reversing the order of items in a legend
 
@@ -261,7 +261,7 @@ pl_1 +
   scale_fill_discrete(labels=c("Albert 70", "Motter 70", "Motter 94", "Woodhoe 70"))
 ```
 
-Note that the labels on the x-axis did not change. To do that, you would have to set the labels of `scale_x_discrete()` (see chapter "More on axis", paragraph "Changing the Text of Tick Labels"), or change the data to have different factor level names.
+Note that the labels on the x-axis did not change. To do that, you would have to set the labels of `scale_x_discrete()` (see chapter "Axes Customization", paragraph "Changing the Text of Tick Labels"), or change the data to have different factor level names.
 
 If you are also changing the order of items in the legend, the labels are matched to the items by position. In this example we change the item order, and make sure to set the labels in the same order:
 

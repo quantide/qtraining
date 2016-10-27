@@ -327,7 +327,13 @@ pl_2 +
   scale_y_log10(breaks=10^(0:3))
 ```
 
-To instead use exponential notation for the break labels, use the `trans_format()` function, from the `scales` package:
+To instead use exponential notation for the break labels, use the `trans_format()` function, from the `scales` package:.
+
+Supposing `scales` is already installed, it must be loaded:
+
+```{r, eval=FALSE}
+require(scales)
+```
 
 ```{r, warning=FALSE, message=FALSE}
 pl_2 + 
@@ -383,13 +389,13 @@ pl +
 The `angle` setting specifies the text rotation and the `hjust` and `vjust` settings specify the horizontal alignment (left/center/right) and vertical alignment (top/middle/bottom).
 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 pl + 
   theme(axis.text.x = element_text(family="Times", face="bold", colour="darkgreen", size=rel(0.8)))
 ```
 
 The `family` setting specifies the font family, `face` the font face, `colour` the text colour and `size` the text size.
-In this example, the size is set to `rel(0.8)`, which means that it is 0.9 times the size of the base font size for the theme.
+In this example, the size is set to `rel(0.8)`, which means that it is 0.8 times the size of the base font size for the theme.
 
 ### Changing the Appearance of Tick marks
 

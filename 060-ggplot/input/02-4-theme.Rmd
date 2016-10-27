@@ -12,7 +12,7 @@ data(bands)
 ```
 
 
-The overall appearance of plots is controlled by the theming system, an important component of `ggplot2` grammar. We learned about the theming system in the previous chapters, in particular in "More on legends", "More on axes" and "More on facets", where we saw how themes give us the control of non-data elements of the plot like fonts, ticks, panel strip, legend keys, ..
+The overall appearance of plots is controlled by the theming system, an important component of `ggplot2` grammar. We learned about the theming system in the previous chapters, in particular in "Legend Customization", "Axes Customization" and "Facet Customization", where we saw how themes give us the control of non-data elements of the plot like fonts, ticks, panel strip, legend keys, ..
 
 Let us deeepen the theming system structure.
 
@@ -40,7 +40,7 @@ Suppose we want to modify the colour of axis lines:
 ```{r, warning=FALSE, message=FALSE}
 pl + 
   theme(axis.line.x = element_line(colour = "black"),
-           axis.line.y = element_line(colour = "black"))
+        axis.line.y = element_line(colour = "black"))
 ```
 
 In particular, `axis.line.x` and `axis.line.y` are the theme elements that control the appearance of x and y axis respectively and `element_line()` is the theme element function that allows us to modify the theme elements.
