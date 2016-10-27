@@ -113,6 +113,7 @@ growth_avg <- ChickWeightGrowth %>%
 
 ggp1 <- ggp + 
   geom_hline(yintercept = growth_avg, colour="grey20")
+
 ggp1
 
 ## ----linegraph_vline, message=FALSE--------------------------------------

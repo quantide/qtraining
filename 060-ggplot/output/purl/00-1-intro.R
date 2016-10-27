@@ -27,12 +27,15 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
     legend.position="none"
 )
 
+## ---- eval=FALSE---------------------------------------------------------
+## data(iris)
+
 ## ------------------------------------------------------------------------
 # iris dataset
 head(iris)
 
 ## ------------------------------------------------------------------------
-ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species))
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length))
 
 ## ------------------------------------------------------------------------
 # Scatterplot of the relationship between sepal length and sepal width with regression line

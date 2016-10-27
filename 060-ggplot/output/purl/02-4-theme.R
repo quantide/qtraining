@@ -13,7 +13,7 @@ pl
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 pl + 
   theme(axis.line.x = element_line(colour = "black"),
-           axis.line.y = element_line(colour = "black"))
+        axis.line.y = element_line(colour = "black"))
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 pl + 

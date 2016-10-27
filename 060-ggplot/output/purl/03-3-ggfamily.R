@@ -7,7 +7,7 @@ require(GGally)
 require(ggmap)
 require(qdata)
 require(survival)
-load("./../data/italy_loc_info.RData")
+data(italy)
 data(bottlecap)
 data(istat)
 
@@ -70,8 +70,8 @@ head(italy)
 
 ## ---- fig.width=9, fig.height=9------------------------------------------
 ggmap(italy_map) + 
-  geom_point(aes(colour = province), data = italy)+
-  geom_text(aes(label = city, colour = province), data = italy, size = 4, check_overlap = T,
+  geom_point(aes(colour = region), data = italy)+
+  geom_text(aes(label = city, colour = region), data = italy, size = 4, check_overlap = T,
             hjust = 0, nudge_x = 0.05) +
   ggtitle("Map of most the important italian cities")+
   labs(colour="Region", label ="Region") + 

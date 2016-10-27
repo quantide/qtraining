@@ -1,7 +1,7 @@
 Introduction
 
-https://www.analyticsvidhya.com/blog/2016/03/questions-ggplot2-package-r/
-https://www.analyticsvidhya.com/blog/2015/05/data-visualization-resource/
+https://www.analyticsvidhya.com/blog/2016/03/questions-ggplot2-package-r/ ok
+https://www.analyticsvidhya.com/blog/2015/05/data-visualization-resource/ ok
 rendere trasparenti i layer dei grafici di cui non si parla
 
 Adv ggplot2:
@@ -19,14 +19,14 @@ Appendix: teoria
 
 # dealing with overplotting dove lo metto? In overall apeearance of the plot forse
 
-index: rifare il disegno del flow (evidenziare solo la parte di data visualization) --> prendere quello che c'è in rforbeginners
+index: rifare il disegno del flow (evidenziare solo la parte di data visualization) --> prendere quello che c'è in rforbeginners  ok
 
 
 02-1-axes:
 
 * trovare un altro esempio per assi mappati a date. Per ora uso dati MASS (al massimo inserirli in qdata)
-* eliminare da 01-5-boxplot l'ultima parte che è uguale a questa
-* inserire paragrafo sulle date-ore (ore relative)
+* eliminare da 01-5-boxplot l'ultima parte che è uguale a questa ok
+* inserire paragrafo sulle date-ore (ore relative) 
 * trovare un esempio più consono alla rimozione della label asse x (paragrafo: "Changing the Text of Tick Labels")
 * aggiungere percent ai tick labels "percent()" function di "scales" (paragrafo: "Changing the Text of Tick Labels")
 * aggiungere che si può cambiare l'ordine degli items in una scala disceta anche andando amodificare i dati
@@ -47,7 +47,7 @@ tenerla per il capitolo More on scales?
 
 02-3: facets
 
-* si può aggiungere qualcosa anche in merito al positioning?
+* si può aggiungere qualcosa anche in merito al positioning? (sufficiente quello che c'è in Creating a Bar Plot)
 * aggiungere esempio su geom_blank()
 * capire as.table di facet_wrap
 
@@ -62,7 +62,6 @@ migliorare la parte scale, linetype, shape (approfondire)
 
 03-3 : ggplot2 community
 
-inserire italy in qdata e rivedere la parte iniziale in cui descriviamo i dati utilizzati 
-correggere aplulia in puglia nei dati a tradurre in italiano tutto
+inserire italy in qdata e rivedere la parte iniziale in cui descriviamo i dati utilizzati ok
 
 

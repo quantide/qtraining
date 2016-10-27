@@ -58,15 +58,15 @@ ggplot(faithfuld, aes(waiting, eruptions, z = density)) +
 
 ## ------------------------------------------------------------------------
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
+  geom_contour(colour = "darkgreen", linetype = 6, size = 1)
+
+## ------------------------------------------------------------------------
+ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(aes(colour = ..level..))
 
 ## ------------------------------------------------------------------------
 ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
   geom_contour(aes(colour = ..level..))
-
-## ------------------------------------------------------------------------
-ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
-  geom_contour(colour = "darkgreen", linetype = 6, size = 1)
 
 ## ------------------------------------------------------------------------
 ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
@@ -125,7 +125,7 @@ ggplot(small, aes(humidity, viscosity)) +
 
 ## ------------------------------------------------------------------------
 ggplot(small, aes(humidity, viscosity)) +
-  geom_point(aes(size = density), alpha =1/3, colour = "blue", fill = "lightblue") +
+  geom_point(aes(size = density), alpha = 0.4, colour = "blue", fill = "lightblue") +
   scale_size_area()
 
 ## ---- eval=FALSE---------------------------------------------------------

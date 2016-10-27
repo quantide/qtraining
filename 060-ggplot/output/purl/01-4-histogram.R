@@ -5,16 +5,20 @@ require(qdata)
 data(bands)
 
 ## ----histogram_first, message=FALSE, warning=FALSE-----------------------
-ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram()
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_histogram()
 
 ## ----histogram_aes, message=FALSE, warning=FALSE-------------------------
-ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0")
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_histogram(fill="#2B4C6F", colour="#3690c0")
 
 ## ----histogram_bins, message=FALSE, warning=FALSE------------------------
-ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins=6)
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_histogram(fill="#2B4C6F", colour="#3690c0", bins=6)
 
 ## ----histogram_binwidth, message=FALSE, warning=FALSE--------------------
-ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0", binwidth=7)
+ggplot(data=bands, mapping=aes(x=ink_pct)) + 
+  geom_histogram(fill="#2B4C6F", colour="#3690c0", binwidth=7)
 
 ## ----histogram_mapping, message=FALSE, warning=FALSE---------------------
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
@@ -56,11 +60,13 @@ ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
 
 ## ---- message=FALSE, warning=FALSE---------------------------------------
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
-  geom_histogram(fill="#74a9cf") + geom_density(colour="#034e7b")
+  geom_histogram(fill="#74a9cf") + 
+  geom_density(colour="#034e7b")
 
 ## ---- message=FALSE, warning=FALSE---------------------------------------
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
-  geom_histogram(fill="#74a9cf") + geom_line(stat="density", colour="#034e7b")
+  geom_histogram(fill="#74a9cf") + 
+  geom_line(stat="density", colour="#034e7b")
 
 ## ---- message=FALSE, warning=FALSE---------------------------------------
 ggplot(data=bands, mapping=aes(x=ink_pct)) + 

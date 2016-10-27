@@ -117,36 +117,42 @@ pl +
   scale_y_continuous(breaks=NULL)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl_1 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
   geom_point()
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-pl_1 + 
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point() + 
   scale_y_continuous(breaks=c(40, 50, 60, 70), labels=c("Less", "Medium-\nLess", "Medium-\nHigh", "High"))
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-p <- ggplot(brainbod, aes(x=Body, y=Brain, label=Species)) + 
-  geom_text(size=3)+
+pl_2 <- ggplot(brainbod, aes(x=Body, y=Brain, label=Species)) + 
+  geom_text(size=3)
+
+pl_2 +
   scale_x_log10()+
   scale_y_log10()
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-p + 
+pl_2 + 
   scale_x_log10(breaks=10^(-1:5)) + 
   scale_y_log10(breaks=10^(0:3))
 
+## ---- eval=FALSE---------------------------------------------------------
+## require(scales)
+
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-p + 
+pl_2 + 
   scale_x_log10(breaks=10^(-1:5), labels=trans_format("log10", math_format(10^.x))) +
   scale_y_log10(breaks=10^(0:3), labels=trans_format("log10", math_format(10^.x)))
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-p + 
+pl_2 + 
   scale_x_continuous(trans = log_trans()) +
   scale_y_continuous(trans = log2_trans())
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
-p + 
+pl_2 + 
   scale_x_continuous(trans = log_trans(), breaks = trans_breaks("log", function(x) exp(x)),
     labels = trans_format("log", math_format(e^.x))) + 
   scale_y_continuous(trans = log2_trans(), breaks = trans_breaks("log2", function(x) 2^x),
@@ -164,7 +170,7 @@ pl +
 pl + 
   theme(axis.text.x = element_text(angle=30, hjust=1, vjust=1))
 
-## ------------------------------------------------------------------------
+## ---- warning=FALSE, message=FALSE---------------------------------------
 pl + 
   theme(axis.text.x = element_text(family="Times", face="bold", colour="darkgreen", size=rel(0.8)))
 
