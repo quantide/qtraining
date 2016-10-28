@@ -3,7 +3,7 @@ title: "Axes Customization"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
 ```
 
@@ -508,7 +508,7 @@ Suppose we want to generate the time series plot of personal savings rate:
 
 ```{r}
 p <- ggplot(econ, aes(x=date, y=psavert)) + 
-  geom_line()
+  geom_line(colour = "orangered")
 p
 ```
 

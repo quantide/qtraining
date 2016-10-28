@@ -19,9 +19,9 @@ Scales control the mapping from data to aestethics. They take your data and turn
 
 In this chapter we will discuss how customize the appearance of mapped aesthetics by exploring scales functionalities. Legends and axes will not discussed here but in "Axes Customization" and "Legend Customization" chapters, respectively. 
 
-But firstly, let us introduce some theoretical concepts about scales.
+But firstly, let us introduce some concepts about scales structure.
 
-## Some theory about scales
+## Scales Structure
 
 A scale is required for every aestethic used on a plot. 
 For example, when you write:
@@ -47,12 +47,12 @@ Default scales are named according to the aesthetic and the variable type. It wo
 
 Each scale has default values for its argument, this means that if you want to modify one or more features of this scale you have to overwrite it/s default value. To overwrite its default value/s you have to manually add that scale.
 
-For example, let us suppose that you want to increase the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to increase the luminance and set it to 90 in this way:
+For example, let us suppose that you want to reduce the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to increase the luminance and set it to 40 in this way:
 
 ```{r}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point(mapping = aes(colour=band_type)) +
-  scale_color_discrete(l = 90)
+  scale_color_discrete(l = 45)
 ```
 
 The use of `+` to "add" a scale is a little misleading. Remember that when you `+` a scale you are not adding it but ovverwriting it.
@@ -75,7 +75,7 @@ There are more types of scales. They can be grouped into:
 * Continuous position scales, used to map data into `x` and `y` position
 * Mapped aestethics scales, like colour, linetype, shape and size.
 
-In the following paragraphs we will answer to the most frequent questions about mapped aesthetics scales customization for: colours, linetype, shape and size. The use of continuous position scales will be discussed in "Axes customization".
+In the following paragraphs we will answer to the most frequently asked questions about mapped aesthetics scales customization for: colours, linetype, shape and size. The use anf the features of continuous position scales will be discussed in "Axes customization" chapter.
 
 
 <!--
@@ -126,7 +126,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   geom_point()
 ```
 
-You want to use different colour for `press_type` levels so you want to change the default palette. A palette is a range of colours; changing a palette is a modification of the color (or fill) scale: it involves a change in the mapping from numeric or categorical values to aesthetic attributes.
+You want to use different colour for `press_type` levels so you want to change the default palette. A palette is a range of colours; so changing a palette means to modify the `colour` (or `fill`) scale: it involves a change in the mapping from numeric or categorical values to aesthetic attributes.
 
 There are two types of scales that use colors: fill scales and color scales.  
 You can change the default colours used in the graph by choosing a function from the following table:   
@@ -157,8 +157,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
 The previous two graph are equal and in the second graph definition `scale_color_hue()` is redundant.
 
 With `scale_colour_hue()`, the colors are taken from around the color wheel in the HCL (hue-chroma-lightness) color space. 
-We saw that the default lightness value is 65 on a scale from 0–100. This is good for filled areas, but it’s a bit light for points and lines. To make the
-colors darker for points and lines, set the value of `l` (luminance/ lightness):
+In "Scales structure" we learn that the default lightness value is 65 on a scale from 0–100. This is good for filled areas, but it’s a bit light for points and lines. To make the colors darker for points and lines, set the value of `l` (luminance/ lightness):
 
 ```{r}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
@@ -166,7 +165,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_colour_hue(l=45)
 ```
 
-You can also use other color scales, such as ones taken from the RColorBrewer package:
+You can also use other color scales, such as ones taken from the `RColorBrewer` package:
 
 ![](./images/palette.png)
 
@@ -329,8 +328,7 @@ si potrebbero fare gli esempi con le superfici, oppure fare fill prima.
 
 ## Customizing linetype
 
-
-The allowed line types are:
+R provides the following line types:
 
 ```{r plot_linetypes, echo=FALSE, fig=TRUE, purl=FALSE}
 par(mar=rep(0,4))
@@ -366,13 +364,14 @@ text(x = x0, y = 1, labels = '6. "twodash"', cex = cex0, pos = pos0)
 lines(x = c(xs, xe), y = c(1, 1), lty = 6, lwd = lwd0)
 ```
 
+`linetype` aesthetic has to be mapped to discrete variables.
 
 ### Changing line types 
 
-Let us consider the average growth of chicks for the different diets by using `ChickWeights` dataset, as seen in "Creating a Line Plot"
+Let us consider the average growth of chicks for the different diets by using `ChickWeights` dataset, as seen in "Creating a Line Plot":
 
 ```{r}
-# dati
+# data
 ChickWeightMean <- ChickWeight %>% 
   group_by(Time, Diet) %>% 
   summarize(weight=mean(weight)) %>%
@@ -394,9 +393,11 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
   scale_linetype_manual(values=c(3,4,5,6))
 ```
 
+Line type values can be pass as numbers or strings.
+
 ## Customizing Shape
 
-The allowed shapes symbols are:
+R provides the following shapes symbols:
 
 ```{r plot_shape, echo=FALSE, fig=TRUE, purl=FALSE}
  par(mar=rep(0,4))
@@ -419,6 +420,7 @@ The allowed shapes symbols are:
  text((1:5) + 0.4, rep(1, 5), cex = 1, (21:25))
 ```
 
+`linetype` aesthetic has to be mapped to discrete variables.
 
 ### Changing shape types
 

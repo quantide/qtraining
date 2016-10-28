@@ -21,7 +21,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
 ## ------------------------------------------------------------------------
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point(mapping = aes(colour=band_type)) +
-  scale_color_discrete(l = 90)
+  scale_color_discrete(l = 45)
 
 ## ------------------------------------------------------------------------
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
@@ -105,7 +105,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent
   scale_colour_gradientn(colours = terrain.colors(n=8))
 
 ## ------------------------------------------------------------------------
-# dati
+# data
 ChickWeightMean <- ChickWeight %>% 
   group_by(Time, Diet) %>% 
   summarize(weight=mean(weight)) %>%

@@ -1,8 +1,10 @@
+## ---- include=FALSE------------------------------------------------------
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
+
 ## ----setup, include=FALSE------------------------------------------------
 require(ggplot2)
 require(scales)
 require(qdata)
-require(MASS)
 require(xtable)
 data(bands)
 data(brainbod)
@@ -76,6 +78,18 @@ pl +
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 pl + 
   scale_y_reverse(limits=c(100, 0))
+
+## ------------------------------------------------------------------------
+pl <- ggplot(data = bands, mapping = aes(y=ink_pct, x=solvent_pct)) +
+  geom_point()
+
+## ------------------------------------------------------------------------
+pl  +
+  coord_equal()
+
+## ------------------------------------------------------------------------
+pl  +
+  coord_equal(ratio=1/2)
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 p <- ggplot(brainbod, aes(x=Body, y=Brain, label=Species)) +
@@ -202,9 +216,10 @@ pl +
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
 econ <- subset(economics, date >= as.Date("1992-05-01") & date < as.Date("1993-06-01"))
-# Base plot - without specifying breaks
+
+## ------------------------------------------------------------------------
 p <- ggplot(econ, aes(x=date, y=psavert)) + 
-  geom_line()
+  geom_line(colour = "orangered")
 p
 
 ## ---- warning=FALSE, message=FALSE---------------------------------------
