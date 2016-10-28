@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
 require(ggplot2)
 require(scales)
 require(qdata)
-require(MASS)
 require(xtable)
 data(bands)
 data(brainbod)
@@ -25,9 +24,10 @@ Axes are more important than one thinks as they provide context for interpreting
 
 ![](./images/axes.png)
 
-`ggplot2` allows one to handle with the appearance of the axes by using two important elements of its grammar: 
+`ggplot2` allows one to handle with the appearance of the axes by using three important elements of its grammar: 
 
 * `scale`, which controls the mapping from data to aestethics attributes 
+* `coordinates`, which describes how data coordinates are mapped to the plane of the graphic
 * `themes`, which controls the non-data elements of the plot 
 
 In the following paragraphs we will see how to handle with the most common questions on axes customization. 
@@ -498,11 +498,15 @@ pl +
 
 `ggplot2` handles two kinds of time-related objects: dates (objects of class Date ) and date-times (objects of class POSIXt). The difference between these is that Date objects represent dates and have a resolution of one day, while POSIXt objects represent moments in time and have a resolution of a fraction of a second.  
 Specifying the breaks is similar to with a numeric axis, the main difference is in specifying the sequence of dates to use.  
-We use a subset of the economics data, ranging from mid-1992 to mid-1993. If breaks aren’t specified, they will be automatically selected, as it appens with numerical variables:
+We use a subset of the `economics` data, provided in `ggplot2` package which ranges from may 1992 to june 1993. 
 
 ```{r, warning=FALSE, message=FALSE}
 econ <- subset(economics, date >= as.Date("1992-05-01") & date < as.Date("1993-06-01"))
-# Base plot - without specifying breaks
+```
+
+Suppose we want to generate the time series plot of personal savings rate:
+
+```{r}
 p <- ggplot(econ, aes(x=date, y=psavert)) + 
   geom_line()
 p
@@ -525,10 +529,9 @@ p +
   theme(axis.text.x = element_text(angle=30, hjust=1))
 ```
 
-The format specified is "%Y %b", which results like "1992 Jun".
+The format specified is `"%Y %b"`, which results like `"1992 Jun"`.
 
-The format specified is to be put in a string that is passed to `date_format()`, and the format specifiers will be replaced with the appropriate values. For example, if you use "%B %d, %Y", it will result in labels like "June 01,
-1992".
+The format specified is to be put in a string that is passed to `date_format()`, and the format specifiers will be replaced with the appropriate values. For example, if you use `"%B %d, %Y"`, it will result in labels like `"June 01, 1992"`.
 
 The following table lists the most important date-time format:
 
@@ -546,6 +549,3 @@ print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.t
 ```
 
 
-<!--
-inserire using relative times on axis?
--->

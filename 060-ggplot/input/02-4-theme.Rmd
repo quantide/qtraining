@@ -1,7 +1,12 @@
 ---
-title: "More on the overall appearance of plot"
+title: "More on Plot Overall Appearance"
 output: html_document
 ---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+options(width = 108)
+```
+
 
 ```{r, message=FALSE}
 require(ggplot2)
@@ -12,9 +17,11 @@ data(bands)
 ```
 
 
-The overall appearance of plots is controlled by the theming system, an important component of `ggplot2` grammar. We learned about the theming system in the previous chapters, in particular in "Legend Customization", "Axes Customization" and "Facet Customization", where we saw how themes give us the control of non-data elements of the plot like fonts, ticks, panel strip, legend keys, ..
+The overall appearance of plots is controlled by the theming system, an important component of `ggplot2` grammar. We started the exploration of theming system in the previous chapters, in particular in "Legend Customization", "Axes Customization" and "Facet Customization", where we saw how themes give us the control of non-data elements of the plot like fonts, ticks, panel strip, legend keys, ..
 
-Let us deeepen the theming system structure.
+In this chapter we will deeepen the theming system structure and we will answer to the most frequently asked questions about the plot customization. 
+
+## Theming system structure
 
 `ggplot2` has a default theme, called `theme_grey()`, with a light grey background and white gridlines.   
 A theme, or __theme function__  defines the settings of a collection of theme elements for the purpose of creating a specific style of graphics production.
@@ -58,46 +65,46 @@ Understanding how dealing with __theme element functions__ and __theme elements_
 The most important __theme element functions__ are:
 
 * `element_text()`: controls the drawing of labels and headings.   
+
+<!--
 The table below lists its arguments and their corresponding default values:
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Argument = c("family", "face", "colour", "size", "hjust", "vjust", "angle", "lineheight"),
-                              Description = c("font family", "font face", "font color", "font size (pts)", "horizontal justification", "vertical justification", "text angle", "line height"),
-                              Value = c("''", "'plain'", "'black'", "10", "0.5", "0.5", "0", "	1.1"),
-                              stringsAsFactors = FALSE)
-names(dt_format_table) <- c("Argument", "Description", "Default Value")
-dt_format_table <- xtable(dt_format_table, align = c("c", "c", "c", "c"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 70%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
+Argument  | Description |  Default Value
+--------- | ----------- | -------------
+family    | font family | ""
+face      | font face   | plain 
+colour    | font color  | black
+size      | font size (pts) | 10 
+hjust     | horizontal justification | 0.5 
+vjust     | vertical justification   | 0.5 
+angle     | text angle      | 0 
+lineheight| line height     | 1.1
+-->
 
 * `element_line()`: draws lines and segments such as graphics region boundaries, axis tick marks and grid lines.   
+
+<!--
 The table below lists its arguments and their corresponding default values:
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Argument = c("colour", "size", "linetype"),
-                              Description = c("line color", "line thickness", "type of line"),
-                              Value = c("'black'", "0.5", "1"),
-                              stringsAsFactors = FALSE)
-names(dt_format_table) <- c("Argument", "Description", "Default Value")
-dt_format_table <- xtable(dt_format_table, align = c("c", "c", "c", "c"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 70%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
+Argument  | Description |  Default Value
+--------- | ----------- | -------------
+colour    | line color | "black"
+size      | line thickness | 0.5
+linetype  | type of line | 1
+-->
 
 * `element_rect()`: draws rectangles. It is mostly used for background elements and legend keys.   
+
+<!--
 The table below lists its arguments and their corresponding default values:
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Argument = c("fill", "colour", "size", "linetype"),
-                              Description = c("fill color", "border color", "	thickness of border line", "type of border line"),
-                              Value = c("NA (none)", "'black'", "0.5", "1 (solid)"),
-                              stringsAsFactors = FALSE)
-names(dt_format_table) <- c("Argument", "Description", "Default Value")
-dt_format_table <- xtable(dt_format_table, align = c("c", "c", "c", "c"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 70%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
+Argument  | Description |  Default Value
+--------- | ----------- | -------------
+fill | fill color |  NA (none)
+colour | border color |   "black", 
+size | thickness of border line | 0.5 
+linetype | type of border line | 1 (solid)
+-->
 
 * `element_blank()`: draws nothing. This function has no arguments.
 
@@ -108,191 +115,146 @@ Let us schematize them:
 
 * plot theme elements
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Element = c("plot.background", "plot.title", "plot.margin"),
-                              Setter = c("element_rect()", "element_text()", "unit()"),
-                              Description = c("plot background", "plot title", "margins around plot"),
-                              stringsAsFactors = FALSE)
+Theme Element | Description | Element Function Associated
+------------- | ----------- | ----------------------------
+`plot.background` | plot background | `element_rect()`
+`plot.title`      | plot title      | `element_text()`
+`plot.margin`     | margins around plot | `unit()`
 
-dt_format_table <- xtable(dt_format_table, align = c("c", "c", "c", "c"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 70%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
-  Let us see an example:
+`unit()` is a theme function exported by `ggplot2` from `grid` package. It controls grid.
+
+Let us see an example:
     
 ```{r, warning=FALSE, message=FALSE}
 pl + 
   labs(title = "Plot title") +
-  theme(plot.title = element_text(size = 20, vjust = 2),
-        plot.background = element_rect(
-          fill = "lightblue",
-          colour = "black",
-          size = 2,
-          linetype = "longdash"),
-        plot.margin = unit(c(1, 1, 1, 1), "in"))
+  theme(plot.title = element_text(size = 36, hjust = 0, colour = "lightslateblue", face = "italic"),
+        plot.background = element_rect(fill = "lightsteelblue1", colour = "black", size = 2, linetype = "solid"),
+        plot.margin = unit(c(2, 2, 2, 2), "cm"))
 ```
 
 * axis theme elements
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Element = c("axis.line", "axis.text", "axis.text.x", "axis.text.y", "axis.title", "axis.title.x", 
-                                          "axis.title.y", "axis.ticks", "axis.ticks.length", "axis.ticks.margin"),
-                              Setter = c("element_line()", "element_text()", "element_text()", "element_text()", "element_text()", "element_text()", "element_text()", "element_line()", "unit()", "unit()"),
-                              Description = c("line parallel to axis (hidden in default theme)", "tick labels", "x-axis tick labels", 
-                                              "y-axis tick labels", "axis titles", "x-axis title", "y-axis title", "axis tick marks", 
-                                              "length of tick marks", "width of axis tick margin"),
-                              stringsAsFactors = FALSE)
+Theme Element | Description               | Element Function Associated
+------------- | --------------------------| ----------------------------
+`axis.line`   | line parallel to axis (hidden in default theme) | `element_line()` 
+`axis.text`   | tick labels | `element_text()` 
+`axis.text.x` | x-axis tick labels | `element_text()`                                        
+`axis.text.y` | y-axis tick labels | `element_text()`                                         
+`axis.title`  | axis titles   | `element_text()`
+`axis.title.x`| x-axis title   | `element_text()`            
+`axis.title.y`| y-axis title   | `element_text()`
+`axis.ticks`  | axis tick marks | `element_line()` 
+`axis.ticks.length` | length of tick marks | `unit()` 
+`axis.ticks.margin` | width of axis tick margin | `unit()`          
 
-dt_format_table <- xtable(dt_format_table, align = c("c", "c", "c", "c"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 70%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
+                                          
   Let us see an example:
   
 ```{r, warning=FALSE, message=FALSE}
 pl + 
   theme(
-    axis.line.x = element_line(colour = "red", size = 2),
-    axis.line.y = element_line(colour = "orange", linetype = "dashed"),
-    axis.text = element_text(color = "blue", size = 15, face = "italic"),
+    axis.line.x = element_line(colour = "green4", size = 1.5),
+    axis.line.y = element_line(colour = "green4", linetype = "dashed", size = 1.5),
+    axis.text = element_text(color = "springgreen4", size = 15, face = "bold"),
     axis.text.y = element_text(angle = 90, size = rel(0.7), hjust = 0),
-    axis.ticks = element_line(colour = "violet"),
-    axis.ticks.x = element_line(size = rel(2)),
-    axis.title = element_text(size = 20, color = "orangered")
+    axis.ticks = element_line(colour = "green4", size = 2),
+    axis.ticks.x = element_line(size = rel(1.5)),
+    axis.title = element_text(size = 20, color = "forestgreen", face = "bold.italic")
 )
 ```
 
+
 * legend theme elements
+  
+Theme Element | Description          | Element Function Associated (or Value)
+------------- | ------------------------| ----------------------------
+`legend.background`    | legend background         | `element_rect()`
+`legend.key`           | background of legend keys | `element_rect()`    
+`legend.key.size`      | legend key size           | `unit()`
+`legend.key.height`    | legend key height         | `unit()` 
+`legend.key.width`     | legend key width          | `unit()` 
+`legend.margin`        | legend margin             | `unit()`
+`legend.text`          | legend labels             | `element_text()`
+`legend.text.align`    | legend label alignment    | numeric value                                        
+`legend.title`         | legend name               | `element_text()` 
+`legend.title.align`   | legend name alignment     | numeric value
+`legend.position`      | position of legend        | "left", "right", "bottom", "top" 
+`legend.direction`     | direction of legend keys  | "horizontal" or "vertical"
+`legend.justification` | justification of legend   | numeric value 
+`legend.box`           | position of multiple legend boxes | "horizontal" or "vertical"
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Element = c("legend.background", "legend.key", "legend.key.size", "legend.key.height", "legend.key.width", 
-                                          "legend.margin", "legend.text", "legend.text.align", "legend.title", "legend.title.align",
-                                          "legend.position", "legend.direction", "legend.justification", "legend.box"),
-                              Setter = c("element_rect()", "element_rect()", "unit()", "unit()", "unit()", "unit()", "element_text()",
-                                         "numeric", "element_text()", "numeric", "'left', 'right', 'bottom' ', 'top'", "numeric", 
-                                         "numeric", "numeric"),
-                              Description = c("legend background", "background of legend keys", "", "legend key height", 
-                                              "legend key width", "legend margin", "legend labels", "legend label alignment",
-                                              "legend name", "legend name alignment", "position of legend", "direction of legend keys", 
-                                              "justification of legend", "position of multiple legend boxes"),
-                              stringsAsFactors = FALSE)
-
-dt_format_table <- xtable(dt_format_table, align = c("c", "c", "c", "c"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 70%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
+                                          
   Let us see an example:
+  
 ```{r, warning=FALSE, message=FALSE}
 pl + 
   theme(
     legend.position = "top",
     legend.box = "horizontal",
-    legend.background = element_rect(
-      fill = "lemonchiffon",
-      color = "black",
-      size = 1,
-      linetype = "longdash"
-    ),
+    legend.background = element_rect(fill = "lemonchiffon", color = "black", size = 1, linetype = "longdash" ),
     legend.key = element_rect(fill = "lemonchiffon", color = "magenta"),
-    legend.key.width = unit(0.5, "in"),
-    legend.key.height = unit(0.2, "in"),
-    legend.text = element_text(size = 8),
-    legend.title = element_text(face = "bold", size = 10, colour = "magenta"))
+    legend.key.width = unit(0.8, "cm"),
+    legend.key.height = unit(0.8, "cm"),
+    legend.text = element_text(face = "bold", size = 10),
+    legend.title = element_text(face = "bold", size = 12, colour = "magenta")
+    )
 ```
 
 * panel theme elements
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Element = c("panel.background", "panel.border", "panel.grid.major", "panel.grid.major.x", "panel.grid.major.y", 
-                                          "panel.grid.minor", "panel.grid.minor.x", "panel.grid.minor.y", "panel.margin", "aspect.ratio"),
-                              Setter = c("element_rect()", "element_rect()", "element_line()", "element_line()", "element_line()",
-                                         "element_line()", "element_text()", "element_line", "numeric", "numeric"),
-                              Description = c("background of graphics region", "border of graphics region", "major grid lines", 
-                                              "vertical major grid lines height", "horizontal major grid lines", "minor grid lines", 
-                                              "vertical minor grid lines", "horizontal minor grid lines",
-                                              "margin between facets", "plot aspect ratio"),
-                              stringsAsFactors = FALSE)
+Theme Element | Description           | Element Function Associated (or Value)
+------------- | ------------------------------ | ----------------------------
+`panel.background`  | background of graphics region    | `element_rect()`  
+`panel.border`      | border of graphics region        | `element_rect()` 
+`panel.grid.major`  | major grid lines                 | `element_line()`
+`panel.grid.major.x`| vertical major grid lines height | `element_line()`
+`panel.grid.major.y`| horizontal major grid lines      | `element_line()`
+`panel.grid.minor`  | minor grid lines                 | `element_line()`
+`panel.grid.minor.x`| vertical minor grid lines        | `element_text()` 
+`panel.grid.minor.y`| horizontal minor grid lines      | `element_line()` 
+`panel.margin`      | margin between facets            | numeric value 
+`aspect.ratio`      | plot aspect ratio                | numeric value
 
-dt_format_table <- xtable(dt_format_table, align = c("c", "c", "c", "c"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 70%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
   Let us see an example:
 ```{r, warning=FALSE, message=FALSE}
 pl + 
   theme(
     panel.background = element_rect(fill = "navy", color = "orange", size = 2),
-    panel.border = element_rect(fill = NA, colour = "orange", size = 2),
-    panel.grid.major = element_line(color = "gray60", size = 0.8),
-    panel.grid.major.x = element_blank())
+    panel.border = element_rect(fill = NA, colour = "darkorange", size = 2),
+    panel.grid.major = element_line(color = "orange", size = 0.3),
+    panel.grid.minor = element_blank()
+    )
 ```
-
-<!--
-ggplot(data = bands, mapping = aes(x= humidity, y = viscosity)) +
-  geom_point() + facet_wrap(~ press_type) +
-  theme(
-    panel.margin = unit(0.5, "in")
-  )
--->
 
 * facet theme elements
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Element = c("strip.background", "strip.text", "strip.text.x", "strip.text.y"),
-                              Setter = c("element_rect()", "element_text()", "element_text()", "element_text()"),
-                              Description = c("background of panel strips", "strip text", "horizontal strip text", 
-                                              "vertical strip text"),
-                              stringsAsFactors = FALSE)
+Theme Element | Description | Element Function Associated 
+------------- | ----------- | ----------------------------
+`strip.background` | background of panel strips | `element_rect()`    
+`strip.text`       | strip text                 | `element_text()` 
+`strip.text.x`     | horizontal strip text      | `element_text()` 
+`strip.text.y`     | vertical strip text        | `element_text()`
 
-dt_format_table <- xtable(dt_format_table, align = c("c", "c", "c", "c"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 70%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
   Let us see an example:
 ```{r, warning=FALSE, message=FALSE}
 ggplot(data = bands, mapping = aes(x= humidity, y = viscosity)) +
-  geom_point() + facet_grid(band_type ~ press_type) +
+  geom_point() + 
+  facet_grid(band_type ~ press_type) +
   theme(
     strip.background = element_rect(fill = "#4bb8b6", color = "#265665", size = 2),
     strip.text = element_text(face = "italic", size = 15, colour = "#CC1800"),
-  strip.text.y = element_text(face = "bold")
+    strip.text.y = element_text(face = "bold")
   )
 ```
 
-We have already learn about most of these `ggplot2` theme elements in the previous chapters, in particular: axis theme elements, legend theme elements and facet theme elements. But what's about plot theme elements and panels theme elements? 
+We have already learn about most of these `ggplot2` theme elements in the previous chapters, in particular about: axis, legend and facet categories. But what's about plot and panels theme elements?   
+With the term plot we means what is included outside the plotting area and with "panel" what is included in the plotting area.
 
-In the following paragraphs we will see how to handle with the most common questions on plot, panels and theme customization.
-
-## Add the title to a plot and change its appearance
-
-As we saw in "Creating a Boxplot" chapter, title can be added by using `ggtitle()` or `labs` function in this way: 
-
-```{r, eval =FALSE}
-pl + 
-  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
-pl + 
-  labs(title = "Scatterplot of humidity vs viscosity \n by Pressure type")
-```
-
-The previous two commands produces the same result:
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-pl + 
-  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
-```
-
-`"\n"` is used to break the lines. 
-
-Title appearance can be changes by setting `plot.title` argument of `theme()` function:
-
-```{r, warning=FALSE, message=FALSE}
-pl + 
-  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type") +
-  theme(plot.title=element_text(size=rel(2), lineheight=.9, family="Times", face="bold.italic", colour="red"))
-```
+In the following paragraphs we will see how to handle with the most common questions about plot and panel customization. We will talk also about the customization of the whole theme function.
 
 
-## Modify the appearance of plotting area
+## Customize the appearance of plotting area
 
 If you want to change the appearance of plotting area you have to set `panel_xxx` arguments of `theme()` function.
 
@@ -342,18 +304,53 @@ pl +
 )
 ```
 
-## Modify the plot appearance outside graphical area
+## Customize the plot appearance outside plotting area
 
-If you want to modify plot appearance outside graphical area you have to set `plot_xxx` arguments of `theme()` function.   
+If you want to modify plot appearance outside plotting area you have to set `plot_xxx` arguments of `theme()` function.   
+
+### Add the title to a plot and change its appearance
+
+As we saw in "Creating a Boxplot" chapter, title can be added by using `ggtitle()` or `labs` function in this way: 
+
+```{r, eval =FALSE}
+pl + 
+  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
+pl + 
+  labs(title = "Scatterplot of humidity vs viscosity \n by Pressure type")
+```
+
+The previous two command lines produce the same result:
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+pl + 
+  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
+```
+
+`"\n"` is used to break the lines. 
+
+Title appearance can be changes by setting `plot.title` argument of `theme()` function:
+
+```{r, warning=FALSE, message=FALSE}
+pl + 
+  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type") +
+  theme(
+    plot.title=element_text(size=rel(2), lineheight=0.9, family="Times", face="bold.italic", colour="red")
+        )
+```
+
+`lineheight` arguments refers to interlinear space in plot title.
+
 
 ### Change the background outside plotting area 
 
-To modify the background set `plot.background` element of `theme()` function:
+To modify the background set `plot.background` element of `theme()` function.
+
+You can change the colour of the background and add a contour line.
 
 ```{r, warning=FALSE, message=FALSE}
 pl + 
   theme(
-    plot.background = element_rect(fill = "green")
+    plot.background = element_rect(fill = "springgreen2",linetype = "solid", colour = "black", size = 2)
 )
 ```
 
@@ -364,24 +361,27 @@ To modify margins around graphical area set `plot.margin` element of `theme()` f
 ```{r, warning=FALSE, message=FALSE}
 pl + 
   theme(
-    plot.margin = unit(c(2,2,2,2), "cm")
+    plot.margin = unit(x = c(2, 2, 2, 2), units = "cm")
 )
 ```
 
 `unit()` is a function that creates a grid unit object of the correct length to use for setting margins. 
+`x` argument have to be specified as a vector of lenght 4 containing the measure of margins for the four margin of the plotting area, and `units` argument represents the measurements units. If you want more details about the supported measurements units have a look at the help of `unit()` function (`?unit`) 
 
-## Change the default theme
+## Customize theme function
 
-To change theme function you have to overwrite the defaut one. Other theme functions are provided by `ggplot2` and `ggthemes` packages.
+### Change the default theme
 
-`ggplot2` provides these theme functions:
+If you want to change theme function you have to overwrite the defaut one. Other theme functions are provided by `ggplot2` and `ggthemes` packages.
+
+`ggplot2` provides the following theme functions:
 
 * `theme_bw()`: a variation on `theme_grey()` that uses a white background and thin grey grid lines
 * `theme_linedraw()`: a theme with only black lines of various widths on white backgrounds, reminiscent of a line drawing  
 * `theme_light()`: similar to `theme_linedraw()` but with ligth grey lines and axes, to direct more attention towards the data
-* `theme_dark()`: the dark cousin of `theme_light()`, with similar line sizes but a dark background. Useful to make thin coloured lines pop out:
+* `theme_dark()`: the dark cousin of `theme_light()`, with similar line sizes but a dark background. Useful to make thin coloured lines pop out
 * `theme_minimal()`: a minimalistic theme with no background annotations
-* `theme_classic()`: A classic-looking theme, with x and y axis lines and no gridlines. In `ggplot` 2.1.0 axes are not visible because of a bug in the function
+* `theme_classic()`: A classic-looking theme, with x and y axis lines and no gridlines. In `ggplot` 2.1.0 axes are not visible because of a bug
 * `theme_void()`: a completely empty theme
 
 
@@ -398,24 +398,27 @@ gridExtra::grid.arrange(pl1, pl2, pl3, pl4, pl5, pl6, pl7, ncol=2)
 ```
 
 
-`ggthemes` package provides lots of theme functions. Let us see the most used:
+`ggthemes` package provides lots of theme functions.
+Some of them are listed here:
 
-```{r, warning=FALSE, message=FALSE, fig.width=10, fig.height=7}
-pl8 <- pl + theme_tufte() + ggtitle("theme_tufte()") #  a minimal ink theme based on Tufte’s The Visual Display of Quantitative Information
-pl9 <- pl + theme_solarized() + ggtitle("theme_solarized()") # a theme using the solarized color palette
-pl10 <- pl + theme_excel() + ggtitle("theme_excel()") # a theme replicating the classic gray charts in Excel
-pl11 <- pl + theme_few() + ggtitle("theme_few()") # theme from Stephen Few’s “Practical Rules for Using Color in Charts”
-pl12 <- pl + theme_economist() + ggtitle("theme_economist()") # a theme based on the plots in the The Economist magazine
-pl13 <- pl + theme_stata() + ggtitle("theme_stata()") # themes based on Stata graph schemes
-pl14 <- pl + theme_wsj() + ggtitle("theme_wsj()") # a theme based on the plots in the The Wall Street Journa
+* `theme_tufte()`: a minimal ink theme based on Tufte’s The Visual Display of Quantitative Information 
+* `theme_solarized()`: a theme using the solarized color palette 
+* `theme_excel()`: a theme replicating the classic gray charts in Excel
+* `theme_few()`: theme from Stephen Few’s "Practical Rules for Using Color in Charts"
+* `theme_economist()`: a theme based on the plots in the The Economist magazine
+* `theme_stata()`: themes based on Stata graph schemes
+* `theme_wsj()`: a theme based on the plots in the The Wall Street Journal
 
-gridExtra::grid.arrange(pl8, pl9, pl10, pl11, ncol=2)
-```
+```{r, warning=FALSE, message=FALSE, fig.width=12, fig.height=11}
+pl8 <- pl + theme_tufte() + ggtitle("theme_tufte()") 
+pl9 <- pl + theme_solarized() + ggtitle("theme_solarized()") 
+pl10 <- pl + theme_excel() + ggtitle("theme_excel()") 
+pl11 <- pl + theme_few() + ggtitle("theme_few()") 
+pl12 <- pl + theme_economist() + ggtitle("theme_economist()")  
+pl13 <- pl + theme_stata() + ggtitle("theme_stata()") 
+pl14 <- pl + theme_wsj() + ggtitle("theme_wsj()") 
 
-```{r, warning=FALSE, message=FALSE, fig.width=6.5, fig.height=3.5}
-pl12
-pl13
-pl14
+gridExtra::grid.arrange(pl8, pl9, pl10, pl11, pl12, pl13, pl14, ncol=2)
 ```
 
 <!--
@@ -430,14 +433,17 @@ If you want to change the default theme (`theme_grey()`) for all plots generated
 theme_set(theme_bw())
 ```
 
-## Creating your own theme
+### Creating your own theme
 
 You can create your own theme by adding elements to an existing theme:
 
 ```{r, warning=FALSE, message=FALSE}
 mytheme <- theme_bw() +
-theme(text = element_text(colour="red"),
-      axis.title = element_text(size = rel(1.25)))
+theme(text = element_text(colour="slateblue4"),
+      axis.title = element_text(size = rel(1.25), face = "bold"),
+      legend.title = element_text(size = rel(1.25), face = "bold"),
+      plot.background = element_rect(colour ="black")
+      )
 ```
 
 ```{r, warning=FALSE, message=FALSE}

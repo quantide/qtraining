@@ -14,7 +14,7 @@ A legend is a guide which tells us how to map visual (aesthetic) properties back
 `ggplot2` automatically generates the legend according to the aesthetics mapped.
 
 Let us see an example.  
-Considering the `bands` data. Supposing you are interested in the differences of ink percentage accordingly to the type of press, you can build four box plots to compare distributions:
+Considering the `bands` data. Supposing you are interested in the relationship between humidity and viscosity by band type, you can build four box plots to compare distributions:
 
 ```{r, warning=FALSE}
 pl_1 <- ggplot(data=bands, aes(x=press_type, y=ink_pct, fill=press_type)) + 
