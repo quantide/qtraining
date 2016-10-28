@@ -4,6 +4,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
+```
+
+
+```{r setup, include=FALSE}
 require(ggplot2)
 require(scales)
 require(qdata)
@@ -183,6 +188,35 @@ Like `scale_y_continuous()`, `scale_y_reverse()` does not work with `ylim()`. (T
 pl + 
   scale_y_reverse(limits=c(100, 0))
 ```
+
+## Resize axis scale
+
+Suppose you arew interested in the relationship between ink and solvent percentage in `bands` dataset:
+
+```{r}
+pl <- ggplot(data = bands, mapping = aes(y=ink_pct, x=solvent_pct)) +
+  geom_point()
+```
+
+If you want the same scale for your axes, you have to use `coord_equal()` function.
+
+```{r}
+pl  +
+  coord_equal()
+```
+
+By default `ratio` argument is set to 1, which ensures that one unit on the x-axis is the same length as one unit on the y-axis.
+
+You can change as you want to resize the scales:
+
+```{r}
+pl  +
+  coord_equal(ratio=1/2)
+```
+
+Ratio is expressed as  `y / x`, so in the previous example, two unit on the x-axis correspond to one unit on the y-axis.
+
+You can use also `coord_fixed()` to achieve the same results.
 
 ## Axis scale transformations
 
