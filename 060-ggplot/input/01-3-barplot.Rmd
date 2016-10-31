@@ -35,8 +35,7 @@ ggp2 <- ggp +
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-This chapter presents how to build bar plots and introduces other basic concepts of `ggplot2` graphics: `stat`.
-
+This chapter presents how to build bar plots and introduces other basic concepts of `ggplot2` grammar: `stat` (layers) and positioning. 
 
 ## The first bar plot
 
@@ -77,7 +76,7 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b"))
 ```
 
-These plots are identical except that for legend, but they are based on two different approaches. In the first plot, fill colours are set. If you do not set four different fill colours, all bars have the same colours as shown above. In the second plot, fill colours are mapped to the level of `Diet`. Since each bar represents a different type of diet, each bar has a different colour also when you do not set manually fill colours with `scale_fill_manual()`.
+These plots are identical except that for legend, but they are based on two different approaches. In the first plot, fill colours are set. If you do not set four different fill colours, all bars have the same colours as shown above. In the second plot, fill colours are mapped to the levels of `Diet`. Since each bar represents a different type of diet, each bar has a different colour also when you do not set manually fill colours with `scale_fill_manual()`.
 
 ```{r bargraph_mapping, message=FALSE}
 ggplot(data=ChickWeight, mapping=aes(x=Diet)) +

@@ -133,12 +133,12 @@ già detto prima
 
 <b> <span style="color:#FFBF00">Data</span> </b>, <b> <span style="color:#FF8000">aestethic mappings</span> </b> and <b> <span style="color:#FF0000">layers</span> </b> (at least one) are the three key components of each `ggplot2` plot. The adding and the order od adding of the following components is not compulsory, it depends from the kind of plot you want to build.  
 -->
-4. <b> <span style="color:#9A2EFE">Scales</span> </b>: map values in the data space to values in an aesthetic space, whether it be colour, or size or shape. Scales draw a legend on axes, which provide an inverse mapping to make it possible to read the original data values from the graph. 
+4. <b> <span style="color:#9A2EFE">Scales</span> </b>: map values in the data space to values in an aesthetic space, whether it be colour, or size or shape. Scales draw a legend on axes, which provide an inverse mapping to make it possible to read the original data values from the graph. Scales are closely related to aestethics mapped.
 
 ![](./images/schema-layer-ggplot2-scales.png)
 
 ```{r}
-# Add a scale (map Species to colour scale)
+# Map Species to colour scale in aes()
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) 
@@ -306,6 +306,8 @@ For a complete description of data, refer to the help (`?italy`).
 metterlo in qdata
 -->
 
+<!--
+
 ### brainbod
 
 `brainbod` provides information about the weight of body and brain of different species of animals.
@@ -314,7 +316,7 @@ metterlo in qdata
 
 For a complete description of data, refer to the help (`?brainbod`).
 
-<!--
+-->
 
 ## Bibliography and References
 

@@ -124,7 +124,7 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   geom_point()
 ```
 
-Sometimes, the `x` variable can be a categorical variable. This is the case when you have numerical values that are conceived as categorical ones. The `ToothGrowth` data set can be a good case in point. Data can be summarized as follow:
+Sometimes, the `x` variable can be a categorical variable. This is the case when you have numerical values that are conceived as categorical ones. The `ToothGrowth` data set can be a good case in point. It provides the effect of Vitamin C on Tooth Growth in Guinea Pigs. Data can be summarized as follow to achieve the mean tooth length by supplier and dose:
 
 ```{r linegraph_tg, message=FALSE}
 tg <- ToothGrowth %>% 
@@ -149,7 +149,7 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp)) +
   geom_point()
 ```
 
-As you can see from the plot no lines are drawn and a warning message is returned. Probably, this is one of the most frequently asked questions about `geom_line()`. This appens because `geom_line()` tries to connect data points that belong to same group and the combinations of different levels of factor variables belong to different group. 
+As you can see from the plot no lines are drawn and a warning message is returned. Probably, this is one of the most frequently problems with `geom_line()`. This appens because `geom_line()` tries to connect data points that belong to same group and the combinations of different levels of factor variables belong to different groups. 
 
 To resolve this problem, you have to manually specify the grouping, setting `group` argument:
 
@@ -164,6 +164,7 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) 
 Otherwise, if you want a single line than connects all data points, you have to specify `group=1`.
 
 ```{r linegraph_group1, message=FALSE}
+# Consider only "OJ" supplier
 ggplot(data=(tg%>%filter(supp=="OJ")), mapping=aes(x=factor(dose), y=length, group=1)) +
   geom_line() + 
   geom_point()

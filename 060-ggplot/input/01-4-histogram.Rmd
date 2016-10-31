@@ -70,7 +70,7 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(mapping=aes(fill=proof_on_ctd_ink))
 ```
 
-Mapping the grouping variable to `fill`, two overlapped distributions are shown. In some cases, as shown above, this solution may work. In other cases, the result may be very difficult to be understood.
+Mapping the grouping variable to `fill`, two overlapped distributions are shown. In some cases, as shown above, this solution may work. In other cases, the result may be very difficult to be understood. Suppose you are in the distribution of ink percentage for each level of `press_type`
 
 ```{r histogram_mapping_hide, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
@@ -197,13 +197,13 @@ ggplot(data=bands, mapping=aes(x=ink_pct, colour = band_type)) +
 
 ## Frequency polygon
 
-A frequency polygon appears similar to a kernel density estimate curve, see in the previous examples, but it work in the same way and it shows the same information as a histogram. In particular, both bin the data and then count the number of observations in each bin. The only difference is the display: histograms use bars and frequency polygons use lines. 
+A frequency polygon appears similar to a kernel density estimate curve, see in the previous examples, but it work in the same way and it shows the same information as an histogram. In particular, both bin the data and then count the number of observations in each bin. The only difference is the display: histograms use bars and frequency polygons use lines. 
 
 <!--
 That is, like a histogram, it shows what is in the data, whereas a kernel density estimate is just that an estimate and requires you to pick some value for the bandwidth.
 -->
 
-`ggplot2` function that draws a frequency polygon is `geom_freqpoly()`:
+Suppose we want to analyze the distribution of `ink_pct` variable. `ggplot2` function that draws a frequency polygon is `geom_freqpoly()`:
 
 ```{r , message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +

@@ -25,7 +25,7 @@ ggplot(data=ds) + geom_point(aes(x=X1, y=X2, size=X3*1), colour="#2B4C6F", show.
   theme(axis.text.x = element_blank(), axis.text.y = element_blank())
 ```
 
-This chapter presents how to build scatter plots and introduces some basic concept of `ggplot2` graphics: aesthetics and geoms.
+This chapter presents how to build scatter plots and introduces some basic concept of `ggplot2` grammar: aesthetic mappings and layers.
 
 
 ## The first scatter plot
@@ -73,7 +73,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_smooth(method="lm")
 ```
 
-The plot now display a regression line with its confidence interval.  
+The plot now displays a regression line with its confidence interval.  
 
 You can try to add a smoother to the plot, but starting from the code with `ggplot()` without arguments.
 
@@ -91,7 +91,7 @@ ggplot() +
   geom_smooth(data=bands, mapping=aes(x=humidity, y=viscosity), method="lm")
 ```
 
-To sum up, data and aesthetics specified in ggplot are used by default by all layers. Layers are like tracing papers, you can overlay them. Each layer contains a geometry. If a layer has its own data and/or aesthetics, that layer will ignore the default values.
+To sum up, data and aesthetics specified in `ggplot()` are used by default by all layers. Layers are like tracing papers, you can overlay them. Each layer contains a geometry. If a layer has its own data and/or aesthetics, that layer will ignore the default values.
 
 
 ## Assigning `ggplot`s to a variable
@@ -108,6 +108,8 @@ And now you can recall the plot named `gp1`.
 ```{r scatterplot_assignment2, message=FALSE, warning=FALSE}
 gp1
 ```
+
+_Note_: you can print the plot by recalling it; indeed the run of `gp1` does the same work of `print(gp1)` command.
 
 Once you assigned the scatter plot to `gp1`, you can add to this plot a smoother by doing:
 ```{r scatterplot_assignment3, message=FALSE, warning=FALSE}
