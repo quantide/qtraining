@@ -8,8 +8,8 @@ knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message =FALSE)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(ggplot2)
 require(dplyr)
+require(ggplot2)
 require(qdata)
 data(bands)
 ```
@@ -17,7 +17,7 @@ data(bands)
 You can change the appearance of mapped aesthetics by using scales.  
 Scales control the mapping from data to aestethics. They take your data and turn into something that you can see like colour, shape, position or size. Scales provide also the tools that allow you to read the plot: legends and axes. 
 
-In this chapter we will discuss how customize the appearance of mapped aesthetics by exploring scales functionalities. Legends and axes will not discussed here but in "Axes Customization" and "Legend Customization" chapters, respectively. 
+In this chapter we will discuss how customize the appearance of mapped aesthetics by exploring scales functionalities. Legends and axes will not discussed here but in _Axes Customization_ and _Legend Customization_ chapters, respectively. 
 
 But firstly, let us introduce some concepts about scales structure.
 
@@ -47,7 +47,7 @@ Default scales are named according to the aesthetic and the variable type. It wo
 
 Each scale has default values for its argument, this means that if you want to modify one or more features of this scale you have to overwrite it/s default value. To overwrite its default value/s you have to manually add that scale.
 
-For example, let us suppose that you want to reduce the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to increase the luminance and set it to 40 in this way:
+For example, let us suppose that you want to reduce the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to decrease the luminance and set it to 40 in this way:
 
 ```{r}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
@@ -70,12 +70,12 @@ The name for scaling scheme is made up by three pieces separated by `_`:
 3. the name of the scale (e.g., `continuous`, `discrete`, `brewer`, ...)
 
 
-There are more types of scales. They can be grouped into:
+There are more scale types. They can be grouped into:
 
 * Continuous position scales, used to map data into `x` and `y` position
 * Mapped aestethics scales, like colour, linetype, shape and size.
 
-In the following paragraphs we will answer to the most frequently asked questions about mapped aesthetics scales customization for: colours, linetype, shape and size. The use anf the features of continuous position scales will be discussed in "Axes customization" chapter.
+In the following paragraphs we will answer to the most frequently asked questions about mapped aesthetics scales customization for: colours, linetype, shape and size. The use and the features of continuous position scales will be discussed in _Axes Customization_ chapter.
 
 
 <!--
@@ -140,7 +140,11 @@ Fill scale | Colour scale | Description
 `scale_fill_manual()` | `scale_colour_manual()` | Manually specified colors
 
 
-By default, the colors for discrete scales are evenly spaced around a HSL color circle. For example, if there are two colors, then they will be selected from opposite points on the circle; if there are three colors, they will be 120° apart on the color circle; and so on. 
+By default, the colors for discrete scales are evenly spaced around a HSL color circle. 
+
+![](./images/hsl.png)
+
+For example, if there are two colors, then they will be selected from opposite points on the circle; if there are three colors, they will be 120° apart on the color circle; and so on. 
 The default colors used for different numbers of levels are shown here:
 
 ![](./images/default-colour-scheme.png)  
@@ -247,8 +251,12 @@ Here are some rules of thumb for specifying and adjusting RGB colors:
 
 * higher numbers are brighter and lower numbers are darker
 * to get a shade of grey, set all the channels to the same value
+
+<!--
 * the opposites of RGB are CMY: Cyan, Magenta, and Yellow. Higher values for the red channel make it more red, and lower values make it more cyan. The same is
 true for the pairs green and magenta, and blue and yellow.
+-->
+
 
 ### Using a Manually Defined Palette for a Continuous Variable
 
@@ -266,7 +274,7 @@ Fill scale | Colour scale | Description
 
 Supposing we are interested in the relationship between `humidity`, `viscosity` and `solvent_pct` in `bands` dataset:   
 
-```{r, eval = FALSE}
+```{r}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point()
 ```
@@ -313,7 +321,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent
 ```
 
 
-You can also using palettes produced by another package:
+You can also use palettes produced by another package:
 ```{r}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point() + 
@@ -368,7 +376,7 @@ lines(x = c(xs, xe), y = c(1, 1), lty = 6, lwd = lwd0)
 
 ### Changing line types 
 
-Let us consider the average growth of chicks for the different diets by using `ChickWeights` dataset, as seen in "Creating a Line Plot":
+Let us consider the average growth of chicks for the different diets by using `ChickWeights` dataset, as seen in _Creating a Line Plot_:
 
 ```{r}
 # data
@@ -393,7 +401,7 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
   scale_linetype_manual(values=c(3,4,5,6))
 ```
 
-Line type values can be pass as numbers or strings.
+Line type values can be passed as numbers or strings.
 
 ## Customizing Shape
 
@@ -420,11 +428,11 @@ R provides the following shapes symbols:
  text((1:5) + 0.4, rep(1, 5), cex = 1, (21:25))
 ```
 
-`linetype` aesthetic has to be mapped to discrete variables.
+`shape` aesthetic has to be mapped to discrete variables.
 
 ### Changing shape types
 
-If you want to customize shape scale you have to set `values` argument of `scale_shape_manual_function()`:
+If you want to customize shape scale you have to set `values` argument of `scale_shape_manual()` function:
 
 ```{r}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=press_type)) +
@@ -474,7 +482,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   scale_size_area(max_size = 3)
 ```
 
-You can also using radiuos to control the size of plotting symbols by setting `scale_radius()` function:
+You can also use radiuos to control the size of plotting symbols by setting `scale_radius()` function:
 
 ```{r}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
