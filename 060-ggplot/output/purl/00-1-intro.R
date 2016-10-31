@@ -9,6 +9,7 @@ data(iris)
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
   stat_smooth(method = "lm", se = F) +
+  scale_colour_brewer(palette="Set1") +
   coord_equal() +
   facet_grid(. ~ Species) +
   ggtitle("Scatterplot of lenght and width of iris sepal by species") + 
@@ -28,10 +29,10 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
 )
 
 ## ---- eval=FALSE---------------------------------------------------------
+## # iris dataset
 ## data(iris)
 
 ## ------------------------------------------------------------------------
-# iris dataset
 head(iris)
 
 ## ------------------------------------------------------------------------
@@ -44,23 +45,26 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length)) +
   stat_smooth(method = "lm", se = FALSE) # layer 2 
 
 ## ------------------------------------------------------------------------
-# Add a scale scale (map Species to colour scale)
+# Map Species to colour in aes() and change the default colours of colour scale  
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE) 
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer(palette="Set1")
 
 ## ----fig.height= 4-------------------------------------------------------
 # Change coordinate system 
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
   stat_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer(palette="Set1") + 
   coord_equal()
 
 ## ------------------------------------------------------------------------
 # Generate a plot for each iris species
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
-  stat_smooth(method = "lm", se = FALSE) +
+  stat_smooth(method = "lm", se = FALSE) + 
+  scale_colour_brewer(palette="Set1") +
   coord_equal() +
   facet_grid(. ~ Species)
 
@@ -69,6 +73,7 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
   stat_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer(palette="Set1") + 
   coord_equal() +
   facet_grid(. ~ Species) +
   ggtitle("Scatterplot of lenght and width of iris sepal by species") + 

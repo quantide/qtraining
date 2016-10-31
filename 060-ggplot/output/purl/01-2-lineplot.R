@@ -57,6 +57,7 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) 
   geom_point()
 
 ## ----linegraph_group1, message=FALSE-------------------------------------
+# Consider only "OJ" supplier
 ggplot(data=(tg%>%filter(supp=="OJ")), mapping=aes(x=factor(dose), y=length, group=1)) +
   geom_line() + 
   geom_point()

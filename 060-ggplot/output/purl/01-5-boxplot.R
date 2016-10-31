@@ -34,7 +34,9 @@ ggplot(data=bands, aes(x="0", y=ink_pct)) +
 ## ----boxplot_ylab, message=FALSE, warning=FALSE--------------------------
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b") +
-  xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)")
+  xlab("Press type") + 
+  ylab ("Ink %") + 
+  ggtitle("Distribution\n(bands data set)")
 
 ## ---- message=FALSE, warning=FALSE---------------------------------------
 ggplot(data=bands, mapping=aes(x=ink_pct, colour = press_type)) + 

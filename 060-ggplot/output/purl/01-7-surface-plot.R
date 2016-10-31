@@ -84,7 +84,7 @@ ggplot(faithfuld, aes(waiting, eruptions, z = density)) +
   geom_contour(colour = "white")
 
 ## ------------------------------------------------------------------------
-ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
+ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_raster(aes(fill = density))
 
 ## ------------------------------------------------------------------------
@@ -92,7 +92,7 @@ ggplot(faithfuld, aes(waiting, eruptions)) +
  geom_raster(aes(fill = density))
 
 ## ------------------------------------------------------------------------
-ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
+ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_raster(aes(fill = density), interpolate = TRUE)
 
 ## ------------------------------------------------------------------------
@@ -100,18 +100,18 @@ ggplot(faithfuld, aes(waiting, eruptions)) +
  geom_raster(aes(fill = density), interpolate = TRUE)
 
 ## ------------------------------------------------------------------------
-ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
+ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_tile(aes(fill = density))
 
 ## ------------------------------------------------------------------------
 ggplot(faithfuld, aes(waiting, eruptions)) +
  geom_tile(aes(fill = density))
 
-## ------------------------------------------------------------------------
-small <- bands_d %>% sample_n(size = 500)
+## ---- eval = FALSE-------------------------------------------------------
+## bands_d_sample <- bands_d %>% sample_n(size = 500)
 
 ## ------------------------------------------------------------------------
-ggplot(small, aes(humidity, viscosity)) +
+ggplot(bands_d_sample, aes(humidity, viscosity)) +
   geom_point(aes(size = density)) +
   scale_size_area()
 
@@ -124,7 +124,7 @@ ggplot(small, aes(humidity, viscosity)) +
 ##   scale_size_area()
 
 ## ------------------------------------------------------------------------
-ggplot(small, aes(humidity, viscosity)) +
+ggplot(bands_d_sample, aes(humidity, viscosity)) +
   geom_point(aes(size = density), alpha = 0.4, colour = "blue", fill = "lightblue") +
   scale_size_area()
 

@@ -2,8 +2,8 @@
 knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message =FALSE)
 
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
-require(ggplot2)
 require(dplyr)
+require(ggplot2)
 require(qdata)
 data(bands)
 
@@ -71,9 +71,9 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   geom_point() +
   scale_colour_manual(values = c(ALBERT70 = "lime green", MOTTER70 = "dark turquoise", MOTTER94 = "magenta", WOODHOE70 = "dodger blue"))
 
-## ---- eval = FALSE-------------------------------------------------------
-## ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
-##   geom_point()
+## ------------------------------------------------------------------------
+ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
+  geom_point()
 
 ## ------------------------------------------------------------------------
 # scale_colour_gradient()
