@@ -1,0 +1,798 @@
+---
+title: "Presentation of Course of spark with sparklyr to Quantide"
+author: "Andrea Melloncelli"
+date: "15/9/2016"
+output: html_document
+---
+
+# Outline
+
+## bigdata (AS)
+
+1. Gb di dati
+
+2. hardware / software
+
+3. analytics
+
+4. computing time
+
+## Presentation
+
+1. What: big data.
+
+2. Why: new powerful features for R
+
+3. How: throught Hadoop-Spark framework
+
+4. by: `sparklyr` by *RStudio*
+
+## Our targets today
+
+1. What dealing with **big data** means.
+
+2. How we manage big data by **R and Hadoop-Spark**
+
+3. How **Hadoop-Spark framework** works generally speaking.
+
+4. What **Quantide** is capable of, now. 
+
+5. **Resource** costs, timing
+
+6. **Hardware, software**, virtual machine software used to give life to a cluster
+
+7. (framework)
+
+8. ( distribuzione (cloudera) )
+
+9. ( cloudera Vs unix Vs windows )
+
+## General concepts on big-data
+
+<!-- aggiungere qualche immagine dei pc e dei cluster (rack) -->
+
+1. big data means from hundreds of Terabytes
+
+2. Horizontal scaling is less expansive and more scalable.
+
+3. (downsides of horizontal-scaling)
+
+4. Horizontal scaling in obtained by a cluster of "normal" computers connected on a subnet.
+
+5. (more master, rindondaza)
+
+6. We connect only to the **master**, **slaves** operate in the backend.
+
+7. Problems to solve in order to access to big data are:
+
+   1. getting them
+
+   2. storing them
+
+   3. manipulate them fast enough
+
+## Spark usage as stand-alone
+
+TODO
+
+1. serializzato Vs parallelizzato
+
+2. parallelizzazione in locale ???
+
+3. lazy
+
+## notes
+
+1. manipulation
+
+2. analysis
+
+## Hadoop-Spark framework
+
+1. *Hadoop* controls the cluster (*YARN*) and provides a distributed filesystem (*HDFS*)
+
+	User : see only the filesystem of this layer with path like
+
+		hdfs://master-1:9000/folder/file.csv
+
+2. *Spark* provides silently a distributed RAM and makes the calculations. (sistemare la forma)
+
+	User : see only the `sparklyr` library 
+
+3. **R** this framework is connectet to R 
+
+4. `sparklyr` let us operate on a distributed frame of 100 000 000 (12 Gb of csv) lines as we are used to do with normal `tbl_df` in the usual `dplyr` way.
+
+5. RStudio-server : (non mandatorio, da una comoda interfaccia AS)
+
+## User
+
+1. **filesystem** : accessed by R and ssh shell.
+
+2. **Jobs** : are governed by R. Spark has an intrinsic parallelization of its algoritms.
+
+# Hadoop
+
+## Structure
+
+1. **HDFS**
+
+   1. NameNode: https://wiki.apache.org/hadoop/NameNode 
+
+   2. DataNode: https://wiki.apache.org/hadoop/DataNode
+
+      A DataNode stores data in the HadoopFileSystem.
+
+2. **YARN**
+
+   http://hadoop.apache.org/docs/r2.6.4/hadoop-yarn/hadoop-yarn-site/yarn_architecture.gif
+
+   1. ResourceManager
+
+   2. NodeManager
+
+## HDFS (some details)
+
+1. Main features
+
+  1. fault tolerant
+
+  2. scalable
+
+  3. simple to expand (???)
+
+2. other Features
+
+  1. The NameNode and Datanodes have built in web servers that makes it easy to check current status of the cluster.
+
+  2. File permissions and authentication.
+
+  3. Rack awareness (big cluster)
+
+## note (rollback)
+
+## kind of installations
+
+- *Local/Standalone Mode* :
+
+  After downloading Hadoop in your system, by default, it is configured in a standalone mode and can be run as a single java process.
+
+- *Pseudo Distributed Mode* :
+
+  It is a distributed simulation on single machine. Each Hadoop daemon such as hdfs, yarn, MapReduce etc., will run as a separate java process. This mode is useful for development.
+
+- *Fully Distributed Mode* :
+
+  This mode is fully distributed with minimum two or more machines as a cluster. We will come across this mode in detail in the coming chapters.
+
+# Spark 
+
+## what is
+
+1. it works in RAM
+
+2. *RDD*: Resilient Distributed Dataset.
+
+3. written in Scala (Java Virtual Machine)
+
+4. API: Scala, Java, Python, R (*SparkR*)
+
+5. Rely on YARN to distribute jobs across an Hadoop-cluster
+
+## kind of installation
+
+1. local or *standalone*
+
+2. connected to *yarn*
+
+# Configuration
+
+We can do that!
+
+1. offerte
+
+2. costi
+
+# Vagrant (no corso R-bigdata)
+
+## What vagrant is
+
+Vagrant enables users to create and configure lightweight, reproducible, and portable development environments.
+
+1. virtual platforms ( VirtualBox, AWS, Azure, ... )
+
+2. configurators ( shell, puppet, ansible, chef, ... )
+
+`vagrant up`
+
+# Cluster
+
+## Deploy
+
+**features** :
+
+1. Hadoop-cluster: Pseudo-distributed-mode (1-node) or distributed mode (2-node for now)
+
+2. Spark, one of:
+
+   1. SparkR
+
+   2. sparklyr
+
+**Vagrant** : 
+
+1. virtual platforms: ( VirtualBox, AWS )
+
+2. configurators: shell
+
+## Test
+
+1. bash and R script (`testthat`)
+
+2. test on hadoop, sparkR, sparklyr 
+
+3. self documentation
+
+## Note: cosa fa quantide
+
+1. corso di R big data
+
+2. offerta creazione cluster su aws
+
+3. consulenza sulla creazione cluster on premises
+
+## Access
+
+1. ssh
+
+2. RStudio-server
+
+# Quantide new knowledge
+
+## IT
+
+1. **Vagrant** in multi-machine and multi-platform mode.
+
+2. Deploy of clusters in a private subnet on **aws**
+
+3. **Cluster** monitoring and management
+
+## BigData
+
+1. Hadoop-HDFS: distributed filesystem
+
+2. sparklyr interface
+
+   1. run jobs across a cluster with `dplyr`
+
+   2. ??? serialize tasks on a local machine
+
+3. standalone environment for cheap testing
+
+# Sparklyr (pratical)
+
+## Local setup ##
+
+### Installation ###
+
+```{r}
+install.packages("devtools")
+devtools::install_github("rstudio/sparklyr")
+require(sparklyr)
+spark_install(version = "2.0.0", hadoop_version = "2.6")
+```
+
+This will install spark in the home folder: `~/.cache/spark/spark-2.0.0-bin-hadoop2.6`.
+
+### Connecting to spark standalone ###
+
+Developing and testing purposes:
+
+```{r}
+require(sparklyr)
+sc <- spark_connect(master = "local")
+
+```
+
+### Connecting to spark cluster ###
+
+If the *R* runs on the master, *Spark* only needs to refer to YARN in order to send jobs across the cluster.
+
+```{r}
+require(sparklyr)
+sc <- spark_connect(master = "yarn")
+```
+
+<!-- connect to remote yarn (master) -->
+
+## Examples ##
+
+```{r}
+require(dplyr)
+
+dd <- mtcars
+class(dd)
+
+tbl_df_dd <- tbl_df(dd)
+class(tbl_df_dd)
+
+tbl_spark_dd <- copy_to(sc, dd, 'dd', overwrite = TRUE )
+class(tbl_spark_dd)
+```
+
+Other ways to import a `data.frame`:
+
+```{r}
+flights_tbl <- copy_to(sc, nycflights13::flights, "flights")
+batting_tbl <- copy_to(sc, Lahman::Batting, "batting")
+
+require(qdata)
+data(bank)
+
+bank_tbl <- copy_to(sc, bank)
+```
+
+```{r}
+src_tbls(sc)
+object.size(m_spark)
+```
+
+
+## Examples root ##
+
+```{r}
+
+  require(sparklyr)
+  require(dplyr)
+  Sys.setenv( SPARK_HOME='~/.cache/spark/spark-2.0.0-bin-hadoop2.6') 
+  ## Sys.setenv( SPARK_HOME='/usr/local/src/spark/')
+sc <- spark_connect("yarn", version = "2.0.0")
+sc$output_file
+  ##Iris example
+  iris_dplyr <- tbl(iris)
+  class(iris_dplyr)
+  iris_tbl <- copy_to(sc, iris, "iris", overwrite = TRUE)
+  class(iris_tbl)
+  iris_tbl %>% summarize( mean( Sepal_Length ))
+  
+  ##Local csv loading
+  df <- spark_read_csv( sc, "csv2008", "/data/tests/bigfiles/2008.csv" )
+  df
+  class(df)
+  
+  ##read from hdfs
+  df <- spark_read_csv( sc, 'csv2008', "hdfs://master-1:9000/tests/cars.csv" )
+df
+df_big <- spark_read_csv( sc, 'ontime', "hdfs://master-1:9000/tests/bigfiles/ontime.csv" )
+df_big
+
+df_big %>% summarize( count = n() )
+
+df_big %>%
+    group_by( Year ) %>%
+    summarize(
+        meanCRSArrTime = mean( CRSArrTime ),
+        count = n() )
+
+
+```
+
+To be sure that we have imported all data, we can check original files in this way:
+
+```{sh}
+$ cd  /data/tests/bigfiles 
+
+$ wc *.csv -l
+    1311827 1987.csv
+    5202097 1988.csv
+    5041201 1989.csv
+    5270894 1990.csv
+    5076926 1991.csv
+    5092158 1992.csv
+    5070502 1993.csv
+    5180049 1994.csv
+    5327436 1995.csv
+    5351984 1996.csv
+    5411844 1997.csv
+    5384722 1998.csv
+    5527885 1999.csv
+    5683048 2000.csv
+    5967781 2001.csv
+    5271360 2002.csv
+    6488541 2003.csv
+    7129271 2004.csv
+    7140597 2005.csv
+    7141923 2006.csv
+    7453216 2007.csv
+    7009729 2008.csv
+  123534991 total
+
+$ ls *.csv |wc -l
+22
+
+$ bc -l <<< "123534991 -123534969"
+```
+
+
+### Select ###
+
+```{r}
+
+select(bank, year:day)
+select(bank_tbl, year:day)
+select(bank, -(year:day))
+select(bank_tbl, -(year:day))
+select(bank, ID = id)
+select(bank_tbl, ID = id)
+select(bank, contains("at"))
+select(bank_tbl, contains("at"))
+select(bank, ends_with("tion"))
+select(bank_tbl, ends_with("tion"))
+ ##questo differisce nella data
+select(bank, starts_with("d"))
+select(bank_tbl, starts_with("d"))
+
+select(bank, everything())
+select(bank_tbl, everything())
+```
+
+### Filter ###
+
+
+```{r}
+filter(bank, job == "student", balance > 20000)
+filter(bank_tbl, job == "student", balance > 20000)
+
+```
+
+```{r}
+
+
+
+```
+
+### Arrange ###
+
+```{r}
+arrange(bank, age) 
+arrange(bank_tbl, age)
+```
+
+```{r}
+arrange(bank, date, age) %>% select(id, date, age) %>% print(n=400)
+arrange(bank_tbl, date, age) %>% select(id, date, age)
+```
+
+## Tools ##
+
+This tools are useful to read messages of Spark engine:
+
+```{r}
+spark_web(sc)
+spark_log(sc)
+```
+
+This is to store a different Spark configuration in a file:
+
+```{r}
+spark_config(file = "config.yml", use_default = TRUE)
+```
+
+## Problems ##
+
+Error in date and factor seems to be not automatically supported.
+
+```{r}
+select(bank, date, education)
+select(bank_tbl, date, education)
+
+```
+
+# RStudio ml examples
+
+## Initialization
+
+```{r setup, results="hide"}
+library(sparklyr)
+library(dplyr)
+library(ggplot2)
+
+  
+sc <- spark_connect("yarn", version = "2.0.0")
+spark_disconnect(sc)
+sc <- spark_connect("local", version = "2.0.0")
+iris_tbl <- copy_to(sc, iris, "iris", overwrite = TRUE)
+```
+
+## KMeans in R
+
+```{r}
+cl <- iris %>%
+  select(Petal.Width, Petal.Length) %>%
+  kmeans(centers = 3)
+
+centers <- as.data.frame(cl$centers)
+
+iris %>%
+  select(Petal.Width, Petal.Length) %>%
+  ggplot(aes(Petal.Length, Petal.Width)) +
+    geom_point(data = centers, aes(Petal.Width, Petal.Length), size = 60, alpha = 0.1) +
+    geom_point(data = iris, aes(Petal.Width, Petal.Length), size = 2, alpha = 0.5)
+```
+
+## KMeans in Spark
+
+```{r}
+model <- iris_tbl %>%
+  select(Petal_Width, Petal_Length) %>%
+  ml_kmeans(centers = 3)
+
+iris_tbl %>%
+  select(Petal_Width, Petal_Length) %>%
+  collect %>%
+  ggplot(aes(Petal_Length, Petal_Width)) +
+    geom_point(data = model$centers, aes(Petal_Width, Petal_Length), size = 60, alpha = 0.1) +
+    geom_point(aes(Petal_Width, Petal_Length), size = 2, alpha = 0.5)
+
+```
+
+## Linear Regression in R
+
+```{r}
+model <- lm(Petal.Length ~ Petal.Width, data = iris)
+
+iris %>%
+  select(Petal.Width, Petal.Length) %>%
+  ggplot(aes(Petal.Length, Petal.Width)) +
+    geom_point(data = iris, aes(Petal.Width, Petal.Length), size = 2, alpha = 0.5) +
+    geom_abline(aes(slope = coef(model)[["Petal.Width"]],
+                    intercept = coef(model)[["(Intercept)"]],
+                    color = "red"))
+```
+
+## Linear Regression in Spark
+
+```{r}
+model <- iris_tbl %>%
+  select(Petal_Width, Petal_Length) %>%
+  ml_linear_regression(response = "Petal_Length", features = c("Petal_Width"))
+
+iris_tbl %>%
+  select(Petal_Width, Petal_Length) %>%
+  collect %>%
+  ggplot(aes(Petal_Length, Petal_Width)) +
+    geom_point(aes(Petal_Width, Petal_Length), size = 2, alpha = 0.5) +
+    geom_abline(aes(slope = coef(model)[["Petal_Width"]],
+                    intercept = coef(model)[["(Intercept)"]],
+                    color = "red"))
+```
+
+## Logistic Regression in R
+
+```{r}
+ # Prepare beaver dataset
+beaver <- beaver2
+beaver$activ <- factor(beaver$activ, labels = c("Non-Active", "Active"))
+
+ # Fit model
+model <- glm(activ ~ temp, data = beaver, family = binomial(link = "logit"))
+print(model)
+
+ # Plot prediction curve
+newdata <- data.frame(
+  temp = seq(min(beaver$temp), max(beaver$temp), length.out = 128)
+)
+
+df <- data.frame(
+  x = newdata$temp,
+  y = predict(model, newdata = newdata, type = "response") + 1
+)
+
+ggplot(beaver, aes(x = temp, y = activ)) +
+  geom_point() +
+  geom_line(data = df, aes(x, y), col = "red") +
+  labs(
+    x = "Body Temperature (ºC)",
+    y = "Activity",
+    title = "Beaver Activity vs. Body Temperature",
+    subtitle = "From R's built-in 'beaver2' dataset"
+  )
+
+```
+
+## Logistic Regression in Spark
+
+```{r}
+beaver_tbl <- copy_to(sc, beaver, "beaver", overwrite = TRUE)
+
+model <- beaver_tbl %>%
+  mutate(response = as.numeric(activ == "Active")) %>%
+  ml_logistic_regression(response = "response", features = "temp")
+
+print(model)
+```
+
+## Survival Regression in R
+
+```{r}
+library(survival)
+data(ovarian, package = "survival")
+
+fit <- survreg(
+  Surv(futime, fustat) ~ ecog.ps + rx,
+  data = ovarian,
+  dist = "weibull"
+)
+
+coefficients(fit)
+```
+
+## Survival Regression in Spark
+
+```{r}
+ovarian_tbl <- copy_to(sc, ovarian, overwrite = TRUE)
+fit <- ovarian_tbl %>%
+  ml_survival_regression(
+    response = "futime",
+    censor = "fustat",
+    features = c("ecog_ps", "rx")
+  )
+
+coefficients(fit)
+```
+
+## Partitioning in R 
+
+```{r}
+set.seed(1099)
+ratio <- 0.75
+trainingSize <- floor(ratio * nrow(iris))
+indices <- sample(seq_len(nrow(iris)), size = trainingSize)
+
+training <- iris[ indices, ]
+test     <- iris[-indices, ]
+
+fit <- lm(Petal.Length ~ Petal.Width, data = iris)
+predict(fit, newdata = test)
+```
+
+## Partitioning in Spark
+
+```{r}
+partitions <- tbl(sc, "iris") %>%
+  sdf_partition(training = 0.75, test = 0.25, seed = 1099)
+
+fit <- partitions$training %>%
+  ml_linear_regression(response = "Petal_Length", features = c("Petal_Width"))
+
+predict(fit, partitions$test)
+```
+
+
+## Principal Components Analysis in R
+
+```{r}
+model <- iris %>%
+  select(-Species) %>%
+  prcomp()
+print(model)
+
+ # calculate explained variance
+model$sdev^2 / sum(model$sdev^2)
+```
+
+## Principal Components Analysis in Spark
+
+```{r}
+model <- tbl(sc, "iris") %>%
+  select(-Species) %>%
+  ml_pca()
+print(model)
+```
+
+## Random Forests with R
+
+```{r}
+rForest <- randomForest::randomForest(
+  Species ~ Petal.Length + Petal.Width,
+  ntree = 20L,
+  nodesize = 20L,
+  data = iris
+)
+rPredict <- predict(rForest, iris)
+head(rPredict)
+```
+
+## Random Forests with Spark
+
+```{r}
+mForest <- iris_tbl %>%
+  ml_random_forest(
+    response = "Species",
+    features = c("Petal_Length", "Petal_Width"),
+    max.bins = 32L,
+    max.depth = 5L,
+    num.trees = 20L
+  )
+mPredict <- predict(mForest, iris_tbl)
+head(mPredict)
+```
+
+## Comparing Random Forest Classification
+
+Using the model to predict the same data it was trained on is
+certainly not best practice, but it at least showcases that
+the results produced are concordant between R and Spark.
+
+```{r}
+df <- as.data.frame(table(x = rPredict, y = mPredict), stringsAsFactors = FALSE)
+
+ggplot(df) +
+  geom_raster(aes(x, y, fill = Freq)) +
+  geom_text(aes(x, y, label = Freq), col = "#222222", size = 6, nudge_x = 0.005, nudge_y = -0.005) +
+  geom_text(aes(x, y, label = Freq), col = "white", size = 6) +
+  labs(
+    x = "R-predicted Species",
+    y = "Spark-predicted Species",
+    title = "Random Forest Classification — Comparing R and Spark")
+```
+
+## Neural Networks with R
+
+```{r}
+library(neuralnet)
+
+XOR <- c(0,1,1,0)
+xor.data <- data.frame(expand.grid(c(0,1), c(0,1)), XOR)
+
+xor.data
+
+net.xor <- neuralnet( XOR~Var1+Var2, xor.data, hidden = 2, rep = 5)
+plot(net.xor, rep="best")
+```
+
+## Decision Tree with Spark
+
+```{r}
+mDecisionTree <- iris_tbl %>%
+  ml_decision_tree(
+    response = "Species",
+    features = c("Petal_Length", "Petal_Width"),
+    max.bins = 32L,
+    max.depth = 5L
+  )
+mPredict <- predict(mDecisionTree, iris_tbl)
+head(mPredict)
+```
+
+## Naive-Bayes with Spark
+
+```{r}
+mNaiveBayes <- iris_tbl %>%
+  ml_naive_bayes(
+    response = "Species",
+    features = c("Petal_Length", "Petal_Width")
+  )
+mPredict <- predict(mNaiveBayes, iris_tbl)
+head(mPredict)
+```
+
+## Cleanup
+
+```{r}
+spark_disconnect(sc)
+```
+# other
+## tempo
+
+Posix
+
+## env
+
+```{r env}
+Sys.getenv("SPARK_HOME")
+Sys.getenv("HADOOP_CONF_DIR")
+Sys.getenv("JAVA_HOME")
+```
+
+
