@@ -2241,7 +2241,7 @@ NULL
 #' }
 #' 
 #' 
-#' @source he complete \code{housing} help page is in the \code{MASS} package: \code{\link[MASS]{housing}}
+#' @source The complete \code{housing} help page is in the \code{MASS} package: \code{\link[MASS]{housing}}
 NULL
 ##################################################################################################################################
 
@@ -2585,4 +2585,40 @@ NULL
 #' 
 #' @source \url{http://simplemaps.com/resources/world-cities-data}
 ##################################################################################################################################
+
+##################################################################################################################################
+#' NCCTG Lung Cancer Data
+#' 
+#' 
+#' @name lung
+#' 
+#' 
+#' @description \code{lung} dataset contains information about survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. 
+#' Performance scores rate how well the patient can perform usual daily activities.
+#' 
+#' @usage data(lung)
+#' 
+#' 
+#' @format \code{lung} is a tbl data frame with 228 observations on 10 variables.
+#' 
+#' 
+#' @details 
+#' The 10 variables of the \code{lung} tbl data frame are the following ones:
+#' \itemize{
+#'  \item \code{inst} Institution code (numeric)
+#'  \item \code{time} Survival time in days (numeric)
+#'  \item \code{status} censoring status 1=censored, 2=dead (numeric)
+#'  \item \code{age} Age in years (numeric)
+#'  \item \code{sex} Male=1 Female=2 (numeric)
+#'  \item \code{ph.ecog} ECOG performance score 0=good 5=dead) (numeric)
+#'  \item \code{ph.karno} Karnofsky performance score rated by physician (numeric)
+#'  \item \code{pat.karno} Karnofsky performance score (bad=0-good=100) as rated by patient (numeric)
+#'  \item \code{meal.cal} Calories consumed at meals (numeric)
+#'  \item \code{wt.loss} Weight loss in last six months (numeric)
+#' }
+#' 
+#' 
+#' @source The complete \code{lung} help page is in the \code{Survival} package: \code{\link[Survival]{lung}}
+##################################################################################################################################
+
 
