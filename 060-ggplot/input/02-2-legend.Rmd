@@ -83,7 +83,7 @@ già detto?
 -->
 
 Let us consider a plot with multiple legends in plot.  
-Suppose we want to analyze the relationship between humidity, viscosity, ink percentage and band typen `bands` dataset: 
+Suppose we want to analyze the relationship between humidity, viscosity, ink percentage and band type in `bands` dataset: 
 
 ```{r, warning=FALSE}
 pl_2 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct, colour=band_type)) +
@@ -97,16 +97,14 @@ pl_2 +
   theme(legend.position="bottom")
 ```
 
-Looking at the plot we see that legends are represented in different lines.
-
-If you want to set legends in the same line set `legend.box` argument of `theme()` function as `"horizontal"`:
+Looking at the plot we see that legends are represented in different lines. If you want to set legends in the same line set `legend.box` argument of `theme()` function as `"horizontal"`:
 
 ```{r, warning=FALSE}
 pl_2 + 
   theme(legend.position="bottom", legend.box = "horizontal")
 ```
 
-The legend can also be placed inside the graphing area by specifying a coordinate position. In this case, the argument `legend.position` has to be set to a numeric vector c(x,y), whose values should be between 0 and 1. In particualar, the coordinate space starts at (0, 0) in the bottom left and goes to (1, 1) in the top right.
+The legend can also be placed inside the graphing area by specifying a coordinate position. In this case, the argument `legend.position` has to be set to a numeric vector c(x,y), whose values should be between 0 and 1. In particular, the coordinate space starts at (0, 0) in the bottom left and goes to (1, 1) in the top right.
 
 Let us see an example, considering the differences of ink percentage accordingly to the type of press in bands dataset: 
 
@@ -119,7 +117,7 @@ pl_1 +
 mettere tutto il testo dell'esempio?
 -->
 
-In the previous plot, the justification of the legend positon is centered. This means that the center of the legend (.5, .5) is placed at the coordinates set to `legend.position` argument. However, it is often useful to specify a different point. You can use `legend.justification` argument to set which part of the legend box is set to the position specified in `legend.position` argument. Let us set left-top justification for legend justification:
+In the previous plot, the justification of the legend positon is centered. This means that the center of the legend (.5, .5) is placed at the coordinates set to `legend.position` argument. However, it is often useful to specify a different point. You can use `legend.justification` argument to set which part of the legend box is set to the position specified in `legend.position` argument. Let us set left-top justification for `legend.justification`:
 
 ```{r, warning=FALSE}
 pl_1 + 
@@ -135,7 +133,7 @@ pl_1 +
   scale_fill_discrete(limits=c("MOTTER94", "MOTTER70", "WOODHEADE70", "ALBERT70"))
 ```
 
-Note that the order of the items on the x-axis did not change. To do that, you would have to set the limits of `scale_x_discrete()` or change the data to have a different factor level order. For more detail see "Change axis order" paragraph in "Axes Customization" chapter.
+Note that the order of the items on the x-axis did not change. To do that, you would have to set the limits of `scale_x_discrete()` or change the data to have a different factor level order. For more detail see _Change axis order_ paragraph in _Axes Customization_ chapter.
 
 ### Reversing the order of items in a legend
 
@@ -165,7 +163,7 @@ pl_2 +
 
 ## Change a legend title
 
-The title of a legend can be changed in two ways:
+The title of a legend can be changed in three ways:
 
 * using `labs()` function and set the value of `fill`, `colour`, `shape`, or whatever aesthetic is appropriate for the legend
 * in the scale specification settimg `name` argument
@@ -261,7 +259,7 @@ pl_1 +
   scale_fill_discrete(labels=c("Albert 70", "Motter 70", "Motter 94", "Woodhoe 70"))
 ```
 
-Note that the labels on the x-axis did not change. To do that, you would have to set the labels of `scale_x_discrete()` (see chapter "Axes Customization", paragraph "Changing the Text of Tick Labels"), or change the data to have different factor level names.
+Note that the labels on the x-axis did not change. To do that, you would have to set the labels of `scale_x_discrete()` (see chapter _Axes Customization_, paragraph _Changing the Text of Tick Labels_), or change the data to have different factor level names.
 
 If you are also changing the order of items in the legend, the labels are matched to the items by position. In this example we change the item order, and make sure to set the labels in the same order:
 
@@ -305,7 +303,7 @@ pl_1 +
   scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", "Motter 94 \n type", "Woodhoe 70 \n type"))
 ```
 
-As you can see in the previois plot, with the default settings the lines of text will run into each other when you use labels that have more than one line. To deal with this problem, you can increase the height of the legend keys and decrease the spacing between lines, using `theme()`. To do this, you will need to specify the height using the `unit()` function from the `grid` package:
+As you can see in the previous plot, with the default settings the lines of text will run into each other when you use labels that have more than one line. To deal with this problem, you can increase the height of the legend keys and decrease the spacing between lines, using `theme()`. To do this, you will need to specify the height using the `unit()` function:
 
 ```{r, warning=FALSE}
 pl_1 + 
@@ -314,9 +312,13 @@ pl_1 +
     legend.key.height=unit(1, "cm"))
 ```
 
+<!--
+dire cos'è unit()
+-->
+
 ### Customize legend background 
 
-When placing the legend inside of the graphing area, as seen in "Changing the position of a legend" paragraph, it may be helpful to add an opaque border to set it apart by setting `legend.background` argument of `theme` function:
+When placing the legend inside of the graphing area, as seen in _Changing the position of a legend_  paragraph, it may be helpful to add an opaque border to set it apart by setting `legend.background` argument of `theme` function:
 
 ```{r, warning=FALSE}
 pl_1 + 
@@ -342,10 +344,8 @@ Legend background can be customized also if legend is out of the plotting area:
 
 ```{r, warning=FALSE}
 pl_1 + theme(
-  legend.background = element_rect(fill="lightblue",
-    size=0.5, linetype="solid", colour ="darkblue"),
-  legend.key  = element_rect(fill="lightblue",
-    size=0.5, linetype="solid", colour ="lightblue"))
+  legend.background = element_rect(fill="lightblue", size=0.5, linetype="solid", colour ="darkblue"),
+  legend.key  = element_rect(fill="lightblue", size=0.5, linetype="solid", colour ="lightblue"))
 ```
 
 
