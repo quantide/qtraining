@@ -26,14 +26,14 @@ But firstly, let us introduce some concepts about scales structure.
 A scale is required for every aestethic used on a plot. 
 For example, when you write:
 
-```{r}
+```{r scales_structure_1}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point(mapping = aes(colour=band_type))
 ```
 
 What actually happens is:
 
-```{r}
+```{r scales_structure_2}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point(mapping = aes(colour=band_type)) +
   scale_x_continuous() +
@@ -49,7 +49,7 @@ Each scale has default values for its argument, this means that if you want to m
 
 For example, let us suppose that you want to reduce the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to decrease the luminance and set it to 40 in this way:
 
-```{r}
+```{r scale_colour_discrete}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point(mapping = aes(colour=band_type)) +
   scale_color_discrete(l = 45)
@@ -121,7 +121,7 @@ nozioni generiche sui colori
 
 Suppose we are interested in the relationship between `humidity` and `viscosity` by `press_type` in `bands` dataset:
 
-```{r}
+```{r colour_aes_discrete}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point()
 ```
@@ -152,7 +152,7 @@ The default colors used for different numbers of levels are shown here:
 
 The default color selection uses `scale_fill_hue()` and `scale_colour_hue()`:
 
-```{r}
+```{r scale_colour_hue_1}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point() +
   scale_color_hue()
@@ -163,7 +163,7 @@ The previous two graph are equal and in the second graph definition `scale_color
 With `scale_colour_hue()`, the colors are taken from around the color wheel in the HCL (hue-chroma-lightness) color space. 
 In "Scales structure" we learn that the default lightness value is 65 on a scale from 0–100. This is good for filled areas, but it’s a bit light for points and lines. To make the colors darker for points and lines, set the value of `l` (luminance/ lightness):
 
-```{r}
+```{r scale_colour_hue_2}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point() +
   scale_colour_hue(l=45)
@@ -177,7 +177,7 @@ You can also use other color scales, such as ones taken from the `RColorBrewer` 
 
 The `ColorBrewer` palettes can be selected by name:
 
-```{r}
+```{r scale_colour_brewer}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point() +
   scale_colour_brewer(palette="Set1")
@@ -187,7 +187,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
 You can also use a palette of greys. This is useful for print when the output is in black and white. 
 
 
-```{r}
+```{r scale_colour_grey_1}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point() +
   scale_colour_grey()
@@ -195,7 +195,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
 
 The default is to start at 0.2 and end at 0.8, on a scale from 0 (black) to 1 (white), but you can change the range:
 
-```{r}
+```{r scale_colour_grey_2}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point() +
   scale_colour_grey(start=0.7, end=0)
@@ -205,7 +205,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
 
 Colour can be also manually specified by using `scale_colour_manual()` function. The colors can be named, or they can be specified with RGB values:
 
-```{r}
+```{r scale_colour_manual_1}
 # named colours
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point() +
@@ -223,7 +223,7 @@ The order of the items in the values vector matches the order of the factor leve
 #bands %>% do(data.frame(levels(.$press_type)))
 -->
 
-```{r}
+```{r press_type_levels}
 levels(bands$press_type)
 ```
 
@@ -233,7 +233,7 @@ If the variable is a character vector, not a factor, it will automatically be co
 
 It’s possible to specify the colors in a different order by using a named vector:
 
-```{r}
+```{r scale_colour_manual_2} 
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point() +
   scale_colour_manual(values = c(ALBERT70 = "lime green", MOTTER70 = "dark turquoise", MOTTER94 = "magenta", WOODHOE70 = "dodger blue"))
@@ -274,7 +274,7 @@ Fill scale | Colour scale | Description
 
 Supposing we are interested in the relationship between `humidity`, `viscosity` and `solvent_pct` in `bands` dataset:   
 
-```{r}
+```{r colour_aes_continuous}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point()
 ```
@@ -283,14 +283,14 @@ Let us see how the previous fuctions work.
 We will specify the colours for a continuous variable using various gradient scales. 
 The colors can be named, or they can be specified with RGB values:
 
-```{r}
+```{r scale_colour_gradient}
 # scale_colour_gradient()
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point() + 
   scale_colour_gradient(low="black", high="white")
 ```
 
-```{r}
+```{r scale_colour_gradient2}
 # scale_colour_gradient2()
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point() + 
@@ -304,7 +304,7 @@ midpoint? Non lo capisco
 <!--
 less satured colours 
 
-```{r}
+```{r, purl=FALSE}
 require(scales)
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point() + scale_colour_gradient2(low=muted("red"), mid="white", high=muted("blue"))
@@ -313,7 +313,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent
 
 -->
 
-```{r}
+```{r scale_colour_gradientn_1}
 # scale_colour_gradientn()
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point() + 
@@ -322,7 +322,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent
 
 
 You can also use palettes produced by another package:
-```{r}
+```{r scale_colour_gradientn_2}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point() + 
   scale_colour_gradientn(colours = terrain.colors(n=8))
@@ -378,7 +378,7 @@ lines(x = c(xs, xe), y = c(1, 1), lty = 6, lwd = lwd0)
 
 Let us consider the average growth of chicks for the different diets by using `ChickWeights` dataset, as seen in _Creating a Line Plot_:
 
-```{r}
+```{r ChickWeightMean}
 # data
 ChickWeightMean <- ChickWeight %>% 
   group_by(Time, Diet) %>% 
@@ -388,14 +388,14 @@ ChickWeightMean <- ChickWeight %>%
 
 We want to se the difference in the average growth of chicks for the different diets, by mapping `Diet` variable to `linetype` aestethics:   
 
-```{r}
+```{r linetype_aes}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
   geom_line(mapping=aes(linetype=Diet)) 
 ```
 
 To change linetypes we have to set `values` argument of `scale_linetype_manual()` function:
 
-```{r}
+```{r scale_linetype_manual}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
   geom_line(mapping=aes(linetype=Diet)) +  
   scale_linetype_manual(values=c(3,4,5,6))
@@ -434,7 +434,7 @@ R provides the following shapes symbols:
 
 If you want to customize shape scale you have to set `values` argument of `scale_shape_manual()` function:
 
-```{r}
+```{r scale_shape_manual}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=press_type)) +
   geom_point() +
   scale_shape_manual(values = c(12, 13, 8, 3))
@@ -447,7 +447,7 @@ The size aesthetic is most commonly used for points and text, and humans perceiv
 
 ### Change the size of plotting symbols
 
-```{r}
+```{r size_aes}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   geom_point()
 ```
@@ -456,7 +456,7 @@ When a variable is mapped to size, the results can be perceptually misleading. I
 
 If you want to customize the minimum and the maximum size of the plotting symbol you have :
 
-```{r}
+```{r scale_size}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   geom_point() +
   scale_size(range=c(2, 4))
@@ -468,7 +468,7 @@ However, the point size numbers don’t map linearly to diameter or area, so thi
 
 If you want that a value of zero is always mapped to size 0, use `scale_size_area()` instead of `scale_size()`:  
 
-```{r}
+```{r scale_size_area_1}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   geom_point() +
   scale_size_area()
@@ -476,7 +476,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
 
 However with `scale_size_area()` you can not control the size of plotting symbols by using `range` argument. You can set only the size of largest points by setting `max_size` argument:
 
-```{r}
+```{r scale_size_area_2}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   geom_point() +
   scale_size_area(max_size = 3)
@@ -484,7 +484,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
 
 You can also use radiuos to control the size of plotting symbols by setting `scale_radius()` function:
 
-```{r}
+```{r scale_radius}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   geom_point() +
   scale_radius()

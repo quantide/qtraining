@@ -96,7 +96,7 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
 già scritto nel capitolo legende
 Alternatively, you can use the `guides` function to hide the legend, just setting to `FALSE` the related aesthetic, in this case `fill`.
 
-```{r bargraph_nolegend_guides, message=FALSE}
+```{r bargraph_nolegend_guides, message=FALSE, purl=FALSE}
 ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   geom_bar(mapping=aes(fill=Diet)) +
   scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b")) +

@@ -153,7 +153,7 @@ As you can see from the plot no lines are drawn and a warning message is returne
 
 To resolve this problem, you have to manually specify the grouping, setting `group` argument:
 
-```{r , message=FALSE}
+```{r linegraph_group, message=FALSE}
 ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
   geom_line() + 
   geom_point()
@@ -206,7 +206,7 @@ Mapped Aesthetics customization will be deepen in "Mapped Aesthetics Customizati
 
 <!--
 
-```{r linegraph_setcolourmanual_order, message=FALSE}
+```{r linegraph_setcolourmanual_order, message=FALSE, purl=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   geom_line() + 
   geom_point() + 
@@ -215,7 +215,7 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
 
 There are as many `scale_*_manual` function as aesthetics for which values can be set manually.
 
-```{r linegraph_setshape_order, message=FALSE}
+```{r linegraph_setshape_order, message=FALSE, purl=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   geom_line(mapping=aes(linetype=Diet)) + 
   geom_point(mapping=aes(shape=Diet)) + 

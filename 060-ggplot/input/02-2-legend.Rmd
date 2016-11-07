@@ -3,7 +3,13 @@ title: "Legend Customization"
 output: html_document
 ---
 
-```{r, echo=FALSE, message=FALSE}
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
+options(width = 108)
+```
+
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(ggplot2)
 require(qdata)
 require(grid)
@@ -16,7 +22,7 @@ A legend is a guide which tells us how to map visual (aesthetic) properties back
 Let us see an example.  
 Considering the `bands` data. Supposing you are interested in the relationship between humidity and viscosity by band type, you can build four box plots to compare distributions:
 
-```{r, warning=FALSE}
+```{r pl_1}
 pl_1 <- ggplot(data=bands, aes(x=press_type, y=ink_pct, fill=press_type)) + 
   geom_boxplot()
 pl_1
@@ -45,7 +51,7 @@ You can remove the legend in three ways:
 
 In the previous example, the colors provide the same information that is on the x-axis, so the legend is unnecessary:
 
-```{r, eval = FALSE}
+```{r pl_1_remove_legend, eval = FALSE}
 pl_1 + 
   guides(fill=FALSE)
 pl_1 + 
@@ -56,7 +62,7 @@ pl_1 +
 
 In this case, the previous three command lines produce the same result:
 
-```{r, echo=FALSE, warning=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 pl_1 + 
   guides(fill=FALSE)
 ```
@@ -71,7 +77,7 @@ If you want to move the legend from its default place, on the right side, you ha
 
 Suppose we want to place the position on top:
 
-```{r, warning=FALSE}
+```{r pl_1_change_legend_position_1}
 pl_1 + 
   theme(legend.position="top")
 ```
@@ -85,21 +91,21 @@ già detto?
 Let us consider a plot with multiple legends in plot.  
 Suppose we want to analyze the relationship between humidity, viscosity, ink percentage and band type in `bands` dataset: 
 
-```{r, warning=FALSE}
+```{r pl_2}
 pl_2 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct, colour=band_type)) +
   geom_point()
 ```
 
 Suppose that we want also to move the legend to bottom:
 
-```{r, warning=FALSE}
+```{r pl_2_change_multiple_legend_position_1}
 pl_2 + 
   theme(legend.position="bottom")
 ```
 
 Looking at the plot we see that legends are represented in different lines. If you want to set legends in the same line set `legend.box` argument of `theme()` function as `"horizontal"`:
 
-```{r, warning=FALSE}
+```{r pl_2_change_multiple_legend_position_2}
 pl_2 + 
   theme(legend.position="bottom", legend.box = "horizontal")
 ```
@@ -108,7 +114,7 @@ The legend can also be placed inside the graphing area by specifying a coordinat
 
 Let us see an example, considering the differences of ink percentage accordingly to the type of press in bands dataset: 
 
-```{r, warning=FALSE}
+```{r pl_1_change_legend_position_2}
 pl_1 + 
   theme(legend.position=c(0.15,0.80))
 ```
@@ -119,7 +125,7 @@ mettere tutto il testo dell'esempio?
 
 In the previous plot, the justification of the legend positon is centered. This means that the center of the legend (.5, .5) is placed at the coordinates set to `legend.position` argument. However, it is often useful to specify a different point. You can use `legend.justification` argument to set which part of the legend box is set to the position specified in `legend.position` argument. Let us set left-top justification for `legend.justification`:
 
-```{r, warning=FALSE}
+```{r pl_1_change_legend_position_3}
 pl_1 + 
   theme(legend.position=c(0,1), legend.justification=c(0,1))
 ```
@@ -128,7 +134,7 @@ pl_1 +
 
 To change the order of the items in a legend set the limits in the scale to the desired order:
 
-```{r, warning=FALSE}
+```{r pl_1_change_legend_order}
 pl_1 + 
   scale_fill_discrete(limits=c("MOTTER94", "MOTTER70", "WOODHEADE70", "ALBERT70"))
 ```
@@ -139,7 +145,7 @@ Note that the order of the items on the x-axis did not change. To do that, you w
 
 Add `guides(fill=guide_legend(reverse=TRUE))` to reverse the order of the legend (for other aesthetics, replace fill with the name of the aesthetic, such as colour or size):
 
-```{r, warning=FALSE}
+```{r pl_1_reverse_legend_order}
 pl_1 + 
   guides(fill=guide_legend(reverse=TRUE))
 ```
@@ -154,7 +160,7 @@ Let us consider the example about the relationship between humidity, viscosity, 
 
 In this case, you have multiple guides. Suppose you want to change the guides order, use `guides()` function in this way:
 
-```{r, warning=FALSE}
+```{r pl_2_change_multiple_legends_order}
 pl_2 + 
   guides(color = guide_legend(order=2),
     size = guide_legend(order=1))
@@ -169,7 +175,7 @@ The title of a legend can be changed in three ways:
 * in the scale specification settimg `name` argument
 * using `guides()` function
 
-```{r, eval=FALSE}
+```{r pl_1_change_legend_title, eval=FALSE}
 pl_1 + 
   labs(fill="Pressure Type")
 pl_1 + 
@@ -180,7 +186,7 @@ pl_1 +
 
 The previous three command lines proceduce the same result:
 
-```{r, echo = FALSE, warning=FALSE}
+```{r, echo = FALSE, purl=FALSE}
 pl_1 + 
   labs(fill="Pressure Type")
 ```
@@ -194,7 +200,7 @@ Let us consider the example about the relationship between humidity, viscosity, 
 
 Change the legends title:
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, purl=FALSE}
 pl_2 + labs(colour="Band Type", size="Ink \n Percentage")
 pl_2 + guides(colour=guide_legend(title="Band Type"), size=guide_legend(title="Ink \n Percentage"))
 ```
@@ -204,7 +210,7 @@ If you have one variable mapped to two separate aesthetics, the default is to ha
 
 Let us analyze the relationship between humidity, viscosity and band_type in `bands` dataset:
 
-```{r, warning=FALSE}
+```{r pl_3}
 pl_3 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=band_type, colour=band_type)) +
   geom_point()
 pl_3
@@ -212,7 +218,7 @@ pl_3
 
 To change the title, you need to set the name for both of them. If you change the name for just one, it will result in two separate legends:
 
-```{r, warning=FALSE}
+```{r pl_3_change_multiple_legends_title}
 pl_3 + 
   labs(shape = "Band Type") # two separate legend
 pl_3 + 
@@ -225,7 +231,7 @@ pl_3 +
 
 The appearance of the legend title, like size, style and the font family can be changed by setting `element_text()` function to `legend.title` argument of `theme()` function in this way:
 
-```{r, warning=FALSE}
+```{r pl_1_change_legend_title_appearance}
 pl_1 + 
   theme(legend.title=element_text(face="bold", family="Times", colour="darkgreen", size=14))
 ```
@@ -235,7 +241,7 @@ pl_1 +
 
 You can remove legend title by using `scale_xxx_xxx()` or `guides()` functions:
 
-```{r, eval=FALSE}
+```{r pl_1_remove_legend_title, eval=FALSE}
 pl_1 + 
   guides(fill=guide_legend(title=NULL))
 pl_1 + 
@@ -244,7 +250,7 @@ pl_1 +
 
 The previous command lines produce the same result:
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 pl_1 + 
   guides(fill=guide_legend(title=NULL))
 ```
@@ -254,7 +260,7 @@ pl_1 +
 
 You can change the labels text in a legend by setting `labels` argument in the `scale_xxx_xxx()` function:
 
-```{r, warning=FALSE}
+```{r pl_1_change_legend_labels_1}
 pl_1 + 
   scale_fill_discrete(labels=c("Albert 70", "Motter 70", "Motter 94", "Woodhoe 70"))
 ```
@@ -263,7 +269,7 @@ Note that the labels on the x-axis did not change. To do that, you would have to
 
 If you are also changing the order of items in the legend, the labels are matched to the items by position. In this example we change the item order, and make sure to set the labels in the same order:
 
-```{r, warning=FALSE}
+```{r pl_1_change_legend_labels_2}
 pl_1 + 
   scale_fill_discrete(limits=c("MOTTER70", "WOODHOE70", "ALBERT70", "MOTTER94"),
     labels=c("Motter 70", "Woodhoe 70", "Albert 70", "Motter 94"))
@@ -271,7 +277,7 @@ pl_1 +
 
 If you have one variable mapped to two separate aesthetics, the default is to have a single legend that combines both. If you want to change the legend labels, you must change them for both scales; otherwise you will end up with two separate legends:
 
-```{r, warning=FALSE}
+```{r pl_3_change_multiple_legends_labels}
 # Change the labels for one scale
 pl_3 + 
   scale_shape_discrete(labels=c("Band", "No Band"))
@@ -289,7 +295,7 @@ inserire anche grafico originale?
 
 The appearance of the legend labels, like size, style and the font family can be changed by setting `element_text()` function to `legend.text` argument of `theme()` function in this way:
 
-```{r, warning=FALSE}
+```{r pl_1_change_legend_labels_appearance}
 pl_1 + 
   theme(legend.text=element_text(face="italic", family="Times", colour="red", size=14))
 ```
@@ -298,14 +304,14 @@ pl_1 +
 
 If you want to use legend labels that have more than one line of text, set the labels in the scale, using `"\n"` to represent a newline. In this example, we’ll use `scale_fill_discrete()` to control the legend for the fill scale:
 
-```{r, warning=FALSE}
+```{r pl_1_legend_labels_break_lines}
 pl_1 + 
   scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", "Motter 94 \n type", "Woodhoe 70 \n type"))
 ```
 
 As you can see in the previous plot, with the default settings the lines of text will run into each other when you use labels that have more than one line. To deal with this problem, you can increase the height of the legend keys and decrease the spacing between lines, using `theme()`. To do this, you will need to specify the height using the `unit()` function:
 
-```{r, warning=FALSE}
+```{r pl_1_customize_legend_keys}
 pl_1 + 
   scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", "Motter 94 \n type", "Woodhoe 70 \n type")) +
   theme(legend.text=element_text(lineheight=.8),
@@ -320,7 +326,7 @@ dire cos'è unit()
 
 When placing the legend inside of the graphing area, as seen in _Changing the position of a legend_  paragraph, it may be helpful to add an opaque border to set it apart by setting `legend.background` argument of `theme` function:
 
-```{r, warning=FALSE}
+```{r pl_1_customize_legend_background_1}
 pl_1 + 
   theme(legend.position=c(0,1), legend.justification=c(0,1),
     legend.background=element_rect(fill="white", colour="black"))
@@ -330,7 +336,7 @@ pl_1 +
 
 You can also remove the border around its elements so that it blends in by using `element_blank()` function:
 
-```{r, warning=FALSE}
+```{r pl_1_remove_legend_border}
 pl_1 + 
   theme(legend.position=c(0,1), 
         legend.justification=c(0,1),
@@ -342,7 +348,7 @@ pl_1 +
 
 Legend background can be customized also if legend is out of the plotting area:
 
-```{r, warning=FALSE}
+```{r pl_1_customize_legend_background_2}
 pl_1 + theme(
   legend.background = element_rect(fill="lightblue", size=0.5, linetype="solid", colour ="darkblue"),
   legend.key  = element_rect(fill="lightblue", size=0.5, linetype="solid", colour ="lightblue"))

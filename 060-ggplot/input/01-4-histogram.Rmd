@@ -115,7 +115,7 @@ Lo tolgo perchè si approfondirà nel capitolo facet
 
 Mapping `fill` to the faceting variable (`press_type`) returns a different coloured histogram for each panel.
 
-```{r histogram_facetwrap_fill, message=FALSE, warning=FALSE}
+```{r histogram_facetwrap_fill, message=FALSE, warning=FALSE, purl=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(mapping=aes(fill=press_type)) +
   guides(fill=FALSE) +
@@ -137,7 +137,7 @@ The special variables in ggplot with double periods around them, as `..density..
 
 A density curve can be added to compare the theoretical and observed distributions.
 
-```{r , message=FALSE, warning=FALSE}
+```{r density_curve, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + 
   geom_density(colour="#034e7b")
@@ -148,7 +148,7 @@ data.
 
 `geom_density()` function draws a closed polygon. If you do not like the lines along the side and bottom, you can draw a density curve using `geom_line` with `stat="density"`.
 
-```{r , message=FALSE, warning=FALSE}
+```{r density_line, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + 
   geom_line(stat="density", colour="#034e7b")
@@ -172,14 +172,14 @@ We have already seen how `geom_density()` works. Let us deepen its functionaliti
 
 Suppose we want to analyze the density distribution estimation of `ink_pct` variable. To better visualize the area under the curve you can customize it by setting `fill` and `alpha` arguments:
 
-```{r , message=FALSE, warning=FALSE}
+```{r density_curve_fill, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) + 
   geom_density(fill = "red", alpha = 0.6)
 ```
 
 The amount of smoothing depends on the kernel bandwidth: the larger the bandwidth, the more smoothing there is. The bandwidth can be set with the adjust parameter, which has a default value of 1:
 
-```{r , message=FALSE, warning=FALSE}
+```{r density_curve_smooth, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) + 
   geom_density(adjust = 0.5)
 ```
@@ -190,7 +190,7 @@ You can set a value for `adjust` also by using `geom_line(stat="density")`.
 
 `geom_density()` can be used also to compare density distribution estimations of grouped data. The grouping variable must be map to an aesthetic like `colour` or `fill`. The grouping variable must be a factor or character vector. In this case we consider `band_type` variable:    
 
-```{r , message=FALSE, warning=FALSE}
+```{r density_curve_groups, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, colour = band_type)) + 
   geom_density()
 ```
@@ -205,21 +205,21 @@ That is, like a histogram, it shows what is in the data, whereas a kernel densit
 
 Suppose we want to analyze the distribution of `ink_pct` variable. `ggplot2` function that draws a frequency polygon is `geom_freqpoly()`:
 
-```{r , message=FALSE, warning=FALSE}
+```{r frequency_polygon, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_freqpoly(col = "darkgreen")
 ```
 
 Also like a histogram, you can control the bin width for the frequency polygon:
 
-```{r , message=FALSE, warning=FALSE}
+```{r frequency_polygon_binwidth, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_freqpoly(col = "darkgreen", binwidth=10)
 ```
 
 If you don't want evenly spaced bins you can set the `breaks` arguments:
 
-```{r , message=FALSE, warning=FALSE}
+```{r frequency_polygon_breaks, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_freqpoly(col = "darkgreen", breaks=c(30, 32, 36, 41, 45, 53, 59, 64, 72, 77, 81, 87, 91))
 ```

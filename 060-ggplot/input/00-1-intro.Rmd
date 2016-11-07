@@ -45,7 +45,7 @@ Let us see an example.
 
 Let us consider `iris` dataset. `iris` dataset gives the measurements in centimeters of sepal length and width and of petal length and width, respectively, for 50 flowers from each of 3 species of iris. Suppose we want to visualize the relationship between length and width of iris sepals according to the different species: 
 
-```{r, fig.width= 8, echo=FALSE}
+```{r complete_plot, fig.width= 8, echo=FALSE}
 # Load iris dataset
 data(iris)
 
@@ -81,10 +81,6 @@ The complete scheme of the most important building blocks of `ggplot2` grammar i
 The scheme must be read from bottom to top. Starting from bottom, the first three building blocks (<b> <span style="color:#FFBF00">Data</span> </b>, <b> <span style="color:#FF8000">Aestethic Mappings</span> </b> and <b> <span style="color:#FF0000">Layers</span> </b>) are fundamental to build a simple plot, indeed they are called 
 __"key"__ building blocks. The remaining building blocks (<b> <span style="color:#9A2EFE">Scales</span> </b>, <b> <span style="color:#08298A">Coordinates</span> </b>, <b> <span style="color:#2E9AFE">Facets</span> </b> and <b> <span style="color:#01DF01">Theme</span> </b>) allow us to build a complex plot and to customize it; their use and order is not compulsory. 
 
-<!--
-dire che non è obbligatorio utilizzare tutti i layer
--->
-
 Let us briefly describe the task of each element of the scheme and how it helps build the previous plot: 
 
 1. <b> <span style="color:#FFBF00">Data</span> </b>: the dataset that we want to visualize
@@ -92,12 +88,12 @@ Let us briefly describe the task of each element of the scheme and how it helps 
 ![](./images/schema-layer-ggplot2-data.png)
 
 
-```{r, eval=FALSE}
+```{r data_1, eval=FALSE}
 # iris dataset
 data(iris)
 ```
 
-```{r}
+```{r data_2}
 head(iris)
 ```
 
@@ -113,7 +109,7 @@ head(iris)
 | y | x |   |  |
 
 
-```{r}
+```{r aes}
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length))
 ```
 
@@ -121,7 +117,7 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length))
 
 ![](./images/schema-layer-ggplot2-layer.png)
 
-```{r}
+```{r layers}
 # Scatterplot of the relationship between sepal length and sepal width with regression line
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length)) +
   geom_point() + # layer 1 
@@ -138,7 +134,7 @@ già detto prima
 
 ![](./images/schema-layer-ggplot2-scales.png)
 
-```{r}
+```{r scales}
 # Map Species to colour in aes() and change the default colours of colour scale  
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
@@ -151,7 +147,7 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
 
 ![](./images/schema-layer-ggplot2-coord.png)
 
-```{r fig.height= 4}
+```{r coord, fig.height= 4}
 # Change coordinate system 
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
@@ -165,7 +161,7 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
 
 ![](./images/schema-layer-ggplot2-facet.png)
 
-```{r}
+```{r facets}
 # Generate a plot for each iris species
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
@@ -179,7 +175,7 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
 
 ![](./images/schema-layer-ggplot2-mod.png)
 
-```{r, fig.width= 8}
+```{r theme, fig.width= 8}
 # Customize the appearance of the plot
 ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   geom_point() +
@@ -248,80 +244,6 @@ This manual is full of examples, for which the following datasets have been used
 
 For a complete description of data, refer to the help (`?<dataset name>`).
 
-
-<!--
-
-### `bands`
-
-`bands` provides data about process delays known as cylinder banding in rotogravure printing.
-`bands` data is included in the `qdata` package.
-For a complete description of data, refer to the help (`?bands`).
-
-
-
-```{r intro_data_bands, message=FALSE}
-require(qdata)
-data(bands)
-head(bands)
-```
-
-
-
-### `ChickWeight`
-
-`ChickWeight` provides weight versus age of chicks on different diets.
-
-`ChickWeight` data is included in `datasets` package, that comes with base R: you just need to type `ChickWeight` to access data.
-
-For a description of data, refer to the help (`?ChickWeight`).
-
-
-### `ToothGrowth`
-
-`ToothGrowth` provides the effect of Vitamin C on Tooth Growth in Guinea Pigs.
-
-`ToothGrowth` data is included in `datasets` package, that comes with base R: you just need to type `ToothGrowth` to access data.
-
-For a description of data, refer to the help (`?ToothGrowth`).
-
-
-### istat
-
-`istat` provides the measures of weight, height, gender and geographical area ("Nord", "Centro", "Sud" and "Isole") from 1806 Italian people.
-
-`istat` is included in `qdata` package.
-
-For a complete description of data, refer to the help (`?istat`).
-
-### italy
-
-`italy` provides information about longitude, latitude and region of the most important italian cities. 
-
-`italy` is included in `qdata` package.
-
-For a complete description of data, refer to the help (`?italy`).
-
-### lung
-
-`lung` provides information about survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. 
-
-`lung` is included in `survival` package. 
-
-<!--
-metterlo in qdata
--->
-
-<!--
-
-### brainbod
-
-`brainbod` provides information about the weight of body and brain of different species of animals.
-
-`brainbod` is included in `qdata` package.
-
-For a complete description of data, refer to the help (`?brainbod`).
-
--->
 
 ## Bibliography and References
 

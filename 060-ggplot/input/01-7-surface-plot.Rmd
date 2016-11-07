@@ -13,7 +13,7 @@ data(bands)
 
 `ggplot2` does not support true 3d surfaces. However it does support many common tools for representing 3d surfaces in 2d: contours, coloured raster (tiles) and bubble plots. These all works similarly, differing only in the aesthetic used for the third dimension.  
 
-```{r , message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE, fig.width=10}
+```{r surface_plots, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE, fig.width=10}
 # excude NA
 bands_na_rm <- bands %>% na.omit() 
 # compute bivariate density
@@ -65,7 +65,7 @@ Suppose we want to analize the relationship between `humidity` and `viscosity` v
 
 First of all let us compute bivariate density estimate between `humidity` and `viscosity`: 
 
-```{r, eval=FALSE}
+```{r bivariate_density_computation, eval=FALSE}
 # remove NA from bands dataset 
 bands_na_rm <- bands %>% na.omit() 
 
@@ -80,7 +80,7 @@ bands_d <- expand.grid(humidity = f2d$x, viscosity = f2d$y) %>%
 
 Countour can be plotted by `geom_contour()` function:
 
-```{r}
+```{r contour_first}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour()
 ```
@@ -88,7 +88,7 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
 The third dimension is mapped to `z` aestethic of `ggplot()` function. In this case, `z` is set to `density`. 
 
 <!--
-```{r, echo=FALSE}
+```{r, echo=FALSE, purl=FALSE}
 data("faithfuld")
 ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
   geom_contour()
@@ -97,15 +97,15 @@ ggplot(faithfuld, aes(waiting, eruptions, z = density)) +
 
 A similar plot can be represented also by using `geom_density_2d()` function:
 
-```{r}
+```{r, purl=FALSE}
 ggplot(bands, aes(humidity, viscosity)) +
   geom_density_2d()
 ```
 
 The difference between `geom_contour()` and `geom_density_2d()` is that `geom_density_2d()` doesn't need the definition of the third dimension as it automathically computes a two-dimensional kernel density estimate and countour is its default representation.  
 
-<!--
-```{r}
+
+```{r, purl=FALSE}
 ggplot(faithful, aes(waiting, eruptions)) +
   geom_density_2d()
 ```
@@ -113,7 +113,7 @@ ggplot(faithful, aes(waiting, eruptions)) +
 
 You can set bins, by using `bins` argument, to generate evenly spaced contours in the range of the data:
 
-```{r}
+```{r contour_bins}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(bins = 2)
 
@@ -122,7 +122,7 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
 ```
 
 <!--
-```{r}
+```{r, purl=FALSE}
 ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
   geom_contour(bins = 2)
 
@@ -133,16 +133,14 @@ ggplot(faithfuld, aes(waiting, eruptions, z = density)) +
 
 You can also parameterize the distance between contours setting `binwidth` argument, which represent the binwidth of countour lines:
 
-
-```{r}
+```{r contour_bindwidth}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(binwidth = 0.0001)
 ```
 
 
 <!--
-
-```{r}
+```{r, purl=FALSE}
 ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
   geom_contour(binwidth = 0.01)
 ```
@@ -150,7 +148,7 @@ ggplot(faithfuld, aes(waiting, eruptions, z = density)) +
 
 We can customize the countour plot by changing `colour`, `linetype` or line `size`: 
 
-```{r}
+```{r, contour_settings}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(colour = "darkgreen", linetype = 6, size = 1)
 ```
@@ -158,7 +156,7 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
 
 It is also possible to map the height of the density curve to the color of the contour lines, by mapping `..level..` to `colour` scale:
 
-```{r}
+```{r, contour_colour_mapped}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(aes(colour = ..level..))
 ```
@@ -168,7 +166,7 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
 Mapping `..level..` to `colour` a legend is automathically produced.  
 
 <!--
-```{r}
+```{r, purl=FALSE}
 ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
   geom_contour(aes(colour = ..level..))
 ```
@@ -176,7 +174,7 @@ ggplot(faithfuld, aes(waiting, eruptions, z = density)) +
 
 
 <!--
-```{r}
+```{r, purl=FALSE}
 ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
   geom_contour(colour = "green", linetype = 4, size = 1)
 ```
@@ -184,14 +182,14 @@ ggplot(faithfuld, aes(waiting, eruptions, z = density)) +
 
 You can also customize your plot by adding in background another `geom` which draws surfaces: `geom_raster()` in order to increase the 3d effect.
 
-```{r}
+```{r contour_raster_plot}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_raster(aes(fill = density)) +
   geom_contour(colour = "white")
 ```
 
 <!--
-```{r}
+```{r, purl=FALSE}
 # Customize
 ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
   geom_raster(aes(fill = density)) +
@@ -206,13 +204,13 @@ A raster (tiles) plot is a scan pattern in which an area is scanned from side to
 As you saw in the previous example, raster plot is generated by `geom_raster()`.  
 `geom_raster()` is a function for drawing rectangles. The most common use for rectangles is to draw a surface. If you want to draw surfaces you have to map the variable that represent the third dimension, in this case `density`, to `fill` aestethic:
 
-```{r}
+```{r rasterplot_first}
 ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_raster(aes(fill = density))
 ```
 
 <!--
-```{r}
+```{r, purl=FALSE}
 ggplot(faithfuld, aes(waiting, eruptions)) +
  geom_raster(aes(fill = density))
 ```
@@ -221,13 +219,13 @@ ggplot(faithfuld, aes(waiting, eruptions)) +
 You can also add an interpolation to smooth the surface, by setting `interpolate = TRUE`. It is useful when rendering images.
 
 
-```{r}
+```{r rasterplot_interpolate}
 ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_raster(aes(fill = density), interpolate = TRUE)
 ```
 
 <!--
-```{r}
+```{r, purl=FALSE}
 ggplot(faithfuld, aes(waiting, eruptions)) +
  geom_raster(aes(fill = density), interpolate = TRUE)
 ```
@@ -237,13 +235,13 @@ A similar result can be achieved by using `geom_tile()` function. `geom_tile()` 
 The main difference is that `geom_raster()` renders more efficiently than `geom_tile()`. In theory they should appear the same, but in practice they often do not. If you are writing to a PDF file, the appearance depends on the PDF viewer. On some viewers, 
 when tile is used there may be faint lines between the tiles, and when raster is used the edges of the tiles may appear blurry.
 
-```{r}
+```{r tileplot}
 ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_tile(aes(fill = density))
 ```
 
 <!--
-```{r}
+```{r, purl=FALSE}
 ggplot(faithfuld, aes(waiting, eruptions)) +
  geom_tile(aes(fill = density))
 ```
@@ -256,11 +254,11 @@ A bubble plot is another type of plot that displays three dimensions of data. Ea
 
 It works better with fewer observations so we grab a sample of the original dataset:
 
-```{r, eval = FALSE}
+```{r sample_dataset, eval = FALSE}
 bands_d_sample <- bands_d %>% sample_n(size = 500)
 ```
 
-```{r}
+```{r bubbleplot_first}
 ggplot(bands_d_sample, aes(humidity, viscosity)) +
   geom_point(aes(size = density)) +
   scale_size_area()
@@ -268,11 +266,11 @@ ggplot(bands_d_sample, aes(humidity, viscosity)) +
 
 
 <!--
-```{r, eval=FALSE}
+```{r, eval=FALSE, purl=FALSE}
 small <- faithfuld[seq(1, nrow(faithfuld), by = 10), ]
 ```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, purl=FALSE}
 ggplot(small, aes(eruptions, waiting)) +
   geom_point(aes(size = density)) +
   scale_size_area()
@@ -283,7 +281,7 @@ To generate a bubble plot you have to map the third variable, in this case `dens
 
 You can also specify an `alpha` level, a `colour` and `fill` for bubbles as `geom_point()` settings:
 
-```{r}
+```{r bubbleplot_settings}
 ggplot(bands_d_sample, aes(humidity, viscosity)) +
   geom_point(aes(size = density), alpha = 0.4, colour = "blue", fill = "lightblue") +
   scale_size_area()
@@ -291,12 +289,11 @@ ggplot(bands_d_sample, aes(humidity, viscosity)) +
 
 <!--
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, purl=FALSE}
 ggplot(small, aes(eruptions, waiting)) +
   geom_point(aes(size = density), alpha =1/3, colour = "blue", fill = "lightblue") +
   scale_size_area()
 ```
-
 -->
 
 

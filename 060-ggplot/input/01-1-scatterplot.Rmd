@@ -234,7 +234,7 @@ Mapping a discrete variable to `size` aestethic is not advised.
 
 <!--
 You can map `band_type` to size, but the result advise against this choice. 
-```{r scatterplot_map_size, message=FALSE, warning=FALSE}
+```{r scatterplot_map_size, message=FALSE, warning=FALSE, purl = FALSE}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=band_type)) +
   geom_point()
 ```

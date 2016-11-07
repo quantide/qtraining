@@ -61,7 +61,7 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 
 Boxplot summarises the bulk of distributions with only five numbers: median, first quartile, third quartile, minimum and maximum. You can also add points to boxplots to identify the observations by using `geom_jitter()` function:
 
-```{r , message=FALSE, warning=FALSE}
+```{r boxplot_jitter, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3) +
   geom_jitter()
@@ -114,7 +114,7 @@ The difference is particularly useful when the data distribution is multimodal (
 <!--
 Suppose we want to compare the density distribution of `ink_pct` by `press_type`: 
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, purl=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, colour = press_type)) + 
   geom_density()
 ```
@@ -173,7 +173,7 @@ You already saw a "preview" of the `theme()` function, that set many theme setti
 
  - `axis.ticks.x` (or `axis.ticks.y`) controls the ticks of x-axis (or y-axis). `axis.ticks` performs the same action to both axis. You can suppress ticks with `element_blank()` or use `element_line()` to change the aspect of ticks setting `colour`, `size` or `linetype`.
  
-    ```{r boxplot_axis_ticks, message=FALSE, warning=FALSE}
+    ```{r boxplot_axis_ticks, message=FALSE, warning=FALSE, purl=FALSE}
     ggplot(data=bands, aes(x="0", y=ink_pct)) + 
       geom_boxplot(fill="#74a9cf", colour="#034e7b") +
       xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
@@ -182,7 +182,7 @@ You already saw a "preview" of the `theme()` function, that set many theme setti
 
  - `axis.text.x`, `axis.text.y` and `axis.text` controls the text of x, y or both axis ticks. You can suppress text with `element_blank()` or use `element_text()` to change the aspect of ticks setting font `family`, font `face`, `colour`, `size`, `angle` and other options.
  
-    ```{r boxplot_axis_text, message=FALSE, warning=FALSE}
+    ```{r boxplot_axis_text, message=FALSE, warning=FALSE, purl=FALSE}
     ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
       geom_boxplot(fill="#74a9cf", colour="#034e7b") +
       xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
@@ -191,7 +191,7 @@ You already saw a "preview" of the `theme()` function, that set many theme setti
     
  - `axis.text.x`, `axis.text.y` and `axis.text` controls the title of x, y or both axes. You can suppress text with `element_blank()` or use `element_text()` to change the aspect of axis text.
  
-    ```{r boxplot_axis_title, message=FALSE, warning=FALSE}
+    ```{r boxplot_axis_title, message=FALSE, warning=FALSE, purl=FALSE}
     ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
       geom_boxplot(fill="#74a9cf", colour="#034e7b") +
       xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
@@ -200,7 +200,7 @@ You already saw a "preview" of the `theme()` function, that set many theme setti
     
  - `plot.title` controls the text of the overall plot. You can use `element_text()` to change the aspect of title.
  
-    ```{r boxplot_plot_title, message=FALSE, warning=FALSE}
+    ```{r boxplot_plot_title, message=FALSE, warning=FALSE, purl=FALSE}
     ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
       geom_boxplot(fill="#74a9cf", colour="#034e7b") +
       xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
