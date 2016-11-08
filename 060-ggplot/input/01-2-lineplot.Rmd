@@ -116,7 +116,7 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
   geom_point()
 ```
 
-A jagged line appears when there are multiple data at each `x` and you tell ggplot to connect them. A plot like this one should sounds as a warning that something is wrong. In order to have a single point for each `x` you can summarize your data, or you can draw several lines, accordingly to a third variable, just adding a new aesthetic.
+A jagged line appears when there are multiple data at each `x` and you tell `ggplot` to connect them. A plot like this one should sounds as a warning that something is wrong. In order to have a single point for each `x` you can summarize your data, or you can draw several lines, accordingly to a third variable, just adding a new aesthetic.
 
 ```{r linegraph_aes, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +

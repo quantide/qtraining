@@ -139,7 +139,7 @@ pl_1 +
   scale_fill_discrete(limits=c("MOTTER94", "MOTTER70", "WOODHEADE70", "ALBERT70"))
 ```
 
-Note that the order of the items on the x-axis did not change. To do that, you would have to set the limits of `scale_x_discrete()` or change the data to have a different factor level order. For more detail see _Change axis order_ paragraph in _Axes Customization_ chapter.
+Note that the order of the items on the x-axis did not change. To do that, you would have to set the limits of `scale_x_discrete()` or change the data to have a different factor level order. For more details see _Change axis order_ paragraph in _Axes Customization_ chapter.
 
 ### Reversing the order of items in a legend
 
@@ -172,7 +172,7 @@ pl_2 +
 The title of a legend can be changed in three ways:
 
 * using `labs()` function and set the value of `fill`, `colour`, `shape`, or whatever aesthetic is appropriate for the legend
-* in the scale specification settimg `name` argument
+* in the scale specification setting `name` argument
 * using `guides()` function
 
 ```{r pl_1_change_legend_title, eval=FALSE}

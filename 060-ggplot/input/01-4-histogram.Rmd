@@ -63,11 +63,11 @@ By default, the data is grouped into 30 bins. You can modify the number of bins:
     
 ## Mapping variables to histograms and faceting
 
-May be interesting analysing the distribution of ink percentage for each level of `proof_on_ctd_ink`. 
+May be interesting analysing the distribution of ink percentage for each level of `band_type`. 
 
 ```{r histogram_mapping, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
-  geom_histogram(mapping=aes(fill=proof_on_ctd_ink))
+  geom_histogram(mapping=aes(fill=band_type))
 ```
 
 Mapping the grouping variable to `fill`, two overlapped distributions are shown. In some cases, as shown above, this solution may work. In other cases, the result may be very difficult to be understood. Suppose you are in the distribution of ink percentage for each level of `press_type`
@@ -90,7 +90,7 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
 ```{r histogram_facetgrid_row, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(fill="#2B4C6F") +
-  facet_grid(type_on_cylinder ~ .)
+  facet_grid(band_type ~ .)
 ```
 
 Faceting on both dimensions:
@@ -98,7 +98,7 @@ Faceting on both dimensions:
 ```{r histogram_facetgrid_row_col, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(fill="#2B4C6F") +
-  facet_grid(type_on_cylinder ~ press_type)
+  facet_grid(band_type ~ press_type)
 ```
 
 When you have a categorical variable with many levels, it does not make sense to try and display them all in one row (or one column) and you may want to wrap it. `facet_wrap(~ variable)` wraps a sequence of panels into rows and columns, to better fit screen.
@@ -133,7 +133,7 @@ ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf")
 ```
 
-The special variables in ggplot with double periods around them, as `..density..`, are returned by a `stat` transformation of the original dataset. 
+The special variables in `ggplot` with double periods around them, as `..density..`, are returned by a `stat` transformation of the original dataset. 
 
 A density curve can be added to compare the theoretical and observed distributions.
 

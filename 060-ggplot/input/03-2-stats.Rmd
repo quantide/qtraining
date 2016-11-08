@@ -27,6 +27,9 @@ We can divide statistic layer (`stat`) into two groups:
 
 Both categories of functions begin with `stat_`.
 
+In the examples of the following paragraph we will consider `istat` dataset, which provides the measures of weight, height, gender and geographical area ("Nord", "Centro", "Sud" and "Isole") from 1806 Italian people.
+
+
 ## Statistics with geoms
 
 <!--
@@ -40,7 +43,8 @@ _Statistics with geoms_ group includes `stat`s functions that are combined with 
 
 `stat`s functions and `geom`s functions both combine a stat with a geom to make a layer. 
 
-For example, `"boxplot"` is the default statistical transformation allowed by `geom_boxplot()`, which summarises the observations in a given group. `geom_boxplot(stat="boxplot")` does the same as `stat_boxplot(geom="boxplot")`: 
+For example, `"boxplot"` is the default statistical transformation allowed by `geom_boxplot()`, which summarises the observations in a given group. `geom_boxplot(stat="boxplot")` does the same as `stat_boxplot(geom="boxplot")`.
+
 
 ```{r stat_with_geom_ex_1}
 ggplot(data=istat, mapping=aes(y=Weight, x=Area)) + 
@@ -373,7 +377,7 @@ ggplot(istat_sample, aes(Weight, Height)) +
 
 ## Statistics outside geoms
 
-_Statistics outside geoms_ gropu includes statistics that can’t be created with a `geom_` function.  
+_Statistics outside geoms_ group includes statistics that can't be created with a `geom_` function.  
 The most important are:
 
 * `stat_summary()`: summarises values
@@ -443,7 +447,7 @@ ggplot(data=istat, aes(x=Area, y=Weight)) +
   stat_summary(fun.y="mean", geom="point", shape=23, size=3, fill="red")
 ```
 
-`fun.y` argument of `stat_summary()` function can be specified equal to the statistics that we want to compute, in this case the `"mean"`. There is also `geom` argument which specified wich `geom` has to used to represent the computed means in the plot, in this case `"point"`.
+`fun.y` argument of `stat_summary()` function can be specified equal to the statistics that we want to compute, in this case the `"mean"`. There is also `geom` argument which specifies which `geom` has to be used to represent the computed means in the plot, in this case `"point"`.
 
 Apart from mean, you can compute lots of summaries on your distribution.
 
@@ -510,7 +514,7 @@ ggplot(data = istat, mapping = aes(sample = Height)) +
 
 You have to specify sample quantiles in aesthetics, in this case the sample quantile is `Height` variable.
 
-In particular, base graphics `qqnorm()` function is reproduced by `stat_qq()` and `qqline()` by `geom_abline()`, with intercept equal to the mean of the variable for which the qqplot has to be drawn and the slope equalt o the variance. 
+In particular, base graphics `qqnorm()` function is reproduced by `stat_qq()` and `qqline()` by `geom_abline()`, with intercept equal to the mean of the variable for which the qq-plot has to be drawn and the slope equal to the variance. 
 
 
 

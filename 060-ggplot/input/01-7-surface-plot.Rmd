@@ -56,7 +56,7 @@ gridExtra::grid.arrange(ggp1, ggp2, ggp3,ncol=3)
 
 This chapter explains how to build contours, coloured raster (tiles) and bubble plots.
 
-## Countours
+## Contour 
 
 A contour plot is a graphical technique for representing a 3-dimensional surface by plotting constant z slices, called contours, on a 2-dimensional format. That is, given a value for z, lines are drawn for connecting the (x,y) coordinates where that z value occurs.
 
@@ -78,7 +78,7 @@ bands_d <- expand.grid(humidity = f2d$x, viscosity = f2d$y) %>%
   mutate(density = as.vector(f2d$z))
 ```
 
-Countour can be plotted by `geom_contour()` function:
+Contour can be plotted by `geom_contour()` function:
 
 ```{r contour_first}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 

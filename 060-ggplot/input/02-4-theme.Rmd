@@ -18,9 +18,9 @@ data(bands)
 ```
 
 
-The overall appearance of plots is controlled by the theming system, an important component of `ggplot2` grammar. We started the exploration of theming system in the previous chapters, in particular in "Legend Customization", "Axes Customization" and "Facet Customization", where we saw how themes give us the control of non-data elements of the plot like fonts, ticks, panel strip, legend keys, ..
+The overall appearance of plots is controlled by the theming system, an important component of `ggplot2` grammar. We started the exploration of theming system in the previous chapters, in particular in _Legend Customization_, _Axes Customization_ and _Facet Customization_, where we saw how themes give us the control of non-data elements of the plot like fonts, ticks, panel strip, legend keys, ..
 
-In this chapter we will deeepen the theming system structure and we will answer to the most frequently asked questions about the plot customization. 
+In this chapter we will deeepen the theming system structure and we will answer to the most frequently asked questions about plot customization. 
 
 ## Theming system structure
 
@@ -41,7 +41,7 @@ In particular, a __theme function__ is composed of:
 
 * __theme element functions__, which enables you to modify the settings of certain theme elements. In particular, each theme element is associated with an element function, which describes the visual properties of that element.
 
-Each theme element has a default value that can be locally modified in a specific ggplot object by using a __`theme()` function__.
+Each theme element has a default value that can be locally modified in a specific ggplot object by using __`theme()` function__.
 
 Suppose we want to modify the colour of axis lines:
 
@@ -53,7 +53,7 @@ pl +
 
 In particular, `axis.line.x` and `axis.line.y` are the theme elements that control the appearance of x and y axis respectively and `element_line()` is the theme element function that allows us to modify the theme elements.
 
-Moreover, if you don' like `theme_grey()` you can decide to totally replace it by setting another __theme function__ (complete themes).
+Moreover, if you don' like `theme_grey()` you can decide to totally replace it by setting another __theme function__ (complete theme).
 Let us set `theme_bw()`, a theme with white background and thin grey grid lines:
 
 ```{r pl_theme_bw}
@@ -250,7 +250,7 @@ ggplot(data = bands, mapping = aes(x= humidity, y = viscosity)) +
 ```
 
 We have already learn about most of these `ggplot2` theme elements in the previous chapters, in particular about: axis, legend and facet categories. But what's about plot and panels theme elements?   
-With the term plot we means what is included outside the plotting area and with "panel" what is included in the plotting area.
+With the term "plot" we means what is included outside the plotting area and with "panel" what is included in the plotting area.
 
 In the following paragraphs we will see how to handle with the most common questions about plot and panel customization. We will talk also about the customization of the whole theme function.
 
@@ -311,7 +311,7 @@ If you want to modify plot appearance outside plotting area you have to set `plo
 
 ### Add the title to a plot and change its appearance
 
-As we saw in "Creating a Boxplot" chapter, title can be added by using `ggtitle()` or `labs` function in this way: 
+As we saw in _Creating a Boxplot_ chapter, title can be added by using `ggtitle()` or `labs` function in this way: 
 
 ```{r pl_add_title, eval =FALSE}
 pl + 

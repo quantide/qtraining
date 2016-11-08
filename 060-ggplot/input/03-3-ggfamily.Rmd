@@ -60,6 +60,8 @@ ggcorr(data = bottlecap, palette = "RdBu", label = TRUE)
 
 `ggpairs()` function contains templates for different plots to be combined into a plot matrix. It is a nice alternative to the more limited `pairs` function of `graphics` package.
 
+Let us see an example considering `istat` dataset.
+
 ```{r ggpairs_1, message=FALSE, warning=FALSE}
 ggpairs(data=istat, # dataframe with variables
         columns = 2:4, # columns to be used to make plots
@@ -111,7 +113,7 @@ We consider only the following variables:
 
 As a first argument `ggsurv()` needs a survfit object, created by the `survival` package:
 
-```{r ggsurv}
+```{r ggsurv, message=FALSE, warning=FALSE}
 # Fit survival functions
 surv <- survfit(Surv(time, status) ~ sex, data = lung)
 # Plot survival curves
@@ -157,8 +159,7 @@ italy_map <- get_map(location="Italy", zoom = 6, maptype = "satellite")
 ```
 
 `location` argument is specified as an "address", it can be specified also by a latitude/longitude pair.  
-`zoom` argument specify the level of map zoom; it can be spacified from 3 (continent) to 21 (building) the default is 10 (city). 6 level of zoom returns countries.  
-`maptype` specify map theme. Some of the options are: "terrain", "toner", "watercolor", "roadmap", "satellite", "hybrid".  
+`zoom` argument specify the level of map zoom; it can be spacified from 3 (continent) to 21 (building) the default is 10 (city). 6 level of zoom returns countries. `maptype` specify map theme. Some of the options are: `"terrain"`, `"toner"`, `"watercolor"`, `"roadmap"`, `"satellite"`, `"hybrid"`.  
 
 <!--
 ```{r, eval=FALSE, purl=FALSE}

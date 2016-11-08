@@ -43,11 +43,11 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
 
 The previous two specifications are equal.
 
-Default scales are named according to the aesthetic and the variable type. It would be tedious to manually add a scale every time a new aestethic is added, so `ggplot2` does it for you.
+Default scales are named according to the aesthetics and the variables type. It would be tedious to manually add a scale every time a new aestethic is added, so `ggplot2` does it for you.
 
 Each scale has default values for its argument, this means that if you want to modify one or more features of this scale you have to overwrite it/s default value. To overwrite its default value/s you have to manually add that scale.
 
-For example, let us suppose that you want to reduce the luminance of the points colours in the plot. Colour aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to decrease the luminance and set it to 40 in this way:
+For example, let us suppose that you want to reduce the luminance of the points colours in the plot. `colour` aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to decrease the luminance and set it to 40 in this way:
 
 ```{r scale_colour_discrete}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
@@ -117,7 +117,7 @@ Hues are not perceived as being ordered, but chroma and luminance are ordered.
 nozioni generiche sui colori
 -->
 
-### Change the colors for a discrete mapped variable
+### Change the colours for a discrete mapped variable
 
 Suppose we are interested in the relationship between `humidity` and `viscosity` by `press_type` in `bands` dataset:
 
@@ -158,10 +158,10 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_color_hue()
 ```
 
-The previous two graph are equal and in the second graph definition `scale_color_hue()` is redundant.
+_Note_: in the previous plot definition `scale_color_hue()` is redundant.
 
 With `scale_colour_hue()`, the colors are taken from around the color wheel in the HCL (hue-chroma-lightness) color space. 
-In "Scales structure" we learn that the default lightness value is 65 on a scale from 0–100. This is good for filled areas, but it’s a bit light for points and lines. To make the colors darker for points and lines, set the value of `l` (luminance/ lightness):
+In _Scales structure_ we learn that the default lightness value is 65 on a scale from 0–100. This is good for filled areas, but it’s a bit light for points and lines. To make the colors darker for points and lines, set the value of `l` (luminance/ lightness):
 
 ```{r scale_colour_hue_2}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
@@ -201,7 +201,7 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_colour_grey(start=0.7, end=0)
 ```
 
-### Using a Manually Defined Palette for a Discrete Variable 
+### Using a manually defined palette for a discrete variable 
 
 Colour can be also manually specified by using `scale_colour_manual()` function. The colors can be named, or they can be specified with RGB values:
 
@@ -258,7 +258,7 @@ true for the pairs green and magenta, and blue and yellow.
 -->
 
 
-### Using a Manually Defined Palette for a Continuous Variable
+### Change the colours for a continuous mapped variable
 
 You want to use different colors for a continuous variable.
 
@@ -452,9 +452,7 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   geom_point()
 ```
 
-When a variable is mapped to size, the results can be perceptually misleading. If it is important for the sizes to proportionally represent the quantities, you can change the range of sizes. By default the sizes of points go from 1 to 6 mm. You could reduce the range to, say, 2 to 4 mm, with `scale_size_continuous(range=c(2, 4))`.
-
-If you want to customize the minimum and the maximum size of the plotting symbol you have :
+When a variable is mapped to size, the results can be perceptually misleading. If it is important for the sizes to proportionally represent the quantities, you can change the range of sizes. By default the sizes of points go from 1 to 6 mm. You could reduce the range to, say, 2 to 4 mm, with `scale_size_continuous(range=c(2, 4))`:
 
 ```{r scale_size}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
@@ -462,9 +460,9 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   scale_size(range=c(2, 4))
 ```
 
-So you have to set the to `range` argument the minimum and the maximum size of the plotting symbol.
+So you have to set to the `range` argument the minimum and the maximum size of the plotting symbols.
 
-However, the point size numbers don’t map linearly to diameter or area, so this still won’t give a very accurate representation of the values.
+However, the point size numbers don't map linearly to diameter or area, so this still won't give a very accurate representation of the values.
 
 If you want that a value of zero is always mapped to size 0, use `scale_size_area()` instead of `scale_size()`:  
 

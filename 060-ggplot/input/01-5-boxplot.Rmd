@@ -31,7 +31,7 @@ ggp2 <- ggp + theme(axis.ticks.y = element_blank()) + coord_flip()
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-This chapter presents how to build box plots and violin plots. It show also how to add title and axis labels.
+This chapter presents how to build box plots and violin plots. It show also how to add title and axis labels to the plot.
 
 ## The first box plot
 
@@ -88,7 +88,7 @@ ggplot(data=bands, aes(x="0", y=ink_pct)) +
   theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
 ```
 
-x-axis tick marker and label are removed by using `theme()` function. We remind the functionalities and features of these functions to "Axes Customization" chapter.  
+x-axis tick marker and label are removed by using `theme()` function. We remind the functionalities and features of these functions to _Axes Customization_ chapter.  
 
 ## Adding Titles and Axis labels
 

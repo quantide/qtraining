@@ -105,7 +105,7 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
 
 -->
 
-`ggplot2` provides some functions (e.g. `scale_*_brewer` or `scale_*_gradient`) to choose a palette (i.e. a set of coherent colours), but these functions will be shown in "Legend Customization" chapter. You can still use `scale_*_manual` functions and refer to some on-line tool like [Color Brewer](http://colorbrewer2.org/) or [Paletton](http://paletton.com/) for a better choice of colours.
+`ggplot2` provides some functions (e.g. `scale_*_brewer` or `scale_*_gradient`) to choose a palette (i.e. a set of coherent colours), but these functions will be shown in _Mapped Aestethics Customization_ chapter. You can still use `scale_*_manual` functions and refer to some on-line tool like [Color Brewer](http://colorbrewer2.org/) or [Paletton](http://paletton.com/) for a better choice of colours.
 
 
 ## Summarized data and `stat`s

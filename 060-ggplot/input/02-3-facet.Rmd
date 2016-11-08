@@ -34,7 +34,7 @@ In `ggplot2` there are three functions for faceting:
 * `facet_grid()`, which produces a 2d grid of panels defined by variables which form the rows and columns
 * `facet_wrap()`, which "wraps" a 1d ribbon of panels into 2d
 
-We mentioned faceting in "How to make an histogram" chapter. In the following paragraphs we will examine in depth how to handle with the most common questions on faceting customization.
+We mentioned faceting in _Creating a Histogram_ chapter. In the following paragraphs we will examine in depth how to handle with the most common questions on faceting customization.
 
 ## Splitting data into subplots
 
@@ -46,7 +46,7 @@ Suppose you are interested in analysing the distribution of `ink_pct` by categor
 
 ```{r pl}
 # ink_pct by presss_type
-pl <- ggplot(data=bands, mapping=aes(x=ink_pct, fill=press_type)) +
+ggplot(data=bands, mapping=aes(x=ink_pct, fill=press_type)) +
   geom_histogram() 
 ```
 
@@ -59,6 +59,10 @@ In particular:
 * `. ~ press_type`: spreads the values of `press_type` across the columns. The direction facilitates the comparison of y position because the vertical scales are aligned:
 
     ```{r pl_facet_grid_horizontal}
+# base plot
+pl <- ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F")    
+    
 # Faceted by press_type, in horizontally arranged subpanels
 pl + 
   facet_grid(. ~ press_type)
@@ -116,7 +120,7 @@ pl + facet_grid(band_type  + paper_type ~ press_type, drop=FALSE)
 ```
 -->
 
-Multiple combinations are posssible also by using `facet_wrap()`:
+Multiple combinations are possible also by using `facet_wrap()`:
 
 ```{r pl_multiple_combinations_facet_wrap, fig.height=9, fig.width=9}
 # by using facet_wrap()
@@ -134,7 +138,7 @@ With `facet_wrap()`, the default is to use the same number of rows and columns. 
 pl + 
   facet_wrap(~ press_type, nrow = 1)
 pl + 
-  facet_wrap(~ press_type, ncol = 3)
+  facet_wrap(~ press_type, ncol = 1)
 ```
 
 Moreover, the default wrapping direction is horizontal, but you can change it by setting `dir` argument:
@@ -310,7 +314,7 @@ pl +
 
 * `label_both`, which prints out both the name of the variable and the value of the variable in each facet
 
-    ```{r change_facets_text_4}
+    ```{r change_facets_text_4, fig.width=7.5}
 pl + 
   facet_grid(band_type ~ press_type, labeller = label_both)
     ```

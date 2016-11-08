@@ -13,7 +13,6 @@ options(width = 108)
 require(ggplot2)
 require(qdata)
 require(scales)
-require(xtable)
 data(bands)
 data(brainbod)
 ```
@@ -27,7 +26,7 @@ Axes are more important than one thinks as they provide context for interpreting
 
 `ggplot2` allows one to handle with the appearance of the axes by using three important elements of its grammar: 
 
-* `scale`, which controls the mapping from data to aestethics attributes 
+* `scales`, which controls the mapping from data to aestethics attributes 
 * `coordinates`, which describes how data coordinates are mapped to the plane of the graphic
 * `themes`, which controls the non-data elements of the plot 
 
@@ -59,7 +58,7 @@ pl_1 +
 Let us consider a categorical (or discrete) axis with a factor mapped to it.
 
 Sometimes when the axes are swapped, as in the previous example, the order of items will be the reverse of what you want.  
-On a graph with standard x- and y-axes, the x items start at the left and go to the right, which corresponds to the normal way of reading, from left to right. When you swap the axes, the items still go from the origin outward, which in this case will be from bottom to top but this conflicts with the normal way of reading, from top to bottom. Sometimes this can be a problem, so it necessary to reverse the axis order. 
+On a graph with standard x- and y-axes, the x items start at the left and go to the right, which corresponds to the normal way of reading, from left to right. When you swap the axes, the items still go from the origin outward, which in this case will be from bottom to top but this conflicts with the normal way of reading, from top to bottom. Sometimes this can be a problem, so it is necessary to reverse the axis order. 
 
 This can be done by using `scale_x_discrete()` with `limits` argument set as `rev(levels(...))` in this way:
 
@@ -543,16 +542,20 @@ The format specified is to be put in a string that is passed to `date_format()`,
 
 The following table lists the most important date-time format:
 
-```{r, echo=FALSE, results='asis'}
-dt_format_table <- data.frame(Option = c("%Y", "%y", "%m", "%b", "%B", "%d", "%U", "%W", "%w", "%a", "%A"), 
-  Description = c("Year with century (2012)", "Year without century (12)", "Month as a decimal number (08)",
-                  "Abbreviated month name in current locale (Aug)", "Full month name in current locale (August)",
-                  "Day of month as a decimal number (04)", "Week of the year as a decimal number, with Sunday as the first day of the week (00–53)", "Week of the year as a decimal number, with Monday as the first day of the week (00–53)", "Day of week (0–6, Sunday is 0)", "Abbreviated weekday name (Thu)", "Full weekday name (Thursday)" ),
-                              stringsAsFactors = FALSE)
 
-dt_format_table <- xtable(dt_format_table, align = c("l", "l", "l"))
-tab.attributes <- 'border="0" align="left" rules="all" style=" border-collapse: collapse;  font-size: 12pt; padding: 50px; width: 60%;"'
-print(dt_format_table, include.rownames=FALSE, type='html', NA.string=NA, html.table.attributes=tab.attributes)
-```
+Option    | Description 
+--------- | ------------------------------------------------------------------------------------- 
+%Y        |  Year with century (2012)
+%y        |  Year without century (12)
+%m        |  Month as a decimal number (08)
+%b        |  Abbreviated month name in current locale (Aug)
+%B        |  Full month name in current locale (August)
+%d        |  Day of month as a decimal number (04)
+%U        |  Week of the year as a decimal number, with Sunday as the first day of the week (00–53)
+%W        |  Week of the year as a decimal number, with Monday as the first day of the week (00–53)
+%w        |  Day of week (0–6, Sunday is 0)
+%a        |  Abbreviated weekday name (Thu)
+%A        |  Full weekday name (Thursday)
+
 
 

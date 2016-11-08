@@ -79,7 +79,7 @@ The complete scheme of the most important building blocks of `ggplot2` grammar i
 ![](./images/schema-layer-ggplot2-mod.png)
 
 The scheme must be read from bottom to top. Starting from bottom, the first three building blocks (<b> <span style="color:#FFBF00">Data</span> </b>, <b> <span style="color:#FF8000">Aestethic Mappings</span> </b> and <b> <span style="color:#FF0000">Layers</span> </b>) are fundamental to build a simple plot, indeed they are called 
-__"key"__ building blocks. The remaining building blocks (<b> <span style="color:#9A2EFE">Scales</span> </b>, <b> <span style="color:#08298A">Coordinates</span> </b>, <b> <span style="color:#2E9AFE">Facets</span> </b> and <b> <span style="color:#01DF01">Theme</span> </b>) allow us to build a complex plot and to customize it; their use and order is not compulsory. 
+__"key"__ building blocks. The remaining building blocks (<b> <span style="color:#9A2EFE">Scales</span> </b>, <b> <span style="color:#08298A">Coordinates</span> </b>, <b> <span style="color:#2E9AFE">Facets</span> </b> and <b> <span style="color:#01DF01">Themes</span> </b>) allow us to build a complex plot and to customize it; their use and order is not compulsory. 
 
 Let us briefly describe the task of each element of the scheme and how it helps build the previous plot: 
 
@@ -171,7 +171,7 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   facet_grid(. ~ Species)
 ```
 
-7. <b> <span style="color:#01DF01">Theme</span> </b>: controls all non-data elements of the plot, like the font size, background colour, etc.
+7. <b> <span style="color:#01DF01">Themes</span> </b>: controls all non-data elements of the plot, like the font size, background colour, etc.
 
 ![](./images/schema-layer-ggplot2-mod.png)
 
@@ -184,8 +184,8 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
   coord_equal() +
   facet_grid(. ~ Species) +
   ggtitle("Scatterplot of lenght and width of iris sepal by species") + 
-    xlab("Sepal Length (cm)") +
-    ylab("Sepal Width (cm)") +
+  xlab("Sepal Length (cm)") +
+  ylab("Sepal Width (cm)") +
   theme(plot.background = element_blank(),
     axis.text = element_text(colour = "black"),
     axis.ticks = element_line(colour = "black"),
@@ -205,11 +205,11 @@ ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
 
 This manual is divided in three sections.  
 
-The first section, _"Base ggplot2"_, explains how to build the most important kinds of plot. It deepens the use and the functionalities of the three key components of `ggplot2` grammar (data, aesthetic mapping and layers). It introduces also some basic concepts about the other components. 
+The first section, _Base ggplot2_, explains how to build the most important kinds of plot. It deepens the use and the functionalities of the three key components of `ggplot2` grammar (data, aesthetic mapping and layers). It introduces also some basic concepts about the other components. 
 
-The second section, _"Advanced ggplot2"_ explains how dealing with the most common questions about plot customization and deepens the remaining components of `ggplot2` grammar (scales, coordinates, facets and themes).  
+The second section, _Advanced ggplot2_ explains how dealing with the most common questions about plot customization and deepens the remaining components of `ggplot2` grammar (scales, coordinates, facets and themes).  
 
-The third section, _"Other Topics"_, talks about the `ggplot2` community and the packages built to support `ggplot2`. It shows also how to prepare plots for presentations, and how to save them to files.  
+The third section, _Other Topics_, talks about the `ggplot2` community and the packages built to support `ggplot2`. It shows also how to prepare plots for presentations, and how to save them to files.  
 
 
 <!--
@@ -234,13 +234,13 @@ This manual is full of examples, for which the following datasets have been used
 * `bands`: provides data about process delays known as cylinder banding in rotogravure printing
 * `istat`: provides the measures of weight, height, gender and geographical area ("Nord", "Centro", "Sud" and "Isole") from 1806 Italian people
 * `italy`: provides information about longitude, latitude and region of the most important italian cities
-* `lung`: provides information about survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. 
+* `lung`: provides information about survival in patients with advanced lung cancer from the North Central Cancer Treatment Group
 * `brainbod`: provides information about the weight of body and brain of different species of animals
 * `bottlecap`: provides information about of the mean diameter of the caps produced by a forging machine
 * `ChickWeight`: provides weight versus age of chicks on different diets
 * `ToothGrowth`: provides the effect of Vitamin C on Tooth Growth in Guinea Pigs
 
-`bands`, `istat`, `italy`, `lung` and `brainbod` are included in `qdata` package, whereas `ChickWeight` and `ToothGrowth` are included in `datasets` package, that comes with base R.
+`bands`, `istat`, `italy`, `lung` `brainbod` and `bottlecap` are included in `qdata` package, whereas `ChickWeight` and `ToothGrowth` are included in `datasets` package, that comes with base R.
 
 For a complete description of data, refer to the help (`?<dataset name>`).
 
