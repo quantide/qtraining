@@ -51,7 +51,7 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp)) +
   geom_line() + 
   geom_point()
 
-## ---- message=FALSE------------------------------------------------------
+## ----linegraph_group, message=FALSE--------------------------------------
 ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
   geom_line() + 
   geom_point()
@@ -76,20 +76,6 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   geom_line() + 
   geom_point() + 
   scale_color_manual(values=c("red", "blue", "green", "orange"))
-
-## ----linegraph_setcolourmanual_order, message=FALSE----------------------
-ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line() + 
-  geom_point() + 
-  scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green"))
-
-## ----linegraph_setshape_order, message=FALSE-----------------------------
-ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line(mapping=aes(linetype=Diet)) + 
-  geom_point(mapping=aes(shape=Diet)) + 
-  scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green")) +
-  scale_shape_manual(values=c(16,18,20,22)) + 
-  scale_linetype_manual(values=c(1,3,5,6))
 
 ## ----linegraph_ChickWeightGrowthMean, message=FALSE----------------------
 ChickWeightGrowth <- ChickWeight %>% 

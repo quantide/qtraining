@@ -35,12 +35,6 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   geom_bar(mapping=aes(fill=Diet)) +
   scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b"), guide=FALSE)
 
-## ----bargraph_nolegend_guides, message=FALSE-----------------------------
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
-  geom_bar(mapping=aes(fill=Diet)) +
-  scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b")) +
-  guides(fill=FALSE)
-
 ## ----bargraph_ChickWeightFreq, message=FALSE-----------------------------
 ChickWeightFreq <- ChickWeight %>% 
   group_by(Diet) %>% 

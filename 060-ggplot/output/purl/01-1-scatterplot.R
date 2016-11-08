@@ -79,10 +79,6 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=band_type)) +
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type, shape=band_type)) +
   geom_point()
 
-## ----scatterplot_map_size, message=FALSE, warning=FALSE------------------
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=band_type)) +
-  geom_point()
-
 ## ----scatterplot_map_colour_continuous, message=FALSE, warning=FALSE-----
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=ink_pct)) +
   geom_point()
