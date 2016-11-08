@@ -3,7 +3,7 @@ title: "More on Stats"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, purl=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
 ```
 

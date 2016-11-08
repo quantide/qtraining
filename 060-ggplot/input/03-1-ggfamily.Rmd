@@ -3,7 +3,7 @@ title: "ggplot2 community"
 output: html_document
 ---
 
-```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE, warning=FALSE, message=FALSE, purl=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 options(width = 108)
 ```

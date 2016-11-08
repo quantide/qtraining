@@ -3,7 +3,7 @@ title: "More on Plot Overall Appearance"
 output: html_document
 ---
 
-```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+```{r setup, include=FALSE, warning=FALSE, message=FALSE, purl=FALSE}
 options(width = 108)
 knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
 ```

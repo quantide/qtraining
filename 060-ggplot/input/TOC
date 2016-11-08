@@ -6,16 +6,16 @@ Creating a Line Plot     | 01-2-lineplot.Rmd
 Creating a Bar Plot      | 01-3-barplot.Rmd
 Creating a Histogram     | 01-4-histogram.Rmd
 Creating a Box Plot      | 01-5-boxplot.Rmd
-Creating a Surface Plot  | 01-7-surface-plot.Rmd
+Creating a Surface Plot  | 01-6-surface-plot.Rmd
 
 Advanced ggplot2
-Mapped Aes Customization        | 02-5-scales.Rmd
-Axes Customization              | 02-1-axes.Rmd
-Legend Customization            | 02-2-legend.Rmd
-Facet Customization             | 02-3-facet.Rmd
-Plot Overall Appearance         | 02-4-theme.Rmd
-More on Stats                   | 03-2-stats.Rmd
+Mapped Aes Customization        | 02-1-scales.Rmd
+Axes Customization              | 02-2-axes.Rmd
+Legend Customization            | 02-3-legend.Rmd
+Facet Customization             | 02-4-facet.Rmd
+Plot Overall Appearance         | 02-5-theme.Rmd
+More on Stats                   | 02-6-stats.Rmd
 
 Other topics
-ggplot2 community        | 03-3-ggfamily.Rmd
-Presenting Plots         | 03-1-presenting.Rmd
+ggplot2 community        | 03-1-ggfamily.Rmd
+Presenting Plots         | 03-2-presenting.Rmd
