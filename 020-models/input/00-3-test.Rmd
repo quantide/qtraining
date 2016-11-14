@@ -474,7 +474,7 @@ $H_A: \; \mu_A \; - \; \mu_B \; > \delta_0$
 
 Let us check the hypothesis specifying `greater` as `alternative` argument value.
 
-```{r}
+```{r, purl=FALSE}
 t.test(x=plastic$SupplrA, y=plastic$SupplrB, alternative = "less")
 ```
 

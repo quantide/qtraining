@@ -233,7 +233,7 @@ Now, since the response is the logarithm of y, contributions of the explanatory 
 <!--
 Now residual check in "classic" style:
 -->
-```{r,fig.show='hold', eval=FALSE, echo=FALSE, fig.cap="Studentized residuals Vs. Fit and Normal Probability Plot of studentized residuals"}
+```{r,fig.show='hold', eval=FALSE, echo=FALSE, purl=FALSE, fig.cap="Studentized residuals Vs. Fit and Normal Probability Plot of studentized residuals"}
 op <- par(mfrow = c(1,2))
 plot(fitted(lfmd) , studres(lfmd) , main =  "Residuals vs Fit", pch = 16, col = "darkgray",
      xlab = "Fitted Values", ylab = "Studentized Residuals")
@@ -513,7 +513,7 @@ hotdogs$type2 <- factor(hotdogs$type2, levels = c("meat", "poultry"))
 
 <!---
 or:
-```{r}
+```{r, purl=FALSE}
 levels(hotdogs$type)
 hotdogs$type3 = hotdogs$type
 levels(hotdogs$type3)[1] = "meat"

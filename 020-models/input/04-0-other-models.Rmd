@@ -252,7 +252,7 @@ par(op)
 
 ## Non linear regression example
 
-```{r}
+```{r, purl=FALSE}
 rm(list=ls())
 ```
 
@@ -269,7 +269,7 @@ Viscosity: Viscosity of fluid
 Wt: Actuating weight
 Time: Time taken
 
-```{r}
+```{r, purl=FALSE}
 rm(list=ls())
 
 str(stormer)
@@ -282,14 +282,14 @@ T= beta*v/(W-theta) + epsilon
 Ignoring the error term and re-arranging the above expression gives:
 WT ~ beta*v+theta*T
 This relation may be used to obtain an initial estimate of beta and theta parameters:
-```{r}
+```{r, purl=FALSE}
 b <- coef(lm(Wt*Time ~ Viscosity + Time - 1,stormer))
 names(b) <- c("beta", "theta")
 b
 ```
 
 Now non-linear estimation of parameters of initial equation:
-```{r}
+```{r, purl=FALSE}
 storm.1 <- nls(Time ~ beta*Viscosity/(Wt - theta), stormer, start=b, trace=T)
 summary(storm.1,correlation=TRUE)
 ```

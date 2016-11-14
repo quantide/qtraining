@@ -296,8 +296,23 @@ bwt$prob <- predict(fm0, type = "response")
 bwt <- bwt[order(bwt$prob),]
 ```
 And the plot of model predictions: 
+
+<!--
+
+vecchia versione chunk (non funziona riga commentata)
+
+```{r,tidy=FALSE,fig.cap="Plot of final model predictions with data points", purl = FALSE, eval=FALSE}
+#bwtPred  <- reshape(bwt, varying = list(c(1,5)), direction = "long")
+ggp <- ggplot(data = bwt, mapping = aes(x = lwt, y = low)) +
+  geom_point(colour="blue") + 
+  geom_line(mapping = aes(x = lwt, y = prob), colour="red") +
+  facet_wrap(facets = ~smoke)
+print(ggp)
+```
+
+-->
+
 ```{r,tidy=FALSE,fig.cap="Plot of final model predictions with data points"}
-bwtPred  <- reshape(bwt, varying = list(c(1,5)), direction = "long")
 ggp <- ggplot(data = bwt, mapping = aes(x = lwt, y = low)) +
   geom_point(colour="blue") + 
   geom_line(mapping = aes(x = lwt, y = prob), colour="red") +
@@ -531,7 +546,7 @@ newdata$pred <- predict(fm3, newdata = newdata , type = "response")
 ```
 And then a categorized surface plot is drawn:
 <!--
-```{r,tidy=FALSE,fig.cap="Categorized surface plot of model predictions Vs. DVRT and fathocc by sex using trellis", eval=FALSE}
+```{r,tidy=FALSE,fig.cap="Categorized surface plot of model predictions Vs. DVRT and fathocc by sex using trellis", eval=FALSE, purl=FALSE}
 require(lattice) # (For wireframe)
 wireframe(pred~DVRT+fathocc | sex, data = newdata, 
           drape = T, layout = c(2,1))
