@@ -4,10 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
+<!--
+# Facets Customization
+-->
 
 ```{r first, message=FALSE}
 require(ggplot2)
@@ -16,17 +19,7 @@ require(qdata)
 data(bands)
 ```
 
-<!--
-One of the most useful techniques in data visualization is rendering groups of data alongside each other, making it easy to compare the groups. With ggplot2, one way to do this is by mapping a discrete variable to an aesthetic, like x position, color, or shape. Another way of doing this is to create a subplot for each group and draw the subplots side by side.
-These kinds of plots are known as Trellis displays. They’re implemented in the lattice package as well as in the ggplot2 package. In ggplot2, they’re called facets. In this chapter I’ll explain how to use them.
--->
-
 Faceting is one of the most useful techniques in data visualization for rendering groups of data alongside each other,  and making it easy to compare them. In particular, faceting is a mechanism for automatically laying out multiple plots in a page, splitting the data into subsets and then plots each subset in a different panel. It is an alternative to the use of aesthetics (like colour, shape or size) to differentiate groups and it is the right choice when groups overlap a lot. 
-
-<!--
-trovare un'immagine del faceting
-parlare di/accennare a trellis?
--->
 
 In `ggplot2` there are three functions for faceting:
 
@@ -95,10 +88,6 @@ pl +
 
 The choice of faceting direction depends on the kind of comparison you would like to encourage. For example, if you want to compare heights of bars, it's useful to make the facets go horizontally. If, on the other hand, you want to compare the horizontal distribution of histograms, it makes sense to make the facets go vertically. Sometimes both kinds of comparisons are important, there may not be a clear answer as to which faceting direction is best. It may turn out that displaying the groups in a single plot by mapping the grouping variable to an aesthetic like color works better than using facets. In these situations, you'll have to rely on your judgment.
 
-<!--
-modificare un pò questa frase (si potrebbe anche togliere)
--->
-
 ## Multiple combinations
 
 You can add multiple variables in the rows or columns, by "adding" them together in this way:
@@ -110,15 +99,6 @@ pl +
 ```
 
 Variables appearing together on the rows or on columns are nested in the sense that only combinations that appear in the data will appear in the plot. Variables which are specified on rows and columns will be crossed: all combinations will be shown, inclusing that those doesn't appear in the original dataset: this may result in empty panels.
-
-<!--
-Looking at the plot, you see that there is no combination 
-If you want to visualize combinations between variables that do not appear in the data, set `drop` argument to `FALSE`
-
-```{r, warning=FALSE, message=FALSE, purl=FALSE}
-pl + facet_grid(band_type  + paper_type ~ press_type, drop=FALSE)
-```
--->
 
 Multiple combinations are possible also by using `facet_wrap()`:
 
@@ -148,16 +128,6 @@ pl +
   facet_wrap(~ press_type, dir = "v")
 ```
 
-<!--
-
-```{r, warning=FALSE, message=FALSE, purl=FALSE}
-pl + facet_wrap(~ press_type, as.table = TRUE)
-pl + facet_wrap(~ press_type, as.table = FALSE)
-```
-
-as.table non lo capisco (valido sia x facet_wrap che per facet_grid)
--->
-
 
 ## Using facets with different axes
 
@@ -185,10 +155,6 @@ pl +
 
 It's not possible to directly set the range of each row or column, but you can control the ranges by dropping unwanted data (to reduce the ranges), or by adding `geom_blank()` (to expand the ranges).
 
-<!--
-esempio geom_blank
-vedi: http://stackoverflow.com/questions/30280499/different-y-limits-on-ggplot-facet-grid-bar-graph
--->
 
 
 Let us see how `scales` argument works with `facet_wrap()`:
@@ -207,9 +173,6 @@ pl +
 
 As you can see from the previous examples, fixed scales make it easier to see pattern across panels and free scales make it easier to see patterns within panels.
 
-<!--
-si può fare un esempio
--->
 
 
 ## Controlling the space of each panel
@@ -244,9 +207,6 @@ pl1 <- ggplot(data = bands2, mapping = aes(x = humidity, y = viscosity)) +
 pl1
 ```
 
-<!--
-si può togliere il grafico originale?
--->
 
 We want to verify the influence of pressure in this relationship. Firstly let us discretize `press`:
 
@@ -275,10 +235,6 @@ ggplot(data = bands2, mapping = aes(x = humidity, y = viscosity)) +
   geom_point() + 
   facet_wrap(~ press_n)
 ```
-
-<!--
-non so perchè con pl1 non funziona
--->
 
 ## Changing the text of facets labels
 
@@ -352,10 +308,14 @@ The structure of a labeller is a function that takes two arguments: `variable` a
 ```{r change_facets_text_7}
 # modify the dataset
 bands5 <- bands
-levels(bands5$press_type)[levels(bands5$press_type)=="ALBERT70"] <- "The pressure type for these obs is ALBERT70"
-levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER70"] <- "The pressure type for these obs is MOTTER70"
-levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER94"] <- "The pressure type for these obs is MOTTER94"
-levels(bands5$press_type)[levels(bands5$press_type)=="WOODHOE70"] <- "The pressure type for these obs is WOODHOE70"
+levels(bands5$press_type)[levels(bands5$press_type)=="ALBERT70"] <- "The pressure 
+type for these obs is ALBERT70"
+levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER70"] <- "The pressure 
+type for these obs is MOTTER70"
+levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER94"] <- "The pressure 
+type for these obs is MOTTER94"
+levels(bands5$press_type)[levels(bands5$press_type)=="WOODHOE70"] <- "The pressure
+type for these obs is WOODHOE70"
 
 ggplot(data=bands5, mapping=aes(x=ink_pct)) +
   geom_histogram(fill="#2B4C6F") + 

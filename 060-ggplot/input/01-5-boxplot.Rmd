@@ -4,8 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
+
+<!--
+# Creating a Box Plot
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
@@ -107,25 +112,6 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 
 A much more flexible extension of the basic boxplot is the violin plot, constructed by combining the concept of the boxplot with that of nonparametric density estimates. Like box plots, violin plots are used to represent comparison of a variable distribution (or sample distribution) across different categories. A violin plot is more informative than a plain box plot. In fact while a box plot only shows summary statistics such as mean/median and interquartile ranges, the violin plot shows the full distribution of the data. 
 
-<!--
-The difference is particularly useful when the data distribution is multimodal (more than one peak). In this case a violin plot clearly shows the presence of different peaks, their position and relative amplitude. 
--->
-
-<!--
-Suppose we want to compare the density distribution of `ink_pct` by `press_type`: 
-
-```{r, message=FALSE, warning=FALSE, purl=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct, colour = press_type)) + 
-  geom_density()
-```
-
-You can see that with ordinary density curves, it is difficult to compare more than just a few distributions because the lines visually interfere with each other. 
-
-A solution can be the violin plot, which is a way of comparing multiple density estimates of data distributions. In particular, a violin plot is a kernel density estimate, mirrored so that it forms a symmetrical shape.
-
-As you can see, with a violin plot, it's easier to compare several distributions since they’re placed side by side, as happens with a boxplot.
--->
-
 Suppose we want to compare the density distribution of `ink_pct` by `press_type`:
 
 ```{r violinplot_first, message=FALSE, warning=FALSE}
@@ -164,50 +150,6 @@ ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) +
 geom_violin(aes(fill = press_type), width=0.9, bw=1.5) +
 geom_boxplot(width=0.4, outlier.shape = NA)
 ```
-
-<!--
-
-rimando ai capitoli successivi (vedere se tenere qualcosa)
-
-You already saw a "preview" of the `theme()` function, that set many theme settings. Here only a few options regarding axis and titles are shown:
-
- - `axis.ticks.x` (or `axis.ticks.y`) controls the ticks of x-axis (or y-axis). `axis.ticks` performs the same action to both axis. You can suppress ticks with `element_blank()` or use `element_line()` to change the aspect of ticks setting `colour`, `size` or `linetype`.
- 
-    ```{r boxplot_axis_ticks, message=FALSE, warning=FALSE, purl=FALSE}
-    ggplot(data=bands, aes(x="0", y=ink_pct)) + 
-      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
-      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
-      theme(axis.ticks.x = element_line(colour="green", size=4), axis.ticks.y=element_line(colour="red"))
-    ```
-
- - `axis.text.x`, `axis.text.y` and `axis.text` controls the text of x, y or both axis ticks. You can suppress text with `element_blank()` or use `element_text()` to change the aspect of ticks setting font `family`, font `face`, `colour`, `size`, `angle` and other options.
- 
-    ```{r boxplot_axis_text, message=FALSE, warning=FALSE, purl=FALSE}
-    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
-      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
-      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
-      theme(axis.text = element_text(face="bold", colour="#034e7b"))
-    ```
-    
- - `axis.text.x`, `axis.text.y` and `axis.text` controls the title of x, y or both axes. You can suppress text with `element_blank()` or use `element_text()` to change the aspect of axis text.
- 
-    ```{r boxplot_axis_title, message=FALSE, warning=FALSE, purl=FALSE}
-    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
-      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
-      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
-      theme(axis.title = element_text(face="italic", colour="#034e7b"))
-    ```
-    
- - `plot.title` controls the text of the overall plot. You can use `element_text()` to change the aspect of title.
- 
-    ```{r boxplot_plot_title, message=FALSE, warning=FALSE, purl=FALSE}
-    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
-      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
-      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
-      theme(plot.title = element_text(face="bold", size=18))
-    ```
-    
--->
 
 
 

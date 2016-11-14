@@ -4,10 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
+<!--
+# Legend Customization
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(ggplot2)
@@ -32,9 +35,6 @@ As you can see from the plot, the legend is automatically built showing `press_t
 
 Scales, `theme()` and `guides()` functions are the tools of `ggplot2` used to customize the appearance of the legend components.
 
-<!--
-frase di collegamento con il disegno 
--->
 
 ![](./images/legend.png)
 
@@ -84,9 +84,6 @@ pl_1 +
 
 The allowed values for the argument `legend.position` are : `"left"`, `"top"`, `"right"`, `"bottom"`.
 
-<!--
-già detto?
--->
 
 Let us consider a plot with multiple legends in plot.  
 Suppose we want to analyze the relationship between humidity, viscosity, ink percentage and band type in `bands` dataset: 
@@ -119,9 +116,6 @@ pl_1 +
   theme(legend.position=c(0.15,0.80))
 ```
 
-<!--
-mettere tutto il testo dell'esempio?
--->
 
 In the previous plot, the justification of the legend positon is centered. This means that the center of the legend (.5, .5) is placed at the coordinates set to `legend.position` argument. However, it is often useful to specify a different point. You can use `legend.justification` argument to set which part of the legend box is set to the position specified in `legend.position` argument. Let us set left-top justification for `legend.justification`:
 
@@ -150,9 +144,6 @@ pl_1 +
   guides(fill=guide_legend(reverse=TRUE))
 ```
 
-<!--
-decidere se lasciarlo un paragrafo o metterlo insieme a "Change the order of items in a legend"
--->
 
 ### Change the order for multiple guides
 
@@ -195,16 +186,6 @@ The controlling of the legend title by using the `guides()` function is a little
 
 If there are multiple variables mapped to aesthetics with a legend (those other than x and y), you can set the title of each individually.
 
-<!--
-Let us consider the example about the relationship between humidity, viscosity, ink percentage and band type in the `bands` dataset. 
-
-Change the legends title:
-
-```{r, warning=FALSE, purl=FALSE}
-pl_2 + labs(colour="Band Type", size="Ink \n Percentage")
-pl_2 + guides(colour=guide_legend(title="Band Type"), size=guide_legend(title="Ink \n Percentage"))
-```
--->
 
 If you have one variable mapped to two separate aesthetics, the default is to have a single legend that combines both.
 
@@ -287,9 +268,6 @@ pl_3 +
   scale_colour_discrete(labels=c("Band", "No Band"))
 ```
 
-<!--
-inserire anche grafico originale?
--->
 
 ### Changing the appearance of a legend label
 
@@ -306,21 +284,20 @@ If you want to use legend labels that have more than one line of text, set the l
 
 ```{r pl_1_legend_labels_break_lines}
 pl_1 + 
-  scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", "Motter 94 \n type", "Woodhoe 70 \n type"))
+  scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", 
+                               "Motter 94 \n type", "Woodhoe 70 \n type"))
 ```
 
 As you can see in the previous plot, with the default settings the lines of text will run into each other when you use labels that have more than one line. To deal with this problem, you can increase the height of the legend keys and decrease the spacing between lines, using `theme()`. To do this, you will need to specify the height using the `unit()` function:
 
 ```{r pl_1_customize_legend_keys}
 pl_1 + 
-  scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", "Motter 94 \n type", "Woodhoe 70 \n type")) +
+  scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", 
+                               "Motter 94 \n type", "Woodhoe 70 \n type")) +
   theme(legend.text=element_text(lineheight=.8),
     legend.key.height=unit(1, "cm"))
 ```
 
-<!--
-dire cos'è unit()
--->
 
 ### Customize legend background 
 

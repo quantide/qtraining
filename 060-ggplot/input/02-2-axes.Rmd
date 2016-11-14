@@ -4,10 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
+<!--
+# Axes Customization
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(ggplot2)
@@ -20,7 +23,6 @@ data(brainbod)
 
 Axes are more important than one thinks as they provide context for interpreting the displayed data. `ggplot2` displays the axes with defaults that look good in most cases, but you might want to control, for example, the axis scales, the axis labels, the number and placement of tick marks, the tick mark labels and so on. 
 
-\includegraphics[]{./images/axes.png}
 
 ![](./images/axes.png)
 
@@ -86,9 +88,6 @@ pl_1 +
 
 There is empty space instead of not displayed `press_type` levels ("ALBERT70", "MOTTER94"). Maybe it is a bug of 2.1.0 version of `ggplot2`, used to realize this manual.
 
-<!--
-As you can learn from these examples, `scale_x_discrete()` and `scale_y_discrete()` controls the scale of a discrete variable mapped to x and y axis, respectively.
--->
 
 _Note:_ the changes on axis order works also without `coord_flip()` function.
 
@@ -153,18 +152,6 @@ pl_1 +
 pl_1 + 
   coord_cartesian(ylim = c(50, 60))
 ```
-
-<!--
-
-Parlare anche di expand_limits?
-
-Finally, it’s also possible to expand the range in one direction, using expand_limits()
-(Figure 8-5). You can’t use this to shrink the range, however:
-
-
-pl + expand_limits(y=0)
-
--->
 
 ## Reverse a continuous axis order
 
@@ -237,9 +224,6 @@ pl_3 +
 ```
 
 Now the plot results are intrepretable, we clearly see a linear relationship between brain weight and body weight of the analyzed animal species.  
-<!--
-inserire tabella con le possibili trasformazioni?
---> 
 
 The previous example used a $log_{10}$ transformation, but it is possible to use other transformations, such as $log_{2}$ and natural log. `scale_x_log10()` (and similarly for y) is a shortcut as it is one of the most common trasformations. A wide variety of transformations can be applied to scales of continuous axes, by setting `trans` argument of `scale_x_continuous()` and/or `scale_y_continuous()`. 
 
@@ -266,16 +250,14 @@ pl_1 +
 
 The location of the tick marks defines where major grid lines are drawn. If the axis represents a continuous variable, minor grid lines, which are fainter and unlabeled, will by default be drawn halfway between each major grid line. If the axis is discrete instead of continuous, then there is by default a tick mark for each item.  
 
-<!--
-pensare se togliere la frase sopra
--->
 
 For discrete axes, you can change the order of items or remove them by specifying the limits as learn in _Change axis order_
  paragraph. Setting breaks will change which of the levels are labeled, but will not remove them or change their order.
 
 ```{r, pl_1_change_tick_marks_position_discrete}
 pl_1 + 
-  scale_x_discrete(limits=c("MOTTER70","WOODHOE70", "MOTTER94", "ALBERT70"), breaks="WOODHOE70")
+  scale_x_discrete(limits=c("MOTTER70","WOODHOE70", "MOTTER94", "ALBERT70"), 
+                   breaks="WOODHOE70")
 ```
 
 ### Removing Tick Marks and Labels
@@ -323,18 +305,13 @@ To change the text of ticks marks in continuous axes, set `breaks` and `labels` 
 
 ```{r pl_2_change_tick_labels_text}
 pl_2 +  
-  scale_y_continuous(breaks=c(40, 50, 60, 70), labels=c("Less", "Medium-\nLess", "Medium-\nHigh", "High"))
+  scale_y_continuous(breaks=c(40, 50, 60, 70), 
+                     labels=c("Less", "Medium-\nLess", "Medium-\nHigh", "High"))
 ```
 
 Pay attention to `"\n"` character, which tells `ggplot()` to put a line break.
 
 
-<!--
-trovare esempio n cui cambaire la labels ad una scala numerica 
-
-parlare del packages scales per le trasformazioni di label
-
--->
 
 Let us consider the example described in _Axis scale transformations_ paragraph, which analyze the relationship between body  and brain weight of 15 species of animals, stored in `pl_3` object:   
 

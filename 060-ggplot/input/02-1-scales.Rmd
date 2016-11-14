@@ -4,8 +4,12 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message =FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message =FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 ```
+
+<!--
+# Mapped Aesthetics Customization
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
@@ -78,21 +82,6 @@ There are more scale types. They can be grouped into:
 In the following paragraphs we will answer to the most frequently asked questions about mapped aesthetics scales customization for: colours, linetype, shape and size. The use and the features of continuous position scales will be discussed in _Axes Customization_ chapter.
 
 
-<!--
-
-## Scales family
-
-Scales can be divided roughtly in four families:
-
-1. Continuous position scales, used to map data into `x` and `y` position
-2. Colour scales, used to map continuous and discrete data to colours
-3. Manual scales, used to map discrete variables to your choice of size, linetype, shape or colour
-4. Identity scale, used to plot variables without scaling them
-
--->
-
-
-
 ## Customizing colours
 
 Do you know something about colour theory? If the answer is no, you should read this paragraph.
@@ -113,9 +102,6 @@ Hues are not perceived as being ordered, but chroma and luminance are ordered.
 ![](./images/dimensions.png)
 
 
-<!--
-nozioni generiche sui colori
--->
 
 ### Change the colours for a discrete mapped variable
 
@@ -131,13 +117,13 @@ You want to use different colour for `press_type` levels so you want to change t
 There are two types of scales that use colors: fill scales and color scales.  
 You can change the default colours used in the graph by choosing a function from the following table:   
 
-Fill scale | Colour scale | Description                                                     
------------|--------------|-------------------------------------------------------------
-`scale_fill_discrete()` | `scale_colour_discrete()` | Colors evenly spaced around the color wheel (same as hue)
-`scale_fill_hue()` | `scale_colour_hue()` | Colors evenly spaced around the color wheel (same as discrete)
-`scale_fill_grey()` | `scale_colour_grey()` | Greyscale palette
-`scale_fill_brewer()` | `scale_colour_grey()` | ColorBrewer palettes
-`scale_fill_manual()` | `scale_colour_manual()` | Manually specified colors
+Fill scale               | Colour scale              | Description                                                     
+-------------------------|---------------------------|-------------------------------------------------------------
+`scale_fill_discrete()`  | `scale_colour_discrete()` | Colors evenly spaced around the color wheel (same as hue)
+`scale_fill_hue()`       | `scale_colour_hue()`      | Colors evenly spaced around the color wheel (same as discrete)
+`scale_fill_grey()`      | `scale_colour_grey()`     | Greyscale palette
+`scale_fill_brewer()`    | `scale_colour_grey()`     | ColorBrewer palettes
+`scale_fill_manual()`    | `scale_colour_manual()`   | Manually specified colors
 
 
 By default, the colors for discrete scales are evenly spaced around a HSL color circle. 
@@ -219,10 +205,6 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
 
 The order of the items in the values vector matches the order of the factor levels for the discrete scale. 
 
-<!--
-#bands %>% do(data.frame(levels(.$press_type)))
--->
-
 ```{r press_type_levels}
 levels(bands$press_type)
 ```
@@ -252,11 +234,6 @@ Here are some rules of thumb for specifying and adjusting RGB colors:
 * higher numbers are brighter and lower numbers are darker
 * to get a shade of grey, set all the channels to the same value
 
-<!--
-* the opposites of RGB are CMY: Cyan, Magenta, and Yellow. Higher values for the red channel make it more red, and lower values make it more cyan. The same is
-true for the pairs green and magenta, and blue and yellow.
--->
-
 
 ### Change the colours for a continuous mapped variable
 
@@ -265,8 +242,8 @@ You want to use different colors for a continuous variable.
 Mapping continuous values to a color scale requires a continuously changing palette of colors.   
 The following table lists the continuous color and fill scales:
 
-Fill scale | Colour scale | Description                               
------------|--------------|-------------------------------------------
+Fill scale               | Colour scale               | Description                               
+-------------------------|----------------------------|-------------------------------------------
 `scale_fill_gradient()`  | `scale_colour_gradient()`  | Two-color gradient 
 `scale_fill_gradient2()` | `scale_colour_gradient2()` | Gradient with a middle color and two colors that diverge from it
 `scale_fill_gradientn()` | `scale_colour_gradientn()` | Gradient with n colors, equally spaced
@@ -297,21 +274,6 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent
   scale_colour_gradient2(low="red", mid="white", high="blue")
 ```
 
-<!--
-midpoint? Non lo capisco
--->
-
-<!--
-less satured colours 
-
-```{r, purl=FALSE}
-require(scales)
-ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
-  geom_point() + scale_colour_gradient2(low=muted("red"), mid="white", high=muted("blue"))
-
-```
-
--->
 
 ```{r scale_colour_gradientn_1}
 # scale_colour_gradientn()
@@ -330,9 +292,6 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent
 
 In this case we use `terrain.colors` palette with 8 colours. `terrain.colors` is a palette of `grDevices` package.
 
-<!--
-si potrebbero fare gli esempi con le superfici, oppure fare fill prima.
--->
 
 ## Customizing linetype
 

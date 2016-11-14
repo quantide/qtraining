@@ -3,6 +3,14 @@ title: "Creating a Surface plot"
 output: html_document
 ---
 
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+```
+
+<!--
+# Creating a Surface plot
+-->
+
 ```{r, first, include=TRUE, purl=TRUE, message=FALSE}
 require(ggplot2)
 require(dplyr)
@@ -87,30 +95,6 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
 
 The third dimension is mapped to `z` aestethic of `ggplot()` function. In this case, `z` is set to `density`. 
 
-<!--
-```{r, echo=FALSE, purl=FALSE}
-data("faithfuld")
-ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
-  geom_contour()
-```
-
-
-A similar plot can be represented also by using `geom_density_2d()` function:
-
-```{r, purl=FALSE}
-ggplot(bands, aes(humidity, viscosity)) +
-  geom_density_2d()
-```
-
-The difference between `geom_contour()` and `geom_density_2d()` is that `geom_density_2d()` doesn't need the definition of the third dimension as it automathically computes a two-dimensional kernel density estimate and countour is its default representation.  
-
-
-```{r, purl=FALSE}
-ggplot(faithful, aes(waiting, eruptions)) +
-  geom_density_2d()
-```
--->
-
 You can set bins, by using `bins` argument, to generate evenly spaced contours in the range of the data:
 
 ```{r contour_bins}
@@ -121,16 +105,6 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
   geom_contour(bins = 10)
 ```
 
-<!--
-```{r, purl=FALSE}
-ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
-  geom_contour(bins = 2)
-
-ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
- geom_contour(bins = 10)
-```
--->
-
 You can also parameterize the distance between contours setting `binwidth` argument, which represent the binwidth of countour lines:
 
 ```{r contour_bindwidth}
@@ -138,13 +112,6 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
   geom_contour(binwidth = 0.0001)
 ```
 
-
-<!--
-```{r, purl=FALSE}
-ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
-  geom_contour(binwidth = 0.01)
-```
--->
 
 We can customize the countour plot by changing `colour`, `linetype` or line `size`: 
 
@@ -165,21 +132,6 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
 
 Mapping `..level..` to `colour` a legend is automathically produced.  
 
-<!--
-```{r, purl=FALSE}
-ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
-  geom_contour(aes(colour = ..level..))
-```
--->
-
-
-<!--
-```{r, purl=FALSE}
-ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
-  geom_contour(colour = "green", linetype = 4, size = 1)
-```
--->
-
 You can also customize your plot by adding in background another `geom` which draws surfaces: `geom_raster()` in order to increase the 3d effect.
 
 ```{r contour_raster_plot}
@@ -187,15 +139,6 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
   geom_raster(aes(fill = density)) +
   geom_contour(colour = "white")
 ```
-
-<!--
-```{r, purl=FALSE}
-# Customize
-ggplot(faithfuld, aes(waiting, eruptions, z = density)) + 
-  geom_raster(aes(fill = density)) +
-  geom_contour(colour = "white")
-```
--->
 
 ## Raster (Tiles) Plot
 
@@ -209,12 +152,6 @@ ggplot(bands_d, aes(humidity, viscosity)) +
    geom_raster(aes(fill = density))
 ```
 
-<!--
-```{r, purl=FALSE}
-ggplot(faithfuld, aes(waiting, eruptions)) +
- geom_raster(aes(fill = density))
-```
--->
 
 You can also add an interpolation to smooth the surface, by setting `interpolate = TRUE`. It is useful when rendering images.
 
@@ -224,12 +161,6 @@ ggplot(bands_d, aes(humidity, viscosity)) +
    geom_raster(aes(fill = density), interpolate = TRUE)
 ```
 
-<!--
-```{r, purl=FALSE}
-ggplot(faithfuld, aes(waiting, eruptions)) +
- geom_raster(aes(fill = density), interpolate = TRUE)
-```
--->
 
 A similar result can be achieved by using `geom_tile()` function. `geom_tile()` is similar to `geom_raster()` as both draw rectangles.
 The main difference is that `geom_raster()` renders more efficiently than `geom_tile()`. In theory they should appear the same, but in practice they often do not. If you are writing to a PDF file, the appearance depends on the PDF viewer. On some viewers, 
@@ -240,12 +171,6 @@ ggplot(bands_d, aes(humidity, viscosity)) +
    geom_tile(aes(fill = density))
 ```
 
-<!--
-```{r, purl=FALSE}
-ggplot(faithfuld, aes(waiting, eruptions)) +
- geom_tile(aes(fill = density))
-```
--->
 
 
 ## Bubble Plot
@@ -265,17 +190,6 @@ ggplot(bands_d_sample, aes(humidity, viscosity)) +
 ```
 
 
-<!--
-```{r, eval=FALSE, purl=FALSE}
-small <- faithfuld[seq(1, nrow(faithfuld), by = 10), ]
-```
-
-```{r, eval=FALSE, purl=FALSE}
-ggplot(small, aes(eruptions, waiting)) +
-  geom_point(aes(size = density)) +
-  scale_size_area()
-```
--->
 
 To generate a bubble plot you have to map the third variable, in this case `density` to `size` aestethic of `geom_point()` function. Then you have to add `scale_size_area()` function to render the area of points proportional to `density`, this means that `scale_size_area()` ensures that a value of 0 is mapped to a size of 0.
 
@@ -286,14 +200,5 @@ ggplot(bands_d_sample, aes(humidity, viscosity)) +
   geom_point(aes(size = density), alpha = 0.4, colour = "blue", fill = "lightblue") +
   scale_size_area()
 ```
-
-<!--
-
-```{r, eval=FALSE, purl=FALSE}
-ggplot(small, aes(eruptions, waiting)) +
-  geom_point(aes(size = density), alpha =1/3, colour = "blue", fill = "lightblue") +
-  scale_size_area()
-```
--->
 
 

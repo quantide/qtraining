@@ -4,8 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
+
+<!--
+# Presenting Plots
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
@@ -20,16 +25,8 @@ Winston Chang wrote on his book:
 
 This chapter show how to output your plots for presentation.
 
-<!--
-# Integrating R code and presentation: the R Markdown way
 
-According to its authors, R Markdown is _an authoring format that enables easy creation of dynamic documents, presentations, and reports from R. It combines the core syntax of markdown (an easy to write plain text format) with embedded R code chunks that are run so their output can be included in the final document._
-
-This section cannot provide a full introduction to R Markdown. If you are new to R Markdown, you can start from the [official website](http://rmarkdown.rstudio.com/). If you already know R Markdown, you will find here some guideline to manage plots in your reports.
-
--->
-
-# Reassembling Plots for Printing
+## Reassembling Plots for Printing
 
 When you produce plots for printing, you may want several plots in a single image. The `grid.arrange()` function from `gridExtra` package, provide an easy-to-use solution. You just provide `ggplot` objects and the number of columns (or rows). Before you use the `gridExtra` package for the first time, may be you need to install it.
 
@@ -59,7 +56,7 @@ plot(gp)
 ```
 
 
-# Outputting Plots to Vectorial Images
+## Outputting Plots to Vectorial Images
 
 A _vectorial_ image is a file containing the instructions to draw a plot. You can reshape images without any quality loss. Most used vectorial formats are PDF and SVG. Vectorial images can be edited with the well known commercial software "Adobe Illustrator" or its most famous free alternative "Inkscape".
 
@@ -105,7 +102,7 @@ If you want to save another plot, you must specify its name:
 ggsave("boxplot2.pdf", plot=gp1, width = 20, height = 20, units = "cm")
 ```
 
-# Outputting Plots to Bitmap Images
+## Outputting Plots to Bitmap Images
 
 A _bitmap_ image is a file containing which colour should be returned for each pixel. When you increase the size of a bitmap image, you get a loss of quality. Most used vectorial formats are PNG and TIFF. TIFF is an high quality bitmap format and may be required by your publisher. R supports other bitmap formats (BMP, JPEG, ...) but there is no reason to use them. Bitmap images can be edited with the well known commercial software "Adobe Photoshop" or its most famous free alternative "The Gimp".
 

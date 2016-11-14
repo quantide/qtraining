@@ -4,8 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
+
+<!--
+# Creating a Line Plot
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
@@ -204,26 +209,6 @@ Colours in the `values` string vector must appear in the same order as they appe
 
 Mapped Aesthetics customization will be deepen in "Mapped Aesthetics Customization" chapter.
 
-<!--
-
-```{r linegraph_setcolourmanual_order, message=FALSE, purl=FALSE}
-ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line() + 
-  geom_point() + 
-  scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green"))
-```
-
-There are as many `scale_*_manual` function as aesthetics for which values can be set manually.
-
-```{r linegraph_setshape_order, message=FALSE, purl=FALSE}
-ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
-  geom_line(mapping=aes(linetype=Diet)) + 
-  geom_point(mapping=aes(shape=Diet)) + 
-  scale_color_manual(values=c("D"="orange", "B"="blue", "A"="red", "C"="green")) +
-  scale_shape_manual(values=c(16,18,20,22)) + 
-  scale_linetype_manual(values=c(1,3,5,6))
-```
--->
 
 ## Adding horizontal and vertical lines
 

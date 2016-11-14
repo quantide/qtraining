@@ -4,8 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
+
+<!--
+# Creating a Bar Plot
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
@@ -91,19 +96,6 @@ ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
   scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b"), guide=FALSE)
 ```
 
-<!--
-
-già scritto nel capitolo legende
-Alternatively, you can use the `guides` function to hide the legend, just setting to `FALSE` the related aesthetic, in this case `fill`.
-
-```{r bargraph_nolegend_guides, message=FALSE, purl=FALSE}
-ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
-  geom_bar(mapping=aes(fill=Diet)) +
-  scale_fill_manual(values=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b")) +
-  guides(fill=FALSE)
-```
-
--->
 
 `ggplot2` provides some functions (e.g. `scale_*_brewer` or `scale_*_gradient`) to choose a palette (i.e. a set of coherent colours), but these functions will be shown in _Mapped Aestethics Customization_ chapter. You can still use `scale_*_manual` functions and refer to some on-line tool like [Color Brewer](http://colorbrewer2.org/) or [Paletton](http://paletton.com/) for a better choice of colours.
 

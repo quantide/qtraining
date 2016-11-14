@@ -4,8 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
+
+<!--
+# Creating a Scatter Plot
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
@@ -37,9 +42,6 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point()
 ```
 
-<!--
-The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: the _data_ are in the `bands` data frame and you _map_ the data to _aesthetics_ (visual properties) of plot like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `roughness` variable. Note that the function is named `ggplot()` while the package is named `ggplot2`.
--->
 
 The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: 
 
@@ -232,13 +234,6 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type, shape=
 
 Mapping a discrete variable to `size` aestethic is not advised.
 
-<!--
-You can map `band_type` to size, but the result advise against this choice. 
-```{r scatterplot_map_size, message=FALSE, warning=FALSE, purl = FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=band_type)) +
-  geom_point()
-```
--->
 
 If you're interested in a continuous variable as third variable you can `map` it to `colour` or to `size`. It makes no sense map a continuous value to `shape`. Let us consider `ink_pct` as third variable:
 

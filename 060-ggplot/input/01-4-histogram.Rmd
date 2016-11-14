@@ -4,8 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
+
+<!--
+# Creating a Histogram
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(dplyr)
@@ -109,20 +114,6 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   facet_wrap(~ press_type)
 ```
 
-<!--
-
-Lo tolgo perchè si approfondirà nel capitolo facet 
-
-Mapping `fill` to the faceting variable (`press_type`) returns a different coloured histogram for each panel.
-
-```{r histogram_facetwrap_fill, message=FALSE, warning=FALSE, purl=FALSE}
-ggplot(data=bands, mapping=aes(x=ink_pct)) +
-  geom_histogram(mapping=aes(fill=press_type)) +
-  guides(fill=FALSE) +
-  facet_wrap(~ press_type)
-```
-
--->
 
 ## Making a density histogram
 
@@ -156,14 +147,6 @@ ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
 
 In particular, `geom_line()`is used with `"density"` statistical transformation, which means that a statistical transformation is applied to data, in particular `ink_pct` density is estimated. 
 
-<!--
-This is essentially the same as using `geom_density()`, except the former draws it with a closed polygon.
--->
-
-<!--
-sistemare la frase sopra
--->
-
 ## Making a Density curve 
 
 As we said, a density curve, in particular a kernel density curve, is an estimate of the population distribution, based on the sample data.
@@ -184,9 +167,6 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_density(adjust = 0.5)
 ```
 
-<!--
-You can set a value for `adjust` also by using `geom_line(stat="density")`.
--->
 
 `geom_density()` can be used also to compare density distribution estimations of grouped data. The grouping variable must be map to an aesthetic like `colour` or `fill`. The grouping variable must be a factor or character vector. In this case we consider `band_type` variable:    
 
@@ -199,9 +179,6 @@ ggplot(data=bands, mapping=aes(x=ink_pct, colour = band_type)) +
 
 A frequency polygon appears similar to a kernel density estimate curve, see in the previous examples, but it work in the same way and it shows the same information as an histogram. In particular, both bin the data and then count the number of observations in each bin. The only difference is the display: histograms use bars and frequency polygons use lines. 
 
-<!--
-That is, like a histogram, it shows what is in the data, whereas a kernel density estimate is just that an estimate and requires you to pick some value for the bandwidth.
--->
 
 Suppose we want to analyze the distribution of `ink_pct` variable. `ggplot2` function that draws a frequency polygon is `geom_freqpoly()`:
 

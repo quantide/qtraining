@@ -4,10 +4,13 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
+<!--
+# ggplot2 community
+-->
 
 ```{r, message=FALSE}
 require(ggplot2)
@@ -101,9 +104,6 @@ Let us see an example, considering `lung` data, which is about survival in patie
 lung <- lung[, c(2,3,5)]
 ```
 
-<!--
-salvare lung in qdata (solo le tre colonne di interesse)
--->
 
 We consider only the following variables:  
 
@@ -130,9 +130,6 @@ ggsurv(surv) +
 
 In particular, `ggmap` enables such visualization by combining the spatial information of static maps from Google Maps, OpenStreetMap, Stamen Maps or CloudMade Maps with the layered grammar of graphics implementation of `ggplot2`.
 
-<!--
-Since `ggplot2` is an implementation of the layered grammar of graphics, every plot made with `ggplot2` has each of the above elements. 
--->
 
 `ggmap` plots have the same elements of `ggplot2`, but certain elements are fixed to map components : 
 
@@ -161,14 +158,6 @@ italy_map <- get_map(location="Italy", zoom = 6, maptype = "satellite")
 `location` argument is specified as an "address", it can be specified also by a latitude/longitude pair.  
 `zoom` argument specify the level of map zoom; it can be spacified from 3 (continent) to 21 (building) the default is 10 (city). 6 level of zoom returns countries. `maptype` specify map theme. Some of the options are: `"terrain"`, `"toner"`, `"watercolor"`, `"roadmap"`, `"satellite"`, `"hybrid"`.  
 
-<!--
-```{r, eval=FALSE, purl=FALSE}
-italy_map <- get_map(location="Italy", zoom = 6, maptype = "terrain")
-italy_map <- get_map(location="Italy", zoom = 6, maptype = "toner")
-italy_map <- get_map(location="Italy", zoom = 6, maptype = "satellite")
-italy_map <- get_map(location="Italy", zoom = 6, maptype = "hybrid")
-```
--->
 
 2. We make the plot visualizing firstly only the downloaded map, by using `ggmap()` function:
 

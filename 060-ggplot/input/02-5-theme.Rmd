@@ -5,9 +5,12 @@ output: html_document
 
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE, purl=FALSE}
 options(width = 108)
-knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 ```
 
+<!--
+# More on Plot Overall Appearanc
+-->
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(ggplot2)
@@ -67,45 +70,12 @@ The most important __theme element functions__ are:
 
 * `element_text()`: controls the drawing of labels and headings.   
 
-<!--
-The table below lists its arguments and their corresponding default values:
-
-Argument  | Description |  Default Value
---------- | ----------- | -------------
-family    | font family | ""
-face      | font face   | plain 
-colour    | font color  | black
-size      | font size (pts) | 10 
-hjust     | horizontal justification | 0.5 
-vjust     | vertical justification   | 0.5 
-angle     | text angle      | 0 
-lineheight| line height     | 1.1
--->
 
 * `element_line()`: draws lines and segments such as graphics region boundaries, axis tick marks and grid lines.   
 
-<!--
-The table below lists its arguments and their corresponding default values:
-
-Argument  | Description |  Default Value
---------- | ----------- | -------------
-colour    | line color | "black"
-size      | line thickness | 0.5
-linetype  | type of line | 1
--->
 
 * `element_rect()`: draws rectangles. It is mostly used for background elements and legend keys.   
 
-<!--
-The table below lists its arguments and their corresponding default values:
-
-Argument  | Description |  Default Value
---------- | ----------- | -------------
-fill | fill color |  NA (none)
-colour | border color |   "black", 
-size | thickness of border line | 0.5 
-linetype | type of border line | 1 (solid)
--->
 
 * `element_blank()`: draws nothing. This function has no arguments.
 
@@ -129,8 +99,10 @@ Let us see an example:
 ```{r plot_theme_el_example}
 pl + 
   labs(title = "Plot title") +
-  theme(plot.title = element_text(size = 36, hjust = 0, colour = "lightslateblue", face = "italic"),
-        plot.background = element_rect(fill = "lightsteelblue1", colour = "black", size = 2, linetype = "solid"),
+  theme(plot.title = element_text(size = 36, hjust = 0, colour = "lightslateblue", 
+                                  face = "italic"),
+        plot.background = element_rect(fill = "lightsteelblue1", colour = "black", 
+                                       size = 2, linetype = "solid"),
         plot.margin = unit(c(2, 2, 2, 2), "cm"))
 ```
 
@@ -193,7 +165,8 @@ pl +
   theme(
     legend.position = "top",
     legend.box = "horizontal",
-    legend.background = element_rect(fill = "lemonchiffon", color = "black", size = 1, linetype = "longdash" ),
+    legend.background = element_rect(fill = "lemonchiffon", color = "black", 
+                                     size = 1, linetype = "longdash" ),
     legend.key = element_rect(fill = "lemonchiffon", color = "magenta"),
     legend.key.width = unit(0.8, "cm"),
     legend.key.height = unit(0.8, "cm"),
@@ -335,7 +308,8 @@ Title appearance can be changed by setting `plot.title` argument of `theme()` fu
 pl + 
   ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type") +
   theme(
-    plot.title=element_text(size=rel(2), lineheight=0.9, family="Times", face="bold.italic", colour="red")
+    plot.title=element_text(size=rel(2), lineheight=0.9, family="Times", 
+                            face="bold.italic", colour="red")
         )
 ```
 
@@ -351,7 +325,8 @@ You can change the colour of the background and add a contour line.
 ```{r pl_customize_background}
 pl + 
   theme(
-    plot.background = element_rect(fill = "springgreen2",linetype = "solid", colour = "black", size = 2)
+    plot.background = element_rect(fill = "springgreen2",linetype = "solid",
+                                   colour = "black", size = 2)
 )
 ```
 
