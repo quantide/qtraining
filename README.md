@@ -151,3 +151,40 @@ It includes:
 2. Modify the file. The code is written in HTML
 3. Save the file
 
+
+## Generate a PDF BOOK starting from rmds (bookdown)
+
+To buid a book in PDF containing the rmds:
+
+1. See PDF BOOK section in Makefile of 060-ggplot 
+2. Use _bookdown_ package
+
+Using _bookdown_ is the better option.  
+It organizes in a better way the materials, avoiding problems with LateX (spaces, positioning, ...)  
+
+
+### To use _bookdown_:
+
+1. set working directory inside _input_ folder
+2. De-comment _bookdown::pdf_book:_ part and comment html_document part
+3. Modify _manual-with-written-cover.tex_, lines 174 and 176, respectitively with:
+
+`\begin{flushleft}\includegraphics[scale=.175]{./images/quantide.png}\end{flushleft}`  
+`\begin{flushright}\includegraphics[scale=.25]{./images/R-training.png}\end{flushright}`
+
+4. De-comment the first level title in each rmd (# Title)
+5. Run
+
+`bookdown::render_book("index.md", "bookdown::pdf_book", new_session = T)`
+
+A _\_book_ folder and other files will be automathically created. _\_main.pdf_ is the PFD book and it is included in
+_\_book_ folder.
+
+
+### To use PDF BOOK section in Makefile of 060-ggplot
+
+1. Copy _images_ folder outside _input_ 
+2. Click on _Build All_ in _Build_ tab
+
+
+
