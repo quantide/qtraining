@@ -116,21 +116,3 @@ qqnorm (residuals (ammgcv,type="pearson"), main="")
 qqline(residuals (ammgcv,type="pearson"))
 par(op)
 
-## ------------------------------------------------------------------------
-rm(list=ls())
-
-## ------------------------------------------------------------------------
-rm(list=ls())
-
-str(stormer)
-head(stormer)
-
-## ------------------------------------------------------------------------
-b <- coef(lm(Wt*Time ~ Viscosity + Time - 1,stormer))
-names(b) <- c("beta", "theta")
-b
-
-## ------------------------------------------------------------------------
-storm.1 <- nls(Time ~ beta*Viscosity/(Wt - theta), stormer, start=b, trace=T)
-summary(storm.1,correlation=TRUE)
-

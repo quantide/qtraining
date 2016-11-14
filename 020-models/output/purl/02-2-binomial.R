@@ -161,7 +161,6 @@ bwt$prob <- predict(fm0, type = "response")
 bwt <- bwt[order(bwt$prob),]
 
 ## ----tidy=FALSE,fig.cap="Plot of final model predictions with data points"----
-bwtPred  <- reshape(bwt, varying = list(c(1,5)), direction = "long")
 ggp <- ggplot(data = bwt, mapping = aes(x = lwt, y = low)) +
   geom_point(colour="blue") + 
   geom_line(mapping = aes(x = lwt, y = prob), colour="red") +
@@ -280,11 +279,6 @@ newdata <- with(irished,
   )
 )
 newdata$pred <- predict(fm3, newdata = newdata , type = "response")
-
-## ----tidy=FALSE,fig.cap="Categorized surface plot of model predictions Vs. DVRT and fathocc by sex using trellis", eval=FALSE----
-## require(lattice) # (For wireframe)
-## wireframe(pred~DVRT+fathocc | sex, data = newdata,
-##           drape = T, layout = c(2,1))
 
 ## ----tidy=FALSE,fig.cap="Categorized surface plot of model predictions Vs. DVRT and fathocc by sex"----
 ggp <- ggplot(data = newdata,mapping = aes(x=DVRT,y=fathocc,fill=pred))+

@@ -67,9 +67,6 @@ print(ggp)
 t.test(x=plastic$SupplrA, y=plastic$SupplrB, alternative = "two.sided")
 
 ## ------------------------------------------------------------------------
-t.test(x=plastic$SupplrA, y=plastic$SupplrB, alternative = "less")
-
-## ------------------------------------------------------------------------
 data(carctl)
 head(carctl)
 

@@ -135,17 +135,6 @@ ggp2 <- ggplot(data = res_fitted_df, mapping = aes(sample = res)) +
 
 grid.arrange(ggp1, ggp2, ncol=2)
 
-## ----fig.show='hold', eval=FALSE, echo=FALSE, fig.cap="Studentized residuals Vs. Fit and Normal Probability Plot of studentized residuals"----
-## op <- par(mfrow = c(1,2))
-## plot(fitted(lfmd) , studres(lfmd) , main =  "Residuals vs Fit", pch = 16, col = "darkgray",
-##      xlab = "Fitted Values", ylab = "Studentized Residuals")
-## abline(h = 0, col = "red", lty = 4)
-## loe <- predict (loess(studres(lfmd)~fitted(lfmd)))
-## lines(fitted(lfmd), loe, col = "darkblue", lty = 3, lwd = 2)
-## qqnorm(studres(lfmd))
-## qqline(studres(lfmd))
-## par(op)
-
 ## ----fig.show='hold',fig.cap="'Standard' residual plot on final model"----
 op <- par(mfrow = c(2,2))
 plot(lfmd)
@@ -309,16 +298,6 @@ summary(fm3)
 hotdogs$type2 <- as.character(hotdogs$type)
 hotdogs$type2[hotdogs$type2 == "beef"] = "meat"
 hotdogs$type2 <- factor(hotdogs$type2, levels = c("meat", "poultry"))
-
-## ------------------------------------------------------------------------
-levels(hotdogs$type)
-hotdogs$type3 = hotdogs$type
-levels(hotdogs$type3)[1] = "meat"
-levels(hotdogs$type3)
-table(hotdogs$type)
-table(hotdogs$type3)
-
-levels(hotdogs$type)[1] = "meat"
 
 ## ------------------------------------------------------------------------
 fm1 <- lm(calories ~ sodium + type2, data = hotdogs)
