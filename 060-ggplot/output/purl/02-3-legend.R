@@ -107,11 +107,13 @@ pl_1 +
 
 ## ----pl_1_legend_labels_break_lines--------------------------------------
 pl_1 + 
-  scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", "Motter 94 \n type", "Woodhoe 70 \n type"))
+  scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", 
+                               "Motter 94 \n type", "Woodhoe 70 \n type"))
 
 ## ----pl_1_customize_legend_keys------------------------------------------
 pl_1 + 
-  scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", "Motter 94 \n type", "Woodhoe 70 \n type")) +
+  scale_fill_discrete(labels=c("Albert 70 \n type", "Motter 70 \n type", 
+                               "Motter 94 \n type", "Woodhoe 70 \n type")) +
   theme(legend.text=element_text(lineheight=.8),
     legend.key.height=unit(1, "cm"))
 

@@ -22,8 +22,10 @@ pl +
 ## ----plot_theme_el_example-----------------------------------------------
 pl + 
   labs(title = "Plot title") +
-  theme(plot.title = element_text(size = 36, hjust = 0, colour = "lightslateblue", face = "italic"),
-        plot.background = element_rect(fill = "lightsteelblue1", colour = "black", size = 2, linetype = "solid"),
+  theme(plot.title = element_text(size = 36, hjust = 0, colour = "lightslateblue", 
+                                  face = "italic"),
+        plot.background = element_rect(fill = "lightsteelblue1", colour = "black", 
+                                       size = 2, linetype = "solid"),
         plot.margin = unit(c(2, 2, 2, 2), "cm"))
 
 ## ----axes_theme_el_example-----------------------------------------------
@@ -43,7 +45,8 @@ pl +
   theme(
     legend.position = "top",
     legend.box = "horizontal",
-    legend.background = element_rect(fill = "lemonchiffon", color = "black", size = 1, linetype = "longdash" ),
+    legend.background = element_rect(fill = "lemonchiffon", color = "black", 
+                                     size = 1, linetype = "longdash" ),
     legend.key = element_rect(fill = "lemonchiffon", color = "magenta"),
     legend.key.width = unit(0.8, "cm"),
     legend.key.height = unit(0.8, "cm"),
@@ -108,13 +111,15 @@ pl +
 pl + 
   ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type") +
   theme(
-    plot.title=element_text(size=rel(2), lineheight=0.9, family="Times", face="bold.italic", colour="red")
+    plot.title=element_text(size=rel(2), lineheight=0.9, family="Times", 
+                            face="bold.italic", colour="red")
         )
 
 ## ----pl_customize_background---------------------------------------------
 pl + 
   theme(
-    plot.background = element_rect(fill = "springgreen2",linetype = "solid", colour = "black", size = 2)
+    plot.background = element_rect(fill = "springgreen2",linetype = "solid",
+                                   colour = "black", size = 2)
 )
 
 ## ----pl_customize_margins------------------------------------------------

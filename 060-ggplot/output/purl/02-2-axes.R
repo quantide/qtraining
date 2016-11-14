@@ -109,7 +109,8 @@ pl_1 +
 
 ## ---- pl_1_change_tick_marks_position_discrete---------------------------
 pl_1 + 
-  scale_x_discrete(limits=c("MOTTER70","WOODHOE70", "MOTTER94", "ALBERT70"), breaks="WOODHOE70")
+  scale_x_discrete(limits=c("MOTTER70","WOODHOE70", "MOTTER94", "ALBERT70"), 
+                   breaks="WOODHOE70")
 
 ## ----pl_1_remove_tick_labels---------------------------------------------
 pl_1 + 
@@ -132,7 +133,8 @@ pl_2
 
 ## ----pl_2_change_tick_labels_text----------------------------------------
 pl_2 +  
-  scale_y_continuous(breaks=c(40, 50, 60, 70), labels=c("Less", "Medium-\nLess", "Medium-\nHigh", "High"))
+  scale_y_continuous(breaks=c(40, 50, 60, 70), 
+                     labels=c("Less", "Medium-\nLess", "Medium-\nHigh", "High"))
 
 ## ----pl_3_show-----------------------------------------------------------
 pl_3

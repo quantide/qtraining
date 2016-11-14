@@ -153,10 +153,14 @@ label_wrap <- function(variable, value) {
 ## ----change_facets_text_7------------------------------------------------
 # modify the dataset
 bands5 <- bands
-levels(bands5$press_type)[levels(bands5$press_type)=="ALBERT70"] <- "The pressure type for these obs is ALBERT70"
-levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER70"] <- "The pressure type for these obs is MOTTER70"
-levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER94"] <- "The pressure type for these obs is MOTTER94"
-levels(bands5$press_type)[levels(bands5$press_type)=="WOODHOE70"] <- "The pressure type for these obs is WOODHOE70"
+levels(bands5$press_type)[levels(bands5$press_type)=="ALBERT70"] <- "The pressure 
+type for these obs is ALBERT70"
+levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER70"] <- "The pressure 
+type for these obs is MOTTER70"
+levels(bands5$press_type)[levels(bands5$press_type)=="MOTTER94"] <- "The pressure 
+type for these obs is MOTTER94"
+levels(bands5$press_type)[levels(bands5$press_type)=="WOODHOE70"] <- "The pressure
+type for these obs is WOODHOE70"
 
 ggplot(data=bands5, mapping=aes(x=ink_pct)) +
   geom_histogram(fill="#2B4C6F") + 
