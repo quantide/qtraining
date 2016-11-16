@@ -683,44 +683,11 @@ require(hdm)
 
 The Lasso estimator is a particular case of Elastic-Net, where $a = 1$. It is based on $L_1$ norm, which helps it to avoid overfitting, but it also shrinks the fitted coefficients towards zero, causing a potentially significant bias. In order to remove some of this bias, Post-Lasso is considered, which is an estimator defined as ordinary least squares applied to the data after removing the regressors that were not selected by Lasso.
 
-<!--
-with data-driven penalty loadings is defined as: 
-
-$\hat{\beta} = arg min \mathbf{E}_{n}[(y_{i}-x_{i}^{'}\beta)^2]+\frac{\lambda}{n}\Arrowvert\hat{\Psi\beta}\Arrowvert_1$
-
-where $\Arrowvert\beta\Arrowvert_1=\sum_{j=1}^p{\mid\beta{j}\mid}$, $\hat{\Psi}=diag(\psi_{1}, ...,\psi_{p})$ is a diagonal matrix consisting of penalty loadings, and
-$\mathbf{E}_{n}$ abbreviates the empirical average. The penalty loadings are chosen to insure basic equivariance of coefficient estimates to rescaling of $x_{i,j}$ and can also be chosen to address heteroskedasticity in model errors. 
-
-Regularization by the $l_{1}$-norm naturally helps the Lasso estimator to avoid overfitting, but it also shrinks the fitted coefficients towards zero, causing a potentially significant bias. In order to remove some of this bias, Post-Lasso is considered, which is an estimator defined as ordinary least squares applied to the data after removing the regressors that were not selected by Lasso.
--->
-
 Let us consider the previous generated sample where we defined $y = 4 + 0.2x_1 + 0.5x_2 - 0.9*x_3 + x_4 - 0.5x_5 + 0.2x_6 + \epsilon$.
-
-```{r, echo=FALSE, eval=FALSE, purl=FALSE}
-# Generate simulate data
-set.seed(10)
-n <- 1000
-p <- 100
-X <- data.frame(matrix(runif(n*p), nrow = n, ncol = p))
-# Give names to data columns
-names(X) <- paste("x", 1:ncol(X), sep = "")
-# The first column is really correlated with the columns from 2 to 5.
-X$x1 <- X$x2 + 2*X$x3 + 3*X$x4 - 4*X$x5 + rnorm(n, sd = .000001)
-# The model for dependent variable
-X$y <- 4 + 0.2*X$x1 + .5*X$x2 - .9*X$x3 + X$x4 - 0.5*X$x5 + 0.2*X$x6 + rnorm(n, mean = 0, sd = 1)
-
-dt <- X
-rm(X)
-
-# Splits the data into training and test data frames
-sel_train <- sample(1:nrow(dt), replace = FALSE, size = n*.75)
-dt_train <- dt[sel_train, ]
-dt_test <- dt[setdiff(1:n, sel_train), ]
-```
 
 The function `rlasso()` of `hdm` package implements Lasso and post-Lasso. The prefix "r" signifies that these are theoretically rigorous versions of Lasso and post-Lasso. The default option is post-Lasso, `post=TRUE`. This function returns an object of class `rlasso` for which methods like `predict`, `print`, `summary` are provided, where the option `all` can be set to `FALSE` to limit the print only to the non-zero coefficients.
 
-Let us see how Post-lasso methid works:
+Let us see how Post-Lasso method works:
 
 ```{r}
 post_lasso_reg = rlasso(x = dt_train[,1:100], y = dt_train$y, post = TRUE) #now use post-lasso
