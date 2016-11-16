@@ -59,7 +59,6 @@ Let us plot data (with collection time if meaningful) and add, with `geom_hline(
 ```{r,fig.cap="Plot of reaction values",tidy=FALSE,comment='tidy=FALSE forza a-capo nel punto in cui si trova', message=FALSE, warning=FALSE} 
 ggp <- ggplot(data = reaction, mapping=aes(x=index, y=reaction)) + 
   geom_point() + 
-  ylim(c(177,183)) +
   geom_hline(yintercept = 180, color="red") +
   geom_hline(yintercept = mean(reaction$reaction), color="darkgreen")
 
