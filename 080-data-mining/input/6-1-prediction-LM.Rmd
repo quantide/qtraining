@@ -49,7 +49,7 @@ rm(X)
 Since in above data frame only the columns from 1 to 6 and 101 are really correlated, 
 a scatterplot matrix of these columns (along with a few of other columns) can be useful to 
 show the relations between variables:
-```{r a2}
+```{r a2, message=FALSE}
 require(ggplot2)
 require(GGally)
 
@@ -532,7 +532,7 @@ PLS reduces even to `r ncomp` the number of features (independent variables) in 
 The predictive results are almost good, also if the error is between stepwise and PCR
 results.
 
-## (8) `glmnet` (Elastic-Net)
+## (8) Elastic-Net
 
 `glmnet` is a package that fits a generalized linear model via penalized
 maximum likelihood. The regularization path is computed at a grid of values
@@ -671,3 +671,83 @@ Anyway, the differences between this model and the previous one are really small
 <!---
 # Exercises?
 --->
+
+## (9) Lasso and Post-Lasso
+
+R package `hdm` contains implementations of recently developed methods for high-dimensional approximately sparse models, mainly relying on forms of Lasso
+and Post-Lasso. This package is suitable for the cases where the number of parameters to be estimated ($p$) is large relative to the sample size ($n$) but only a relatively small number $s = o(n)$ of these regressors are important for capturing accurately the main features of the regression function.
+
+```{r, message=FALSE}
+require(hdm)
+```
+
+The Lasso estimator is a particular case of Elastic-Net, where $a = 1$. It is based on $L_1$ norm, which helps it to avoid overfitting, but it also shrinks the fitted coefficients towards zero, causing a potentially significant bias. In order to remove some of this bias, Post-Lasso is considered, which is an estimator defined as ordinary least squares applied to the data after removing the regressors that were not selected by Lasso.
+
+<!--
+with data-driven penalty loadings is defined as: 
+
+$\hat{\beta} = arg min \mathbf{E}_{n}[(y_{i}-x_{i}^{'}\beta)^2]+\frac{\lambda}{n}\Arrowvert\hat{\Psi\beta}\Arrowvert_1$
+
+where $\Arrowvert\beta\Arrowvert_1=\sum_{j=1}^p{\mid\beta{j}\mid}$, $\hat{\Psi}=diag(\psi_{1}, ...,\psi_{p})$ is a diagonal matrix consisting of penalty loadings, and
+$\mathbf{E}_{n}$ abbreviates the empirical average. The penalty loadings are chosen to insure basic equivariance of coefficient estimates to rescaling of $x_{i,j}$ and can also be chosen to address heteroskedasticity in model errors. 
+
+Regularization by the $l_{1}$-norm naturally helps the Lasso estimator to avoid overfitting, but it also shrinks the fitted coefficients towards zero, causing a potentially significant bias. In order to remove some of this bias, Post-Lasso is considered, which is an estimator defined as ordinary least squares applied to the data after removing the regressors that were not selected by Lasso.
+-->
+
+Let us consider the previous generated sample where we defined $y = 4 + 0.2x_1 + 0.5x_2 - 0.9*x_3 + x_4 - 0.5x_5 + 0.2x_6 + \epsilon$.
+
+```{r, echo=FALSE, eval=FALSE, purl=FALSE}
+# Generate simulate data
+set.seed(10)
+n <- 1000
+p <- 100
+X <- data.frame(matrix(runif(n*p), nrow = n, ncol = p))
+# Give names to data columns
+names(X) <- paste("x", 1:ncol(X), sep = "")
+# The first column is really correlated with the columns from 2 to 5.
+X$x1 <- X$x2 + 2*X$x3 + 3*X$x4 - 4*X$x5 + rnorm(n, sd = .000001)
+# The model for dependent variable
+X$y <- 4 + 0.2*X$x1 + .5*X$x2 - .9*X$x3 + X$x4 - 0.5*X$x5 + 0.2*X$x6 + rnorm(n, mean = 0, sd = 1)
+
+dt <- X
+rm(X)
+
+# Splits the data into training and test data frames
+sel_train <- sample(1:nrow(dt), replace = FALSE, size = n*.75)
+dt_train <- dt[sel_train, ]
+dt_test <- dt[setdiff(1:n, sel_train), ]
+```
+
+The function `rlasso()` of `hdm` package implements Lasso and post-Lasso. The prefix "r" signifies that these are theoretically rigorous versions of Lasso and post-Lasso. The default option is post-Lasso, `post=TRUE`. This function returns an object of class `rlasso` for which methods like `predict`, `print`, `summary` are provided, where the option `all` can be set to `FALSE` to limit the print only to the non-zero coefficients.
+
+Let us see how Post-lasso methid works:
+
+```{r}
+post_lasso_reg = rlasso(x = dt_train[,1:100], y = dt_train$y, post = TRUE) #now use post-lasso
+summary(post_lasso_reg, all = FALSE) # or use summary(post.lasso.reg, all=FALSE)
+```
+
+The model on train data seems not to select correctly all the variables that actually impact on dependent variable and almost all the parameters are far from the true parameter values. This can depend on high multicollinearity.
+
+Let's see the predictive performances:
+
+```{r}
+y_pred_lasso_post_lasso = c(predict(post_lasso_reg, newdata = dt_test)) #out-of-sample prediction
+# Plots Observed Vs. Predicted values
+ggp <- ggplot(data = data.frame(fit=y_pred_lasso_post_lasso, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+  geom_point() +
+  ggtitle("Forward Stepwise: Observed Vs. Predicted") +
+  xlab("Observed Y's") + ylab("Fitted Y's") + 
+  geom_abline(slope = 1,intercept = 0, colour="red")
+print(ggp)
+```
+
+
+```{r}
+mse <- rbind(mse, summary((y_pred_lasso_post_lasso - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "Post-Lasso"
+mse
+```
+
+The predictive results are good and very close to that of `glmnet`.
+
