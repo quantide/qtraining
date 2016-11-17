@@ -117,6 +117,7 @@ require(GGally)
 
 ```{r 02b-graphsummary1}
 bn <- banknotes[, -7]
+class(banknotes) <- "data.frame"
 ggscatmat(banknotes, columns = 1:6)
 ```
 
@@ -317,6 +318,7 @@ together with the name and industry for each company.
 
 ```{r 02b-loaduc}
 summary(uscompanies)
+class(uscompanies) <- "data.frame"
 ggscatmat(uscompanies, columns = 2:7)
 ```
 
