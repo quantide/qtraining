@@ -204,7 +204,7 @@ print(ggp)
 hormones_mean <- hormones %>% group_by(hormone) %>% summarise(gain=mean(gain))
 
 ggp <- ggplot(data = hormones, mapping = aes(x=hormone, y=gain)) +
-  geom_jitter(position = "dodge", color="darkblue") +
+  geom_point(color="darkblue") +
   geom_point(data=hormones_mean, mapping = aes(x=hormone,y=gain), colour="red", group=1) +
   geom_line(data=hormones_mean, mapping = aes(x=hormone,y=gain), colour="red", group=1) 
   
@@ -466,7 +466,7 @@ A stripchart with mean points and mean line:
 carctl_mean <- carctl2 %>% group_by(car) %>% summarise(value=mean(value))
 
 ggp <- ggplot(data = carctl2, mapping = aes(x=car, y=value)) +
-  geom_jitter(position = "dodge", color="darkblue") +
+  geom_point(color="darkblue") +
   geom_point(data=carctl_mean, mapping = aes(x=car,y=value), colour="red", group=1) +
   geom_line(data=carctl_mean, mapping = aes(x=car,y=value), colour="red", group=1) 
   
@@ -691,7 +691,7 @@ The last line of above code restores the graphical device.
 The residual plots confirm that normality and homoscedasticity assumptions are met, and no outliers appear. This confirms the model results.
 
 
-## Example: Brake distances (2-way ANOVA)
+## Example: Brake distances (3-way ANOVA)
 
 ### Data description
 Distance data contain measurements of brake distances on the same car equipped with several configurations of:
@@ -812,7 +812,7 @@ predict(object=fm,newdata=df_pred)
 Question: predicted values are different from the above calculated sampling averages. Why?
 
 
-## Example: Brake distance 1 (unbalanced anova with one obs dropped)
+## Example: Brake distance 1 (unbalanced ANOVA with one obs dropped)
 
 ### Data description 
 Same example as above, but with one observation (row) removed
