@@ -30,13 +30,13 @@ util.Ward <- hclust(d, method = "ward.D2")
 
 ## ----02d-clusttryplotut--------------------------------------------------
 op <- par(mfrow = c(2, 2))
-plot(util.SL, labels = utilities[, 10], cex = .7,
+plot(util.SL, labels = utilities$comp_short, cex = .7,
 		main = "Utilities data (single linkage)", xlab = "Utilities")
-plot(util.CL, labels = utilities[, 10], cex = .7,
+plot(util.CL, labels = utilities$comp_short, cex = .7,
 		main = "Utilities data (complete linkage)", xlab = "Utilities")
-plot(util.AL, labels = utilities[, 10], cex = .7,
+plot(util.AL, labels = utilities$comp_short, cex = .7,
 		main = "Utilities data (average linkage)", xlab = "Utilities")
-plot(util.Ward, labels = utilities[, 10], cex = .7,
+plot(util.Ward, labels = utilities$comp_short, cex = .7,
 		main = "Utilities data (Ward)", xlab = "Utilities")
 par(op)
 

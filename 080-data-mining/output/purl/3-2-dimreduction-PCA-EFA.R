@@ -22,6 +22,7 @@ require(GGally)
 
 ## ----02b-graphsummary1---------------------------------------------------
 bn <- banknotes[, -7]
+class(banknotes) <- "data.frame"
 ggscatmat(banknotes, columns = 1:6)
 
 ## ----02b-graphsummary2, fig.width=plot_with_legend_fig_width_medium------
@@ -96,6 +97,7 @@ lapply(X = pca_princomp, FUN = function(x){biplot(x, cex = c(.7, .7), col = c("b
 
 ## ----02b-loaduc----------------------------------------------------------
 summary(uscompanies)
+class(uscompanies) <- "data.frame"
 ggscatmat(uscompanies, columns = 2:7)
 
 ## ----02b-princompuc------------------------------------------------------

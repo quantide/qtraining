@@ -85,6 +85,7 @@ ggplot(data = D_all, mapping = aes(x = Observed, y = Fitted)) +
 pairs(x = X_final, pch = rownames(mds))
 
 ## ----02a-plotfinalfk_alternative_plot, echo=TRUE, eval=FALSE-------------
+## require(rgl)
 ## open3d()
 ## with(data.frame(X_final),
 ##      plot3d(x = X1, y = X2, z = X3,
@@ -266,7 +267,6 @@ panel.txt <- function(x, y, ...) {
 pairs(x = WWII_final, panel = panel.txt, xlim = c(-5, 5), ylim = c(-5, 5))
 
 ## ----3dplot, eval=FALSE--------------------------------------------------
-## require(rgl)
 ## WWII_final$Leader <- row.names(WWII_final)
 ## open3d()
 ## with(WWII_final,

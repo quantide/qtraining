@@ -28,7 +28,7 @@ X$y <- 4 + 0.2*X$x1 + .5*X$x2 - .9*X$x3 + X$x4 - 0.5*X$x5 + 0.2*X$x6 + rnorm(n, 
 dt <- X
 rm(X)
 
-## ----a2------------------------------------------------------------------
+## ----a2, message=FALSE---------------------------------------------------
 require(ggplot2)
 require(GGally)
 
@@ -306,4 +306,26 @@ mse <- rbind(mse, summary((y_pred_glmnet - dt_test$y)^2))
 rownames(mse)[nrow(mse)] <- "best-glmnet"
 mse
 
+
+## ---- message=FALSE------------------------------------------------------
+require(hdm)
+
+## ------------------------------------------------------------------------
+post_lasso_reg = rlasso(x = dt_train[,1:100], y = dt_train$y, post = TRUE) #now use post-lasso
+summary(post_lasso_reg, all = FALSE) # or use summary(post.lasso.reg, all=FALSE)
+
+## ------------------------------------------------------------------------
+y_pred_lasso_post_lasso = c(predict(post_lasso_reg, newdata = dt_test)) #out-of-sample prediction
+# Plots Observed Vs. Predicted values
+ggp <- ggplot(data = data.frame(fit=y_pred_lasso_post_lasso, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+  geom_point() +
+  ggtitle("Forward Stepwise: Observed Vs. Predicted") +
+  xlab("Observed Y's") + ylab("Fitted Y's") + 
+  geom_abline(slope = 1,intercept = 0, colour="red")
+print(ggp)
+
+## ------------------------------------------------------------------------
+mse <- rbind(mse, summary((y_pred_lasso_post_lasso - dt_test$y)^2))
+rownames(mse)[nrow(mse)] <- "Post-Lasso"
+mse
 
