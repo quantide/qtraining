@@ -33,7 +33,6 @@ print(summary_stat)
 ## ----fig.cap="Plot of reaction values",tidy=FALSE,comment='tidy=FALSE forza a-capo nel punto in cui si trova', message=FALSE, warning=FALSE----
 ggp <- ggplot(data = reaction, mapping=aes(x=index, y=reaction)) + 
   geom_point() + 
-  ylim(c(177,183)) +
   geom_hline(yintercept = 180, color="red") +
   geom_hline(yintercept = mean(reaction$reaction), color="darkgreen")
 
@@ -125,7 +124,7 @@ print(ggp)
 hormones_mean <- hormones %>% group_by(hormone) %>% summarise(gain=mean(gain))
 
 ggp <- ggplot(data = hormones, mapping = aes(x=hormone, y=gain)) +
-  geom_jitter(position = "dodge", color="darkblue") +
+  geom_point(color="darkblue") +
   geom_point(data=hormones_mean, mapping = aes(x=hormone,y=gain), colour="red", group=1) +
   geom_line(data=hormones_mean, mapping = aes(x=hormone,y=gain), colour="red", group=1) 
   
@@ -258,7 +257,7 @@ print(ggp)
 carctl_mean <- carctl2 %>% group_by(car) %>% summarise(value=mean(value))
 
 ggp <- ggplot(data = carctl2, mapping = aes(x=car, y=value)) +
-  geom_jitter(position = "dodge", color="darkblue") +
+  geom_point(color="darkblue") +
   geom_point(data=carctl_mean, mapping = aes(x=car,y=value), colour="red", group=1) +
   geom_line(data=carctl_mean, mapping = aes(x=car,y=value), colour="red", group=1) 
   

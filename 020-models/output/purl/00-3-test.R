@@ -176,7 +176,7 @@ two_sample_prop_test <- function(x1,x2,n1,n2){
   p2 <- x2/n2
   numerator <- p1 - p2
   denominator <- (p1*(1-p1)/n1) + (p2*(1-p2)/n2)
-  prop_test = numerator / sqrt(denominator)
+  prop_test <- numerator / sqrt(denominator)
   return(prop_test)
 }
 
