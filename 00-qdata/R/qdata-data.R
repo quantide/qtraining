@@ -794,13 +794,13 @@ NULL
 #' @name people
 #' 
 #' 
-#' @description The \code{people} dataset is related with information on 1806 Italian people: their gender, area, weight and height.
+#' @description The \code{people} dataset is related with information on 300 Italian people: their gender, area, weight and height.
 #' 
 #'  
 #' @usage data(people)
 #' 
 #' 
-#' @format \code{people} is a tbl data frame with 1806 observations on 4 variables.
+#' @format \code{people} is a tbl data frame with 300 observations on 4 variables.
 #' 
 #' 
 #' @details 
@@ -2623,4 +2623,31 @@ NULL
 NULL
 ##################################################################################################################################
 
-
+##################################################################################################################################
+#' Growth of Orange Trees
+#' 
+#' 
+#' @name orange
+#' 
+#' 
+#' @description \code{orange} dataset contains information information about the growth of 5 Orange Trees, 
+#' according to their trunk circumferences.
+#' 
+#' @usage data(orange)
+#' 
+#' 
+#' @format \code{orange} is a tbl data frame with 35 observations on 3 variables.
+#' 
+#' 
+#' @details 
+#' The 3 variables of the \code{orange} tbl data frame are the following ones:
+#' \itemize{
+#'  \item \code{Tree} tree id (character)
+#'  \item \code{age} age of the tree (numeric)
+#'  \item \code{circumference} trunk circumferences (mm) (numeric)
+#' }
+#' 
+#' 
+#' @source The original \code{Orange} dataset is included in \code{Datasets} package.
+NULL
+##################################################################################################################################
