@@ -788,7 +788,7 @@ NULL
 
 
 ##################################################################################################################################
-#' Weight and Height of 1806 Italian People
+#' Weight and Height of 300 Italian People
 #' 
 #' 
 #' @name people
