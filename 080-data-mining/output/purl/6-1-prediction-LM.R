@@ -8,9 +8,9 @@
 ## Other datasets used
 # none
 
-###############################################################
-## packages needed: leaps, MASS, pls, glmnet, ddplot2 GGally ##
-###############################################################
+####################################################################
+## packages needed: leaps, MASS, pls, glmnet, hdm, ggplot2 GGally ##
+####################################################################
 
 ## ----a-------------------------------------------------------------------
 # Generate simulate data
@@ -307,16 +307,16 @@ rownames(mse)[nrow(mse)] <- "best-glmnet"
 mse
 
 
-## ---- message=FALSE------------------------------------------------------
+## ----load_hdm, message=FALSE---------------------------------------------
 require(hdm)
 
-## ------------------------------------------------------------------------
-post_lasso_reg = rlasso(x = dt_train[,1:100], y = dt_train$y, post = TRUE) #now use post-lasso
-summary(post_lasso_reg, all = FALSE) # or use summary(post.lasso.reg, all=FALSE)
+## ----post-lasso-fit------------------------------------------------------
+post_lasso_reg <- rlasso(x = dt_train[,1:100], y = dt_train$y, post = TRUE) 
+summary(post_lasso_reg, all = FALSE) 
 
-## ------------------------------------------------------------------------
-y_pred_lasso_post_lasso = c(predict(post_lasso_reg, newdata = dt_test)) #out-of-sample prediction
-# Plots Observed Vs. Predicted values
+## ----post-lasso-pred-----------------------------------------------------
+y_pred_lasso_post_lasso <- c(predict(post_lasso_reg, newdata = dt_test)) 
+
 ggp <- ggplot(data = data.frame(fit=y_pred_lasso_post_lasso, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
   geom_point() +
   ggtitle("Forward Stepwise: Observed Vs. Predicted") +
@@ -324,7 +324,7 @@ ggp <- ggplot(data = data.frame(fit=y_pred_lasso_post_lasso, obs=dt_test$y), map
   geom_abline(slope = 1,intercept = 0, colour="red")
 print(ggp)
 
-## ------------------------------------------------------------------------
+## ----compare-pred--------------------------------------------------------
 mse <- rbind(mse, summary((y_pred_lasso_post_lasso - dt_test$y)^2))
 rownames(mse)[nrow(mse)] <- "Post-Lasso"
 mse

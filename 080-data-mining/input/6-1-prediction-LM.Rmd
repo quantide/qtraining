@@ -17,9 +17,9 @@ cacheTF <- FALSE
 ## Other datasets used
 # none
 
-###############################################################
-## packages needed: leaps, MASS, pls, glmnet, ddplot2 GGally ##
-###############################################################
+####################################################################
+## packages needed: leaps, MASS, pls, glmnet, hdm, ggplot2 GGally ##
+####################################################################
 ```
 
 
@@ -677,7 +677,7 @@ Anyway, the differences between this model and the previous one are really small
 R package `hdm` contains implementations of recently developed methods for high-dimensional approximately sparse models, mainly relying on forms of Lasso
 and Post-Lasso. This package is suitable for the cases where the number of parameters to be estimated ($p$) is large relative to the sample size ($n$) but only a relatively small number $s = o(n)$ of these regressors are important for capturing accurately the main features of the regression function.
 
-```{r, message=FALSE}
+```{r load_hdm, message=FALSE}
 require(hdm)
 ```
 
@@ -689,18 +689,18 @@ The function `rlasso()` of `hdm` package implements Lasso and post-Lasso. The pr
 
 Let us see how Post-Lasso method works:
 
-```{r}
-post_lasso_reg = rlasso(x = dt_train[,1:100], y = dt_train$y, post = TRUE) #now use post-lasso
-summary(post_lasso_reg, all = FALSE) # or use summary(post.lasso.reg, all=FALSE)
+```{r post-lasso-fit}
+post_lasso_reg <- rlasso(x = dt_train[,1:100], y = dt_train$y, post = TRUE) 
+summary(post_lasso_reg, all = FALSE) 
 ```
 
 The model on train data seems not to select correctly all the variables that actually impact on dependent variable and almost all the parameters are far from the true parameter values. This can depend on high multicollinearity.
 
 Let's see the predictive performances:
 
-```{r}
-y_pred_lasso_post_lasso = c(predict(post_lasso_reg, newdata = dt_test)) #out-of-sample prediction
-# Plots Observed Vs. Predicted values
+```{r post-lasso-pred}
+y_pred_lasso_post_lasso <- c(predict(post_lasso_reg, newdata = dt_test)) 
+
 ggp <- ggplot(data = data.frame(fit=y_pred_lasso_post_lasso, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
   geom_point() +
   ggtitle("Forward Stepwise: Observed Vs. Predicted") +
@@ -710,7 +710,7 @@ print(ggp)
 ```
 
 
-```{r}
+```{r compare-pred}
 mse <- rbind(mse, summary((y_pred_lasso_post_lasso - dt_test$y)^2))
 rownames(mse)[nrow(mse)] <- "Post-Lasso"
 mse
