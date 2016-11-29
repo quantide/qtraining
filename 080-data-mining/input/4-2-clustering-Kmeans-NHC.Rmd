@@ -134,7 +134,7 @@ ggcorr(cbind(utilities_s, utilities_pca$scores), label = TRUE, cex = 2.5)
 
 The first principal component seems to oppose technical measures (`fuel`, `load`, `cost`) with financial ones (`coverage` and `return`), while the second principal component seems to oppose sales (`sales`) and costs (`fuel`) .  
 Now we can try using the Calinski-Harabasz index to help us in finding the optimal number of clusters to "combine" with PCA analysis results:
-```{r 02d-chfuncut,warning=FALSE}
+```{r 02d-chfuncut,warning=FALSE, message=FALSE}
 require(clusterSim)
 minC <- 2
 maxC <- 10

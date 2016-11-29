@@ -250,8 +250,8 @@ And here is the custom-pruned tree for `cp=0.01` (the minimum xerror tree):
 
 ```{r bw}
 iris.pruned <- prune(iris_rp, cp=0.01)
-plot(iris.pruned)
-text(iris.pruned)
+plot(iris.pruned, compress = TRUE, margin = 0.2, branch = 0.3)
+text(iris.pruned, use.n = TRUE, digits = 3, cex = 0.8)
 ```
 
 Finally, the partition of the feature space for the pruned tree:
@@ -307,10 +307,13 @@ table(test$Class)
 
 We then begin the analysis building the tree without any other specifications:
 
-```{r cj}
+```{r cj_1}
 set.seed(20)
 modelg0 <- rpart(Class ~ ., data = train, cp = 0)
 plotcp(modelg0)
+```
+
+```{r cj_2, fig.width=8, fig.height=8}
 plot(modelg0)
 text(modelg0)
 ```
@@ -369,7 +372,7 @@ misclassified `Bad` customers.
 We then set a loss matrix, where we assign a loss of 5 for
 misclassified Bad customers and a loss of 1 for misclassified Good customers.
 
-```{r cm}
+```{r cm_1}
 # Reset previous predictions
 train$pred <- NULL
 train$pred <- NULL
@@ -380,6 +383,9 @@ modelg1 <- rpart(Class ~ ., parms = list(loss = lmat), data = train, cp = 0)
 # CP table
 printcp(modelg1)
 plotcp(modelg1)
+```
+
+```{r cm_2, fig.width=8, fig.height=8}
 # Tree
 plot(modelg1, uniform = FALSE, compress = TRUE, margin = 0.1, branch = 0.1)
 text(modelg1, use.n = TRUE, digits = 3, cex = 0.6)
@@ -389,7 +395,7 @@ Notice that the minimum xerror tree is the one with CP parameter equal to 0.
 This means that no pruning should be applied to tree without potentially loose in 
 predictive power of tree.
 
-```{r message=FALSE}
+```{r message=FALSE, fig.width=10, fig.height=10}
 require(rpart.plot) # provides alternative ways to plot the tree
 rpart.plot(modelg1)
 print(modelg1)

@@ -125,7 +125,7 @@ successive fusions of the different groups and the distances at which they
 are merged. A dendrogram in `R` is available as a plot method for an object of
 type "hclust":
 
-```{r 02d-clusttryplotut}
+```{r 02d-clusttryplotut, fig.width=7, fig.height=7}
 op <- par(mfrow = c(2, 2))
 plot(util.SL, labels = utilities$comp_short, cex = .7,
 		main = "Utilities data (single linkage)", xlab = "Utilities")
@@ -244,7 +244,7 @@ clusters solution seems a good solution.
 After a good solution has been identified, we can save the corresponding
 cluster membership and use it for graphical purposes:
 
-```{r 02d-membsplotut2, warning=FALSE}
+```{r 02d-membsplotut2, warning=FALSE, fig.width=6, fig.height=6}
 Cluster <- as.character(cutree(util.CL, k = (minC:maxC)[which.max(res)]))
 ggscatmat(data = cbind(utilities[, -(9:11)], Cluster=Cluster), color = "Cluster")
 ```
