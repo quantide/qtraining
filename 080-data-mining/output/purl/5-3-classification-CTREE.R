@@ -89,8 +89,8 @@ with(iris_rp, {
 
 ## ----bw------------------------------------------------------------------
 iris.pruned <- prune(iris_rp, cp=0.01)
-plot(iris.pruned)
-text(iris.pruned)
+plot(iris.pruned, compress = TRUE, margin = 0.2, branch = 0.3)
+text(iris.pruned, use.n = TRUE, digits = 3, cex = 0.8)
 
 ## ----bx------------------------------------------------------------------
 ggp <- ggplot(data = iris)
@@ -121,10 +121,12 @@ test <- german[setdiff(1:1000, sel), ]
 table(train$Class)
 table(test$Class)
 
-## ----cj------------------------------------------------------------------
+## ----cj_1----------------------------------------------------------------
 set.seed(20)
 modelg0 <- rpart(Class ~ ., data = train, cp = 0)
 plotcp(modelg0)
+
+## ----cj_2, fig.width=8, fig.height=8-------------------------------------
 plot(modelg0)
 text(modelg0)
 
@@ -153,7 +155,7 @@ test$pred <- predict(modelg0, newdata = test, type = "class")
 table(test$pred, test$Class)
 confusionMatrix(data = test$pred, reference = test$Class, positive = "Bad")
 
-## ----cm------------------------------------------------------------------
+## ----cm_1----------------------------------------------------------------
 # Reset previous predictions
 train$pred <- NULL
 train$pred <- NULL
@@ -164,11 +166,13 @@ modelg1 <- rpart(Class ~ ., parms = list(loss = lmat), data = train, cp = 0)
 # CP table
 printcp(modelg1)
 plotcp(modelg1)
+
+## ----cm_2, fig.width=8, fig.height=8-------------------------------------
 # Tree
 plot(modelg1, uniform = FALSE, compress = TRUE, margin = 0.1, branch = 0.1)
 text(modelg1, use.n = TRUE, digits = 3, cex = 0.6)
 
-## ----message=FALSE-------------------------------------------------------
+## ----message=FALSE, fig.width=10, fig.height=10--------------------------
 require(rpart.plot) # provides alternative ways to plot the tree
 rpart.plot(modelg1)
 print(modelg1)

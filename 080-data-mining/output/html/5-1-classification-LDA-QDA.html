@@ -765,7 +765,7 @@ confusionMatrix(data = glm_pred, reference = Smarket_2005$Direction,
 ##                                          
 ##        'Positive' Class : Up             
 ## </code></pre>
-<p>The test error rate is 52%, which is worse than random guessing! This result is not that surprising, since it is a well known fact that one would not generally expect to be able to use previous days’ returns to predict future market performance. As an attempt to improve the model, we remove the predictors with the smallest p-values refitting the logistic regression using just <code>Lag1</code> and <code>Lag2</code>:</p>
+<p>The test error rate is 52%, which is worse than random guessing! This result is not that surprising, since it is a well known fact that one would not generally expect to be able to use previous days’ returns to predict future market performance. As an attempt to improve the model, we remove the predictors with the highest p-values refitting the logistic regression using just <code>Lag1</code> and <code>Lag2</code>:</p>
 <pre class="r"><code>glm_fit &lt;- glm(Direction ~ Lag1 + Lag2, data = Smarket,
                family = binomial(link = logit), subset = train)
 glm_probs &lt;- predict(glm_fit, Smarket_2005, type = &quot;response&quot;)
@@ -900,7 +900,11 @@ confusionMatrix(data = qda_class, reference = Smarket_2005$Direction,
 </div>
 <div id="some-theoretical-backgrounds" class="section level1">
 <h1>Some Theoretical Backgrounds</h1>
-<p>Two are the main approaches to Discriminant Analysis: 1. The first was from Fisher, who developed the Linear Discriminant Functions without formulating any distributional assumptions on data (excluding constant variance/covariance matrix within groups) 2. The second one, instead, assumes that the distribution of data is a multivariate normal, and basically applies LR methods to perform discriminations</p>
+<p>Two are the main approaches to Discriminant Analysis:</p>
+<ol style="list-style-type: decimal">
+<li>The first was from Fisher, who developed the Linear Discriminant Functions without formulating any distributional assumptions on data (excluding constant variance/covariance matrix within groups)</li>
+<li>The second one, instead, assumes that the distribution of data is a multivariate normal, and basically applies LR methods to perform discriminations</li>
+</ol>
 <div id="linear-discriminant-functions" class="section level2">
 <h2>Linear Discriminant Functions</h2>
 <p>Let us suppose, for sake of simplicity, that two groups of observations are to be discriminated based on their measurements on two dimensions. We have then <span class="math inline">\(g=2\)</span> groups of observations; for each group we have <span class="math inline">\(n\)</span> observations on <span class="math inline">\(p=2\)</span> (continuous) dimensions.<br />

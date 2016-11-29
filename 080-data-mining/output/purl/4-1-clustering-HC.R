@@ -28,7 +28,7 @@ util.CL <- hclust(d, method = "complete")
 util.AL <- hclust(d, method = "average")
 util.Ward <- hclust(d, method = "ward.D2")
 
-## ----02d-clusttryplotut--------------------------------------------------
+## ----02d-clusttryplotut, fig.width=7, fig.height=7-----------------------
 op <- par(mfrow = c(2, 2))
 plot(util.SL, labels = utilities$comp_short, cex = .7,
 		main = "Utilities data (single linkage)", xlab = "Utilities")
@@ -98,7 +98,7 @@ ggp <- ggplot(data=data.frame(x=2:(length(res)+1), y= res), mapping = aes(x=x,y=
   ylab("Calinski-Harabasz pseudo F-statistic")
 print(ggp)
 
-## ----02d-membsplotut2, warning=FALSE-------------------------------------
+## ----02d-membsplotut2, warning=FALSE, fig.width=6, fig.height=6----------
 Cluster <- as.character(cutree(util.CL, k = (minC:maxC)[which.max(res)]))
 ggscatmat(data = cbind(utilities[, -(9:11)], Cluster=Cluster), color = "Cluster")
 

@@ -57,7 +57,7 @@ abline(h = 1, lty = 2)
 biplot(utilities_pca)
 ggcorr(cbind(utilities_s, utilities_pca$scores), label = TRUE, cex = 2.5)
 
-## ----02d-chfuncut,warning=FALSE------------------------------------------
+## ----02d-chfuncut,warning=FALSE, message=FALSE---------------------------
 require(clusterSim)
 minC <- 2
 maxC <- 10

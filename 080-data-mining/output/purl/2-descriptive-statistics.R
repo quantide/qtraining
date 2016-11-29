@@ -169,7 +169,7 @@ ggp <- ggplot(iris, aes(x = Species, y = Sepal.Length)) +
 print(ggp)
 
 ggp <- ggplot(iris, aes(x = "", y = Sepal.Length)) +
-  geom_boxplot(aes(facet = Species)) + 
+  geom_boxplot() + 
   facet_grid(facets = ~Species, as.table = TRUE)
 print(ggp)
 
