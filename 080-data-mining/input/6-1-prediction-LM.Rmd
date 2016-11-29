@@ -57,7 +57,7 @@ ggpairs(data = dt, columns = c(1:10,101), mapping = aes(alpha = 0.3))
 ```
 
 And some test on collinearity:
-```{r a3}
+```{r a3, message=FALSE}
 # Collinearity test
 X <- as.matrix(dt[,1:10])
 require(Matrix)

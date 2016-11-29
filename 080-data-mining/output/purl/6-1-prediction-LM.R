@@ -21,7 +21,7 @@ X <- data.frame(matrix(runif(n*p), nrow = n, ncol = p))
 # Give names to data columns
 names(X) <- paste("x", 1:ncol(X), sep = "")
 # The first column is really correlated with the columns from 2 to 5.
-X$x1 <- X$x2 + 2*X$x3 + 3*X$x4 - 4*X$x5 + rnorm(n, sd = .000001)
+X$x1 <- X$x2 + 2*X$x3 + 3*X$x4 - 4*X$x5 + rnorm(n, sd = .0001)
 # The model for dependent variable
 X$y <- 4 + 0.2*X$x1 + .5*X$x2 - .9*X$x3 + X$x4 - 0.5*X$x5 + 0.2*X$x6 + rnorm(n, mean = 0, sd = 1)
 
@@ -34,7 +34,7 @@ require(GGally)
 
 ggpairs(data = dt, columns = c(1:10,101), mapping = aes(alpha = 0.3))
 
-## ----a3------------------------------------------------------------------
+## ----a3, message=FALSE---------------------------------------------------
 # Collinearity test
 X <- as.matrix(dt[,1:10])
 require(Matrix)
@@ -113,11 +113,11 @@ require(leaps)
 # Performs a best-subset exhaustive (see 'method' parameter) model search
 nvmax <- 20
 dt_t <- dt_train
-dt_train <- dt_train[, c(1:70,101)]
+dt_train <- dt_train[, c(1:35,101)]
 bs_fit <- regsubsets(x = dt_train[, 1:(ncol(dt_train)-1)], y = dt_train[, ncol(dt_train)], method = "exhaustive", nvmax = nvmax, really.big = TRUE) 
 l <- summary(bs_fit)
 
-# Plots the BIC index
+# Plots of the CP index
 ggp <- ggplot(data = data.frame(size=1:nvmax, cp=l$cp), mapping = aes(x = size, y = cp)) +
   geom_point() +
   xlab("Model size") + ylab("Mallows' Cp")
