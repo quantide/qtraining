@@ -971,18 +971,18 @@ NULL
 #' @details 
 #' The 12 variables of the \code{uscrime} tbl data frame are the following ones:
 #' \itemize{
-#' \item \code{state} car model (character);
-#' \item \code{land} land (integer);
+#' \item \code{state} Usps states abbreviation (character);
+#' \item \code{land} land area (integer);
 #' \item \code{popu1985} population in 1985 (integer);
-#' \item \code{murd} murder (numeric);
-#' \item \code{rape} rape (numeric);
-#' \item \code{robb} rabbery (numeric);
-#' \item \code{assa} assault (integer);
-#' \item \code{burg} burglary (integer);
-#' \item \code{larc} larceny (integer);
-#' \item \code{auto} auto-theft (integer);
-#' \item \code{reg} ??? (integer);
-#' \item \code{div} ??? (integer).
+#' \item \code{murd} number of murders per 100,000 residents (numeric);
+#' \item \code{rape} number of rapes per 100,000 residents (numeric);
+#' \item \code{robb} number of robberies per 100,000 residents (numeric);
+#' \item \code{assa} number of assaults per 100,000 residents (integer);
+#' \item \code{burg} number of burglaries per 100,000 residents (integer);
+#' \item \code{larc} number of larcenies per 100,000 residents (integer);
+#' \item \code{auto} number of auto-thefts per 100,000 residents (integer);
+#' \item \code{reg} U.S. states region number (integer);
+#' \item \code{div} U.S. states division number (integer).
 #' }
 #' 
 #' 
