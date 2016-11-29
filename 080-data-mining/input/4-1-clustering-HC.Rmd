@@ -242,7 +242,7 @@ According to the Calinski-Harabasz pseudo F-statistic, we conclude that the 4
 clusters solution seems a good solution.
 
 After a good solution has been identified, we can save the corresponding
-cluster membership ans use it for graphical purposes:
+cluster membership and use it for graphical purposes:
 
 ```{r 02d-membsplotut2, warning=FALSE}
 Cluster <- as.character(cutree(util.CL, k = (minC:maxC)[which.max(res)]))

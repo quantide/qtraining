@@ -176,7 +176,7 @@ pairs(utilities_tmp, col = Cluster, pch = Cluster, cex = .75)
 
 <!---
 
-```{r 02e-plotsuc4, fig.width=plot_with_legend_fig_width_short}
+```{r 02e-plotsuc4, fig.width=plot_with_legend_fig_width_short, purl=FALSE}
 # Cluster <- as.character(km_4$cluster)
 # ggp <- ggplot(data=data.frame(x = uscrime_scores[, 1], y = uscrime_scores[, 2], Cluster=Cluster, state=uscrime$state), mapping = aes(x=x,y=y, colour=Cluster))+
 #   geom_point() +
@@ -186,7 +186,7 @@ pairs(utilities_tmp, col = Cluster, pch = Cluster, cex = .75)
 # print(ggp)
 ```
 
-```{r 02e-plotsuc5}
+```{r 02e-plotsuc5, purl=FALSE}
 # pairs(utilities_tmp, col = Cluster, pch = Cluster, cex = .75)
 ```
 
@@ -194,7 +194,7 @@ The previous plots together with the next ones suggest that the two groups
 solution seems to be more interpretable. Anyway, we can also cross ths information
 with the geographic areas:
 
-```{r 02e-levelplotsuc}
+```{r 02e-levelplotsuc, purl=FALSE}
 # uscrime$reg <- as.factor(uscrime$reg)
 # levels(uscrime$reg) <- c("Northeast", "Midwest", "South", "West")
 # 

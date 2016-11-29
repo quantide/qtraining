@@ -517,7 +517,7 @@ non-metric variant of the Sammon algorithm.
 As an example, we re-analyze the
 data on the world leaders judgments:
 ** RIMUOVERE **
-```{r 02a-sammonpi}
+```{r 02a-sammonpi, purl=FALSE}
 WWII_sammon <- sammon(wwiileaders)
 WWII_sammon$stress
 qplot(x = WWII_sammon$points[, 1], y = WWII_sammon$points[, 2], geom = "point",
@@ -532,7 +532,7 @@ note that the stress values for the two algorithms cannot be compared since
 they are defined slightly differently). However, the plot of the stress now
 shows that a 2-dimensional solution is fairly good:
 
-```{r 02a-sammonstresspi}
+```{r 02a-sammonstresspi, purl=FALSE}
 ndim <- 1:7
 stress.sammon <- sapply(ndim, function(i) sammon(wwiileaders, k = i,
                                                  trace = FALSE)$stress)

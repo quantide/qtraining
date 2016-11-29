@@ -359,7 +359,7 @@ print(ggp)
 
 or, equivalently:
 
-```{r 02b-plotscoresuc2}
+```{r 02b-plotscoresuc2, purl=FALSE}
 qplot(x = uscompanies.pca$scores[, 1], y = uscompanies.pca$scores[, 2],
 	  xlab = "Component 1", ylab = "Component 2",
 	  label = as.character(uscompanies[, 9]), alpha = I(.001)) + geom_text(size = 4)

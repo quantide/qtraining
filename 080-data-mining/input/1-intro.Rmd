@@ -32,7 +32,7 @@ This course will provide an overview of the main data mining techniques through 
 4. **Classification**: when the objective of the analysis is to correctly assign a new observation to a value of a categorical response variable, through a proper statistical model estimated from the data;
 5. **Prediction**: when the objective of the analysis is to predict the value of a response variable in a new observation, through a proper statistical model estimated from the data.
 
-Several `R` packages, besides the base `R` distribution, will be used in this course: `boot`, `ca`, `caret`, `clusterSim`, `dplyr`, `e1071`, `ellipse`, `fBasics`, `GGally`, `ggplot2`, `glmnet`, `Hmisc`, `HSAUR2`, `ISLR`, `kohonen`, `lattice`, `leaps`, `MASS`, `mclust`, `MCMCpack`, `mice`, `MSQC`, `mvnormtest`, `mvtnorm`, `party`, `pls`, `pROC`, `psych`, `reshape2`, `rgl`, `rpart`, `rpart.plot`, `smacof`, `tree`, `hdm`.  
+Several `R` packages, besides the base `R` distribution, will be used in this course: `boot`, `ca`, `caret`, `clusterSim`, `dplyr`, `e1071`, `ellipse`, `fBasics`, `GGally`, `ggplot2`, `glmnet`, `hdm`, `Hmisc`, `HSAUR2`, `ISLR`, `kohonen`, `lattice`, `leaps`, `MASS`, `mclust`, `MCMCpack`, `mice`, `MSQC`, `mvnormtest`, `mvtnorm`, `party`, `pls`, `pROC`, `psych`, `reshape2`, `rgl`, `rpart`, `rpart.plot`, `smacof`, `tree`.  
 
 Please, install of them before starting.
 
