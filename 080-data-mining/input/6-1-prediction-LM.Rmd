@@ -288,9 +288,7 @@ m_bestsubset <- lm(y ~ ., data = dt_train[, bestfeat])
 summary(m_bestsubset)
 ```
 
-The model on train data seems to select correctly the variables that actually 
-impact on dependent variable. However, almost all the parameters are very far
-from the true parameter values and show a very high p-value. This can depend
+The model on train data seems to select too many variables and almost all the parameters are very far from the true parameter values and show a very high p-value. This can depend
 on high multicollinearity.
 
 Let's see the predictive performances:
@@ -315,7 +313,7 @@ dt_train <- dt_t
 rm(dt_t)
 ```
 
-Best subset seems to predict better. This may depend on the big number of
+Best subset seems to predict well This may depend on the big number of
 predictors selected from above methods, that produces an overfitting on data: the 
 above methods predict well the train data, but not the test data, also if
 it arises from the same process (by construction).  
