@@ -85,28 +85,6 @@ print(ggp)
 ## ----02e-plotsuc3--------------------------------------------------------
 pairs(utilities_tmp, col = Cluster, pch = Cluster, cex = .75)
 
-## ----02e-plotsuc4, fig.width=plot_with_legend_fig_width_short------------
-# Cluster <- as.character(km_4$cluster)
-# ggp <- ggplot(data=data.frame(x = uscrime_scores[, 1], y = uscrime_scores[, 2], Cluster=Cluster, state=uscrime$state), mapping = aes(x=x,y=y, colour=Cluster))+
-#   geom_point() +
-#   xlab("1st PCA dimension") +
-#   ylab("2nd PCA dimension") +
-#   geom_text(mapping = aes(label=state), hjust = 0.5, vjust = -0.5, size = 3)
-# print(ggp)
-
-## ----02e-plotsuc5--------------------------------------------------------
-# pairs(utilities_tmp, col = Cluster, pch = Cluster, cex = .75)
-
-## ----02e-levelplotsuc----------------------------------------------------
-# uscrime$reg <- as.factor(uscrime$reg)
-# levels(uscrime$reg) <- c("Northeast", "Midwest", "South", "West")
-# 
-# plot(table(uscrime$reg, km_2$cluster), main = "Clusters vs. US States region",
-# 			xlab = "Region of US", ylab = "2 groups solution")
-# 
-# plot(table(uscrime$reg, km_4$cluster), main = "Clusters vs. US States region",
-# 			xlab = "Region of US", ylab = "4 groups solution")
-
 ## ----02d-membsplotut3, fig.width=7---------------------------------------
 utilities$member <-  Cluster
 util.summ <- summarise(group_by(utilities, member),

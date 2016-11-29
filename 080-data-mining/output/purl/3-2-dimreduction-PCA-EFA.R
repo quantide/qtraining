@@ -116,11 +116,6 @@ ggp <- ggplot(data = data.frame(uscompanies.pca$scores), mapping = aes(x = Comp.
   geom_text(label = uscompanies[, 9], size = 4)
 print(ggp)
 
-## ----02b-plotscoresuc2---------------------------------------------------
-qplot(x = uscompanies.pca$scores[, 1], y = uscompanies.pca$scores[, 2],
-	  xlab = "Component 1", ylab = "Component 2",
-	  label = as.character(uscompanies[, 9]), alpha = I(.001)) + geom_text(size = 4)
-
 ## ----02b-plots2uc--------------------------------------------------------
 id <- match(c("IBM", "GeneralElectric"), uscompanies[, 1])
 uscompanies_new <- uscompanies[-id, ]

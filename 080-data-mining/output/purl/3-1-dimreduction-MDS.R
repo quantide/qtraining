@@ -278,24 +278,3 @@ pairs(x = WWII_final, panel = panel.txt, xlim = c(-5, 5), ylim = c(-5, 5))
 ##      text3d(x = V1, y = V2, z = V3,texts = Leader)
 ##      )
 
-## ----02a-sammonpi--------------------------------------------------------
-WWII_sammon <- sammon(wwiileaders)
-WWII_sammon$stress
-qplot(x = WWII_sammon$points[, 1], y = WWII_sammon$points[, 2], geom = "point",
-      xlab = "1st dimension", ylab = "2nd dimension",
-      label = attr(wwiileaders, "Labels")) +
-  coord_fixed(ratio = 1, xlim = c(-6, 6), ylim = c(-6, 6)) +
-  geom_text(hjust = 0.5, vjust = -0.5)
-
-## ----02a-sammonstresspi--------------------------------------------------
-ndim <- 1:7
-stress.sammon <- sapply(ndim, function(i) sammon(wwiileaders, k = i,
-                                                 trace = FALSE)$stress)
-WWII_stress_sammon <- data.frame(Dimensions = ndim, Stress = stress.sammon)
-p <- ggplot(WWII_stress_sammon, aes(x = Dimensions, y = Stress))
-p <- p + geom_point() + geom_line() +
-  scale_y_continuous(limits = c(0, max(stress.sammon)),
-                     breaks = seq(0, max(stress.sammon), by = .05)) +
-  scale_x_continuous(limits = c(0, max(ndim)), breaks = ndim)
-p
-
