@@ -39,3 +39,5 @@ Ridurre esempi PCA e EFA
 Esercizio per CA con dati smoke del package ca? (Senior Manager, Junior Manager, Senior Employees, Junior Eployees, Secretaries)
 Clustering: rimosso esempio con dati iris; da proporre come esercizio
 
+# Differenze tra bagging, boosting, stacking
+http://stats.stackexchange.com/questions/18891/bagging-boosting-and-stacking-in-machine-learning
