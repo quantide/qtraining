@@ -477,7 +477,7 @@ mse
 # Plots Observed Vs. Predicted values
 ggp <- ggplot(data = data.frame(fit=y_pred_pcr, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
   geom_point() +
-  ggtitle("Ridge regression: Observed Vs. Predicted") +
+  ggtitle("PCR: Observed Vs. Predicted") +
   xlab("Observed Y's") + ylab("Fitted Y's") + 
   geom_abline(slope = 1,intercept = 0, colour="red")
 print(ggp)
