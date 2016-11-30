@@ -315,17 +315,17 @@ post_lasso_reg <- rlasso(x = dt_train[,1:100], y = dt_train$y, post = TRUE)
 summary(post_lasso_reg, all = FALSE) 
 
 ## ----post-lasso-pred-----------------------------------------------------
-y_pred_lasso_post_lasso <- c(predict(post_lasso_reg, newdata = dt_test)) 
+y_pred_post_lasso <- c(predict(post_lasso_reg, newdata = dt_test)) 
 
-ggp <- ggplot(data = data.frame(fit=y_pred_lasso_post_lasso, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
+ggp <- ggplot(data = data.frame(fit=y_pred_post_lasso, obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
   geom_point() +
-  ggtitle("Forward Stepwise: Observed Vs. Predicted") +
+  ggtitle("Post-Lasso: Observed Vs. Predicted") +
   xlab("Observed Y's") + ylab("Fitted Y's") + 
   geom_abline(slope = 1,intercept = 0, colour="red")
 print(ggp)
 
 ## ----compare-pred--------------------------------------------------------
-mse <- rbind(mse, summary((y_pred_lasso_post_lasso - dt_test$y)^2))
+mse <- rbind(mse, summary((y_pred_post_lasso - dt_test$y)^2))
 rownames(mse)[nrow(mse)] <- "Post-Lasso"
 mse
 
