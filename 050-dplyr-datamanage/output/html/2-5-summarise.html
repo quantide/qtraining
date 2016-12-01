@@ -273,6 +273,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -359,13 +360,13 @@ data(bank)</code></pre>
 <p>The last verb is <code>summarise()</code>, which collapses a data frame to a single row:</p>
 <pre class="r"><code># Compute the mean of balance variable of bank data frame
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))</code></pre>
-<pre><code>## # A tibble: 1 x 1
+<pre><code>## # A tibble: 1 × 1
 ##   mean_balance
 ##          &lt;dbl&gt;
 ## 1     1362.272</code></pre>
 <pre class="r"><code># Compute the minimum and the maximum value of balance of bank data frame
 summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##   max_balance min_balance
 ##         &lt;int&gt;       &lt;int&gt;
 ## 1      102127       -8019</code></pre>
@@ -375,47 +376,47 @@ summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(bala
 <li><code>first</code> returns the first value of a vector:</li>
 </ul>
 <pre class="r"><code>summarise(bank, first(job))</code></pre>
-<pre><code>## # A tibble: 1 x 1
-##   first(job)
-##       &lt;fctr&gt;
-## 1 management</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   `first(job)`
+##         &lt;fctr&gt;
+## 1   management</code></pre>
 <ul>
 <li><code>last</code> returns the last value of a vector:</li>
 </ul>
 <pre class="r"><code>summarise(bank, last(job)) </code></pre>
-<pre><code>## # A tibble: 1 x 1
-##      last(job)
+<pre><code>## # A tibble: 1 × 1
+##    `last(job)`
 ##         &lt;fctr&gt;
 ## 1 entrepreneur</code></pre>
 <ul>
 <li><code>nth</code> returns the nth value of a vector:</li>
 </ul>
 <pre class="r"><code>summarise(bank, nth(job, 8))</code></pre>
-<pre><code>## # A tibble: 1 x 1
-##    nth(job, 8)
-##         &lt;fctr&gt;
-## 1 entrepreneur</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   `nth(job, 8)`
+##          &lt;fctr&gt;
+## 1  entrepreneur</code></pre>
 <ul>
 <li><code>n()</code> returns the number of values in a vector:</li>
 </ul>
 <pre class="r"><code>summarise(bank, n())</code></pre>
-<pre><code>## # A tibble: 1 x 1
-##     n()
+<pre><code>## # A tibble: 1 × 1
+##   `n()`
 ##   &lt;int&gt;
 ## 1 45211</code></pre>
 <ul>
 <li><code>n_distinct</code> returns the number of distinct values in a vector:</li>
 </ul>
 <pre class="r"><code>summarise(bank, n_distinct(job))</code></pre>
-<pre><code>## # A tibble: 1 x 1
-##   n_distinct(job)
-##             &lt;int&gt;
-## 1              12</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   `n_distinct(job)`
+##               &lt;int&gt;
+## 1                12</code></pre>
 <pre class="r"><code>summarise(bank, n_distinct(education))</code></pre>
-<pre><code>## # A tibble: 1 x 1
-##   n_distinct(education)
-##                   &lt;int&gt;
-## 1                     4</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   `n_distinct(education)`
+##                     &lt;int&gt;
+## 1                       4</code></pre>
 </div>
 </div>
 
@@ -447,6 +448,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

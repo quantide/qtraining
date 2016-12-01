@@ -273,6 +273,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -446,7 +447,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 <p>You can use a join to add “provincia” and “regione” to the Italian “comuni”:</p>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
 <pre><code>## Joining, by = c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
-<pre><code>## # A tibble: 8,003 x 9
+<pre><code>## # A tibble: 8,003 × 9
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;
 ## 1        1001           Agliè           FALSE          2             1             201           1
@@ -462,7 +463,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 ## # ... with 7,993 more rows, and 2 more variables: provincia &lt;chr&gt;, sigla_auto &lt;chr&gt;</code></pre>
 <pre class="r"><code>comuni %&gt;% left_join(regioni)</code></pre>
 <pre><code>## Joining, by = &quot;cod_regione&quot;</code></pre>
-<pre><code>## # A tibble: 8,003 x 8
+<pre><code>## # A tibble: 8,003 × 8
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione  regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;    &lt;chr&gt;
 ## 1        1001           Agliè           FALSE          2             1             201           1 Piemonte
@@ -479,7 +480,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 <pre class="r"><code>comuni %&gt;% left_join(province) %&gt;% left_join(regioni)</code></pre>
 <pre><code>## Joining, by = c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
 <pre><code>## Joining, by = &quot;cod_regione&quot;</code></pre>
-<pre><code>## # A tibble: 8,003 x 10
+<pre><code>## # A tibble: 8,003 × 10
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;
 ## 1        1001           Agliè           FALSE          2             1             201           1
@@ -499,7 +500,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 </ul>
 <pre class="r"><code>comuni %&gt;% left_join(regioni)</code></pre>
 <pre><code>## Joining, by = &quot;cod_regione&quot;</code></pre>
-<pre><code>## # A tibble: 8,003 x 8
+<pre><code>## # A tibble: 8,003 × 8
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione  regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;    &lt;chr&gt;
 ## 1        1001           Agliè           FALSE          2             1             201           1 Piemonte
@@ -518,7 +519,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 </ul>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
 <pre><code>## Joining, by = c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
-<pre><code>## # A tibble: 8,003 x 9
+<pre><code>## # A tibble: 8,003 × 9
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;
 ## 1        1001           Agliè           FALSE          2             1             201           1
@@ -534,7 +535,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 ## # ... with 7,993 more rows, and 2 more variables: provincia &lt;chr&gt;, sigla_auto &lt;chr&gt;</code></pre>
 <p>But we only want to join by <code>cod_provincia</code> not by <code>cod_citta_metro</code>. As only some of the “province” have a “città metropolitana” (9 of them: Torino, Milano, Venezia, Genova, Bologna, Firenze, Roma, Napoli, Bari):</p>
 <pre class="r"><code>comuni %&gt;% left_join(province, by = &quot;cod_provincia&quot;)</code></pre>
-<pre><code>## # A tibble: 8,003 x 10
+<pre><code>## # A tibble: 8,003 × 10
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro.x cod_regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;             &lt;chr&gt;       &lt;int&gt;
 ## 1        1001           Agliè           FALSE          2             1               201           1
@@ -556,7 +557,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 <pre class="r"><code>regioni2 &lt;- regioni %&gt;% rename(id_regione = cod_regione)</code></pre>
 <p>Then, in this case</p>
 <pre class="r"><code>comuni %&gt;% left_join(regioni2, c(&quot;cod_regione&quot; = &quot;id_regione&quot;))</code></pre>
-<pre><code>## # A tibble: 8,003 x 8
+<pre><code>## # A tibble: 8,003 × 8
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione  regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;    &lt;chr&gt;
 ## 1        1001           Agliè           FALSE          2             1             201           1 Piemonte
@@ -582,7 +583,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
   summarise(pop_legale = sum(pop_legale)) %&gt;% 
   arrange(desc(pop_legale))</code></pre>
 <pre><code>## Joining, by = c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
-<pre><code>## # A tibble: 110 x 2
+<pre><code>## # A tibble: 110 × 2
 ##      provincia pop_legale
 ##          &lt;chr&gt;      &lt;int&gt;
 ## 1       Torino      60794
@@ -605,7 +606,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
   summarise(pop_legale = sum(pop_legale)) %&gt;%
   arrange(desc(pop_legale))</code></pre>
 <pre><code>## Joining, by = &quot;cod_regione&quot;</code></pre>
-<pre><code>## # A tibble: 20 x 2
+<pre><code>## # A tibble: 20 × 2
 ##                         regione pop_legale
 ##                           &lt;chr&gt;      &lt;int&gt;
 ## 1                      Piemonte     282640
@@ -635,7 +636,7 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
   filter(comune_cap_prov == TRUE) %&gt;%
   select(comune, pop_legale) %&gt;% 
   arrange(desc(pop_legale))</code></pre>
-<pre><code>## # A tibble: 116 x 2
+<pre><code>## # A tibble: 116 × 2
 ##     comune pop_legale
 ##      &lt;chr&gt;      &lt;int&gt;
 ## 1   Napoli        962
@@ -688,7 +689,7 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <pre class="r"><code>usopen %&gt;% 
   anti_join(wimbledon, by = &quot;champion&quot;) %&gt;%
   select(year, champion_country, champion)</code></pre>
-<pre><code>## # A tibble: 15 x 3
+<pre><code>## # A tibble: 15 × 3
 ##     year champion_country              champion
 ##    &lt;int&gt;            &lt;chr&gt;                 &lt;chr&gt;
 ## 1   2014              CRO           Marin Čilić
@@ -710,7 +711,7 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <pre class="r"><code>usopen %&gt;% 
   semi_join(wimbledon, by = &quot;champion&quot;) %&gt;%
   select(year, champion_country, champion)</code></pre>
-<pre><code>## # A tibble: 33 x 3
+<pre><code>## # A tibble: 33 × 3
 ##     year champion_country      champion
 ##    &lt;int&gt;            &lt;chr&gt;         &lt;chr&gt;
 ## 1   1969              AUS     Rod Laver
@@ -728,7 +729,7 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <pre class="r"><code>usopen %&gt;% 
   semi_join(wimbledon, by = c(&quot;champion&quot;, &quot;year&quot;)) %&gt;%
   select(year, champion_country, champion)</code></pre>
-<pre><code>## # A tibble: 15 x 3
+<pre><code>## # A tibble: 15 × 3
 ##     year champion_country       champion
 ##    &lt;int&gt;            &lt;chr&gt;          &lt;chr&gt;
 ## 1   1969              AUS      Rod Laver
@@ -763,7 +764,7 @@ super_wimbledon &lt;- wimbledon %&gt;%
 super_usopen %&gt;% 
   semi_join(super_wimbledon, by = &quot;champion&quot;) %&gt;%
   select(champion)</code></pre>
-<pre><code>## # A tibble: 7 x 1
+<pre><code>## # A tibble: 7 × 1
 ##         champion
 ##            &lt;chr&gt;
 ## 1  Jimmy Connors
@@ -778,7 +779,7 @@ super_usopen %&gt;%
   inner_join(super_wimbledon, by = &quot;champion&quot;) %&gt;%
   mutate ( n = n_us+n_wb) %&gt;%
   arrange(desc(n))</code></pre>
-<pre><code>## # A tibble: 7 x 4
+<pre><code>## # A tibble: 7 × 4
 ##         champion  n_us  n_wb     n
 ##            &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
 ## 1   Pete Sampras     5     7    12
@@ -862,6 +863,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

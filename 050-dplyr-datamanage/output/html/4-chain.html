@@ -273,6 +273,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -363,9 +364,9 @@ a2 &lt;- select(a1, age, balance)</code></pre>
                 mean_balance = mean(balance, na.rm = TRUE)
                 )
 (a4 &lt;- filter(a3, mean_age &lt; 40 &amp; mean_balance &gt; 5000))</code></pre>
-<pre><code>## # A tibble: 5 x 3
+<pre><code>## # A tibble: 5 × 3
 ##         date mean_age mean_balance
-##       &lt;time&gt;    &lt;dbl&gt;        &lt;dbl&gt;
+##       &lt;dttm&gt;    &lt;dbl&gt;        &lt;dbl&gt;
 ## 1 2008-10-18   37.500      5502.75
 ## 2 2008-12-27   28.000      6100.00
 ## 3 2009-03-20   28.000      5916.00
@@ -383,9 +384,9 @@ a2 &lt;- select(a1, age, balance)</code></pre>
   mean_age &lt; 40 &amp; mean_balance &gt; 5000
 )</code></pre>
 <pre><code>## Adding missing grouping variables: `date`</code></pre>
-<pre><code>## # A tibble: 5 x 3
+<pre><code>## # A tibble: 5 × 3
 ##         date mean_age mean_balance
-##       &lt;time&gt;    &lt;dbl&gt;        &lt;dbl&gt;
+##       &lt;dttm&gt;    &lt;dbl&gt;        &lt;dbl&gt;
 ## 1 2008-10-18   37.500      5502.75
 ## 2 2008-12-27   28.000      6100.00
 ## 3 2009-03-20   28.000      5916.00
@@ -401,9 +402,9 @@ a2 &lt;- select(a1, age, balance)</code></pre>
   ) %&gt;%
   filter(mean_age &lt; 40 &amp; mean_balance &gt; 5000)</code></pre>
 <pre><code>## Adding missing grouping variables: `date`</code></pre>
-<pre><code>## # A tibble: 5 x 3
+<pre><code>## # A tibble: 5 × 3
 ##         date mean_age mean_balance
-##       &lt;time&gt;    &lt;dbl&gt;        &lt;dbl&gt;
+##       &lt;dttm&gt;    &lt;dbl&gt;        &lt;dbl&gt;
 ## 1 2008-10-18   37.500      5502.75
 ## 2 2008-12-27   28.000      6100.00
 ## 3 2009-03-20   28.000      5916.00
@@ -439,6 +440,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

@@ -273,6 +273,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -427,7 +428,7 @@ data(mtcars)</code></pre>
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise(mean_mpg = mean(mpg))</code></pre>
-<pre><code>## # A tibble: 1 x 1
+<pre><code>## # A tibble: 1 × 1
 ##   mean_mpg
 ##      &lt;dbl&gt;
 ## 1 20.09062</code></pre>
@@ -435,7 +436,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise(mean_mpg = mean(mpg))</code></pre>
-<pre><code>## # A tibble: 3 x 2
+<pre><code>## # A tibble: 3 × 2
 ##     cyl mean_mpg
 ##   &lt;dbl&gt;    &lt;dbl&gt;
 ## 1     4 26.66364
@@ -463,7 +464,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise_each(funs(mean), mean_mpg = mpg)</code></pre>
-<pre><code>## # A tibble: 1 x 1
+<pre><code>## # A tibble: 1 × 1
 ##   mean_mpg
 ##      &lt;dbl&gt;
 ## 1 20.09062</code></pre>
@@ -471,7 +472,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise_each(funs(mean), mean_mpg = mpg)</code></pre>
-<pre><code>## # A tibble: 3 x 2
+<pre><code>## # A tibble: 3 × 2
 ##     cyl mean_mpg
 ##   &lt;dbl&gt;    &lt;dbl&gt;
 ## 1     4 26.66364
@@ -503,7 +504,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise(min_mpg = min(mpg), max_mpg = max(mpg))</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##   min_mpg max_mpg
 ##     &lt;dbl&gt;   &lt;dbl&gt;
 ## 1    10.4    33.9</code></pre>
@@ -511,7 +512,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise(min_mpg = min(mpg), max_mpg = max(mpg))</code></pre>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##     cyl min_mpg max_mpg
 ##   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ## 1     4    21.4    33.9
@@ -540,7 +541,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise_each(funs(min, max), mpg)</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##     min   max
 ##   &lt;dbl&gt; &lt;dbl&gt;
 ## 1  10.4  33.9</code></pre>
@@ -548,7 +549,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise_each(funs(min, max), mpg)</code></pre>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##     cyl   min   max
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1     4  21.4  33.9
@@ -578,7 +579,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise_each(funs(min_mpg = min, max_mpg = max), mpg)</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##   min_mpg max_mpg
 ##     &lt;dbl&gt;   &lt;dbl&gt;
 ## 1    10.4    33.9</code></pre>
@@ -586,7 +587,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise_each(funs(min_mpg = min, max_mpg = max), mpg)</code></pre>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##     cyl min_mpg max_mpg
 ##   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ## 1     4    21.4    33.9
@@ -618,7 +619,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise(mean_mpg = mean(mpg), mean_disp = mean(disp))</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##   mean_mpg mean_disp
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 20.09062  230.7219</code></pre>
@@ -626,7 +627,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise(mean_mpg = mean(mpg), mean_disp = mean(disp))</code></pre>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##     cyl mean_mpg mean_disp
 ##   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
 ## 1     4 26.66364  105.1364
@@ -654,7 +655,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise_each(funs(mean), mpg, disp)</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##        mpg     disp
 ##      &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 20.09062 230.7219</code></pre>
@@ -662,7 +663,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise_each(funs(mean), mpg, disp)</code></pre>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##     cyl      mpg     disp
 ##   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
 ## 1     4 26.66364 105.1364
@@ -692,7 +693,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise_each(funs(mean), mean_mpg = mpg, mean_disp = disp)</code></pre>
-<pre><code>## # A tibble: 1 x 2
+<pre><code>## # A tibble: 1 × 2
 ##   mean_mpg mean_disp
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 20.09062  230.7219</code></pre>
@@ -700,7 +701,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise_each(funs(mean), mean_mpg = mpg, mean_disp = disp)</code></pre>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##     cyl mean_mpg mean_disp
 ##   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
 ## 1     4 26.66364  105.1364
@@ -732,7 +733,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise(min_mpg = min(mpg), min_disp = min(disp), max_mpg = max(mpg), max_disp = max(disp))</code></pre>
-<pre><code>## # A tibble: 1 x 4
+<pre><code>## # A tibble: 1 × 4
 ##   min_mpg min_disp max_mpg max_disp
 ##     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
 ## 1    10.4     71.1    33.9      472</code></pre>
@@ -740,7 +741,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise(min_mpg = min(mpg), min_disp = min(disp), max_mpg = max(mpg), max_disp = max(disp))</code></pre>
-<pre><code>## # A tibble: 3 x 5
+<pre><code>## # A tibble: 3 × 5
 ##     cyl min_mpg min_disp max_mpg max_disp
 ##   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
 ## 1     4    21.4     71.1    33.9    146.7
@@ -768,7 +769,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   summarise_each(funs(min, max), mpg, disp)</code></pre>
-<pre><code>## # A tibble: 1 x 4
+<pre><code>## # A tibble: 1 × 4
 ##   mpg_min disp_min mpg_max disp_max
 ##     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
 ## 1    10.4     71.1    33.9      472</code></pre>
@@ -776,7 +777,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   group_by(cyl) %&gt;% 
   summarise_each(funs(min, max), mpg, disp)</code></pre>
-<pre><code>## # A tibble: 3 x 5
+<pre><code>## # A tibble: 3 × 5
 ##     cyl mpg_min disp_min mpg_max disp_max
 ##   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
 ## 1     4    21.4     71.1    33.9    146.7
@@ -807,7 +808,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   summarise_each(funs(min, max), mpg, disp) %&gt;%
   setNames(c(&quot;min_mpg&quot;, &quot;min_disp&quot;, &quot;max_mpg&quot;, &quot;max_disp&quot;))</code></pre>
-<pre><code>## # A tibble: 1 x 4
+<pre><code>## # A tibble: 1 × 4
 ##   min_mpg min_disp max_mpg max_disp
 ##     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
 ## 1    10.4     71.1    33.9      472</code></pre>
@@ -816,7 +817,7 @@ mtcars %&gt;%
   group_by(cyl) %&gt;% 
   summarise_each(funs(min, max), mpg, disp) %&gt;%
   setNames(c(&quot;cyl&quot;, &quot;min_mpg&quot;, &quot;min_disp&quot;, &quot;max_mpg&quot;, &quot;max_disp&quot;))</code></pre>
-<pre><code>## # A tibble: 3 x 5
+<pre><code>## # A tibble: 3 × 5
 ##     cyl min_mpg min_disp max_mpg max_disp
 ##   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
 ## 1     4    21.4     71.1    33.9    146.7
@@ -872,7 +873,7 @@ mtcars %&gt;%
 <li>when there is no group variable <code>n</code> is the number of records in the whole data frame:</li>
 </ul>
 <pre class="r"><code>mtcars %&gt;% summarise(n = n())</code></pre>
-<pre><code>## # A tibble: 1 x 1
+<pre><code>## # A tibble: 1 × 1
 ##       n
 ##   &lt;int&gt;
 ## 1    32</code></pre>
@@ -880,7 +881,7 @@ mtcars %&gt;%
 <li>when there is one group variable <code>n</code> is the number of records within each level of the group variable:</li>
 </ul>
 <pre class="r"><code>mtcars %&gt;% group_by(carb) %&gt;% summarise(n = n())</code></pre>
-<pre><code>## # A tibble: 6 x 2
+<pre><code>## # A tibble: 6 × 2
 ##    carb     n
 ##   &lt;dbl&gt; &lt;int&gt;
 ## 1     1     7
@@ -924,7 +925,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate(rescale_mpg = rescale(mpg))</code></pre>
-<pre><code>## # A tibble: 32 x 6
+<pre><code>## # A tibble: 32 × 6
 ##               car  carb   cyl   mpg  disp rescale_mpg
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404
@@ -982,7 +983,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate_each(funs(rescale), rescale_mpg = mpg)</code></pre>
-<pre><code>## # A tibble: 32 x 6
+<pre><code>## # A tibble: 32 × 6
 ##               car  carb   cyl   mpg  disp rescale_mpg
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404
@@ -1044,7 +1045,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate(rescale_mpg = rescale(mpg), order_mpg = order(mpg))</code></pre>
-<pre><code>## # A tibble: 32 x 7
+<pre><code>## # A tibble: 32 × 7
 ##               car  carb   cyl   mpg  disp rescale_mpg order_mpg
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404        25
@@ -1103,7 +1104,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate_each(funs(rescale, order), mpg)</code></pre>
-<pre><code>## # A tibble: 32 x 7
+<pre><code>## # A tibble: 32 × 7
 ##               car  carb   cyl   mpg  disp   rescale order
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1 0.4723404    25
@@ -1163,7 +1164,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate_each(funs(rescale_mpg = rescale, order_mpg = order), mpg)</code></pre>
-<pre><code>## # A tibble: 32 x 7
+<pre><code>## # A tibble: 32 × 7
 ##               car  carb   cyl   mpg  disp rescale_mpg order_mpg
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404        25
@@ -1225,7 +1226,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate(rescale_mpg = rescale(mpg), rescale_disp = rescale(disp))</code></pre>
-<pre><code>## # A tibble: 32 x 7
+<pre><code>## # A tibble: 32 × 7
 ##               car  carb   cyl   mpg  disp rescale_mpg rescale_disp
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404   0.12222499
@@ -1283,7 +1284,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate_each(funs(rescale), mpg, disp)</code></pre>
-<pre><code>## # A tibble: 32 x 5
+<pre><code>## # A tibble: 32 × 5
 ##               car  carb   cyl       mpg       disp
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
 ## 1   Toyota Corona     1     4 0.4723404 0.12222499
@@ -1343,7 +1344,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate_each(funs(rescale), rescale_mpg = mpg, rescale_disp = disp)</code></pre>
-<pre><code>## # A tibble: 32 x 7
+<pre><code>## # A tibble: 32 × 7
 ##               car  carb   cyl   mpg  disp rescale_mpg rescale_disp
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404   0.12222499
@@ -1405,7 +1406,7 @@ mtcars %&gt;%
 <pre class="r"><code>#  without groups
 mtcars %&gt;% 
   mutate(rescale_mpg = rescale(mpg),  order_disp = order(disp))</code></pre>
-<pre><code>## # A tibble: 32 x 7
+<pre><code>## # A tibble: 32 × 7
 ##               car  carb   cyl   mpg  disp rescale_mpg order_disp
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;      &lt;int&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404          5
@@ -1463,7 +1464,7 @@ mtcars %&gt;%
 <pre class="r"><code># without groups
 mtcars %&gt;% 
   mutate_each(funs(rescale, order), mpg,  disp)</code></pre>
-<pre><code>## # A tibble: 32 x 9
+<pre><code>## # A tibble: 32 × 9
 ##               car  carb   cyl   mpg  disp mpg_rescale disp_rescale mpg_order disp_order
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;     &lt;int&gt;      &lt;int&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404   0.12222499        25          5
@@ -1524,7 +1525,7 @@ mtcars %&gt;%
 mtcars %&gt;% 
   mutate_each(funs(rescale, order), mpg,  disp) %&gt;% 
   rename(rescale_mpg = mpg_rescale, rescale_disp = disp_rescale, order_mpg = mpg_order, order_disp = disp_order)</code></pre>
-<pre><code>## # A tibble: 32 x 9
+<pre><code>## # A tibble: 32 × 9
 ##               car  carb   cyl   mpg  disp rescale_mpg rescale_disp order_mpg order_disp
 ##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;     &lt;int&gt;      &lt;int&gt;
 ## 1   Toyota Corona     1     4  21.5 120.1   0.4723404   0.12222499        25          5
@@ -1624,6 +1625,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

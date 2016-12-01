@@ -273,6 +273,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -369,8 +370,8 @@ data(people)</code></pre>
 ## 2 Female  0.50       58
 ## 3 Female  0.75       65
 ## 4   Male  0.25       70
-## 5   Male  0.50       75
-## 6   Male  0.75       82</code></pre>
+## 5   Male  0.50       73
+## 6   Male  0.75       80</code></pre>
 <p>Note the use of function <code>data.frame()</code> within function <code>do()</code>. This is required as <code>do()</code> expects a data frame as first argument.</p>
 <p>On a similar basis, you can define a function <code>qq()</code>:</p>
 <pre class="r"><code>qq &lt;- function(x, probs = seq(0, 1, 0.25), ...){
@@ -394,8 +395,8 @@ data(people)</code></pre>
 ## 2 Female  0.50       58
 ## 3 Female  0.75       65
 ## 4   Male  0.25       70
-## 5   Male  0.50       75
-## 6   Male  0.75       82</code></pre>
+## 5   Male  0.50       73
+## 6   Male  0.75       80</code></pre>
 <p>Function <code>do()</code> can manage functions that return results of any length. Similarly, the same function can help when applying multile functions to the same variable.</p>
 <p>Suppose you want to compute, mean and standard deviation for <code>Height</code> grouped by <code>Area</code>; in this case you first define a function that returns mean and standard deviation:</p>
 <pre class="r"><code>fun &lt;- function(x, ...)  c(mean = mean(x, ...), sd = sd(x, ...))</code></pre>
@@ -407,29 +408,29 @@ data(people)</code></pre>
 ## 
 ##     Area  stats      value
 ##   &lt;fctr&gt; &lt;fctr&gt;      &lt;dbl&gt;
-## 1 Centro   mean 170.930412
-## 2 Centro     sd   8.633975
-## 3  Isole   mean 168.859813
-## 4  Isole     sd   8.592440
-## 5   Nord   mean 171.391599
-## 6   Nord     sd   9.020392
-## 7    Sud   mean 169.145923
-## 8    Sud     sd   8.195997</code></pre>
+## 1 Centro   mean 170.240506
+## 2 Centro     sd   9.197568
+## 3  Isole   mean 169.857143
+## 4  Isole     sd   7.780605
+## 5   Nord   mean 171.368421
+## 6   Nord     sd   8.846041
+## 7    Sud   mean 167.611111
+## 8    Sud     sd   7.347617</code></pre>
 <p>Note that this is equivalent to:</p>
 <pre class="r"><code>people %&gt;% group_by(Area) %&gt;%
   summarise_each(funs(&quot;mean&quot;, &quot;sd&quot;) , Height) %&gt;%
   gather(key = stat, value = value, -Area)</code></pre>
-<pre><code>## # A tibble: 8 x 3
+<pre><code>## # A tibble: 8 × 3
 ##     Area  stat      value
 ##   &lt;fctr&gt; &lt;chr&gt;      &lt;dbl&gt;
-## 1 Centro  mean 170.930412
-## 2  Isole  mean 168.859813
-## 3   Nord  mean 171.391599
-## 4    Sud  mean 169.145923
-## 5 Centro    sd   8.633975
-## 6  Isole    sd   8.592440
-## 7   Nord    sd   9.020392
-## 8    Sud    sd   8.195997</code></pre>
+## 1 Centro  mean 170.240506
+## 2  Isole  mean 169.857143
+## 3   Nord  mean 171.368421
+## 4    Sud  mean 167.611111
+## 5 Centro    sd   9.197568
+## 6  Isole    sd   7.780605
+## 7   Nord    sd   8.846041
+## 8    Sud    sd   7.347617</code></pre>
 <p>Function <code>do()</code>, along with some <em>hidden</em> proprieties of data frames objects, allows very powerful computation:</p>
 <p>Formally a data.frame is a list made of equal length vectors but, data frames can store a lists in place of columns as long as the number of elements of the list matches the number of rows in the data frame:</p>
 <pre class="r"><code>data.frame(id  = 1:3, what = I(list(4:6, 7:9, 10:12)))</code></pre>
@@ -446,11 +447,11 @@ data(people)</code></pre>
 <pre><code>## Source: local data frame [2 x 5]
 ## Groups: &lt;by row&gt;
 ## 
-## # A tibble: 2 x 5
-##   Gender      mod intercept      slope          Rsq
-##   &lt;fctr&gt;   &lt;list&gt;     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Female &lt;S3: lm&gt;  59.60891 -0.9589109 0.0102240949
-## 2   Male &lt;S3: lm&gt;  75.98925  0.3791737 0.0001956876</code></pre>
+## # A tibble: 2 × 5
+##   Gender      mod intercept     slope         Rsq
+##   &lt;fctr&gt;   &lt;list&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+## 1 Female &lt;S3: lm&gt;  59.56818 -3.685829 0.024811232
+## 2   Male &lt;S3: lm&gt;  74.02857  1.249206 0.003646373</code></pre>
 <p>Possibly, using a different approach:</p>
 <pre class="r"><code>intercept &lt;- function(model) coefficients(model)[[1]]
 slope &lt;- function(model) coefficients(model)[[2]]
@@ -460,27 +461,27 @@ models %&gt;% mutate_each(funs(intercept, slope , RSq), mod)</code></pre>
 <pre><code>## Source: local data frame [2 x 5]
 ## Groups: &lt;by row&gt;
 ## 
-## # A tibble: 2 x 5
-##   Gender      mod intercept      slope          RSq
-##   &lt;fctr&gt;   &lt;list&gt;     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Female &lt;S3: lm&gt;  59.60891 -0.9589109 0.0102240949
-## 2   Male &lt;S3: lm&gt;  75.98925  0.3791737 0.0001956876</code></pre>
+## # A tibble: 2 × 5
+##   Gender      mod intercept     slope         RSq
+##   &lt;fctr&gt;   &lt;list&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+## 1 Female &lt;S3: lm&gt;  59.56818 -3.685829 0.024811232
+## 2   Male &lt;S3: lm&gt;  74.02857  1.249206 0.003646373</code></pre>
 <p>Finally, by using function <code>tidy()</code> from package <code>broom</code>:</p>
 <pre class="r"><code>people %&gt;% group_by(Gender) %&gt;% 
   do(tidy(lm(Weight~Area, data = .)))</code></pre>
 <pre><code>## Source: local data frame [8 x 6]
 ## Groups: Gender [2]
 ## 
-##   Gender        term   estimate std.error   statistic    p.value
-##   &lt;fctr&gt;       &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-## 1 Female (Intercept) 59.6089109 0.6977297 85.43267486 0.00000000
-## 2 Female   AreaIsole -0.9589109 1.2125249 -0.79083812 0.42924588
-## 3 Female    AreaNord -0.5324082 0.8692022 -0.61252511 0.54034444
-## 4 Female     AreaSud  1.7577558 0.9468751  1.85637554 0.06372523
-## 5   Male (Intercept) 75.9892473 0.7871477 96.53746539 0.00000000
-## 6   Male   AreaIsole  0.3791737 1.2769222  0.29694348 0.76657863
-## 7   Male    AreaNord  0.1344086 0.9640552  0.13942003 0.88914964
-## 8   Male     AreaSud -0.1042916 1.0627978 -0.09812926 0.92185165</code></pre>
+##   Gender        term   estimate std.error  statistic      p.value
+##   &lt;fctr&gt;       &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Female (Intercept) 59.5681818  1.342061 44.3855863 2.759767e-89
+## 2 Female   AreaIsole -3.6858289  2.542218 -1.4498475 1.491478e-01
+## 3 Female    AreaNord -0.8440439  1.779748 -0.4742491 6.359984e-01
+## 4 Female     AreaSud  1.2739234  1.971458  0.6461834 5.191286e-01
+## 5   Male (Intercept) 74.0285714  1.533254 48.2820073 9.711244e-89
+## 6   Male   AreaIsole  1.2492063  2.630969  0.4748085 6.356687e-01
+## 7   Male    AreaNord  1.3285714  1.954523  0.6797421 4.977982e-01
+## 8   Male     AreaSud  1.0890756  2.184234  0.4986076 6.188439e-01</code></pre>
 </div>
 
 
@@ -511,6 +512,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 

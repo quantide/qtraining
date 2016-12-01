@@ -273,6 +273,7 @@ button.code-folding-btn:focus {
 </style>
 
 
+
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
@@ -409,7 +410,7 @@ dffa</code></pre>
 <pre class="r"><code># Use dff (grouped data frame) as data argument value in summarise()
 dfg &lt;- summarise(.data = dff, x_avg = mean(x))
 dfg</code></pre>
-<pre><code>## # A tibble: 2 x 2
+<pre><code>## # A tibble: 2 × 2
 ##       f x_avg
 ##   &lt;int&gt; &lt;dbl&gt;
 ## 1     1     2
@@ -422,7 +423,7 @@ summarise(by_year,
           count = n(),
           mean_duration = mean(duration, na.rm = TRUE),
           mean_balance = mean(balance, na.rm = TRUE))</code></pre>
-<pre><code>## # A tibble: 3 x 4
+<pre><code>## # A tibble: 3 × 4
 ##    year count mean_duration mean_balance
 ##   &lt;int&gt; &lt;int&gt;         &lt;dbl&gt;        &lt;dbl&gt;
 ## 1  2008 27729      252.1936     1315.211
@@ -482,7 +483,7 @@ xtabs(mpg_mean~cyl+carb, data = dm)
 <pre class="r"><code>summarise(by_year,
           days = n_distinct(date),
           count = n())</code></pre>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##    year  days count
 ##   &lt;int&gt; &lt;int&gt; &lt;int&gt;
 ## 1  2008   122 27729
@@ -568,14 +569,14 @@ df2</code></pre>
 <pre><code>## Source: local data frame [3 x 3]
 ## Groups: year [?]
 ## 
-##    year month   n()
+##    year month `n()`
 ##   &lt;dbl&gt; &lt;int&gt; &lt;int&gt;
 ## 1  2010     1     3
 ## 2  2011     2     3
 ## 3  2012     3     3</code></pre>
 <pre class="r"><code>ungroup(df2) %&gt;% summarise(n())</code></pre>
-<pre><code>## # A tibble: 1 x 1
-##     n()
+<pre><code>## # A tibble: 1 × 1
+##   `n()`
 ##   &lt;int&gt;
 ## 1     9</code></pre>
 </div>
@@ -608,6 +609,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 });
+
 
 </script>
 
