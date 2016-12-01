@@ -414,7 +414,7 @@ The global accuracy of tree is reduced again, but the sensitivity has sensibly g
 at the cost of a reduction of specificity.
 
 Globally, this last tree model "recognizes" much more Bad customers, with respect to
-the tree that don't use the loss matrix.
+the tree that does not use the loss matrix.
 
 <!---
 # Exercises with kyphosis, utilities, uscrimes or Smarket
