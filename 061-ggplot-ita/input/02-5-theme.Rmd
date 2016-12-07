@@ -1,0 +1,433 @@
+---
+title: "More on Plot Overall Appearance"
+output: html_document
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE, purl=FALSE}
+options(width = 108)
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+```
+
+<!--
+# More on Plot Overall Appearanc
+-->
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(ggplot2)
+require(ggthemes)
+require(xtable)
+require(qdata)
+data(bands)
+```
+
+
+The overall appearance of plots is controlled by the theming system, an important component of `ggplot2` grammar. We started the exploration of theming system in the previous chapters, in particular in _Legend Customization_, _Axes Customization_ and _Facet Customization_, where we saw how themes give us the control of non-data elements of the plot like fonts, ticks, panel strip, legend keys, ..
+
+In this chapter we will deeepen the theming system structure and we will answer to the most frequently asked questions about plot customization. 
+
+## Theming system structure
+
+`ggplot2` has a default theme, called `theme_grey()`, with a light grey background and white gridlines.   
+A theme, or __theme function__  defines the settings of a collection of theme elements for the purpose of creating a specific style of graphics production.
+
+Let us see an example, considering the relationship between humidity and viscosity by pressure type in `bands` dataset:
+
+```{r pl}
+pl <- ggplot(data = bands, mapping = aes(x= humidity, y = viscosity, colour =press_type)) +
+  geom_point()
+pl
+```
+
+In particular, a __theme function__ is composed of:
+
+* __theme elements__, which refer to individual attributes of a graphic that are independent of the data and that you can control, such as font size, axis ticks, appearance of grid lines or background color of a legend;
+
+* __theme element functions__, which enables you to modify the settings of certain theme elements. In particular, each theme element is associated with an element function, which describes the visual properties of that element.
+
+Each theme element has a default value that can be locally modified in a specific ggplot object by using __`theme()` function__.
+
+Suppose we want to modify the colour of axis lines:
+
+```{r pl_axes_lines}
+pl + 
+  theme(axis.line.x = element_line(colour = "black"),
+        axis.line.y = element_line(colour = "black"))
+```
+
+In particular, `axis.line.x` and `axis.line.y` are the theme elements that control the appearance of x and y axis respectively and `element_line()` is the theme element function that allows us to modify the theme elements.
+
+Moreover, if you don' like `theme_grey()` you can decide to totally replace it by setting another __theme function__ (complete theme).
+Let us set `theme_bw()`, a theme with white background and thin grey grid lines:
+
+```{r pl_theme_bw}
+pl + 
+  theme_bw()
+```
+
+Understanding how dealing with __theme element functions__ and __theme elements__ is very important in plot customization phase.  
+
+The most important __theme element functions__ are:
+
+* `element_text()`: controls the drawing of labels and headings.   
+
+
+* `element_line()`: draws lines and segments such as graphics region boundaries, axis tick marks and grid lines.   
+
+
+* `element_rect()`: draws rectangles. It is mostly used for background elements and legend keys.   
+
+
+* `element_blank()`: draws nothing. This function has no arguments.
+
+
+There are around 40 unique __theme elements__ that controls the appearance of the plots. They can be roughly grouped into five categories: plot, axis, legend, panel and facet.
+
+Let us schematize them:
+
+* plot theme elements
+
+Theme Element | Description | Element Function Associated
+------------- | ----------- | ----------------------------
+`plot.background` | plot background | `element_rect()`
+`plot.title`      | plot title      | `element_text()`
+`plot.margin`     | margins around plot | `unit()`
+
+`unit()` is a theme function exported by `ggplot2` from `grid` package. It controls grid.
+
+Let us see an example:
+    
+```{r plot_theme_el_example}
+pl + 
+  labs(title = "Plot title") +
+  theme(plot.title = element_text(size = 36, hjust = 0, colour = "lightslateblue", 
+                                  face = "italic"),
+        plot.background = element_rect(fill = "lightsteelblue1", colour = "black", 
+                                       size = 2, linetype = "solid"),
+        plot.margin = unit(c(2, 2, 2, 2), "cm"))
+```
+
+* axis theme elements
+
+Theme Element | Description               | Element Function Associated
+------------- | --------------------------| ----------------------------
+`axis.line`   | line parallel to axis (hidden in default theme) | `element_line()` 
+`axis.text`   | tick labels | `element_text()` 
+`axis.text.x` | x-axis tick labels | `element_text()`                                        
+`axis.text.y` | y-axis tick labels | `element_text()`                                         
+`axis.title`  | axis titles   | `element_text()`
+`axis.title.x`| x-axis title   | `element_text()`            
+`axis.title.y`| y-axis title   | `element_text()`
+`axis.ticks`  | axis tick marks | `element_line()` 
+`axis.ticks.length` | length of tick marks | `unit()` 
+`axis.ticks.margin` | width of axis tick margin | `unit()`          
+
+                                          
+  Let us see an example:
+  
+```{r axes_theme_el_example}
+pl + 
+  theme(
+    axis.line.x = element_line(colour = "green4", size = 1.5),
+    axis.line.y = element_line(colour = "green4", linetype = "dashed", size = 1.5),
+    axis.text = element_text(color = "springgreen4", size = 15, face = "bold"),
+    axis.text.y = element_text(angle = 90, size = rel(0.7), hjust = 0),
+    axis.ticks = element_line(colour = "green4", size = 2),
+    axis.ticks.x = element_line(size = rel(1.5)),
+    axis.title = element_text(size = 20, color = "forestgreen", face = "bold.italic")
+)
+```
+
+
+* legend theme elements
+  
+Theme Element | Description          | Element Function Associated (or Value)
+------------- | ------------------------| ----------------------------
+`legend.background`    | legend background         | `element_rect()`
+`legend.key`           | background of legend keys | `element_rect()`    
+`legend.key.size`      | legend key size           | `unit()`
+`legend.key.height`    | legend key height         | `unit()` 
+`legend.key.width`     | legend key width          | `unit()` 
+`legend.margin`        | legend margin             | `unit()`
+`legend.text`          | legend labels             | `element_text()`
+`legend.text.align`    | legend label alignment    | numeric value                                        
+`legend.title`         | legend name               | `element_text()` 
+`legend.title.align`   | legend name alignment     | numeric value
+`legend.position`      | position of legend        | "left", "right", "bottom", "top" 
+`legend.direction`     | direction of legend keys  | "horizontal" or "vertical"
+`legend.justification` | justification of legend   | numeric value 
+`legend.box`           | position of multiple legend boxes | "horizontal" or "vertical"
+
+                                          
+  Let us see an example:
+  
+```{r legend_theme_el_example}
+pl + 
+  theme(
+    legend.position = "top",
+    legend.box = "horizontal",
+    legend.background = element_rect(fill = "lemonchiffon", color = "black", 
+                                     size = 1, linetype = "longdash" ),
+    legend.key = element_rect(fill = "lemonchiffon", color = "magenta"),
+    legend.key.width = unit(0.8, "cm"),
+    legend.key.height = unit(0.8, "cm"),
+    legend.text = element_text(face = "bold", size = 10),
+    legend.title = element_text(face = "bold", size = 12, colour = "magenta")
+    )
+```
+
+* panel theme elements
+
+Theme Element | Description           | Element Function Associated (or Value)
+------------- | ------------------------------ | ----------------------------
+`panel.background`  | background of graphics region    | `element_rect()`  
+`panel.border`      | border of graphics region        | `element_rect()` 
+`panel.grid.major`  | major grid lines                 | `element_line()`
+`panel.grid.major.x`| vertical major grid lines height | `element_line()`
+`panel.grid.major.y`| horizontal major grid lines      | `element_line()`
+`panel.grid.minor`  | minor grid lines                 | `element_line()`
+`panel.grid.minor.x`| vertical minor grid lines        | `element_text()` 
+`panel.grid.minor.y`| horizontal minor grid lines      | `element_line()` 
+`panel.margin`      | margin between facets            | numeric value 
+`aspect.ratio`      | plot aspect ratio                | numeric value
+
+  Let us see an example:
+```{r panel_theme_el_example}
+pl + 
+  theme(
+    panel.background = element_rect(fill = "navy", color = "orange", size = 2),
+    panel.border = element_rect(fill = NA, colour = "darkorange", size = 2),
+    panel.grid.major = element_line(color = "orange", size = 0.3),
+    panel.grid.minor = element_blank()
+    )
+```
+
+* facet theme elements
+
+Theme Element | Description | Element Function Associated 
+------------- | ----------- | ----------------------------
+`strip.background` | background of panel strips | `element_rect()`    
+`strip.text`       | strip text                 | `element_text()` 
+`strip.text.x`     | horizontal strip text      | `element_text()` 
+`strip.text.y`     | vertical strip text        | `element_text()`
+
+  Let us see an example:
+```{r facet_theme_el_example}
+ggplot(data = bands, mapping = aes(x= humidity, y = viscosity)) +
+  geom_point() + 
+  facet_grid(band_type ~ press_type) +
+  theme(
+    strip.background = element_rect(fill = "#4bb8b6", color = "#265665", size = 2),
+    strip.text = element_text(face = "italic", size = 15, colour = "#CC1800"),
+    strip.text.y = element_text(face = "bold")
+  )
+```
+
+We have already learn about most of these `ggplot2` theme elements in the previous chapters, in particular about: axis, legend and facet categories. But what's about plot and panels theme elements?   
+With the term "plot" we means what is included outside the plotting area and with "panel" what is included in the plotting area.
+
+In the following paragraphs we will see how to handle with the most common questions about plot and panel customization. We will talk also about the customization of the whole theme function.
+
+
+## Customize the appearance of plotting area
+
+If you want to change the appearance of plotting area you have to set `panel_xxx` arguments of `theme()` function.
+
+### Change the background of plotting area
+
+`panel.background` element allows us to modify the background of graphical region and `panel.border` to modify the border of graphical region. Both `panel.background` and `panel.border` are modified by using `element_rect()` function.
+
+```{r pl_change_background}
+pl + 
+  theme(
+    panel.background = element_rect(fill="lightblue"),
+    panel.border = element_rect(colour="blue", fill=NA, size=2)
+)
+```
+
+Pay attention to `fill` argument for `panel.border`: you have to specify a blank fill (setting it to `NA`) for not covering panels.
+
+### Customize and remove grid lines
+
+`panel.grid.major` and `panel.grid.minor` arguments allows us to customize grid lines by using `element_line()` function:
+
+```{r pl_customize_grid_lines_1}
+pl + 
+  theme(
+    panel.grid.major = element_line(colour="red"),
+    panel.grid.minor = element_line(colour="red", linetype="dashed", size=0.2)
+)
+```
+
+If you want to remove grid lines you have to set `panel.grid.major` and/or `panel.grid.minor` equal to `element_blank()`:
+
+```{r pl_remove_grid_lines}
+pl + 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+)
+```
+
+It's possible to hide just the vertical or horizontal grid lines with `panel.grid.major.x`, `panel.grid.major.y`, `panel.grid.minor.x` and `panel.grid.minor.y` arguments of `theme()` function:
+
+```{r pl_customize_grid_lines_2}
+pl + 
+  theme(
+    panel.grid.major.x = element_blank(), # remove horizontal grid major lines 
+    panel.grid.minor.y = element_blank()  # remove vertical grid minor lines
+)
+```
+
+## Customize the plot appearance outside plotting area
+
+If you want to modify plot appearance outside plotting area you have to set `plot_xxx` arguments of `theme()` function.   
+
+### Add the title to a plot and change its appearance
+
+As we saw in _Creating a Boxplot_ chapter, title can be added by using `ggtitle()` or `labs` function in this way: 
+
+```{r pl_add_title, eval =FALSE}
+pl + 
+  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
+pl + 
+  labs(title = "Scatterplot of humidity vs viscosity \n by Pressure type")
+```
+
+The previous two command lines produce the same result:
+
+```{r, echo=FALSE, purl=FALSE}
+pl + 
+  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type")
+```
+
+`"\n"` is used to break the lines. 
+
+Title appearance can be changed by setting `plot.title` argument of `theme()` function:
+
+```{r pl_customize_title}
+pl + 
+  ggtitle("Scatterplot of humidity vs viscosity \n by Pressure type") +
+  theme(
+    plot.title=element_text(size=rel(2), lineheight=0.9, family="Times", 
+                            face="bold.italic", colour="red")
+        )
+```
+
+`lineheight` arguments refers to interlinear space in plot title.
+
+
+### Change the background outside plotting area 
+
+To modify the background set `plot.background` element of `theme()` function.
+
+You can change the colour of the background and add a contour line.
+
+```{r pl_customize_background}
+pl + 
+  theme(
+    plot.background = element_rect(fill = "springgreen2",linetype = "solid",
+                                   colour = "black", size = 2)
+)
+```
+
+### Change the margins around graphical area
+
+To modify margins around graphical area set `plot.margin` element of `theme()` function:
+
+```{r pl_customize_margins}
+pl + 
+  theme(
+    plot.margin = unit(x = c(2, 2, 2, 2), units = "cm")
+)
+```
+
+`unit()` is a function that creates a grid unit object of the correct length to use for setting margins. 
+`x` argument have to be specified as a vector of lenght 4 containing the measure of margins for the four margin of the plotting area, and `units` argument represents the measurements units. If you want more details about the supported measurements units have a look at the help of `unit()` function (`?unit`) 
+
+## Customize theme function
+
+### Change the default theme
+
+If you want to change theme function you have to overwrite the defaut one. Other theme functions are provided by `ggplot2` and `ggthemes` packages.
+
+`ggplot2` provides the following theme functions:
+
+* `theme_bw()`: a variation on `theme_grey()` that uses a white background and thin grey grid lines
+* `theme_linedraw()`: a theme with only black lines of various widths on white backgrounds, reminiscent of a line drawing  
+* `theme_light()`: similar to `theme_linedraw()` but with ligth grey lines and axes, to direct more attention towards the data
+* `theme_dark()`: the dark cousin of `theme_light()`, with similar line sizes but a dark background. Useful to make thin coloured lines pop out
+* `theme_minimal()`: a minimalistic theme with no background annotations
+* `theme_classic()`: A classic-looking theme, with x and y axis lines and no gridlines. In `ggplot` 2.1.0 axes are not visible because of a bug
+* `theme_void()`: a completely empty theme
+
+
+```{r change_theme, fig.width=10, fig.height=10}
+pl1 <- pl + theme_bw() + ggtitle("theme_bw()")
+pl2 <- pl + theme_linedraw() + ggtitle("theme_linedraw()")
+pl3 <- pl + theme_light() + ggtitle("theme_light()")
+pl4 <- pl + theme_dark() + ggtitle("theme_dark()")
+pl5 <- pl + theme_minimal() + ggtitle("theme_minimal()")
+pl6 <- pl + theme_classic() + ggtitle("theme_classic()")
+pl7 <- pl + theme_void() + ggtitle("theme_void()")
+
+gridExtra::grid.arrange(pl1, pl2, pl3, pl4, pl5, pl6, pl7, ncol=2)
+```
+
+
+`ggthemes` package provides lots of theme functions.
+Some of them are listed here:
+
+* `theme_tufte()`: a minimal ink theme based on Tufte’s The Visual Display of Quantitative Information 
+* `theme_solarized()`: a theme using the solarized color palette 
+* `theme_excel()`: a theme replicating the classic gray charts in Excel
+* `theme_few()`: theme from Stephen Few’s "Practical Rules for Using Color in Charts"
+* `theme_economist()`: a theme based on the plots in the The Economist magazine
+* `theme_stata()`: themes based on Stata graph schemes
+* `theme_wsj()`: a theme based on the plots in the The Wall Street Journal
+
+```{r change_theme_ggtheme, fig.width=12, fig.height=11}
+pl8 <- pl + theme_tufte() + ggtitle("theme_tufte()") 
+pl9 <- pl + theme_solarized() + ggtitle("theme_solarized()") 
+pl10 <- pl + theme_excel() + ggtitle("theme_excel()") 
+pl11 <- pl + theme_few() + ggtitle("theme_few()") 
+pl12 <- pl + theme_economist() + ggtitle("theme_economist()")  
+pl13 <- pl + theme_stata() + ggtitle("theme_stata()") 
+pl14 <- pl + theme_wsj() + ggtitle("theme_wsj()") 
+
+gridExtra::grid.arrange(pl8, pl9, pl10, pl11, pl12, pl13, pl14, ncol=2)
+```
+
+<!--
+modificare la visualizzazione dei grafici ggthemes
+-->
+
+### Chang the default theme for more than one plot
+
+If you want to change the default theme (`theme_grey()`) for all plots generated in the current R session, you can use `theme_set()` function. For example, if you want to use white background for all plots run:
+
+```{r set_theme, eval =FALSE}
+theme_set(theme_bw())
+```
+
+### Creating your own theme
+
+You can create your own theme by adding elements to an existing theme:
+
+```{r create_theme_1}
+mytheme <- theme_bw() +
+theme(text = element_text(colour="slateblue4"),
+      axis.title = element_text(size = rel(1.25), face = "bold"),
+      legend.title = element_text(size = rel(1.25), face = "bold"),
+      plot.background = element_rect(colour ="black")
+      )
+```
+
+```{r create_theme_2}
+pl + 
+  mytheme
+```
+
+
+
+
+

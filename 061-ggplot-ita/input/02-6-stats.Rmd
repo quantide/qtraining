@@ -1,0 +1,466 @@
+---
+title: "More on Stats"
+output: html_document
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning =FALSE, message = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+```
+
+<!--
+# More on Stats
+-->
+
+```{r first, message=FALSE}
+require(ggplot2)
+require(RColorBrewer)
+require(dplyr)
+require(qdata)
+data(istat)
+```
+
+As we said in _Introduction to Graphics_ chapter, layer building block contains two elements of `ggplot2` grammar: statistic (`stat`s) and geometric (`geom`s).
+
+`stat`s can be seen as an alternative way to build a layer. A statistical transformation, or `stat`, transforms the data, typically by summarising it in some manner. Indeed, some plots, like Box Plot, Histogram, Bar Plot, etc., visualize a transformation of the original data set.
+
+We can divide statistic layer (`stat`) into two groups:
+
+* Statistics with geoms
+* Statistics outside geoms
+
+Both categories of functions begin with `stat_`.
+
+In the examples of the following paragraph we will consider `istat` dataset, which provides the measures of weight, height, gender and geographical area ("Nord", "Centro", "Sud" and "Isole") from 1806 Italian people.
+
+
+## Statistics with geoms
+
+
+_Statistics with geoms_ group includes `stat`s functions that are combined with `geom`s functions to make a layer. You have already used many of `ggplot2`'s `stat`s because, usually, they are used behind the scenes to generate the most important `geom`s. 
+
+`stat`s functions and `geom`s functions both combine a stat with a geom to make a layer. 
+
+For example, `"boxplot"` is the default statistical transformation allowed by `geom_boxplot()`, which summarises the observations in a given group. `geom_boxplot(stat="boxplot")` does the same as `stat_boxplot(geom="boxplot")`.
+
+
+```{r stat_with_geom_ex_1}
+ggplot(data=istat, mapping=aes(y=Weight, x=Area)) + 
+  geom_boxplot(stat="boxplot", col="blue", fill ="dodger blue")
+
+ggplot(data=istat, mapping=aes(y=Weight, x=Area)) + 
+  stat_boxplot(geom="boxplot", col="blue", fill ="dodger blue")
+```
+
+All `geom`s are based on a default statistical transformation. Some `geom`s allows us to use different `stat`s in order to achieve different results.
+
+For example, `"bin"` is a statistical transformation allowed by `geom_bar()`, which bins the data in ranges. It is not the default statistical trasformation, which is `"count"`. 
+`geom_bar(stat="bin")` does the same as `stat_bin(geom="bar")`:
+
+```{r stat_with_geom_ex_2}
+ggplot(data=istat, mapping=aes(x =Weight)) + 
+  geom_bar(stat="bin", col="blue", fill ="dodger blue")
+
+ggplot(data=istat, mapping=aes(x=Weight)) + 
+  stat_bin(geom="bar", col="blue", fill ="dodger blue")
+```
+
+
+By default, most of the `geom`s seen until now uses `stat="identity"`, that do not transform data. 
+
+For example, `stat="identity"` is the default `stat` of `geom_point()`:
+
+```{r stat_identity}
+ggplot(data=istat, mapping=aes(x=Weight, y=Height)) +
+  geom_point()
+```
+
+As you can see, points are not transformed, they are only plotted on the graph.
+
+The following table schematizes the corrispondence between `geom` and the default `stat` function. The `geom`s for which `stat="identity"` is the default transformation are not included in table.
+
+`geom`              | `stat`
+------------------- | ----------------
+`geom_histogram()`  | `stat_bin()`
+`geom_bar()`        | `stat_bin()`
+`geom_freqpoly()`   | `stat_bin()`
+`geom_smooth()`     | `stat_smooth()`
+`geom_boxplot()`    | `stat_boxplot()`
+`geom_dotplot()`    | `stat_bindot()`
+`geom_bin2d()`      | `stat_bin2d()`
+`geom_hex()`        | `stat_binhex()`
+`geom_contour()`    | `stat_contour()`
+`geom_quantile()`   | `stat_quantile()`
+`geom_count()`      | `stat_sum()`
+
+In the following paragraph we will see the functionalities of some statistical transformation listed in the previous table.
+
+### Adding Fitted Regression Model Lines
+
+Suppose you want to fit a model to the data. The statistic that fits a model and represents a regression line is `"smooth"`.  
+Let us consider `istat` dataset, we want to plot a regression model line between `Weight` and `Height`.   
+This can be done in two ways: 
+
+```{r stat_smooth_lm}
+ggplot(istat, aes(Weight, Height)) + 
+  geom_point() +
+  geom_smooth(method=lm)
+
+ggplot(istat, aes(Weight, Height)) + 
+  geom_point() +
+  stat_smooth(method=lm)
+```
+
+As you can see the result is the same. In the following examples we will analyze `stat_smooth()`. 
+Remember that what we say for `stat_smooth()` also applies to `geom_smooth()`. 
+
+`method` argument is specified as `lm`. This means that the data is fitted  with the `lm()` (linear model) function and a linear regression line is represented.   
+By default, a 95% confidence region for the regression fit is added. The confidence interval can be disabled specifying `se=FALSE`: 
+
+```{r stat_smooth_lm_no_se}
+ggplot(istat, aes(Weight, Height)) + 
+  geom_point() +
+  stat_smooth(method=lm, se=FALSE)
+```
+
+The default color of the fit line is blue. This can be change by setting `colour`. As with any other line, 
+the attributes `linetype` and `size` can also be set. 
+To emphasize the line, you can make the dots less prominent by setting `colour`:
+
+```{r stat_smooth_lm_settings}
+ggplot(istat, aes(Weight, Height)) + 
+  geom_point(colour="grey60") +
+  stat_smooth(method=lm, se=FALSE, colour="black")
+```
+
+The linear regression line is not the only way of fitting a model to the data, in fact, it is not even the default. 
+If you add `stat_smooth()` without specifying the method, it will use a `loess` (locally weighted polynomial) curve. 
+LOESS smoothing is a non-parametric form of regression that uses a weighted, sliding-window, average to calculate a line of best fit:
+
+```{r stat_smooth_loess_1}
+ggplot(istat, aes(Weight, Height)) + 
+  geom_point() +
+  stat_smooth()
+```
+
+Remember that the previus code is equal to:
+
+```{r stat_smooth_loess_2, eval=FALSE}
+ggplot(istat, aes(Weight, Height)) + 
+  geom_point() +
+  stat_smooth(method = loess)
+```
+
+Additional parameters can be passed along to the `loess()` function by just passing them to `stat_smooth()`.
+For example, we can control the degree of smoothing by setting `span` argument:
+
+```{r stat_smooth_span}
+ggplot(istat, aes(Weight, Height)) + 
+  geom_point() +
+  stat_smooth(span = 0.7)
+```
+
+Suppose we want to group points by `Gender` variable. If your scatter plot has points grouped by a factor, using `colour` or `shape`, one fit line will be drawn for each group:
+
+```{r stat_smooth_grouped}
+ggplot(istat, aes(Weight, Height, col =Gender)) +
+  geom_point() +
+  scale_colour_brewer(palette="Set1") + 
+  geom_smooth()
+```
+
+As you can see from the plot, a regression line has been drawn for Female (red line) and one for Male (blue line)
+
+Notice that the red line, for Female, doesn’t run all the way to the right side of the graph.
+There are two reasons for this. The first is that, by default, `stat_smooth()` limits the prediction to within the range of 
+the predictor data (on the x-axis). The second is that even if it extrapolates, the `loess()` function only offers prediction 
+within the x range of the data.
+If you want the lines to extrapolate from the data, you must use a model method that allows extrapolation, like `lm()`, and pass
+`stat_smooth()` the option `fullrange=TRUE`:
+
+```{r stat_smooth_lm_full_range}
+ggplot(istat, aes(Weight, Height, col =Gender)) +
+  geom_point() +
+  scale_colour_brewer(palette="Set1") + 
+  geom_smooth(method=lm, se=FALSE, fullrange=TRUE)
+```
+
+In this example with the `istat` data set, the default settings for `stat_smooth()` (with LOESS and no extrapolation) make more sense than the extrapolated linear predictions, because we don’t grow linearly and we don’t grow forever.
+
+Suppose we want to add to the plot also a regression line for the whole observations.
+It is possible by adding another `stat_smooth()` function:
+
+```{r stat_smooth_all_obs_group_1}
+ggplot(istat, aes(Weight, Height, col = Gender)) +
+  geom_point() +
+  scale_colour_brewer(palette="Set1") + 
+  stat_smooth(method=lm, se=FALSE) +
+  stat_smooth(mapping = aes(group = 1), method = "lm", se = F, col = "black")
+```
+
+`group` aestethic set to 1 means that the whole observations must be considered for drawing the regression line.
+
+However, this plot presents a problem because there is a black line on our plot that is not included in the legend. To get this, we need to map something to `colour` as an aesthetic, not just set `colour` as an attribute. 
+
+```{r stat_smooth_all_obs_group_2}
+ggplot(istat, aes(Weight, Height, col =Gender)) +
+  geom_point() +
+  scale_colour_brewer(palette="Set1") + 
+  stat_smooth(method=lm, se=FALSE) +
+  stat_smooth(mapping = aes(group = 1, col = "All"), method = "lm", se = F)
+```
+
+So, `colour` has been added to the `aes()` function in the second `stat_smooth()`, setting it to `"All"`. This will name the line properly.
+Pay attention that the `colour` attribute has been removed in the second `stat_smooth()`, otherwise, it would be overwrite the `colour` aesthetic.
+Now we should see our `"All"` model in the legend, but it's not black anymore.
+
+This is a way to change the colours:
+
+```{r stat_smooth_all_obs_group_3}
+# colours definition
+myColors <- c( "black", brewer.pal(2, "Set1"))
+
+ggplot(istat, aes(Weight, Height, col =Gender)) + geom_point() + 
+  stat_smooth(method = "lm", se = F) + 
+  stat_smooth(method = "lm", aes(group = 1, col="All"), se = F) + 
+  scale_color_manual("Gender" , values = myColors)
+```
+
+Nothing prevents us to use different estimate method in our plots: a linear model for groups and a loess model for whole observations.
+
+```{r stat_smooth_all_obs_group_4}
+ggplot(istat, aes(Weight, Height, col =Gender)) + 
+  geom_point() + 
+  stat_smooth(method = "lm", se = F) + 
+  stat_smooth(method = "loess", aes(group = 1, col="All"), se = F) + 
+  scale_color_manual("Gender", values = myColors)
+```
+
+
+### Add quantile lines from a quantile regression
+
+Suppose you want to fit and represent quantiles in your plot. 
+The statistics that add quantile lines from a quantile regression is `"quantile"`.
+
+Let us consider the relationship between `Weight` and `Height` in `istat` dataset:
+```{r stat_quantile_1}
+ggplot(istat, aes(Weight, Height, y, col = Gender, group = Gender)) + 
+  geom_point() +
+  geom_quantile(alpha = 0.8, size = 1.5)
+
+ggplot(istat, aes(Weight, Height, y, col = Gender, group = Gender)) + 
+  geom_point() +
+  stat_quantile(alpha = 0.8, size = 1.5)
+```
+
+As you can see the result is the same, you can use either `stat_quantile()` or `geom_quantile()`.
+
+Three quartiles are been drawn by default, which are: first quartile (0.25), median (0.5) and third quartile (0.75).
+If you want to fit and represent only the median, set `quantiles` argument to 0.5:
+
+```{r stat_quantile_2}
+ggplot(istat, aes(Weight, Height, col = Gender, group = Gender)) + geom_point() +
+  stat_quantile(alpha = 0.8, size = 1.5, quantiles = 0.5)
+```
+
+
+### Count the number of observations at each location
+
+Suppose you want to count the number of observation in each location. The reference statistic is `"sum"`.
+
+It is usaully used when you have discrete data.
+
+Let us consider `Gender` and `Area` of `istat` dataset:
+```{r stat_sum_1}
+ggplot(istat, aes(Gender, Area)) + 
+  stat_sum()
+
+ggplot(istat, aes(Gender, Area)) + 
+  geom_count()
+```
+
+As you can see the result is the same, you can use either `stat_sum()` or `geom_count()`.
+
+`"sum"` statistic creates two variables: `n` (count) and `prop`. 
+
+Each `stat` creates additional variables to map aesthetics to. Indeed, a stat internally takes a data frame as input and returns a data frame as output, and so a `stat` can add new variables to the original dataset. These variables use a common `..name..` syntax. This prevents confusion in case the original dataset includes a variable with the same name as a generated variable, and it makes it clear to any later reader of the code that this variable was generated by a stat. Each statistic lists the variables that it creates in its documentation.  
+
+We can use these variables for building the plot, in this case you can display proportions instead of counts, mapping `size` aesthetic to `..prop..` variable:  
+
+```{r stat_sum_2}
+ggplot(istat, aes(Gender, Area)) + 
+  stat_sum(aes(size = ..prop..)) 
+```
+
+By default, all categorical variables in the plot form the groups. 
+Specifying `stat_sum()` without a group identifier leads to a plot which is not useful.
+We need to specify which group the proportion is to be calculated over by mapping `group` aesthetics:
+
+```{r stat_sum_3}
+ggplot(istat, aes(Gender, Area)) + 
+  stat_sum(aes(size = ..prop.., group = 1)) 
+```
+
+In this case the proportion is to be calculated over is the whole dataset, as `group = 1`.
+
+We can map group also to `Gender` or `Area`. For example, if we map group to `Gender` the proportions will be computed over it:  
+```{r stat_sum_4}
+ggplot(istat, aes(Gender, Area)) + 
+  stat_sum(aes(size = ..prop.., group = Gender)) 
+```
+
+
+
+## Statistics outside geoms
+
+_Statistics outside geoms_ group includes statistics that can't be created with a `geom_` function.  
+The most important are:
+
+* `stat_summary()`: summarises values
+* `stat_function()`: plots a function
+* `stat_qq()`: performs computations for quantile-quantile plot
+* `stat_ecdf()`: represents the empirical cumulative density function
+
+In the following paragraph we will see the functionalities of the statistical transformation listed in the previous bulleted list.
+
+### Plotting a Function
+
+If you want to plot a function, you have to use `stat_function()`.
+
+Suppose we want to plot the density function of a sample. 
+
+```{r df}
+df <- data.frame(x=seq(from = -3, to = 3, length.out = 100))
+```
+
+`dnorm()` is the function that gives the density of the normal distribution, so `fun` argument of `stat_function()` must be specified equal to `dnorm()`: 
+
+```{r stat_function_1}
+ggplot(df, aes(x=x)) + 
+  stat_function(fun = dnorm)
+```
+
+Some functions take additional arguments. For example, `dt()`, the function for the density of the t-distribution, takes a parameter for degrees of freedom. These additional arguments can be passed to the function by putting them in a list and giving the list to `args` argument of `stat_function()`:
+
+```{r stat_function_2}
+ggplot(df, aes(x=x)) +
+  stat_function(fun=dt, args=list(df=2))
+```
+
+You can also define your own functions. It should take an `x` value for its first argument, and it should return a `y` value. In this example, we define a sigmoid function:
+
+```{r stat_function_3}
+# Function definition
+myfun <- function(xvar) {
+  1/(1 + exp(-xvar + 10))
+}
+
+df <- data.frame(x=c(0, 20))
+# Plotting function
+ggplot(df, aes(x=x)) + 
+  stat_function(fun=myfun)
+```
+
+
+
+### Adding means to a Box Plot
+
+The horizontal line in the middle of a box plot displays the median, not the mean. For data that is normally distributed, the median and mean will be about the same, but for skewed data these values will differ. 
+
+The mean can be added to a Box Plot by using `stat_summary()` function.
+
+Let us consider the distribution of `Weight` by `Area` in `istat` dataset:
+
+```{r stat_summary_mean}
+ggplot(data=istat, aes(x=Area, y=Weight)) + 
+  geom_boxplot() + 
+  stat_summary(fun.y="mean", geom="point", shape=23, size=3, fill="red")
+```
+
+`fun.y` argument of `stat_summary()` function can be specified equal to the statistics that we want to compute, in this case the `"mean"`. There is also `geom` argument which specifies which `geom` has to be used to represent the computed means in the plot, in this case `"point"`.
+
+Apart from mean, you can compute lots of summaries on your distribution.
+
+`ggplot2` offers a selection of summary functions from `Hmisc` package to make it easy to use with `stat_summary()`.   
+Let us see some examples. 
+
+`mean_sdl()` function is a wrapper of `smean.sdl()` function of `Hmisc` package and computes the mean plus or minus a constant times the standard deviation.
+
+```{r stat_summary_mean_sdl}
+ggplot(data = istat, mapping=aes(x=Area, y=Weight, colour=Gender, fill=Gender, group=Gender)) + 
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1))
+```
+
+In this case the statistic function, `mean_sdl`, is given to `fun.data` argument, because `mean_sdl` returns a data frame with variables ymin, y, and ymax. In the previous example we gave `mean` function to `fun.y` argument because `mean` returns a single number.   
+`mult = 1` value passed to `fun.args` means that the `mult` argument of `mean_sdl` function must be set to 1. `mult` argument represent themultiplier of the standard deviation used in obtaining a coverage interval about the sample mean.
+
+`mean_cl_normal()` is a wrapper of `smean.cl.normal()` function of `Hmisc` package that computes 3 summary variables: the sample mean and lower and upper Gaussian confidence limits based on the t-distribution (95% Confidence Interval):
+
+```{r stat_summary_mean_cl_normal}
+ggplot(data = istat, mapping=aes(x=Area, y=Weight, colour=Gender, fill=Gender, group=Gender)) + 
+  stat_summary(fun.data = mean_cl_normal)
+```
+
+You can plot an error bar of the mean in this way: 
+
+```{r stat_summary_mean_mean_sdl}
+ggplot(data = istat, mapping=aes(x=Area, y=Weight, colour=Gender, fill=Gender, group=Gender)) + 
+  stat_summary(fun.y = mean, geom = "point") + 
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult = 1), geom = "errorbar", width = 0.1)
+```
+
+You can also pass your own functions to `stat_summary()`.
+Suppose we want to produce a different version of boxplot.
+ 
+Firstly we have to define two functions: one that returns the range of observations and one that computes the median and the interquartile range.
+
+```{r fun_definition}
+# Function definition: range of obs
+pl_range <- function(x) {data.frame(ymin = min(x), ymax = max(x))}
+# Function definition: median and interquartile range
+med_iqr <- function(x) {data.frame(y = median(x), ymin = quantile(x, 0.25), ymax = quantile(x, 0.75))}
+```
+
+Our version of boxplot can be produced in this way:
+
+```{r stat_summary_own_fun}
+ggplot(data = istat, mapping=aes(x=Area, y=Weight)) + 
+  stat_summary(fun.data = med_iqr, geom = "linerange", size = 2, col = "blue") + 
+  stat_summary(fun.data = pl_range, geom = "linerange", size = 3, alpha = 0.2, col = "dodgerblue") + 
+  stat_summary(fun.y = median, geom = "point", size = 3, col = "red", shape = "X")
+```
+
+### Calculation for quantile-quantile plot.
+
+Suppose you want to plot the quantile-quantile plot of `Height` variable in `istat` dataset.
+It is not simple to generate a quantile-quantile plot with `ggplot2`.   
+This can be a way:
+
+```{r qq_plot}
+ggplot(data = istat, mapping = aes(sample = Height)) + 
+  stat_qq() +
+  geom_abline(mapping = aes(intercept=mean(Height),slope=sd(Height)), color="red", linetype=2)
+```
+
+You have to specify sample quantiles in aesthetics, in this case the sample quantile is `Height` variable.
+
+In particular, base graphics `qqnorm()` function is reproduced by `stat_qq()` and `qqline()` by `geom_abline()`, with intercept equal to the mean of the variable for which the qq-plot has to be drawn and the slope equal to the variance. 
+
+
+
+### Creating a Graph of an Empirical Cumulative Distribution Function
+
+Suppose you want to graph the empirical cumulative distribution function (ECDF) of `Weight` variable of `istat` dataset. You have to use `stat_ecdf()` function
+
+```{r stat_ecdf}
+ggplot(istat, aes(x=Weight)) + 
+  stat_ecdf()
+```
+
+The ECDF shows what proportion of observations are at or below the given x value. Because it is empirical, the line takes a step up at each x value where there are one or more observations.
+
+
+
+
+
+
+

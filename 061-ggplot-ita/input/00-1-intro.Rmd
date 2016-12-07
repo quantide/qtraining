@@ -1,0 +1,299 @@
+---
+title: "Introduction to Graphics"
+author: "Veronica"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+require(knitr)
+```
+
+
+<!--
+# Introduction to Graphics
+-->
+
+Visualizing data is crucial in today's world. Without powerful visualizations, it is almost impossible to create and narrate stories on data. These stories help us build strategies and make intelligent business decisions. 
+
+R is well supported to make data visualization. It provides at least three main graphical systems: `graphics` that comes with base R, `lattice` that is an R implementation of William Cleveland's trellis graphics and `ggplot2` that is an R implementation of Leland Wilkinson's Grammar of Graphics. CRAN provides a [Task View on Graphics](https://cran.r-project.org/web/views/Graphics.html), that is an organized list of all R packages about graphics, that includes not only the three main graphical systems but also packages to produce specialized plots.
+
+In the following chapters, `ggplot2` graphics are shown. `ggplot2` package has become a synonym for data visualization in R and there are at least two main reasons to prefer it than other graphic systems:
+
+ - `ggplot2` is newer than other graphic systems;
+ - `ggplot2` is built on the idea of a semantics for graphics and there is much more emphasis on reshaping data, transformation, and assembling the elements of a plot.
+
+`ggplot2` was written by Hadley Wickham and Winston Chang. If you are wondering, Wickham wrote also a `ggplot` package (without any number) that was archived by CRAN in 2008.
+
+The starting point for more information about `ggplot2` is the [official website](http://ggplot2.org/) providing documentation, the official mailing list and other resources.
+
+Supposing the package is already installed, first of all `ggplot2` must be loaded.  
+
+```{r intro_require_ggplot, message=FALSE}
+require(ggplot2)
+```
+
+## An overview of ggplot2 grammar
+
+In order to unlock the full power of `ggplot2`, you need an overview of its undelying grammar. 
+By understanding the grammar and how its components fit together, you can create a wider range of visualization, combine multiple source of data, and customize to your heart's content.
+
+As we said, `ggplot2` is an R implementation of Leland Wilkinson's Grammar of Graphics, which is a formal and structured perspective on how to describe data graphics. `ggplot2` grammar is called layered as it is structured in building blocks. Its basic idea is to independently specify plot building blocks and combine them to create just about any kind of graphical display you want. 
+
+
+Let us see an example.   
+
+Let us consider `iris` dataset. `iris` dataset gives the measurements in centimeters of sepal length and width and of petal length and width, respectively, for 50 flowers from each of 3 species of iris. Suppose we want to visualize the relationship between length and width of iris sepals according to the different species: 
+
+```{r complete_plot, fig.width= 8, echo=FALSE}
+# Load iris dataset
+data(iris)
+
+# Generate plot
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = F) +
+  scale_colour_brewer(palette="Set1") +
+  coord_equal() +
+  facet_grid(. ~ Species) +
+  ggtitle("Scatterplot of lenght and width of iris sepal by species") + 
+    xlab("Sepal Length (cm)") +
+    ylab("Sepal Width (cm)") +
+  theme(plot.background = element_blank(),
+    axis.text = element_text(colour = "black"),
+    axis.ticks = element_line(colour = "black"),
+    axis.line.x = element_line(colour = "black"),
+    axis.line.y = element_line(colour = "black"),
+    axis.title = element_text(colour = "black", size = 14, face = "bold.italic"),
+    strip.background = element_rect(colour = "black"),
+    strip.text = element_text(colour = "black", face = "bold.italic", size = 12),
+    plot.title = element_text(colour = "black", size = 20, face = "bold.italic"),
+    panel.margin = unit(1, "lines"),
+    legend.position="none"
+)
+```
+
+The previous plot is composed of building blocks that are added to the plot one after the other.   
+
+
+The complete scheme of the most important building blocks of `ggplot2` grammar is displayed in the following figure:
+
+```{r g1, echo=FALSE, purl=FALSE, fig.width = 4, fig.height = 3, eval=FALSE}
+include_graphics("images/schema-layer-ggplot2-mod.png")
+```
+
+
+![](./images/schema-layer-ggplot2-mod.png)
+
+
+The scheme must be read from bottom to top. Starting from bottom, the first three building blocks (<b> <span style="color:#FFBF00">Data</span> </b>, <b> <span style="color:#FF8000">Aestethic Mappings</span> </b> and <b> <span style="color:#FF0000">Layers</span> </b>) are fundamental to build a simple plot, indeed they are called 
+__"key"__ building blocks. The remaining building blocks (<b> <span style="color:#9A2EFE">Scales</span> </b>, <b> <span style="color:#08298A">Coordinates</span> </b>, <b> <span style="color:#2E9AFE">Facets</span> </b> and <b> <span style="color:#01DF01">Themes</span> </b>) allow us to build a complex plot and to customize it; their use and order is not compulsory. 
+
+Let us briefly describe the task of each element of the scheme and how it helps build the previous plot: 
+
+1. <b> <span style="color:#FFBF00">Data</span> </b>: the dataset that we want to visualize
+
+```{r g2, echo=FALSE, purl=FALSE, eval=FALSE}
+include_graphics("images/schema-layer-ggplot2-data.png")
+```
+
+
+![](./images/schema-layer-ggplot2-data.png)
+
+
+```{r data_1, eval=FALSE}
+# iris dataset
+data(iris)
+```
+
+```{r data_2}
+head(iris)
+```
+
+
+
+2. <b> <span style="color:#FF8000">Aestethic Mappings</span> </b>: describes how variables in the data are mapped to aestethic attributes that you can perceive 
+
+```{r g3, echo=FALSE, purl=FALSE, eval=FALSE}
+include_graphics("images/schema-layer-ggplot2-aes.png")
+```
+
+
+![](./images/schema-layer-ggplot2-aes.png)
+
+
+| Sepal.Length | Sepal.Width | Petal.Length | Petal.Width | Species|  
+|--------------|-------------|--------------|-------------|--------|
+| y | x |   |  |
+
+
+```{r aes}
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length))
+```
+
+3. <b> <span style="color:#FF0000">Layers</span> </b>: are made up by geometric elements and statistical transformations. In details, geometric objects (`geom`s) represent what we actually see on the plot: points, lines, polygons, etc. Statistical transformations (`stat`s) summarise data in many useful ways. For example, binning and counting observations to create an histogram, or summarising a 2d relationship with a linear model.       
+
+```{r g4, echo=FALSE, purl=FALSE, eval=FALSE}
+include_graphics("images/schema-layer-ggplot2-layer.png")
+```
+
+![](./images/schema-layer-ggplot2-layer.png)
+
+
+```{r layers}
+# Scatterplot of the relationship between sepal length and sepal width with regression line
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length)) +
+  geom_point() + # layer 1 
+  stat_smooth(method = "lm", se = FALSE) # layer 2 
+```
+
+
+
+4. <b> <span style="color:#9A2EFE">Scales</span> </b>: map values in the data space to values in an aesthetic space, whether it be colour, or size or shape. Scales draw a legend on axes, which provide an inverse mapping to make it possible to read the original data values from the graph. Scales are closely related to aestethics mapped.
+
+```{r g5, echo=FALSE, purl=FALSE, eval=FALSE}
+include_graphics("images/schema-layer-ggplot2-scales.png")
+```
+
+
+![](./images/schema-layer-ggplot2-scales.png)
+
+
+
+
+
+```{r scales}
+# Map Species to colour in aes() and change the default colours of colour scale  
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer(palette="Set1")
+```
+
+5. <b> <span style="color:#08298A">Coordinates</span> </b> or coordinate system (`coord`) describe how data coordinates are mapped to the plane of the graphic. They also provides axes and gridlines to make it possible to read the graph. We normally use Cartesian coordinate system, but a number of others are available. 
+
+```{r g6, echo=FALSE, purl=FALSE, eval=FALSE}
+include_graphics("images/schema-layer-ggplot2-coord.png")
+```
+
+
+![](./images/schema-layer-ggplot2-coord.png)
+
+
+```{r coord, fig.height= 4}
+# Change coordinate system 
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer(palette="Set1") + 
+  coord_equal()
+```
+
+6. <b> <span style="color:#2E9AFE">Facets</span> </b>: describes how to break up the data into subset and how to display those subsets as small multiples. 
+
+```{r g7, echo=FALSE, purl=FALSE, eval=FALSE}
+include_graphics("images/schema-layer-ggplot2-coord.png")
+```
+
+![](./images/schema-layer-ggplot2-facet.png)
+
+
+```{r facets}
+# Generate a plot for each iris species
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) + 
+  scale_colour_brewer(palette="Set1") +
+  coord_equal() +
+  facet_grid(. ~ Species)
+```
+
+7. <b> <span style="color:#01DF01">Themes</span> </b>: controls all non-data elements of the plot, like the font size, background colour, etc.
+
+```{r g8, echo=FALSE, purl=FALSE, eval=FALSE}
+include_graphics("images/schema-layer-ggplot2-mod.png")
+```
+
+
+![](./images/schema-layer-ggplot2-mod.png)
+
+
+```{r theme, fig.width= 8}
+# Customize the appearance of the plot
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, colour = Species)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) +
+  scale_colour_brewer(palette="Set1") + 
+  coord_equal() +
+  facet_grid(. ~ Species) +
+  ggtitle("Scatterplot of lenght and width of iris sepal by species") + 
+  xlab("Sepal Length (cm)") +
+  ylab("Sepal Width (cm)") +
+  theme(plot.background = element_blank(),
+    axis.text = element_text(colour = "black"),
+    axis.ticks = element_line(colour = "black"),
+    axis.line.x = element_line(colour = "black"),
+    axis.line.y = element_line(colour = "black"),
+    axis.title = element_text(colour = "black", size = 14, face = "bold.italic"),
+    strip.background = element_rect(colour = "black"),
+    strip.text = element_text(colour = "black", face = "bold.italic", size = 12),
+    plot.title = element_text(colour = "black", size = 20, face = "bold.italic"),
+    panel.margin = unit(1, "lines"),
+    legend.position="none"
+)
+```
+
+
+## Manual Contents
+
+This manual is divided in three sections.  
+
+The first section, _Base ggplot2_, explains how to build the most important kinds of plot. It deepens the use and the functionalities of the three key components of `ggplot2` grammar (data, aesthetic mapping and layers). It introduces also some basic concepts about the other components. 
+
+The second section, _Advanced ggplot2_ explains how dealing with the most common questions about plot customization and deepens the remaining components of `ggplot2` grammar (scales, coordinates, facets and themes).  
+
+The third section, _Other Topics_, talks about the `ggplot2` community and the packages built to support `ggplot2`. It shows also how to prepare plots for presentations, and how to save them to files.  
+
+
+<!--
+
+Each of the following chapters introduces a different plot with one or more related geometric object (`geom`). Moreover, each chapter introduces some basic concept about `ggplot2`, according to the following table.
+
+| Plot          | Geoms | `ggplot2` key concepts introduced in the chapter                                                    |  
+|---------------|-------|-----------------------------------------------------------------------------------------------------|
+| Scatter plots | `geom_point` `geom_smooth`                         | aesthetics, _setting_ or _mapping_, geoms, assignment  |
+| Line plots   | `geom_line` `geom_point` `geom_hline` `geom_vline` | `group` aesthetic, manual scales                       |
+| Bar plots    | `geom_bar` `geom_text`                             | `stat`, hide legend, swapping axes                     |
+| Histograms    | `geom_histogram` `geom_density`                    | faceting                                               |
+| Box plots     | `geom_boxplot`                                     | titles and theme (plot title and axes ticks/titles)    |
+
+The last chapter of the section shows how to prepare plots for presentations, and save them to files.
+-->
+
+## Datasets
+
+This manual is full of examples, for which the following datasets have been used:
+
+* `bands`: provides data about process delays known as cylinder banding in rotogravure printing
+* `istat`: provides the measures of weight, height, gender and geographical area ("Nord", "Centro", "Sud" and "Isole") from 1806 Italian people
+* `italy`: provides information about longitude, latitude and region of the most important italian cities
+* `lung`: provides information about survival in patients with advanced lung cancer from the North Central Cancer Treatment Group
+* `brainbod`: provides information about the weight of body and brain of different species of animals
+* `bottlecap`: provides information about of the mean diameter of the caps produced by a forging machine
+* `ChickWeight`: provides weight versus age of chicks on different diets
+* `ToothGrowth`: provides the effect of Vitamin C on Tooth Growth in Guinea Pigs
+
+`bands`, `istat`, `italy`, `lung` `brainbod` and `bottlecap` are included in `qdata` package, whereas `ChickWeight` and `ToothGrowth` are included in `datasets` package, that comes with base R.
+
+For a complete description of data, refer to the help (`?<dataset name>`).
+
+
+## Bibliography and References
+
+To take a deeper look about `ggplot2` you can refer to:
+
+ - [Chang W., _R Graphics Cookbook_, O'Reilly, 2012](http://www.cookbook-r.com/Graphs/) that provides a practical approach to `ggplot` and other R plots;
+ - [Wickham H., _ggplot2: Elegant Graphics for Data Analysis_, Springer, 2009](http://ggplot2.org/book/) that provides technical details about Grammar of Graphics implemented in `ggplot2`.
+ 

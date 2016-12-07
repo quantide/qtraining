@@ -1,0 +1,157 @@
+---
+title: "Creating a Box Plot"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+<!--
+# Creating a Box Plot
+-->
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(dplyr)
+require(ggplot2)
+require(qdata)
+data(bands)
+```
+
+A Box-and-Whiskers Plot, or Box Plot, is a convenient way to draw data distribution. The box ranges from the first quartile to the third (inter-quartile range or IQR) with a line indicating the median (second quartile). The whiskers contains the lowest datum still within 1.5 IQR of the lower quartile, and the highest datum still within 1.5 IQR of the upper quartile. If there are data outside the range of whiskers, they are represented by a dot. Box Plots are very popular among data analyst, but they are not suggested for a wider audience. Box plots can be drawn either horizontally or vertically.
+
+```{r boxplots, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE}
+ggp <- ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#3690c0") +
+  ylab("Continuos variable") + xlab("Grouping variable") + 
+  theme(
+    axis.text.x = element_blank(), axis.text.y = element_blank()
+  )
+
+ggp1 <- ggp + theme(axis.ticks.x = element_blank())
+  
+ggp2 <- ggp + theme(axis.ticks.y = element_blank()) + coord_flip()
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
+```
+
+This chapter presents how to build box plots and violin plots. It show also how to add title and axis labels to the plot.
+
+## The first box plot
+
+Supposing you are interested in the differences of ink percentage accordingly to the type of press, you can build four box plots to compare distributions.
+
+```{r boxplot_first, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#3690c0")
+```
+
+Appearance aesthetics work as seen until now; `fill` controls the box filling, while `colour` controls the box outline, whiskers and outline points. 
+
+```{r boxplot_colour, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b") 
+```
+
+There are also a few `outline.*` parameter to set aesthetics for outlier points.
+
+```{r boxplot_outlines, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3)
+```
+
+
+## Adding points to boxplot
+
+Boxplot summarises the bulk of distributions with only five numbers: median, first quartile, third quartile, minimum and maximum. You can also add points to boxplots to identify the observations by using `geom_jitter()` function:
+
+```{r boxplot_jitter, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3) +
+  geom_jitter()
+```
+
+`geom_jitter()` adds a little random noise to the plot which can help avoid overlapping. Hovewer, it works with only relatively small dataset. 
+
+
+## Making a single box plot
+
+Surprisingly, it is more complicated to draw a single box plot. This is because `geom_boxplot()` requires an `x` value that is used as grouping variable. You have to set a single value for `x` when you do not have a grouping variable.
+
+```{r boxplot_group0, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x="0", y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b")
+```
+
+It does the job, however you have to remove the x-axis tick marker and label in order to have a nice result.
+
+```{r boxplot_xlab, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x="0", y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+  xlab("") +
+  theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
+```
+
+x-axis tick marker and label are removed by using `theme()` function. We remind the functionalities and features of these functions to _Axes Customization_ chapter.  
+
+## Adding Titles and Axis labels
+
+The last example reveals how to remove the x-axis title. If the name of the variable in axes title are not enough clear, you can change them by using functions `ylab()` to set the y-axis title and `xlab()` to set the x-axis title, while `ggtitle()` should be used when you want a title for the whole plot. Note the use of the escape code `\n` to break lines.
+
+```{r boxplot_ylab, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+  xlab("Press type") + 
+  ylab ("Ink %") + 
+  ggtitle("Distribution\n(bands data set)")
+```
+
+
+## Making a Violin Plot
+
+A much more flexible extension of the basic boxplot is the violin plot, constructed by combining the concept of the boxplot with that of nonparametric density estimates. Like box plots, violin plots are used to represent comparison of a variable distribution (or sample distribution) across different categories. A violin plot is more informative than a plain box plot. In fact while a box plot only shows summary statistics such as mean/median and interquartile ranges, the violin plot shows the full distribution of the data. 
+
+Suppose we want to compare the density distribution of `ink_pct` by `press_type`:
+
+```{r violinplot_first, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
+  geom_violin(fill ="lightgreen", colour = "mediumseagreen")
+```
+
+`geom_violin()` is the function that draws violin plot. Like for a boxplot, usually the continuous variable is mapped on `y` axis and the categorical variable on `x` axis.
+
+The default range of violin plot goes from the minimum to maximum data values; the flat ends of the violins are at the extremes of the data. It’s possible to keep the tails, by setting `trim=FALSE`:
+
+```{r violinplot_with_tails, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
+  geom_violin(fill ="lightgreen", colour = "mediumseagreen", trim=FALSE)
+```
+
+By default, the violins are scaled so that the total area of each one is the same. Instead of equal areas, you can use `scale="count"` to scale the areas proportionally to the number of observations in each group:
+
+```{r violinplot_scaled_area, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
+   geom_violin(fill ="lightgreen", colour = "mediumseagreen", scale="count")
+```
+
+To change the amount of smoothing, use the `adjust` parameter. The default value is 1; use larger values for more smoothing and smaller values for less smoothing:
+
+```{r violinplot_smooth, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
+   geom_violin(fill ="lightgreen", colour = "mediumseagreen", adjust=0.5)
+```
+
+
+If you also need the median and interquartile range, you can overlay boxplot on violin plot: 
+
+```{r violinplot_boxplot, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) +
+geom_violin(aes(fill = press_type), width=0.9, bw=1.5) +
+geom_boxplot(width=0.4, outlier.shape = NA)
+```
+
+
+
+
+
