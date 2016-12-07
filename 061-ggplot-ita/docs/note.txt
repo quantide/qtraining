@@ -1,0 +1,1 @@
+usare i dati dei terremoti in italia per ggmap (https://www.kaggle.com/blackecho/italy-earthquakes)
