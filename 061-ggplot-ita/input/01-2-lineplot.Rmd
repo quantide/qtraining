@@ -204,6 +204,7 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp)) +
   geom_point()
 ```
 
+
 As you can see from the plot no lines are drawn and a warning message is returned. Probably, this is one of the most frequently problems with `geom_line()`. This appens because `geom_line()` tries to connect data points that belong to same group and the combinations of different levels of factor variables belong to different groups. 
 
 To resolve this problem, you have to manually specify the grouping, setting `group` argument:
