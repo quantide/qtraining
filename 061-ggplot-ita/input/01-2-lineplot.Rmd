@@ -1,5 +1,5 @@
 ---
-title: "Creating a Line Plot"
+title: "Creare un Line Plot"
 output: html_document
 ---
 
@@ -17,7 +17,11 @@ require(dplyr)
 require(ggplot2)
 ```
 
+I line plot sono utilizzati per mostrare come una variabile continua, rappresentata sull'asse delle y, cambia in relazione ad un' altra variabile continua, rappresentata sull'asse delle x. E' un tipo di grafico simile allo scatter plot, ad eccezione del fatto che i punti sull'asse delle x sono ordinati e connessi da un segmento. I punti possono anche mancare.
+
+<!--
 Line plots are used to display how one continuous variable, on the y-axis, changes in relation to another continuous variable, on the x-axis. It is similar to a scatter plot, except that points are ordered in the x-axis and connected by a segment. Points can also be missing. 
+-->
 
 ```{r lineplots, message=FALSE, echo=FALSE, purl=FALSE}
 ds = data.frame(x=0:6, y=c(0,3,7,12,20,30,45.6))
@@ -30,33 +34,54 @@ ggp <- ggplot(data=ds, aes(x=x, y=y)) +
 gridExtra::grid.arrange(ggp+geom_point(colour="#2B4C6F"), ggp, ncol=2)
 ```
 
+Questo capitolo spiega come costruire un line plot e introduce altri concetti base della gramamtica di `ggplot2`, come: l'estetica `group` e le scale manuali.
+
+<!--
 This chapter presents how to build line plots and introduces other basic concepts of `ggplot2` graphics: `group` aesthetic and manual scales.
+-->
 
+## Il mio primo line plot
 
+Il dataset `ChickWeight` contiene il peso di 50 polli mkisurato nel tempo. Supponiamo di essere interessati alla crescita del primo pollo.
+
+<!--
 ## The first line plot
 
 `ChickWeight` data contains the body weight of 50 chicks over time. Suppose you are interested to the growth of the first chick.
+-->
 
 ```{r linegraph_first, message=FALSE}
 ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + 
   geom_line()
 ```
 
+L'aspetto della linea può essere cambiato impostando gli argomenti della funzione `geom_line()`. Ad esempio, possiamo decidere di impostare il colore blu scuro e cambiarne le dimensioni in questo modo:
+
+<!--
 You can change the appearance of the line setting `geom_line()` aestethic arguments. For example, you can set dark blue color for line and change the size in this way:
+-->
 
 ```{r linegraph_set, message=FALSE}
 ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
   geom_line(colour="darkblue", size = 2) 
 ```
 
+Possiamo anch scegliere lo stile della linea, impostando l'argomento `linetype`. Se utilizzate la grafica base di R, `linetype` ha lo stesso significato di `lty`.  
+
+<!--
 You can also choose the style of the line setting `linetype` argument. If you are experienced with R basic graphic, `linetype` has the same meaning that `lty`.
+-->
 
 ```{r linegraph_linetype, message=FALSE}
 ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
   geom_line(colour="darkblue", size = 2, linetype=2)
 ```
 
+`linetype` può essere impostato come numero (0-6) o stringa (come `"solid"` o `"dashed"`). I tipi di linea disponibili sono:
+
+<!--
 The `linetype` can be a number (0-6) or a description (like `"solid"` or `"dashed"`). Available line types are:
+-->
 
 ```{r plot_linetypes, echo=FALSE, fig=TRUE, purl=FALSE}
 par(mar=rep(0,4))
@@ -92,9 +117,14 @@ text(x = x0, y = 1, labels = '6. "twodash"', cex = cex0, pos = pos0)
 lines(x = c(xs, xe), y = c(1, 1), lty = 6, lwd = lwd0)
 ```
 
+Gli attributi estetici per `geom_line()` sono `alpha`, `colour`, `size` e `linetype`. I primi tre argomenti hanno lo stesso (intuitivo) significato già visto per `geom_point()`.
+
+Possiamo anche aggiungere i punti al grafico, utilizzando la funzione `geom_point()`: 
+<!--
 Available aestethics arguments for `geom_line()` are `alpha`, `colour`, `size` and `linetype`. The first three arguments have the same (intuitive) meaning already seen for `geom_point()`.
 
 You can also add points to the plot with `geom_point()`:
+-->
 
 ```{r linegraph_geompoint, message=FALSE}
 ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + 
@@ -102,9 +132,15 @@ ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
   geom_point()
 ```
 
+## Mappare variabile ai line plots
+
+Supponiamo di essere interessati alla crescita media dei polli in accordo con i differenti tipi di dieta. Per prima cosa dobbaimo fare un summary dei dati.
+
+<!--
 ## Mapping variables to line plots
 
 If you are interested in the average growth of chicks for the different diets, you must first summarize data.
+-->
 
 ```{r linegraph_ChickWeightMean, message=FALSE}
 ChickWeightMean <- ChickWeight %>% 
@@ -113,15 +149,22 @@ ChickWeightMean <- ChickWeight %>%
 ChickWeightMean
 ```
 
-If you draw the same plot as above with new data, you will obtain a figure like this one.
+Se si disegna il grafico sopra con i nuovi dati, otterremo questo grafico.
 
+<!--
+If you draw the same plot as above with new data, you will obtain a figure like this one.
+-->
 ```{r linegraph__sawtooth, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
   geom_line() + 
   geom_point()
 ```
 
+Vediamo una linea frastagliata con più punti per ogni `x`, che abbiamo detto a `ggplot` di connettere. Un garfico come questo ci suggerisce che c'è qualcosa di sbagliato. Per avere un unico punto per ogni `x` si puà fare un summary dei dati o si possono diseganre più linee, in accordo con una terza variabile, aggiungendo una nuova estetica. 
+
+<!--
 A jagged line appears when there are multiple data at each `x` and you tell `ggplot` to connect them. A plot like this one should sounds as a warning that something is wrong. In order to have a single point for each `x` you can summarize your data, or you can draw several lines, accordingly to a third variable, just adding a new aesthetic.
+-->
 
 ```{r linegraph_aes, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
@@ -129,8 +172,10 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   geom_point()
 ```
 
+In certi casi, la variabile mappata sull'asse delle `x` è categoriale. Questo è il caso in cui si hanno valori numerici che sono concepiti come categorici. Il dataset `ToothGrowth` può fornire un ottimo esempio. Esso contiene informazioni in merito all'effetto della vitamina C sulla crescita dei denti nei mailai di Guinea. Il comando seguente fa un summary dei dati per ottenere la lunghezza media dei denti per fornitore e dose di vatamina C:
+<!--
 Sometimes, the `x` variable can be a categorical variable. This is the case when you have numerical values that are conceived as categorical ones. The `ToothGrowth` data set can be a good case in point. It provides the effect of Vitamin C on Tooth Growth in Guinea Pigs. Data can be summarized as follow to achieve the mean tooth length by supplier and dose:
-
+-->
 ```{r linegraph_tg, message=FALSE}
 tg <- ToothGrowth %>% 
   group_by(supp, dose) %>% 
@@ -138,16 +183,21 @@ tg <- ToothGrowth %>%
 tg
 ```
 
+Possiamo rappresentare nel grafico una linea per ogni valore di `supp`: 
+<!--
 You can plot a line for each `supp` value:
-
+-->
 ```{r linegraph_numericx, message=FALSE}
 ggplot(data=tg, mapping=aes(x=dose, y=length, colour=supp)) +
   geom_line() + 
   geom_point()
 ```
 
-The plot is good but since `dose` level are fixed the space between 0.5-1.0 and 1.0-2.0 should be the same. You can fix this issue, transforming `dose` into a factor.
+Il grafico sembra buono, ma lo spazio tra i livelli della variabile `dose` non è mlto bello da vedere. Sarebbe meglio se lo spazio tra 0.5-1.0 e 1.0-2.0 fosse lo stesso. Per raggiungere questo obiettivo, è necessario trasformare la variabile `dose` in un fattore.
 
+<!--
+The plot is good but since `dose` level are fixed the space between 0.5-1.0 and 1.0-2.0 should be the same. You can fix this issue, transforming `dose` into a factor.
+-->
 ```{r linegraph_factorx, message=TRUE}
 ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp)) +
   geom_line() + 
