@@ -1,5 +1,5 @@
 ---
-title: "Creating a Box Plot"
+title: "Creare un Box Plot"
 output: html_document
 ---
 
@@ -19,8 +19,11 @@ require(qdata)
 data(bands)
 ```
 
-A Box-and-Whiskers Plot, or Box Plot, is a convenient way to draw data distribution. The box ranges from the first quartile to the third (inter-quartile range or IQR) with a line indicating the median (second quartile). The whiskers contains the lowest datum still within 1.5 IQR of the lower quartile, and the highest datum still within 1.5 IQR of the upper quartile. If there are data outside the range of whiskers, they are represented by a dot. Box Plots are very popular among data analyst, but they are not suggested for a wider audience. Box plots can be drawn either horizontally or vertically.
+Un Box-and-Whiskers Plot, o Box Plot (Diagramma a scatola e baffi), è un modo comodo per rappresenatare distribuzioni. La scatola si estende dal primo quartile al terzo (range interquartile o IQR) con una linea che indica la mediana (secondo quartile). I segmenti (baffi) sono delimitati dal minimo e dal massimo dei valori, ma si estendono al massimo fino ad 1.5 volte l'IQR. I dati fuori dal range dei baffi, sno rappresentati con un punto. I box Plot sono un tipo di grafico veramente molto popolare tra i data analyst, ma il loro utilizzo non è sempre consigliato. I Box Plot possono essere disegnati sia un orizzontale che in verticale.     
 
+<!--
+A Box-and-Whiskers Plot, or Box Plot, is a convenient way to draw data distribution. The box ranges from the first quartile to the third (inter-quartile range or IQR) with a line indicating the median (second quartile). The whiskers contains the lowest datum still within 1.5 IQR of the lower quartile, and the highest datum still within 1.5 IQR of the upper quartile. If there are data outside the range of whiskers, they are represented by a dot. Box Plots are very popular among data analyst, but they are not suggested for a wider audience. Box plots can be drawn either horizontally or vertically.
+-->
 ```{r boxplots, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE}
 ggp <- ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#3690c0") +
@@ -36,56 +39,86 @@ ggp2 <- ggp + theme(axis.ticks.y = element_blank()) + coord_flip()
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-This chapter presents how to build box plots and violin plots. It show also how to add title and axis labels to the plot.
+Questo capitolo mostra come costruire boc plot e violin plot. Mostra anche come personalizzare alcuni attributi estetici del grafico, come aggiungere il titolo e cambiare le etichette del grafico.
 
+<!--
+This chapter presents how to build box plots and violin plots. It show also how to add title and axis labels to the plot.
+-->
+
+## Il mio primo box plot
+
+Supponiamo di essere interessati alla differenze nella distribuzione della variabile `ink_pct` in accordo con `press_type`. Possiamo costruire quattro box plot per confrontare le distribuzioni.
+
+<!--
 ## The first box plot
 
 Supposing you are interested in the differences of ink percentage accordingly to the type of press, you can build four box plots to compare distributions.
-
+-->
 ```{r boxplot_first, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#3690c0")
 ```
 
-Appearance aesthetics work as seen until now; `fill` controls the box filling, while `colour` controls the box outline, whiskers and outline points. 
+Tutto funziona come viato finora: `fill` controlla il colore di riempimento della scatola, mentre `colour` ne controlla il contorno, i baffi e gli outlines.
 
+<!--
+Appearance aesthetics work as seen until now; `fill` controls the box filling, while `colour` controls the box outline, whiskers and outline points. 
+-->
 ```{r boxplot_colour, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b") 
 ```
 
-There are also a few `outline.*` parameter to set aesthetics for outlier points.
+Sono, inoltre, disponibili i parametri `outline.*` per impostare attributi estetici per gli outliners. 
 
+<!--
+There are also a few `outline.*` parameter to set aesthetics for outlier points.
+-->
 ```{r boxplot_outlines, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3)
 ```
 
+## Aggiungere i punti ai Box Plot
 
+Il Box Plot riassume la distribuzione di una variabile in soli cinque numeri: la mediana, il primo quartile, il terzo quartile, il minimo e il massimo. Possiamo, però, aggiungere anche dei punti al box plot; punti che identificano le osservazioni. Il tutto tramite la funzione `geom_jitter()`:
+
+<!--
 ## Adding points to boxplot
 
 Boxplot summarises the bulk of distributions with only five numbers: median, first quartile, third quartile, minimum and maximum. You can also add points to boxplots to identify the observations by using `geom_jitter()` function:
-
+-->
 ```{r boxplot_jitter, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3) +
   geom_jitter()
 ```
 
+`geom_jitter()` aggiunge a piccolo random noise ai punti nel grafico in modo da evitare sovrapposizioni. Tuttavia, tale funzione è efficace solamente in presenza di dataset piccoli.
+
+<!--
 `geom_jitter()` adds a little random noise to the plot which can help avoid overlapping. Hovewer, it works with only relatively small dataset. 
+-->
 
+## Creare un unico box plot
 
+Sorprendentemente, è più complicato diseganre un unico box plot. Questo perchè `geom_boxplot()` richiede un valore per `x`, valore utilizzato come variabile di raggruppamento. Quindi quando non ci sono variabili di raggruppamento da utilizzare è necessario impostare un valore singolo per `x`.
+
+<!--
 ## Making a single box plot
 
 Surprisingly, it is more complicated to draw a single box plot. This is because `geom_boxplot()` requires an `x` value that is used as grouping variable. You have to set a single value for `x` when you do not have a grouping variable.
-
+-->
 ```{r boxplot_group0, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x="0", y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b")
 ```
 
-It does the job, however you have to remove the x-axis tick marker and label in order to have a nice result.
+Il gioco è fatto, basta solamente rimuovere il tick marker e l'etichetta per ottenere un risultato più bello.
 
+<!--
+It does the job, however you have to remove the x-axis tick marker and label in order to have a nice result.
+-->
 ```{r boxplot_xlab, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x="0", y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b") +
@@ -93,12 +126,21 @@ ggplot(data=bands, aes(x="0", y=ink_pct)) +
   theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())
 ```
 
-x-axis tick marker and label are removed by using `theme()` function. We remind the functionalities and features of these functions to _Axes Customization_ chapter.  
+Il tick marker e l'etichetta dell'asse delle x sono stati rimossi utilizzando la funzione `theme()`. Approfondiremo questo e molto altro, sempre relativo alla personalizzazione degli assi proprio nel capitolo _Personalizzazione degli Assi_ 
 
+<!--
+x-axis tick marker and label are removed by using `theme()` function. We remind the functionalities and features of these functions to _Axes Customization_ chapter.  
+-->
+
+## Aggiungere il titolo al grafico e agli assi
+
+L'ultimo esempio ha mostrato come rimuovere il titolo dell'asse delle x. Se i nomi della variabili che vengono automaticamente scritti come titolo degli assi non sono abbastanza "parlanti", possiamo cambiarli utilizzando le funzioni `ylab()` per l'asse delle y e `xlab()` per l'asse delle x. La funzione `ggtitle()`, invece, consente di impostare il titolo del grafico. Si noti l'ultilizzo dell'escape code `\n` per mandare a capo parte del titolo.
+
+<!--
 ## Adding Titles and Axis labels
 
 The last example reveals how to remove the x-axis title. If the name of the variable in axes title are not enough clear, you can change them by using functions `ylab()` to set the y-axis title and `xlab()` to set the x-axis title, while `ggtitle()` should be used when you want a title for the whole plot. Note the use of the escape code `\n` to break lines.
-
+-->
 ```{r boxplot_ylab, message=FALSE, warning=FALSE}
 ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
   geom_boxplot(fill="#74a9cf", colour="#034e7b") +
@@ -108,43 +150,61 @@ ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 ```
 
 
+## Creare un violin plot
+
+Un'estensione un pò più flessibile del boxplot base è il violin plot, costruito combinando i concetti del boxplot con quelli della stima di densità non parametrica. Come i box plot, i violin plot sono utilizzati per confrontare la distribuzione di una variabile (o una distribuzione campionaria) tra differenti categorie. In particolare, un violin plot è più informativo di un box plot, poichè mentre il box plot mostra solo alcune statistiche come la mediana e il range interquartile, il violin plot mostra l'intera distribuzione della variabile.
+
+Supponiamo di voler confronatre la distribuzione di densità della variabile `ink_pct` in accordo con i livelli di `press_type`:
+<!--
 ## Making a Violin Plot
 
 A much more flexible extension of the basic boxplot is the violin plot, constructed by combining the concept of the boxplot with that of nonparametric density estimates. Like box plots, violin plots are used to represent comparison of a variable distribution (or sample distribution) across different categories. A violin plot is more informative than a plain box plot. In fact while a box plot only shows summary statistics such as mean/median and interquartile ranges, the violin plot shows the full distribution of the data. 
 
 Suppose we want to compare the density distribution of `ink_pct` by `press_type`:
-
+-->
 ```{r violinplot_first, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
   geom_violin(fill ="lightgreen", colour = "mediumseagreen")
 ```
 
+
+La funzioen che traccia il violin plot è `geom_violin()`. Come per il box plot, solitamente la variabile continua è mappata sull'asse delle `y` e la variabile categoriale su quello delle `x`. Il rage del violin plot va dal minimo al massimo dei valori; l estremità piatte dei violini rappresentano gli estremi dei dati. E' possibile visualizzare le code, impostando `trim=FALSE`:
+
+<!--
 `geom_violin()` is the function that draws violin plot. Like for a boxplot, usually the continuous variable is mapped on `y` axis and the categorical variable on `x` axis.
 
 The default range of violin plot goes from the minimum to maximum data values; the flat ends of the violins are at the extremes of the data. It’s possible to keep the tails, by setting `trim=FALSE`:
-
+-->
 ```{r violinplot_with_tails, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
   geom_violin(fill ="lightgreen", colour = "mediumseagreen", trim=FALSE)
 ```
 
-By default, the violins are scaled so that the total area of each one is the same. Instead of equal areas, you can use `scale="count"` to scale the areas proportionally to the number of observations in each group:
+Per default, i violini sono scalati in modo tale che l'area totale di ognuno di essi sia la stessa. E' possibile, anche, scalare l'area proporzionalmente al numero di osservazioni per ogni gruppo, impostando `scale="count"`:
 
+<!--
+By default, the violins are scaled so that the total area of each one is the same. Instead of equal areas, you can use `scale="count"` to scale the areas proportionally to the number of observations in each group:
+-->
 ```{r violinplot_scaled_area, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
    geom_violin(fill ="lightgreen", colour = "mediumseagreen", scale="count")
 ```
 
-To change the amount of smoothing, use the `adjust` parameter. The default value is 1; use larger values for more smoothing and smaller values for less smoothing:
+Per cambiare il grado di lisciamento, impostiamo il parametro `adjust`. Il valore di default è 1; vanno impostati valori più alti per ottenere un grado di lisciamento più elevato e viceversa.
 
+<!--
+To change the amount of smoothing, use the `adjust` parameter. The default value is 1; use larger values for more smoothing and smaller values for less smoothing:
+-->
 ```{r violinplot_smooth, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) + 
    geom_violin(fill ="lightgreen", colour = "mediumseagreen", adjust=0.5)
 ```
 
+Se si necessita di visualizzare anche le informazioni relative alla mediana e allo scarto interquartile della distribuzione, si puù sovrapporre un boxplot ad un violin plot:
 
+<!--
 If you also need the median and interquartile range, you can overlay boxplot on violin plot: 
-
+-->
 ```{r violinplot_boxplot, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x = press_type, y=ink_pct)) +
 geom_violin(aes(fill = press_type), width=0.9, bw=1.5) +
