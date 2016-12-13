@@ -1,5 +1,5 @@
 ---
-title: "Creating a Histogram"
+title: "Creare un Istogramma"
 output: html_document
 ---
 
@@ -19,8 +19,11 @@ require(qdata)
 data(bands)
 ```
 
-Histograms are used to summarize a continuous variable into classes, called _bins_. The area (and not the height) of each bin is proportional to the frequency of cases in the bin. The vertical axis is not frequency but density. When bins are equal size, a rectangle is erected over the bin with height proportional to the frequency. As the adjacent bins leave no gaps, the rectangles of a histogram touch each other to indicate that the original variable is continuous.
+Gli istogrammi sono utilizzati per fare un summary di una variabile continua in classi, chiamate _bins_. L'area (e non l'altezza) di ogni bin è proporzionale alla frequenza dei casi all'interno del bin. L'asse verticale non rappresenta quindi la frequenza ma la densità. Quando i bins sono di uguale ampiezza, viene costruito un rettangolo sul bin con altezza prporzionale alla frequenza. Inoltre, i bins sono adiacenti l'uno all'altro in modo da non lasciate spazi, i rettangoli quindi si toccano l'uno con l'altro, il tutto per porre l'accento sul fatto che la variabile originale è continua.
 
+<!--
+Histograms are used to summarize a continuous variable into classes, called _bins_. The area (and not the height) of each bin is proportional to the frequency of cases in the bin. The vertical axis is not frequency but density. When bins are equal size, a rectangle is erected over the bin with height proportional to the frequency. As the adjacent bins leave no gaps, the rectangles of a histogram touch each other to indicate that the original variable is continuous.
+-->
 ```{r histograms, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE}
 ggp <- ggplot(data=bands, aes(x=ink_pct)) + 
   xlab("Continuous variable\n(x)") +
@@ -33,80 +36,118 @@ ggp2 <- ggp + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins = 8) + ylab(
 gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
+Questo capitolo mostra come costruire gli istogrammi e introduce un concetto base della grammatica di `ggplot2`: il faceting. Il capitolo parla anche di altri grafici, come le curve di densità e i frequency polygons.
+
+<!--
 This chapter presents how to build histograms and introduces a basic concepts of `ggplot2` graphics: faceting. It shows also how to build density curves and plots and frequency polygons. 
+-->
 
+## Il mio primo istogramma
 
+Come ingegneri addetti al controllo qualità, siamo interessati ad analizzare la distribuzione della variabile `ink_pct` nel dataset `bands`.
+
+<!--
 ## The first histogram
 
 As a quality engineer, you are interested to the distribution of ink percentage in `bands` data.
-
+-->
 ```{r histogram_first, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) + 
   geom_histogram()
 ```
 
-As usual,  aesthetics can be set to modify the appearance of plot.
+Come siamo soliti fare, è possibile impostare alcuni attributi estetici per modificare l'aspetto del grafico.
 
+<!--
+As usual, aesthetics can be set to modify the appearance of plot.
+-->
 ```{r histogram_aes, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) + 
   geom_histogram(fill="#2B4C6F", colour="#3690c0")
 ```
 
+Per default, i dati sono raggruppati in 30 bind. Possimao modificare il numero di bins:
+
+- impostando il numero di bins:
+
+<!--
 By default, the data is grouped into 30 bins. You can modify the number of bins:
 
  - setting the number of bins:
+-->
     ```{r histogram_bins, message=FALSE, warning=FALSE}
     ggplot(data=bands, mapping=aes(x=ink_pct)) + 
       geom_histogram(fill="#2B4C6F", colour="#3690c0", bins=6)
     ```
-    
+
+- impostando l'ampiezza di ogni bin:
+<!--    
  - setting the width of each bin:
+-->
     ```{r histogram_binwidth, message=FALSE, warning=FALSE}
     ggplot(data=bands, mapping=aes(x=ink_pct)) + 
       geom_histogram(fill="#2B4C6F", colour="#3690c0", binwidth=7)
     ```  
     
+## Mappature delle variabili e afceting
+
+Potrebbe essere interessante analizzare la distribuzione della variabile `ink_pct` per ogni livello della variabile `band_type`.  
+<!--    
 ## Mapping variables to histograms and faceting
 
 May be interesting analysing the distribution of ink percentage for each level of `band_type`. 
-
+-->
 ```{r histogram_mapping, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(mapping=aes(fill=band_type))
 ```
 
+Mappando la variabile di raggruppamento su `fill`, vengono rappresenatte due distribuzioni sovrapposte. In questo caso, questa soluzione può funzionare. In altri casi, il risultato può essere molto difficile da interpreatre. Supponiamo, questa volta di voler rappresenatre la distribuzione della variabile `ink_pct` per ogni livello di `press_type`: 
+<!--
 Mapping the grouping variable to `fill`, two overlapped distributions are shown. In some cases, as shown above, this solution may work. In other cases, the result may be very difficult to be understood. Suppose you are in the distribution of ink percentage for each level of `press_type`
-
+-->
 ```{r histogram_mapping_hide, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(mapping=aes(fill=press_type))
 ```
 
-In this case, four different histograms may produce a more readable result.
+In questo caso, quattro istogrammi indipendenti potrebbero produrre un risultato più leggibile.
 
+<!--
+In this case, four different histograms may produce a more readable result.
+-->
 ```{r histogram_facetgrid_col, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(fill="#2B4C6F") +
   facet_grid(. ~ press_type)
 ```
 
+La funzione `facet_grid()` restituisce un pannello diverso per ogni livello della variabile `press_type`. Essa richiedee che venga definite un formula del tipo: `righe ~ colonne`. Il punto nella formuala serve per indicare che non deve esserci alcun faceting nella dimensione in cui si trova (righe o colonne). Il prossimo esempio mostra un faceting sulle righe.
+<!--
 `facet_grid()` produces a different panel for each level of `press_type`. It requires a formula style: `rows ~ columns`. The dot in the formula is used to indicate there should be no faceting on this dimension (either row or column). The following example shows faceting on rows.
-
+-->
 ```{r histogram_facetgrid_row, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(fill="#2B4C6F") +
   facet_grid(band_type ~ .)
 ```
 
-Faceting on both dimensions:
+Faceting in entrambe le dimensioni:
 
+<!--
+Faceting on both dimensions:
+-->
 ```{r histogram_facetgrid_row_col, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_histogram(fill="#2B4C6F") +
   facet_grid(band_type ~ press_type)
 ```
 
+Quando ci troviamo di fronte ad una variabile categoriale con parecchi livelli, non ha senso provare a mostrarli tutti su di una riga (o su di una colonna). E' meglio organizzarli tra righe e colonne in modo dafornire una migliore visibilità d'insieme. La funzione `facet_wrap(~ variable)` fa proprio questo:   
+
+<!--
 When you have a categorical variable with many levels, it does not make sense to try and display them all in one row (or one column) and you may want to wrap it. `facet_wrap(~ variable)` wraps a sequence of panels into rows and columns, to better fit screen.
+-->
 
 ```{r histogram_facetwrap, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
@@ -114,39 +155,63 @@ ggplot(data=bands, mapping=aes(x=ink_pct)) +
   facet_wrap(~ press_type)
 ```
 
+## Creare un istogramma di densità
 
+Per mostrare le densità invece che i conteggi (frequenze) nell'asse delle y, bisogna utilizzare la variabile "speciale" `..density..`.
+
+<!--
 ## Making a density histogram
 
 To show densities instead than count (frequencies) on the y axis, the special variable `..density..` must be used.
-
+-->
 ```{r histogram_density, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf")
 ```
 
+Le variabili "speciali" in `ggplot` sono circondate da due punti, come `..density..`, e provengono da una trasformazione statistica (`stat`) del datset originale.
+
+Una curva di densità può essere aggiunta al grafico per confrontare distribuzioni teoriche e osservate.
+
+<!--
 The special variables in `ggplot` with double periods around them, as `..density..`, are returned by a `stat` transformation of the original dataset. 
 
 A density curve can be added to compare the theoretical and observed distributions.
-
+-->
 ```{r density_curve, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + 
   geom_density(colour="#034e7b")
 ```
 
+La funzione `geom_density()` traccia una curva di densità di kernel, che rappresenta una stima della distribuzione della popolazione, basata su di un campione di dati.
+
+La funzione `geom_density()` traccia, invece, un poligono chiuso. Se non vi piaccione le linee di lato e quelle inferiori, potete tracciare una curva di densità utilizzando `geom_line` con `stat="density"`.
+
+<!--
 `geom_density()` function draws a kernel density curve, which is an estimate of the population distribution, based on the sample
 data. 
 
 `geom_density()` function draws a closed polygon. If you do not like the lines along the side and bottom, you can draw a density curve using `geom_line` with `stat="density"`.
-
+-->
 ```{r density_line, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, y=..density..)) +
   geom_histogram(fill="#74a9cf") + 
   geom_line(stat="density", colour="#034e7b")
 ```
 
+In particolare, `geom_line()` è utilizzato con la trasformazione statistica `"density"`. Il che significa che una trasformazione statistica viene applicata ai dati, in particola re viene stimata la densità della variabile `ink_pct`. 
+<!--
 In particular, `geom_line()`is used with `"density"` statistical transformation, which means that a statistical transformation is applied to data, in particular `ink_pct` density is estimated. 
+-->
 
+## Costruire una curva di densità
+
+Come abbiamo detto, una curva di densità, in particolare una curva di densità di kernel, è una stima della distribuzione della popolazione, basata su di un campione di dati. Abbiamo già visto come lavora `geom_density()`. Approfondiamo le sue funzionalità.
+
+Supponiamo di voler analizzare la stima della distribuzione di densità della variabile `ink_pct`. Per visualizzare meglio l'area sotto la curva possiamo personalizzarla impostando gli argomenti `fill` e `alpha` di `geom_density()`: 
+
+<!--
 ## Making a Density curve 
 
 As we said, a density curve, in particular a kernel density curve, is an estimate of the population distribution, based on the sample data.
@@ -154,22 +219,27 @@ As we said, a density curve, in particular a kernel density curve, is an estimat
 We have already seen how `geom_density()` works. Let us deepen its functionalities.
 
 Suppose we want to analyze the density distribution estimation of `ink_pct` variable. To better visualize the area under the curve you can customize it by setting `fill` and `alpha` arguments:
+-->
 
 ```{r density_curve_fill, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) + 
   geom_density(fill = "red", alpha = 0.6)
 ```
 
+Il grado di lisciamento dipende dalla kernel bandwidth: più è ampia, più è alto il grado di lisciamento. La bandwidth può essere impostata per mezzo del parametro `adjust`, che ha un valore di default pari ad 1.
+<!--
 The amount of smoothing depends on the kernel bandwidth: the larger the bandwidth, the more smoothing there is. The bandwidth can be set with the adjust parameter, which has a default value of 1:
-
+-->
 ```{r density_curve_smooth, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) + 
   geom_density(adjust = 0.5)
 ```
 
+La funzione `geom_density()` può essere utilizzata anche per confrontare la stima della distribuzione di densità per dati raggruppati. La variabile di raggruppamento deve essere mappata su estetiche come `colour` o `fill` e deve essere un fattore o una variabile carattteriale. Nel nostro caso, consideriamo la variabile `band_type`:
 
+<!--
 `geom_density()` can be used also to compare density distribution estimations of grouped data. The grouping variable must be map to an aesthetic like `colour` or `fill`. The grouping variable must be a factor or character vector. In this case we consider `band_type` variable:    
-
+-->
 ```{r density_curve_groups, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct, colour = band_type)) + 
   geom_density()
@@ -177,25 +247,34 @@ ggplot(data=bands, mapping=aes(x=ink_pct, colour = band_type)) +
 
 ## Frequency polygon
 
+Un frequency polygon sembra a prima vista molto simile ad una curva di densità di kernel, vista negli esempi precedenti. Sarete sorpresi, invece, nello scoprire che lavora e mostra le stesse informazioni di un istogramma. In particolare, raggruppa i dati in bin e conta il numero di osservazioni per ogni bin. L'unica differenza è la modalità di rappresentazione: gli istogrammi utilizzano le barre mentre i frequency polygons le linee. 
+
+Supponiamo di voler analizzare la distribuzione della variabile `ink_pct`. La funzione di `ggplot2` che traccia frequency polygons è  `geom_freqpoly()`:
+
+<!--
 A frequency polygon appears similar to a kernel density estimate curve, see in the previous examples, but it work in the same way and it shows the same information as an histogram. In particular, both bin the data and then count the number of observations in each bin. The only difference is the display: histograms use bars and frequency polygons use lines. 
 
 
 Suppose we want to analyze the distribution of `ink_pct` variable. `ggplot2` function that draws a frequency polygon is `geom_freqpoly()`:
-
+-->
 ```{r frequency_polygon, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_freqpoly(col = "darkgreen")
 ```
 
+Come per gli istogrammi, è possibile controlalre l'ampiezza di ogni bin del frequency polygon: 
+<!--
 Also like a histogram, you can control the bin width for the frequency polygon:
-
+-->
 ```{r frequency_polygon_binwidth, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_freqpoly(col = "darkgreen", binwidth=10)
 ```
 
+Se non si vogliono ottenere bin equidistanti, è possibile definire manualemente gli intervalli impostando l'argomento `breaks`:  
+<!--
 If you don't want evenly spaced bins you can set the `breaks` arguments:
-
+-->
 ```{r frequency_polygon_breaks, message=FALSE, warning=FALSE}
 ggplot(data=bands, mapping=aes(x=ink_pct)) +
   geom_freqpoly(col = "darkgreen", breaks=c(30, 32, 36, 41, 45, 53, 59, 64, 72, 77, 81, 87, 91))
