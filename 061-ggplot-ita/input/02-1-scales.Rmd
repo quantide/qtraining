@@ -1,5 +1,5 @@
 ---
-title: "Mapped Aesthetics Customization"
+title: "Personalizzazione delle estetiche mappate"
 output: html_document
 ---
 
@@ -18,25 +18,41 @@ require(qdata)
 data(bands)
 ```
 
+L'aspetto delle estetiche mappate può essere cambito utilizzando le scale. 
+
+Le scale controllano la mappatura dai dati alle estetiche, prendono i dati e li trasformano in qualcosa di visibile, come il colore, la forma, posizione o ancora la dimensione. Le scale forniscono anche gli strumenti che ci permettono di leggere il grafico: le legende e gli assi.
+
+In questo capitolo vedremo come si può personalizzare l'aspetto delle estetiche mappate analizzando le funzionalità offerte dalle scale. La personalizzazione di legende e scale non sarà discusse qui ma rispettivamente nei capitoli _Personalizzazione degli assi_ e _Personalizzazione della legenda_.
+
+Prima di inizare, però, è necessario introdurre alcuni concetti relativi alla struttura delle scale.
+
+<!--
 You can change the appearance of mapped aesthetics by using scales.  
 Scales control the mapping from data to aestethics. They take your data and turn into something that you can see like colour, shape, position or size. Scales provide also the tools that allow you to read the plot: legends and axes. 
 
 In this chapter we will discuss how customize the appearance of mapped aesthetics by exploring scales functionalities. Legends and axes will not discussed here but in _Axes Customization_ and _Legend Customization_ chapters, respectively. 
 
 But firstly, let us introduce some concepts about scales structure.
+-->
 
+## Struttura delle scale
+
+Ogni estetica del grafico fa riferimento ad una scala. Ad esempio, quando scriviamo: 
+<!--
 ## Scales Structure
 
 A scale is required for every aestethic used on a plot. 
 For example, when you write:
-
+-->
 ```{r scales_structure_1}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point(mapping = aes(colour=band_type))
 ```
 
+Quello che realmenyte succede è:
+<!--
 What actually happens is:
-
+-->
 ```{r scales_structure_2}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point(mapping = aes(colour=band_type)) +
@@ -45,6 +61,15 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   scale_color_discrete()
 ```
 
+Le due specificazioni precedenti sono uguali.
+
+Le scale di default sono nominate in accordo alle estetiche di riferimento e al tipo di variabile mappata. 
+
+Risulterebbe noioso, però, ogni volta che si aggiunge una nuova estetica al grafico aggiungere manualmente anche la scala; per questo motivo `ggplot2` lo fa in automatico. Inoltre, ogni scala ha gà impostati i valori di default per i suoi argomenti, questo significa che per modificare una o più caratteristiche di tale scale, dobbiamo sovrascrivere i suoi valori di default. Per sovrascrivere i suoi valori di default, dobbiamo aggiungere manualmente tale scala al grafico. 
+
+Per esempio, supponiamo di voler ridurre la luminosità del colore dei punti del grafico. L'estetica `colour` è controllata dalla scala `scale_color_discrete()` e l'argomento di `scale_color_discrete()` che controlla la luminosità è `l`. `l` può assumere valori che vanno da 0 a 100 e il suo valore di default è 65. Supponiamo di voler ridurre la luminosità e di volerla impostare a 40 in questo modo:
+
+<!--
 The previous two specifications are equal.
 
 Default scales are named according to the aesthetics and the variables type. It would be tedious to manually add a scale every time a new aestethic is added, so `ggplot2` does it for you.
@@ -52,19 +77,39 @@ Default scales are named according to the aesthetics and the variables type. It 
 Each scale has default values for its argument, this means that if you want to modify one or more features of this scale you have to overwrite it/s default value. To overwrite its default value/s you have to manually add that scale.
 
 For example, let us suppose that you want to reduce the luminance of the points colours in the plot. `colour` aesthetic mapping is controlled by `scale_color_discrete()` and the argument of `scale_color_discrete()` that control the luminance is `l`. `l` can assume values from 0 to 100 and its default value is 65. We want to decrease the luminance and set it to 40 in this way:
-
+-->
 ```{r scale_colour_discrete}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
   geom_point(mapping = aes(colour=band_type)) +
   scale_color_discrete(l = 45)
 ```
 
+L'utilizzo del `+` per "aggiungere"  una scala è un tantino ingannevole. Ricordiamoci che questo simbolo, `+`, non aggiunge la scala ma la sovrascrive.
+
+<!--
 The use of `+` to "add" a scale is a little misleading. Remember that when you `+` a scale you are not adding it but ovverwriting it.
+-->
 
 <!--
 However, if you want to modify a feature linked to a scale you have to manually add the scale that you want to modify, oveeriding its default
 -->
 
+## Schema dei nomenclatura e tipologia di scala 
+
+Lo schema dei nomenclatura delle scale è molto semplice ed è formato da 3 parti:
+
+1. `scale`
+2. il  nome dell'estetica (e.g., `colour`, `shape`, ...)
+3. il nome della scala (e.g., `continuous`, `discrete`, `brewer`, ...)
+
+Ci sono più tipi di scala e possono essere raggruppati in:
+
+* scale continue di posizione, usate per mappare i dati nelle posizioni di `x` e `y` 
+* scale delle estetiche mappate, come il colore (colour), il tipo di linea (linetype), la forma (shape) and e la dimensione (size).
+
+Nei paragrafi seguenti risponderemo alle domande più frequenti sulle personalizzazione delle scale delle estetiche mappate per colore, tipo di linea, forma e dimensione.  L'utilizzo e le caratteristiche delle scale continue di posizione saranno discusse nel capitolo _Personalizzazione degli assi_. 
+
+<!--
 ### Scales naming scheme and scales types
 
 The name for scaling scheme is made up by three pieces separated by `_`:
@@ -80,8 +125,22 @@ There are more scale types. They can be grouped into:
 * Mapped aestethics scales, like colour, linetype, shape and size.
 
 In the following paragraphs we will answer to the most frequently asked questions about mapped aesthetics scales customization for: colours, linetype, shape and size. The use and the features of continuous position scales will be discussed in _Axes Customization_ chapter.
+-->
+
+## Personalizzazione dei colori
+
+Quanto sapete della teoria dei colori? Se la risposta è poco o nulla, date una letta a questo paragrafo.
+
+Parlando di fisica, il colore è prodotto da una miscela di lunghezze d'onda della luce. Per definire completamente un colore dobbiamo conoscere il miscuglio di lunghezze d'onda che lo compone. L'occhio umano ha solo tre diversi recettori di colore, così la percezione di qualsiasi colore può essere sintetizzata con tre soli numeri. Forse siete più familiari con la codifica RGB dello spazio di colore, che definisce il colore in base alle intensità di lunce rossa, blu e verde necessarie per produrlo. Un problema con questo spazio è che non è percentualmente uniforme e ciò rende difficile creare una mappatira da una variabile continua ad un set di colori. Sono stati fatti molti tentativi con spazi di colore più percentualmente uniformi. Il tentativo che è diventato di utilizzo comune è chiamato spazio di colore hcl, il quale è composto di tre componenti: __h__ (hue), __c__ (chroma) and __l__ (luminance):
 
 
+* hue, o tonalità, è un numeo compreso tra 0 ed 360 (un angolo) che fornisce la tonalità del colore: come blu, rosso, arancione, ecc. 
+* chroma, o cromaticità, rappresenta la purezza del colore. Una cromatura pari a 0 è grigia, e il valore massimo della cromatura varia con la luminosità
+* luminance, o luminosità, è la luminosità del colore. Una luminosità pari a 0 produce ilc olre nero, e una luminosità pari a 1 produce il bianco
+
+Le tonalità non sono percepite come ordinate ma la cromatura e la luminosità si.
+
+<!--
 ## Customizing colours
 
 Do you know something about colour theory? If the answer is no, you should read this paragraph.
@@ -98,7 +157,7 @@ We use a modern attemp called hcl colour space, which has three components of __
 * luminance is the lightness of the colour. A luminance of 0 produces black, and a lumimance of 1 produces white
 
 Hues are not perceived as being ordered, but chroma and luminance are ordered.   
-
+-->
 ![](./images/dimensions.png)
 
 
