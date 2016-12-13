@@ -1,5 +1,5 @@
 ---
-title: "Creating a Surface plot"
+title: "Creare superfici"
 output: html_document
 ---
 
@@ -19,8 +19,11 @@ require(MASS)
 data(bands)
 ```
 
-`ggplot2` does not support true 3d surfaces. However it does support many common tools for representing 3d surfaces in 2d: contours, coloured raster (tiles) and bubble plots. These all works similarly, differing only in the aesthetic used for the third dimension.  
+`ggplot2` non permette di rappresentare superfici in 3d. Tuttavia, mette a disposizione molti strumenti comuni per rappresentare le superfici 3d in 2d, come i contuors, i raster (tiles) plot e i bubble plot. Questi tre tipi di grafico lavorano allo stesso modo, differiscono soltanto nell'estetica sulla quale va mappata la terza dimensione.
 
+<!--
+`ggplot2` does not support true 3d surfaces. However it does support many common tools for representing 3d surfaces in 2d: contours, coloured raster (tiles) and bubble plots. These all works similarly, differing only in the aesthetic used for the third dimension.  
+-->
 ```{r surface_plots, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE, fig.width=10}
 # excude NA
 bands_na_rm <- bands %>% na.omit() 
@@ -62,17 +65,26 @@ ggp3 <- ggplot(bands_d_sample, aes(humidity, viscosity)) +
 gridExtra::grid.arrange(ggp1, ggp2, ggp3,ncol=3)
 ```
 
-This chapter explains how to build contours, coloured raster (tiles) and bubble plots.
+Questo capitolo mostra come costruire contours, coloured raster (tiles) and bubble plots.
 
+<!--
+This chapter explains how to build contours, coloured raster (tiles) and bubble plots.
+-->
 ## Contour 
 
-A contour plot is a graphical technique for representing a 3-dimensional surface by plotting constant z slices, called contours, on a 2-dimensional format. That is, given a value for z, lines are drawn for connecting the (x,y) coordinates where that z value occurs.
+Un contour plot è una tecnica grafica per rappresentare una superficie tridimensionale tracciando delle "fette" costanti z, chiamate contours, in formato 2d. Cioè, dato un valore per z, le linee sono disegante per connettere le coordinate (x,y) dove è presente il volore di z.
 
+Supponiamo di voler analizzare la relazione tra le variabili `humidity` e `viscosity` nel dataset `bands`, considerando anche la densità stimata bivariata tra queste variabili.
+
+Quindi, per prima cosa calcoliamo la densità bivariata stimata tra `humidity` e `viscosity`: 
+
+<!--
+A contour plot is a graphical technique for representing a 3-dimensional surface by plotting constant z slices, called contours, on a 2-dimensional format. That is, given a value for z, lines are drawn for connecting the (x,y) coordinates where that z value occurs.
 
 Suppose we want to analize the relationship between `humidity` and `viscosity` variables of `bands` dataset considering also the bivariate density estimate between these variables.
 
 First of all let us compute bivariate density estimate between `humidity` and `viscosity`: 
-
+-->
 ```{r bivariate_density_computation, eval=FALSE}
 # remove NA from bands dataset 
 bands_na_rm <- bands %>% na.omit() 
@@ -86,17 +98,23 @@ bands_d <- expand.grid(humidity = f2d$x, viscosity = f2d$y) %>%
   mutate(density = as.vector(f2d$z))
 ```
 
-Contour can be plotted by `geom_contour()` function:
+Questo tipo di grafico viene rappresentato per mezzo della funzione `geom_contour()`:
 
+<!--
+Contour can be plotted by `geom_contour()` function:
+-->
 ```{r contour_first}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour()
 ```
 
+La terza dimensione è mappata all'estetica `z` della funzione `ggplot()`. In questo caso la variabile `density` è mappata a `z`. Possiamo impostare il numero di bin, utilizzando l'argomento `bins`, per generare contours equidistanti nell'intervallo dei dati:
+
+<!--
 The third dimension is mapped to `z` aestethic of `ggplot()` function. In this case, `z` is set to `density`. 
 
 You can set bins, by using `bins` argument, to generate evenly spaced contours in the range of the data:
-
+-->
 ```{r contour_bins}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(bins = 2)
@@ -105,35 +123,45 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
   geom_contour(bins = 10)
 ```
 
-You can also parameterize the distance between contours setting `binwidth` argument, which represent the binwidth of countour lines:
+Possiamo anche parametrizzare la distanza tra i contours impostando l'argomento `binwidth`, relativo al binwidth delle linee di countour.
 
+<!--
+You can also parameterize the distance between contours setting `binwidth` argument, which represent the binwidth of countour lines:
+-->
 ```{r contour_bindwidth}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(binwidth = 0.0001)
 ```
 
+Possiamo personalizzare il contour plot cambiandone il colore (`colour`), il tipo di linea (`linetype`) o la dimensione (`size`):
 
+<!--
 We can customize the countour plot by changing `colour`, `linetype` or line `size`: 
-
+-->
 ```{r, contour_settings}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(colour = "darkgreen", linetype = 6, size = 1)
 ```
 
+E' anche possibile mappare l'altezza della curva di densità al colore delle linee del contour. Tutto ciò mappando la variabile `..level..` all'estetica `colour`.
 
+<!--
 It is also possible to map the height of the density curve to the color of the contour lines, by mapping `..level..` to `colour` scale:
-
+-->
 ```{r, contour_colour_mapped}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_contour(aes(colour = ..level..))
 ```
 
+`..level..` è una variabile generata dalla tarsformazione statistica di default di `geom_contour()`. Mappando `..level..` a `colour` viene automaticamente generata una legenda. Possiamo anche personalizzare il nostro grafico aggiungendo nel sul background un altro `geom` che traccia superfici, in modo da incrementare l'effetto 3d. `geom_raster()` ad esempio:  
+
+<!--
 `..level..` is a variables generated by the statistical transformation used by `geom_contour()` function.
 
 Mapping `..level..` to `colour` a legend is automathically produced.  
 
 You can also customize your plot by adding in background another `geom` which draws surfaces: `geom_raster()` in order to increase the 3d effect.
-
+-->
 ```{r contour_raster_plot}
 ggplot(bands_d, aes(humidity, viscosity, z = density)) + 
   geom_raster(aes(fill = density)) +
@@ -142,30 +170,40 @@ ggplot(bands_d, aes(humidity, viscosity, z = density)) +
 
 ## Raster (Tiles) Plot
 
-A raster (tiles) plot is a scan pattern in which an area is scanned from side to side in lines from top to bottom. It can be defined also as  a pattern of closely spaced rows of dots that form an image.
+A raster (tiles) plot è un grafico composto da un reticolo di righe ravvicinate di punti che formano un'immagine, la cui area copre l'intera superficie del grafico. Vediamolo meglio.
+
+Come abbiamo visto nell'esempio precedente, il rater plot viene generato dalla funzione `geom_raster()`, funzione che "traccia rettangoli". L'utilizzo più comune dei rettangoli è quello di tracciare superfici. Per tracciare una superficie dobbiamo mappare la variabile che rappresenta la terza dimensione, nel nostro caso `density`, all'estetica `fill`:
+
+<!--
+A raster (tiles) plot is a scan pattern in which an area is scanned from side to side in lines from top to bottom. It can be defined also as a pattern of closely spaced rows of dots that form an image.
 
 As you saw in the previous example, raster plot is generated by `geom_raster()`.  
 `geom_raster()` is a function for drawing rectangles. The most common use for rectangles is to draw a surface. If you want to draw surfaces you have to map the variable that represent the third dimension, in this case `density`, to `fill` aestethic:
+-->
 
 ```{r rasterplot_first}
 ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_raster(aes(fill = density))
 ```
 
+Possiamo anche aggiungere un'interpolazione per lisciare la superficie, impostando l'argomento `interpolate = TRUE`, molto utile nel cosa di rendering dell'immagine.
 
+<!--
 You can also add an interpolation to smooth the surface, by setting `interpolate = TRUE`. It is useful when rendering images.
-
+-->
 
 ```{r rasterplot_interpolate}
 ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_raster(aes(fill = density), interpolate = TRUE)
 ```
 
+Un risultato simile può essere raggiunto anche con la funzione `geom_tile()`, funzione molto simile a `geom_raster()` dato che il compito di entrambe è "tracciare rettangoli". La differenza principale tra le due è che `geom_raster()` esegue il renderig di un'immagine in modo più efficiente rispetto a `geom_tile()`. In teoria il risultato dovrebbe essere lo stesso, ma a volte in pratica non è così. Se stiamo scrivendo un file PDF, l'aspeto finale dipende dal PDF viewer. In alcuni viewer, infatti, quando viene utilizzato `geom_tile()`, possono intravedersi delle linee tra i tiles, mentre se viene utilizzato `geom_raster()` i bordi dei rettangoli possono sembrare sfuocati.
 
+<!--
 A similar result can be achieved by using `geom_tile()` function. `geom_tile()` is similar to `geom_raster()` as both draw rectangles.
 The main difference is that `geom_raster()` renders more efficiently than `geom_tile()`. In theory they should appear the same, but in practice they often do not. If you are writing to a PDF file, the appearance depends on the PDF viewer. On some viewers, 
 when tile is used there may be faint lines between the tiles, and when raster is used the edges of the tiles may appear blurry.
-
+-->
 ```{r tileplot}
 ggplot(bands_d, aes(humidity, viscosity)) + 
    geom_tile(aes(fill = density))
@@ -175,10 +213,13 @@ ggplot(bands_d, aes(humidity, viscosity)) +
 
 ## Bubble Plot
 
+Il bubble plot, o grafico a bolle è un altro tipo di grafico che mostra tre dimensioni. Ogni "entità" con la sua tripletta (x, y,z) è tappresentata come un disco che esprime x e y per mezzo della posizione del disco e z attraverso la sua dimensione. Il grafico a bolle può essere visto come una variante dello scatter plot, in cui i punti sono sostituiti dalle "bolle". Questo tipo di grafico è adatto a data set con poche osservazioni, per cui lavoreremo su un campione del dataset originale:
+
+<!--
 A bubble plot is another type of plot that displays three dimensions of data. Each entity with its triplet (x, y, z) of associated data is plotted as a disk that expresses x and y through the disk's xy location and z through its size. Bubble charts can be considered a variation of the scatter plot, in which the data points are replaced with bubbles.
 
 It works better with fewer observations so we grab a sample of the original dataset:
-
+-->
 ```{r sample_dataset, eval = FALSE}
 bands_d_sample <- bands_d %>% sample_n(size = 500)
 ```
@@ -189,12 +230,15 @@ ggplot(bands_d_sample, aes(humidity, viscosity)) +
   scale_size_area()
 ```
 
+Per generare un bubble plot è necessario mappare la terza variabile, in questo caso `density` all'estetica `size` della funzione `geom_point()`. Inoltre, è necessario aggiungere la funzione `scale_size_area()` alla definizione del grafico, per fare in modo che l'area dei punti sia proporzionale a `density`, ovvero perchè un valore pari a 0 sia rappresentato con dimensione 0.
 
+E' possibile anche specificare gli attributi estetici: `alpha`, `colour` e `fill` della funzione `geom_point()`, per personalizzare le "bolle": 
 
+<!--
 To generate a bubble plot you have to map the third variable, in this case `density` to `size` aestethic of `geom_point()` function. Then you have to add `scale_size_area()` function to render the area of points proportional to `density`, this means that `scale_size_area()` ensures that a value of 0 is mapped to a size of 0.
 
 You can also specify an `alpha` level, a `colour` and `fill` for bubbles as `geom_point()` settings:
-
+-->
 ```{r bubbleplot_settings}
 ggplot(bands_d_sample, aes(humidity, viscosity)) +
   geom_point(aes(size = density), alpha = 0.4, colour = "blue", fill = "lightblue") +
