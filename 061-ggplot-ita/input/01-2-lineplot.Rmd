@@ -204,21 +204,27 @@ ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp)) +
   geom_point()
 ```
 
+Come possiamo notare, non è stata tracciata alcune linea sul grafico ed è stato restituito un messaggio di warning. Molto probabilmente si tratta di uno dei problemi più frequenti con `geom_line()`. Questo succede perchè `geom_line()` tenta di connettere i punti che appartengono allo stesso gruppo e ogni combinazione dei livelli delle variabili fattoriali appartiene ad un gruppo diverso. 
+Per risolvere questo tipo di problema, è necessario specificare manualente il raggruppamento, mappando l'estetica `group`:
 
+<!--
 As you can see from the plot no lines are drawn and a warning message is returned. Probably, this is one of the most frequently problems with `geom_line()`. This appens because `geom_line()` tries to connect data points that belong to same group and the combinations of different levels of factor variables belong to different groups. 
 
 To resolve this problem, you have to manually specify the grouping, setting `group` argument:
-
+-->
 ```{r linegraph_group, message=FALSE}
 ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
   geom_line() + 
   geom_point()
 ```
 
+`group=supp` in `aes()` indica a ggplot come raggruppare i dati nel momento in cui traccia le linee.
+Se invece si desidera ottenere un'unica linea che connetta tutti i punti, bisogna specificare `group=1`.
+<!--
 `group=supp` in `aes()` tells ggplot how to group data when it draws the lines. 
 
 Otherwise, if you want a single line than connects all data points, you have to specify `group=1`.
-
+-->
 ```{r linegraph_group1, message=FALSE}
 # Consider only "OJ" supplier
 ggplot(data=(tg%>%filter(supp=="OJ")), mapping=aes(x=factor(dose), y=length, group=1)) +
@@ -226,29 +232,46 @@ ggplot(data=(tg%>%filter(supp=="OJ")), mapping=aes(x=factor(dose), y=length, gro
   geom_point()
 ```
 
-When points overlap, you can _dodge_ them. Dodging adjusts points left and right and must be applied to both lines and points, to avoid misalignment.
+Quando i punti si sovrappongono, si possono distanziare, in inglese _dodge_. Si tratta di un piccolo aggiunstamento dei punti a destra e sinistra, che però deve essere applicato sia a linee che a punti, per evitare di visualizzare un disallineamento.
 
+<!--
+When points overlap, you can _dodge_ them. Dodging adjusts points left and right and must be applied to both lines and points, to avoid misalignment.
+-->
 ```{r linegraph_dodge, message=FALSE}
 ggplot(data=tg, mapping=aes(x=factor(dose), y=length, colour=supp, group=supp)) +
   geom_line(position=position_dodge(0.15)) + 
   geom_point(position=position_dodge(0.15))
 ```
 
-`position` argument of both `geom_line()` and `geom_point()` is set equal to `position_dodge()`. `position_dodge()` is a `ggplot2` function that adjust position by dodging overlaps to the side. 0.15 is the `width` specified. 
+L'argomento `position` sia di `geom_line()` che di `geom_point()` è stato impostato a `position_dodge()`, una funzione di `ggplot2` che regola la posizione in modo da evitare sovrapposizioni. 0.15 è l'ampiezza (`width`) specificata. 
 
+<!--
+`position` argument of both `geom_line()` and `geom_point()` is set equal to `position_dodge()`. `position_dodge()` is a `ggplot2` function that adjust position by dodging overlaps to the side. 0.15 is the `width` specified. 
+-->
+
+## Cambiare l'aspetto delle estetiche mappate
+
+Quando vengono alimentati i polli, viene utilizzata il mangime di tipo "A" per la dieta numero 1, il mangime "B" per la dieta numero 2, il "C" per la 3 e il "D" per la 4. 
+
+<!-- 
 ## Changing the Appearance of Mapped Aesthetics
 
 When you feed your chicks, you use the "A" fodder for diet 1, the "B" fodder for diet 2, the "C" for diet 3 and the "D" for diet 4. 
-
+-->
 ```{r linegraph_labels, message=FALSE}
 ChickWeightMean <- ChickWeightMean %>%
   mutate(Diet = factor(Diet, levels=1:4, labels=c("A","B","C","D")))
 ```
 
+Il mangime di tipo "A" viene venduto in sacchi rossi e gli allevatori identificano questo prodotto con il colore rosso. Con la stessa logica, il mangime di tipo "B" vine associato con il colore blu, il "C" con il verde e il "D" con l'arancione. Quindi per migliorare la leggibilità del grafico, tracceremo le linee per ogni tipo di dieta con il colore che identifica il tipo di mangime associato.
+
+Non è possibile impostare il colore dentro le funzioni `ggplot()` o `geom_line()` utilizzando l'argomento `colour`; questo è possibile solamente se una variabile non è mappata sull'estetica `colour`. E' però possibile imposatre manualmente i colori con la funzione `scale_colour_manual()`.
+
+<!--
 "A" fodder is sold in red bags and farmers immediately identify this product with the red colour. In the same way, B is associated with the blue, C with the green and D with the orange. To improve the readability of the plot, lines for each diet should be of the colour that identify the fodder maker.
 
 You cannot set the colour inside `ggplot()` or `geom_line()` using the `colour` argument, because this is admitted only when a variable is not _mapped_ to the `colour` aesthetic. You can set manually the colour with the function `scale_colour_manual()`.
-
+-->
 ```{r linegraph_setcolourmanual, message=FALSE}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   geom_line() + 
@@ -256,17 +279,28 @@ ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
   scale_color_manual(values=c("red", "blue", "green", "orange"))
 ```
 
+Il vettore di stringhe contenti i nuovi colori da attribuire alle linee devono essere ordinati nello stesso ordine con cui appaioni nella legenda. Per essere sicuri della corrispondenza tra colore e dati, è anche possibile passare a `values` un vettore nominato.
+
+Questo e tanto altro, sempre inerente alla personalizzazione delle estetiche mappate sarà approfondito nel capitolo "Personalizzazione delle estetiche mappate".
+
+<!--
 Colours in the `values` string vector must appear in the same order as they appear in the legend. You can pass a named vector to be sure of the correspondence between colour and data.
 
 Mapped Aesthetics customization will be deepen in "Mapped Aesthetics Customization" chapter.
+-->
 
+## Aggiungere linee orizzontali e verticali al grafico
 
+I grafici a linee spesso includono anche linee verticali e orizzontali.  
+Supponiamo di voler analizzare la crescita media dei nostri polli per ogni tipo di dieta. 
+
+<!--
 ## Adding horizontal and vertical lines
 
 Line plots often contains horizontal or vertical lines.
 
 It may be interesting to analyse the average daily growth for each diet type.
-
+-->
 ```{r linegraph_ChickWeightGrowthMean, message=FALSE}
 ChickWeightGrowth <- ChickWeight %>% 
   group_by(Chick) %>%
@@ -284,7 +318,10 @@ ggp <- ggplot(data=ChickWeightGrowthMean, mapping=aes(x=Time, y=growth, colour=D
 ggp
 ```
 
+A questo punto, aggiungiamo la linea che identifica la crescita media al grafico. 
+<!--
 At this point you may want to add the average growth to the plot.
+-->
 
 ```{r linegraph_hline, message=FALSE}
 growth_avg <- ChickWeightGrowth %>%
@@ -297,8 +334,11 @@ ggp1 <- ggp +
 ggp1
 ```
 
-Data refers to a three-weeks period. It may be interesting to highlight each week adding a vertical line at days 7, 14 and 21.
+I dati si riferiscono ad un periodo di tre settimane. Sarebbe, infine, interessante evidenziare ogni settimana aggiungendo una linea verticale in corrispondenza dei giorni 7, 14 e 21.
 
+<!--
+Data refers to a three-weeks period. It may be interesting to highlight each week adding a vertical line at days 7, 14 and 21.
+-->
 ```{r linegraph_vline, message=FALSE}
 ggp1 + 
   geom_vline(xintercept = c(7,14,21), colour="grey40", linetype=3)
