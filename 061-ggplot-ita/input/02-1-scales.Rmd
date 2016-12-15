@@ -160,21 +160,41 @@ Hues are not perceived as being ordered, but chroma and luminance are ordered.
 -->
 ![](./images/dimensions.png)
 
+## Cambiare i colori nel caso di una variabile discreta mappata
 
+Supponiamo di essere interessati alla relazione tra `humidity` e `viscosity` considerati i livelli di `press_type` nel dataset `bands`: 
 
+<!--
 ### Change the colours for a discrete mapped variable
 
 Suppose we are interested in the relationship between `humidity` and `viscosity` by `press_type` in `bands` dataset:
+-->
 
 ```{r colour_aes_discrete}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point()
 ```
 
+Usare diversi colori per i livelli di `press_type` significa cambiare la palette di default. Una palette è un range di colori; quindi cambiare una palette significa modificare le scale `colour` (o `fill`). Ciò coinvolge un cambiamento nella mappatura da valori numeri o categoriali ad attributi estetici.
+
+Ci sono due tipi di scale che utilizzano i colori: le scale di riempimento (`fill`) e le scale di colore (`colour`). E' possibile cambiare i colori di default utilizzati nel grafico scegliendo nella tabella seguente, la funzione che si adatta meglio al proprio caso:
+
+Sacala di riempimento (`fill`)               | Scala di colore (`colour`)              | Descrizione                                                     
+-------------------------|---------------------------|-------------------------------------------------------------
+`scale_fill_discrete()`  | `scale_colour_discrete()` | Colori ugualmente distanziati all'interno della ruota dei colori (vedi hue)
+`scale_fill_hue()`       | `scale_colour_hue()`      | Colori ugualmente distanziati all'interno della ruota dei colori (vedi discrete)
+`scale_fill_grey()`      | `scale_colour_grey()`     | Greyscale palette
+`scale_fill_brewer()`    | `scale_colour_grey()`     | ColorBrewer palettes
+`scale_fill_manual()`    | `scale_colour_manual()`   | Colori specificati manualmente
+
+Per default, i colori per una scala discreta sono ugualmente distanziati nella ruota dei colori HSL
+
+<!--
 You want to use different colour for `press_type` levels so you want to change the default palette. A palette is a range of colours; so changing a palette means to modify the `colour` (or `fill`) scale: it involves a change in the mapping from numeric or categorical values to aesthetic attributes.
 
 There are two types of scales that use colors: fill scales and color scales.  
 You can change the default colours used in the graph by choosing a function from the following table:   
+
 
 Fill scale               | Colour scale              | Description                                                     
 -------------------------|---------------------------|-------------------------------------------------------------
@@ -186,16 +206,25 @@ Fill scale               | Colour scale              | Description
 
 
 By default, the colors for discrete scales are evenly spaced around a HSL color circle. 
+-->
 
 ![](./images/hsl.png)
 
+Per esempio, nel caso in cui ci siano due colori, questi saranno selezioni su due punti opposti della ruota di colore; nel caso di tre colori, essi saranno selezionati a distanza di 120° l'uno dall'altro nel cerchio di colore, e così via.
+I colori di default utilizzati per diversi numeri di livello sono i seguenti:
+
+<!--
 For example, if there are two colors, then they will be selected from opposite points on the circle; if there are three colors, they will be 120° apart on the color circle; and so on. 
 The default colors used for different numbers of levels are shown here:
+-->
 
 ![](./images/default-colour-scheme.png)  
 
+Il processo di selezione dei colori di default utilizza le funzioni `scale_fill_hue()` e `scale_colour_hue()`:
 
+<!--
 The default color selection uses `scale_fill_hue()` and `scale_colour_hue()`:
+-->
 
 ```{r scale_colour_hue_1}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
@@ -203,10 +232,17 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_color_hue()
 ```
 
+_Nota_: nella definizione del garfico precedente `scale_color_hue()` è ridondante.
+
+Con la funzione `scale_color_hue()`, i colori sono presi nel cerchio di colore nello spazio di colore HCL (hue-chroma-lightness).
+Nel paragrafo _Struttura delle scale_ abbiamo visto che il valore di luminosità di default è 65 su una scala 0-100. Questo livello va bene per i colori di riempimento, ma è un pò troppo lumninoso per i punti e per le linee. Per rendere i punti e le linee meno luminosi, è necessario impostare il parametro `l` (luminosità):   
+
+<!--
 _Note_: in the previous plot definition `scale_color_hue()` is redundant.
 
 With `scale_colour_hue()`, the colors are taken from around the color wheel in the HCL (hue-chroma-lightness) color space. 
 In _Scales structure_ we learn that the default lightness value is 65 on a scale from 0–100. This is good for filled areas, but it’s a bit light for points and lines. To make the colors darker for points and lines, set the value of `l` (luminance/ lightness):
+-->
 
 ```{r scale_colour_hue_2}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
@@ -214,23 +250,30 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_colour_hue(l=45)
 ```
 
+Possiamo anche utilizzare altre scale colore, come quelle scelte dal package `RColorBrewer`:
+
+<!--
 You can also use other color scales, such as ones taken from the `RColorBrewer` package:
+-->
 
 ![](./images/palette.png)
 
+Le palette `ColorBrewer` possono essere selezionata anche per nome:
 
-
+<!--
 The `ColorBrewer` palettes can be selected by name:
-
+-->
 ```{r scale_colour_brewer}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
   geom_point() +
   scale_colour_brewer(palette="Set1")
 ```
 
+E' possibile utilizzare anche palette di grigi. Questo tipo di palettes viene utilizzato soprattutto nel caso in cui l'output sia bianco e nero.
 
+<!--
 You can also use a palette of greys. This is useful for print when the output is in black and white. 
-
+-->
 
 ```{r scale_colour_grey_1}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
@@ -238,7 +281,11 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_colour_grey()
 ```
 
+Il default parte a 0.2 e termina a 0.8, su una scala da 0 (nero) a 1 (bianco), ma è possibile cambiarne il range:
+
+<!--
 The default is to start at 0.2 and end at 0.8, on a scale from 0 (black) to 1 (white), but you can change the range:
+-->
 
 ```{r scale_colour_grey_2}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
@@ -246,9 +293,15 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_colour_grey(start=0.7, end=0)
 ```
 
+### Utilizzare una palette definita manualemnte per una variabile discreta
+
+I colori da utilizzare nel grafico possono essere specificati manualemnte utilizzando la funzione `scale_colour_manual()`. I colori possono essere definiti per nome o per mezzo di codici RGB:
+
+<!--
 ### Using a manually defined palette for a discrete variable 
 
 Colour can be also manually specified by using `scale_colour_manual()` function. The colors can be named, or they can be specified with RGB values:
+-->
 
 ```{r scale_colour_manual_1}
 # named colours
@@ -262,17 +315,28 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_colour_manual(values = c("#FF00FF", "#00CED1", "#1E90FF", "#32CD32"))
 ```
 
+L'ordine degli item nel vettore deve corrispondere all'ordine dei livelli del fattore per le scale discrete.
+
+<!--
 The order of the items in the values vector matches the order of the factor levels for the discrete scale. 
+-->
 
 ```{r press_type_levels}
 levels(bands$press_type)
 ```
 
+Nell'esempio precedente, l'ordine dei livelli di `press_type` è "ALBERT70", poi  "MOTTER70", poi "MOTTER94" e "WOODHOE70", quindi il primo valore del vettore `values` va con "ALBERT70", il secondo con "MOTTER70", il terzo con "MOTTER94" e il quarto con "WOODHOE70".
+Se la variabile è di tipo caratteriale, quindi non è un fattore, sarà automaticamente convertita in un fattore, e per default i livelli appariranno in ordine alfabetico.
+
+E' possibile specificare i colori in un ordine diverso utilizzando un vettore nominato, in questo modo:
+
+<!--
 In the preceding example, the order of `press_type` is "ALBERT70", then  "MOTTER70", then "MOTTER94" and "WOODHOE70", so the first in `values` argument goes with 
 "ALBERT70", the second goes with "MOTTER70", the third with "MOTTER94" and the fourth with "WOODHOE70".
 If the variable is a character vector, not a factor, it will automatically be converted to a factor, and by default the levels will appear in alphabetical order.
 
 It’s possible to specify the colors in a different order by using a named vector:
+-->
 
 ```{r scale_colour_manual_2} 
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_type)) +
@@ -280,6 +344,14 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = press_t
   scale_colour_manual(values = c(ALBERT70 = "lime green", MOTTER70 = "dark turquoise", MOTTER94 = "magenta", WOODHOE70 = "dodger blue"))
 ```
 
+Ci sono un set di colori definibili per nomi in R, che si possono facilmente vedere lanciando il comando `colors()`. Alcuni nomi di colori base sono utili, come: `"white"`, `"black"`, `"grey80"`, `"red"`, `"blue"`, `"darkred"`, e così via. Ci sono molti altri colori nominali, ma i lori nomi non sono generalmente molto informativi, per esempio `"thistle3"` e `"seashell"`, quindi certe volte è più facile utilizzare i codici RGB per specificare i colori. In particolare, i codici RGB sono specificati come numeri esadecimali a sei cifre (base-16) o come `"#RRGGBB"`. Nel sistema esadecimale, le cifre vanno da 0 a 9 e continuano da A (10 in base 10) a F (15 in base 10). Ogni colore è rappresentato da due cifre digitali a può andare da 00 a FF (225 in base 10). Quindi, per esempio, il colore `"#FF0099"` ha un valore pari a 255 per il rosso, 0 per il verde e 153 per il blu. Il risultato è una tonalità rosso magenta. Il numero esadecimale per ogni canale di colore rappresenta spesso la stessa cifra perchè fa in modo di renderlo più facile da leggere e perchè il seconda cifra decimale ha un effetto relativamente insegnificante sull'aspetto generale.      
+
+Ecco alcune regole pratiche per specificare e aggiustare i colori RGB:
+
+* più alti sono i numeri più alti più sono brillanti e più bassi sono i numeri più scuri sono i colori
+* per ottenere una tonalità di grigio, è necessario impostare tutti i canali allo stesso valore
+
+<!--
 There is a large set of named colors in R, which you can see by running `colors()`. Some basic color names are useful: `"white"`, `"black"`, `"grey80"`, `"red"`,
 `"blue"`, `"darkred"`, and so on. There are many other named colors, but their names are generally not very informative, for example `"thistle3"` and `"seashell"`, 
 so it is often easier to use numeric RGB values for specifying colors.  
@@ -292,7 +364,7 @@ Here are some rules of thumb for specifying and adjusting RGB colors:
 
 * higher numbers are brighter and lower numbers are darker
 * to get a shade of grey, set all the channels to the same value
-
+-->
 
 ### Change the colours for a continuous mapped variable
 
