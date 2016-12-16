@@ -66,6 +66,8 @@ La legenda può essere rimossa in tre modi:
 * impostando l'argomento `guide` della funzione scala (`scale_xxx_xxx()`) in cui l'estetica è mappata a `FALSE`
 * usare il sistema di theming specificando l'argomento `legend.position` a `"none"`
 
+Negli esempi precedenti, il colore fornisce le stesse informazioni che ci sono nell'asse dell x, quindi la legenda non è necesssaria:
+
 <!--
 ## Removing the legend
 
