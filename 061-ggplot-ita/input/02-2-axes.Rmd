@@ -1,5 +1,5 @@
 ---
-title: "Axes Customization"
+title: "Personalizzazione degli Assi"
 output: html_document
 ---
 
@@ -20,12 +20,23 @@ data(bands)
 data(brainbod)
 ```
 
+Gli assi sono più importanti di quanto uno può pensare poichè forniscono il contesto dove vengono rappresentati e interpretati i dati. `ggplot2` ha dei defaults per gli assi che si adattano bene nella maggior parte dei casi. In certi casi, può risultare necessario controllare, ad esempio, la scala, le labels degli assi, il numero, la posizione e i labels dei tick marks, e così via.
 
+<!--
 Axes are more important than one thinks as they provide context for interpreting the displayed data. `ggplot2` displays the axes with defaults that look good in most cases, but you might want to control, for example, the axis scales, the axis labels, the number and placement of tick marks, the tick mark labels and so on. 
-
+-->
 
 ![](./images/axes.png)
 
+`ggplot2` permette di personalizzare l'aspetto degli assi utilizzando tre importanti componenti della sua gramamtica:
+
+* le scale (`scales`), che controllano il processo di mappatura dai dati agli attributi estetici 
+* le coordinate (`coordinates`), che descrivono come le coordinate dei dati siano mappate sullo spazio del grafico
+* i temi (`themes`), che controllano gli tutti gli elementi del grafico non legati ai dati
+
+Nei paragrafi seguenti vedremo come risolvere i problemi più comuni in merito alla personalizzazione degli assi.
+
+<!--
 `ggplot2` allows one to handle with the appearance of the axes by using three important elements of its grammar: 
 
 * `scales`, which controls the mapping from data to aestethics attributes 
@@ -33,13 +44,23 @@ Axes are more important than one thinks as they provide context for interpreting
 * `themes`, which controls the non-data elements of the plot 
 
 In the following paragraphs we will see how to handle with the most common questions about axes customization. 
+-->
 
+## Scambiare gli assi x e y
+
+Scambiare x e y è semplice se si parla di scatterplot dato che `geom_point()` tratta `x` e `y` allo stesso modo. Infatti se si vuole cambiare ciò che va sull'asse verticale e ciò che va su quello orizzontale basta scambiare le variabili mappate sulle estetiche `x` e `y`. Tuttavia, non è così semplice quando si parla di Box Plot poichè questo tipo di grafico fa un summary dei dati lungo l'asse delle y, oppure quando si parla di Line Plot, che traccia le linee in una sola direzione lungo l'asse delle x. Per scambiare gli assi di questi o di altri geom, che non trattano gli assi delle x e delle y allo stesso modo, è necessario utilizzare la funzione `coord_flip()`, come visto nel capitolo _Creare un Bar Plot_.
+
+Vediamo un esempio.
+Consideriamo il dataset `bands`. Supponiamo di essere interessati a studiare le differenze nella distribuzione della variabile `ink_pct` per ogni livello della variabile `press_type`. Possiamo studiare la cosa, costruendo quattro Box Plot per confrontare le distribuzioni.
+
+<!--
 ## Swapping x and y axis
 
 Swapping x and y axis is simple if you are generating a scatterplot. If you want to change what goes on the vertical axis and what goes on the horizontal axis you just have to exchange the variables mapped to `x` and `y` aesthetics, as `geom_point()` treats the x- and y-axes equally. However, the same cannot be said for Box Plot which summarize the data along the y-axis or for Line Plots, which move the lines in only one direction along the x-axis. To swap the axis of these and more others geoms which not treats the x- and y-axes equally, you have to use `coord_flip()` function as we learn in _Creating a Bar Plot_ chapter.
 
 Let us see an example.   
 Consider `bands` dataset. Supposing you are interested in the differences of ink percentage accordingly to the type of press, you can build four box plots to compare distributions.
+-->
 
 ```{r pl_1}
 pl_1 <- ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
@@ -47,7 +68,11 @@ pl_1 <- ggplot(data=bands, aes(x=press_type, y=ink_pct)) +
 pl_1
 ```
 
+Scambiando gli assi, il risultato è:
+
+<!--
 Swapping the axes the result is:
+-->
 
 ```{r pl_1_swapped_axes}
 pl_1 + 
@@ -55,6 +80,14 @@ pl_1 +
 ```
 
 
+## cambaire l'ordine degli assi
+
+Consideriamo un asse categoriale (o discreto) con un fattore mappato su di esso.
+Spesso, quando gli assi sono scambiati, come nell'esempio precedente, l'ordine degli items sarà l'opposto di quello che ci si aspetta. In un grafico con assi x e y standard, infatti, gli items sull'asse delle x partono da sinistra e finiscono a destra, il che corrisponde al modo standard di leggere, da sinistra a destra. Quando si scambiano gli assi, la disposizione degli items parte ancora dall'origine, quindi significa cha va letta dal basso verso l'alto, il che va contro il classico modo di leggere gli assi. Spesso ciò costituisce un problema, quindi è necessario capovolgere l'ordine degli items nell'asse.     
+
+Tale risultato può essere raggiunto impostando l'argomento `limits` della funzione `scale_x_discrete()` a `rev(levels(...))`, in questo modo:
+
+<!--
 ## Change axis order
 
 Let us consider a categorical (or discrete) axis with a factor mapped to it.
@@ -63,14 +96,18 @@ Sometimes when the axes are swapped, as in the previous example, the order of it
 On a graph with standard x- and y-axes, the x items start at the left and go to the right, which corresponds to the normal way of reading, from left to right. When you swap the axes, the items still go from the origin outward, which in this case will be from bottom to top but this conflicts with the normal way of reading, from top to bottom. Sometimes this can be a problem, so it is necessary to reverse the axis order. 
 
 This can be done by using `scale_x_discrete()` with `limits` argument set as `rev(levels(...))` in this way:
-
+-->
 ```{r pl_1_reverse_discrete_axis_order}
 pl_1 + 
   coord_flip() + 
   scale_x_discrete(limits=rev(levels(bands$press_type)))
 ```
 
+In generale, per cambiare manualmente l'ordine degli item in un asse categoriale (o discreto) nei quai è mappato un fattore, è necessario specificare l'argomento `limits` delle funzioni `scale_x_discrete()` o `scale_y_discrete()` con un vettore contenente i livelli del fattore nell'ordine desiderato: 
+
+<!--
 In general, to manually change the order of items in a categorical (or discrete) axis with a factor mapped to it, you have to specify `limits` argument in `scale_x_discrete()` or `scale_y_discrete()` functions with a vector of the levels in the desired order:
+-->
 
 ```{r pl_1_change_discrete_axis_order}
 pl_1 + 
@@ -78,7 +115,11 @@ pl_1 +
   scale_x_discrete(limits=c("MOTTER70","WOODHOE70","ALBERT70", "MOTTER94"))
 ```
 
+E' possibile anche omettere degli items nel grafico, specificando solo quelli che sid esiderano rappresentare:
+
+<!--
 You can also omit items with this vector, specifying only the items you want to keep:
+-->
 
 ```{r pl_1_remove_discrete_axis_level}
 pl_1 + 
@@ -86,26 +127,46 @@ pl_1 +
   scale_x_discrete(limits=c("MOTTER70","WOODHOE70"))
 ```
 
+Dal grafico si può vedere come ci sia dello spazio vuoto al posto dei livelli omessi di `press_type` ("ALBERT70", "MOTTER94"). Molto probabilemnte si tratta di un bug della versione 2.1.0 di `ggplot2`, utilizzata per realizare questo libro.
+
+_Nota_: i cambiamenti nell'ordine degli items negli assi funzionano anche senza l'impostazione della funzione `coord_flip()`.
+
+<!--
 There is empty space instead of not displayed `press_type` levels ("ALBERT70", "MOTTER94"). Maybe it is a bug of 2.1.0 version of `ggplot2`, used to realize this manual.
 
-
 _Note:_ the changes on axis order works also without `coord_flip()` function.
+-->
 
+## Impostare il range di un asse continuo
+
+`ggplot2` calcola automaticamente i limiti per gli assi dal range dei dati. Ma spesso abbiamo bisogno di personalizzare tali limiti, rimpicciolendoli per focalizzarci su un'area interessante del grafico o ampliandoli per confrontarli ad altei grafici.
+`ggplot2` fornisce due modi per impostare il range degli assi. Il primo modo consiste nel modificare la scala del grafico, mentre il secondo nel tarsformare le coordinate. Il primo modo è quello più utilizzato, vediamolo nel dettaglio.
+
+Per modificare i limiti negli assi delle x o delle y, possiamo utilizzare la funzione `scale_y_continuous()` e/o `scale_x_continuous()`, impostando l'argomento `limits` uguale ad un vettore di due elementi, il minimo e il massimo.  
+
+<!--
 ## Setting the Range of a Continuous Axis
 
 `ggplot2` computes the limits of an axes from the range of the data. But sometimes you could be interested in making the limits smaller that the range of the data to focus on an interesting area of the plot or to make the limits larger because you want multiple plots to match up.  
 `ggplot2` provides two ways of setting the range of the axes. The first way is to modify the scale, and the second is to apply a coordinate transformation. The first way is the most used. Let us analyze it.
 
 To change the limits in x and/or y axes you could use `scale_y_continuous()` and/or `scale_x_continuous()`, setting the `limits` argument. `limits` argument has to be set equal to a vector of lenght two:   
+-->
 
 ```{r pl_1_change_continuous_axis_limits_1}
 pl_1 + 
   scale_y_continuous(limits=c(0, max(bands$ink_pct)))
 ```
 
+Dato che la modificazione dei limiti è una funzionalità molto utilizzata, `ggplot2` fornisce tre shorthand: `ylim()`, `xlim()` e `lims()`.
+
+I due blocchi di codice seguenti producono gli stessi risultati prodotti dall'esempio precedente:
+
+<!--
 Because modifying limits is such a common task, `ggplot2` provides three shorthand: `ylim()`, `xlim()` and `lims()`.
 
 The following two code lines produce equal results than the previous example:
+-->
 ```{r pl_1_change_continuous_axis_limits_2, eval = FALSE}
 pl_1 + 
   ylim(0, max(bands$ink_pct))
@@ -114,14 +175,21 @@ pl_1 +
   lims(y = c(0, max(bands$ink_pct)))
 ```
 
-If you want to set only one limit, the other has to be set equal to `NA`. `ggplot2` computes automatically the not setted limit from the range of data:
+Se si desidera impostare solamente un limite, l'altro deve essere espresso come `NA`. `ggplot2` calcola automaticamente i limiti non impostati dal range dei dati:
 
+<!--
+If you want to set only one limit, the other has to be set equal to `NA`. `ggplot2` computes automatically the not setted limit from the range of data:
+-->
 ```{r pl_1_change_continuous_axis_limits_3}
 pl_1 + 
   ylim(limits=c(NA, 100))
 ```
 
+Spesso utilizzando entrambe le funzioni `ylim()` e `scale_y_continuous()` per impostare anche altre caratteristiche dell'asse si possono creare problemi (lo stesso vale per `scale_x_continuous()` e `xlim`), perchè solamente l'ultima delle impostazioni avrà effetto sul grafico. Nei prossimi due esempi, `ylim(0, 100)` dovrebbe fissare il range dell'asse delle y da 0 a 100, e `scale_y_continuous(breaks=c(0, 50, 100))` dovrebbe mettere i tick marks a 0, 50 e 100. Tuttavia, in entrambi i casi, solamente la seconda impostazione ha effetto:
+
+<!--
 Sometimes using `ylim()` and `scale_y_continuous()` to set other properties can create problems (the same goes for `scale_x_continuous()` and `xlim`), because only the last of the directives will have an effect. In the following two examples, `ylim(0, 100)` should set the y range from 0 to 100, and `scale_y_continuous(breaks=c(0, 50, 100))` should put tick marks at 0, 50, and 100. However, in both cases, only the second directive has any effect:
+-->
 
 ```{r pl_1_limits_setting_conflict}
 pl_1 + 
@@ -132,18 +200,28 @@ pl_1 +
   ylim(0, 100)
 ```
 
+Per far funzionare entrambe le impostazioni, vi suggeriamo di impostare sia i limiti che i breaks nella funzione `scale_y_continuous()`:
+
+<!--
 To make both changes work, we suggest you to set both limits and breaks in `scale_y_continuous()`:
+-->
 
 ```{r pl_1_limits_setting_conflict_solve}
 pl_1 + 
   scale_y_continuous(limits=c(0, 100), breaks=c(0, 50, 100))
 ```
 
+Abbiamo visto come modificare le scale sia un'ottima soluzione per cambaire il range degli assi. Tuttavia, quando si modificano le scale degli assi per cambiare i limiti, ogni dato fuori dai limiti impostati viene rimosso, quindi non solo non viene mostrato, ma non verrà proprio più considerato. Considerando i Box Plot rappresentati in questi esempi, una volta ridotto il range degli assi, le statistiche del Box Plot saranno calcolate sui dati troncati e la forma del Box Plot cambierà. 
+Applicando invece, una trasformazione alle coordinate del grafico per cam biare i limiti, i dati non vengono troncati; nella pratica, viene fatto uno zoom dentro o fuori al range specificato. 
+
+Vediamo le differenze tra questi due metodi:
+
+<!--
 We saw that modifying the scale for changing axes limits works well. However, when you modify the limits of the x or y scale, any data outside of the limits is removed that is, the out-of-range data is not only not displayed, it is removed from consideration entirely.   
 With the Box Plots in these examples, if you restrict the y range so that some of the original data is clipped, the box plot statistics will be computed based on clipped data, and the shape of the box plots will change.  
 With a coordinate transformation for changing limits, the data is not clipped; in essence, it zooms in or out to the specified range.   
 Let us see the difference between these two methods:
-
+-->
 ```{r pl_1_limits_setting_coord}
 # scale transformation method
 pl_1 + 
