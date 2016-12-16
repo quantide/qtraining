@@ -1,5 +1,5 @@
 ---
-title: "Legend Customization"
+title: "Personalizzazione della Legenda"
 output: html_document
 ---
 
@@ -19,11 +19,18 @@ require(grid)
 data(bands)
 ```
 
+Una legenda è una guida che illustra come risalire dalle proprietà estetiche ai dati originali.
+`ggplot2` genera automaticamente la legenda in base alle estetiche mappate.
+
+Vediamo un esempio, considerando il dataset `bands`. Supponiamo di essere interessati alla relazione tra umidità e viscosità in base alla presenza o meno di banda e costruiamo quattro box plot per analizzare le distribuzioni: 
+
+<!--
 A legend is a guide which tells us how to map visual (aesthetic) properties back to original data values. 
 `ggplot2` automatically generates the legend according to the aesthetics mapped.
 
 Let us see an example.  
 Considering the `bands` data. Supposing you are interested in the relationship between humidity and viscosity by band type, you can build four box plots to compare distributions:
+-->
 
 ```{r pl_1}
 pl_1 <- ggplot(data=bands, aes(x=press_type, y=ink_pct, fill=press_type)) + 
@@ -31,15 +38,35 @@ pl_1 <- ggplot(data=bands, aes(x=press_type, y=ink_pct, fill=press_type)) +
 pl_1
 ```
 
+Come possiamo vedere dal grafico, la legenda viene automaticamente costruita mostrando i livelli della variabile `press_type`. In questo caso, la variabile `press_type` è mappata sull'estetica `fill`. Quando una variabile viene mappata su un'estetica, viene automaticamente impostata una scala. La scala di default, in questo caso, è `scale_fill_discrete()`, ma ci sono anche altre scale in accordo alle estetiche mappate, come `colour` (per le linee e i punti) o `shape` (per i punti).
+
+Le funzioni scala, `theme()` e `guides()` sono gli strumenti che `ggplot2` utilizza per personalizzare l'aspetto estetico dei componeneti della legenda.
+
+<!--
 As you can see from the plot, the legend is automatically built showing `press_type` variable levels. In this case, `press_type` variable is mapped to `fill` aesthetic. When a variable is mapped to an aesthetic it is automatically set to a scale. The default scale in this case is `scale_fill_discrete()`, but there are also other scales according to aesthetics mapped, such as `colour` (for lines and points) or `shape` (for points).
 
 Scales, `theme()` and `guides()` functions are the tools of `ggplot2` used to customize the appearance of the legend components.
-
+-->
 
 ![](./images/legend.png)
 
-In the following paragraphs we will see how to handle with the most common questions on legend customization.
+Nei paragrafi seguenti, vedremo come risolvere i problemi più comuni in merito alla personalizzazione della legenda.
 
+<!--
+In the following paragraphs, we will see how to handle with the most common questions on legend customization.
+-->
+
+## Rimuovere la legenda
+
+A volte la legenda è ridondante, o è già presente in un'altro grafico che sarà mosrato con quello corrente. In questi casi, può essere utilie rimuovere la legenda dal garfico. 
+
+La legenda può essere rimossa in tre modi:
+
+* usando la funzione `guides()` e specificando la scala della legenda che dovrebbe essere rimossa
+* impostando l'argomento `guide` della funzione scala (`scale_xxx_xxx()`) in cui l'estetica è mappata a `FALSE`
+* usare il sistema di theming specificando l'argomento `legend.position` a `"none"`
+
+<!--
 ## Removing the legend
 
 Sometimes a legend is redundant, or it is supplied in another graph that will be displayed with the current one. In these cases, it can be useful to remove the legend from a graph.  
@@ -50,6 +77,7 @@ You can remove the legend in three ways:
 * use the theming system specifying `legend.position` argument to `"none"`
 
 In the previous example, the colors provide the same information that is on the x-axis, so the legend is unnecessary:
+-->
 
 ```{r pl_1_remove_legend, eval = FALSE}
 pl_1 + 
