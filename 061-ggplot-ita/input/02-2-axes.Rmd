@@ -231,69 +231,106 @@ pl_1 +
   coord_cartesian(ylim = c(50, 60))
 ```
 
+## Capovolgere l'ordine degli item in un asse continuo
+
+Per capovolgere l'ordine in un asse continuo la funzione da utilizzare è `scale_y_reverse()` o `scale_x_reverse()`:
+
+<!--
 ## Reverse a continuous axis order
 
 To reverse a continuous axes the function to use are: `scale_y_reverse()` or `scale_x_reverse()`:
-
+-->
 ```{r pl_1_reverse_continuous_axis_order_1}
 pl_1 + 
   scale_y_reverse()
 ```
 
+E' possibile utilizzare anche `ylim()`, in questo modo:
+<!--
 You can use also `ylim()` in this way:
-
+-->
 ```{r pl_1_reverse_continuous_axis_order_2}
 pl_1 + 
   ylim(70, 34)
 ```
 
-Like `scale_y_continuous()`, `scale_y_reverse()` does not work with `ylim()`. (The same is true for the x-axis properties.) If you want to reverse an axis and set its range, you must do it within the `scale_y_reverse()` statement, by setting the limits in reversed order:
+Come `scale_y_continuous()` anche `scale_y_reverse()` non funziona con `ylim()` (lo stesso vale per l'asse delle x). Se l'obiettivo è quello di capovolgere un asse e impostare il suo range, è necessario farlo all'interno della funzione `scale_y_reverse()`, impostando i limiti in ordine rovesciato: 
 
+<!--
+Like `scale_y_continuous()`, `scale_y_reverse()` does not work with `ylim()`. (The same is true for the x-axis properties.) If you want to reverse an axis and set its range, you must do it within the `scale_y_reverse()` statement, by setting the limits in reversed order:
+-->
 ```{r pl_1_reverse_continuous_axis_order_3}
 pl_1 + 
   scale_y_reverse(limits=c(100, 0))
 ```
 
+## Riscalare le scale degli assi
+
+Supponiamo di essere interessati alla relazione tra la percentuale di inchiostro e di solvente nel dataset `bands`:
+
+<!--
 ## Resize axis scale
 
 Suppose you are interested in the relationship between ink and solvent percentage in `bands` dataset:
-
+-->
 ```{r pl_2}
 pl_2 <- ggplot(data = bands, mapping = aes(y=ink_pct, x=solvent_pct)) +
   geom_point()
 ```
 
-If you want the same scale for your axes, you have to use `coord_equal()` function.
+Per ottenere la stessa scala per entrambi gli assi, è necessario utilizzare la funzione `coord_equal()`. 
 
+<!--
+If you want the same scale for your axes, you have to use `coord_equal()` function.
+-->
 ```{r pl_2_same_scale}
 pl_2  +
   coord_equal()
 ```
 
+Per default, l'argomento `ratio` è impostato ad 1, il che assicura che un'unità sull'asse delle x abbia la stessa lunghezza di un'unità sull'asse delle y.
+
+Quindi, possiamo riscalare le scale degli assi a nostro piacimento, impostando l'argomento `ratio`:
+
+<!--
 By default `ratio` argument is set to 1, which ensures that one unit on the x-axis is the same length as one unit on the y-axis.
 
 You can change it as you want to resize the scales:
-
+-->
 ```{r pl_2_resize_scale}
 pl_2  +
   coord_equal(ratio=1/2)
 ```
 
+L'argomento `ratio` deve essere interpretato come `y / x`, quindi nell'esempio precedente, due unità sull'asse delle x corrispondono a una sull'asse delle x.
+
+<!--
 Ratio is expressed as  `y / x`, so in the previous example, two unit on the x-axis correspond to one unit on the y-axis.
 
 You can use also `coord_fixed()` to achieve the same results.
+-->
 
+## Trasformazione della scala dell'asse
+
+Il dataset `brainbod` riporta informazioni circa il peso del corpo e del cervello di diverse specie di animali. Supponiamo di voler visualizzare la relazione tra peso del corpo e peso del cervello in 15 specie animali:
+
+<!--
 ## Axis scale transformations
 
 `brainbod` dataset contains information about the weight of body and brain of different species of animals. We wants to visualize the relationship between body weight and brain weight of 15 animals species: 
+-->
 
 ```{r pl_3}
 pl_3 <- ggplot(brainbod, aes(x=Body, y=Brain, label=Species)) +
-geom_text(size=3)
+  geom_text(size=3)
 pl_3
 ```
 
+Con le scale di default degli assi, è difficile dare un senso a questo grafico, infatti a causa della presenza dell'elefante, il resto degli animali si trova schiacciato nella parte in basso a sinistra del grafico. Questo è il caso di dati distribuiti esponenzialmente in entrambi gli assi, quindi una trasformazione logaritmica è la soluzione migliore. Le funzioni `scale_x_log10()` e `scale_y_log10()` sono scale di posizione continua con il compito di trasformare le scale di x e y, rispettivamente.
+
+<!--
 With the default linearly scaled axes, it’s hard to make much sense of this graph. Because of the presence of elephant, the rest of the animals get squished into the lower-left corner of the graph. This is a case where the data is distributed exponentially on both axes, so a logarithmic transformations is the best solution. `scale_x_log10()` and `scale_y_log10()` functions are continuous position scales which transform x and y axis scales respectively.
+-->
 
 ```{r pl_3_log_scale_1}
 pl_3 + 
@@ -301,11 +338,19 @@ pl_3 +
   scale_y_log10()
 ```
 
+Ora, i risultati del grafico sono interpretabili, vediamo chiaramente una relazione lineare tra il peso del cervello e il peso del corpo delle specie animali considerate. 
+
+Nell'esempio precedente abbiamo utilizzato una trasformazione $log_{10}$, ma è possibile utilizzare anche altre trasformazioni, come $log_{2}$ o il logaritmo in base naturale. `scale_x_log10()` e (similmente per `y`) è una shortcut dato che è una delle trasformazioni più utilizzate. E' possibile, infatti, applicare una grande varietà di trasformazioni alle scale continue degli assi, impostando l'argomento `trans` della funzione `scale_x_continuous()` e/o `scale_y_continuous()`.  
+
+Applichiamo la traformazione logaritmo naturaleall'asse delle `x` e la trasformazione $log_{2}$ all'asse delle `y`:
+
+<!--
 Now the plot results are intrepretable, we clearly see a linear relationship between brain weight and body weight of the analyzed animal species.  
 
 The previous example used a $log_{10}$ transformation, but it is possible to use other transformations, such as $log_{2}$ and natural log. `scale_x_log10()` (and similarly for y) is a shortcut as it is one of the most common trasformations. A wide variety of transformations can be applied to scales of continuous axes, by setting `trans` argument of `scale_x_continuous()` and/or `scale_y_continuous()`. 
 
 Let us apply natural logarithmic transformation to x axis and $log_{2}$ transformation to y axis:
+-->
 
 ```{r pl_3_log_scale_2}
 pl_3 + 
@@ -313,24 +358,41 @@ pl_3 +
   scale_y_continuous(trans = log2_trans())
 ```
 
+## Modificare l'aspetto estetico del grafico: tick labels, tick markse e grid lines
+
+Attualmente, ci sono tre items  hc epossono essere controllati: tick labels, tick marks e grid lines. Per quanto riguarda gli assi continui, `ggplot()` solitamente posiziona un tick label, un tick mark e una grid line principale per ogni valore di break. Per quanto riguarda, invece, gli assi categotiali tick labels, tick marks e grid lines principali sono posizionati in corrispondenza di ogni livello.   
+
+<!--
 ## Modifying axis appearance: tick labels, tick marks, and the grid lines
 
 There are actually three related items that can be controlled: tick labels, tick marks, and the grid lines. For continuous axes, `ggplot()` normally places a tick label, tick mark, and major grid line at each value of breaks. For categorical axes, these things go at each value of limits.
+-->
 
+### Cambiare la posizione dei tick marks 
+
+Solitamente `ggplot()` è efficiente nel decidere dove posizionare i tick marks, ma per cambiarne la posizione è necessario impostare i `breaks` in questo modo: 
+
+<!--
 ### Change Tick marks position
 
 Usually `ggplot()` does a good job of deciding where to put the tick marks, but if you want to change them, set breaks in the scale in this way:
+-->
 
 ```{r pl_1_change_tick_marks_position_continuous}
 pl_1 + 
   scale_y_continuous(breaks=c(41, 45, 51, 55, 60, 71, 77))
 ```
 
-The location of the tick marks defines where major grid lines are drawn. If the axis represents a continuous variable, minor grid lines, which are fainter and unlabeled, will by default be drawn halfway between each major grid line. If the axis is discrete instead of continuous, then there is by default a tick mark for each item.  
+La posizione dei tick marks definisce dove devono essere tracciate le gid lines principali. Se l'asse rappresenta una variabile continua, le grid lines minori, che sono più deboli e senza etichetta, saranno tracciate a metà tra le grid lines principali. Se l'asse è discreto invece che continuo, per default viene segnato un tick mark per ogni item. 
 
+Per gli assi discreti, è possibile cambiarne l'ordine o rimuoverli specificando i limiti come visto nel paragrafo _Cambiare l'ordine degli assi_. Impostando i breaks cambieranno i livelli etichettati, ma non ne verrà rimosso alcuno e neppure il loro ordine sarà cambiato.
+
+<!--
+The location of the tick marks defines where major grid lines are drawn. If the axis represents a continuous variable, minor grid lines, which are fainter and unlabeled, will by default be drawn halfway between each major grid line. If the axis is discrete instead of continuous, then there is by default a tick mark for each item.  
 
 For discrete axes, you can change the order of items or remove them by specifying the limits as learn in _Change axis order_
  paragraph. Setting breaks will change which of the levels are labeled, but will not remove them or change their order.
+-->
 
 ```{r, pl_1_change_tick_marks_position_discrete}
 pl_1 + 
@@ -338,6 +400,15 @@ pl_1 +
                    breaks="WOODHOE70")
 ```
 
+### Rimuovere i tick marks e le loro labels
+
+La funzione da utilizzare all'interno di `theme` per rimuovere sia i tick marks che i loro labels, è `element_blank()`.  
+
+Gli argomenti `axis.text.x`, `axis.text.y` e `axis.text` della funzione `theme()` controllano il testo dei tick di `x`, `y` o di entrambi gli assi. 
+
+Per rimuovere solamente i tick labels per entrambi gli assi bisogna utilizzare la funzione `theme(axis.text = element_blank())` mentre per rimuovere i tick labels solamente per l'asse delle `y` bisogna utilizzare `theme(axis.text.y = element_blank())` (lo stesso concetto vale per `axis.text.x`). Tutto ciò funziona sia nel caso di assi continui che catgoriali:     
+
+<!--
 ### Removing Tick Marks and Labels
 
 The theme function for the removal of both tick marks and labels is `element_blank()`.
@@ -345,6 +416,7 @@ The theme function for the removal of both tick marks and labels is `element_bla
 `axis.text.x`, `axis.text.y` and `axis.text` arguments of `theme()` function controls the text of x, y or both axis ticks.
 
 To remove just the tick labels of both axes use `theme(axis.text = element_blank())`, and to remove the tick labels of y axes use `theme(axis.text.y = element_blank())` (or do the same for `axis.text.x`). This will work for both continuous and categorical axes:
+-->
 
 ```{r pl_1_remove_tick_labels}
 pl_1 + 
@@ -353,9 +425,15 @@ pl_1 +
   theme(axis.text = element_blank())
 ```
 
+`axis.ticks.x`, `axis.ticks.y` e `axis.ticks` controllano i marks di `x`, `y` o di entrambi i ticks degli assi.
+
+Per rimuovere i tock marks su entrambi gli assi, va utilizzata la funzione `theme(axis.ticks=element_blank())`, mentre per rimuovere solamente i tick marks dell'asse delle `y` va utilizzata `theme(axis.ticks.y=element_blank())`. 
+
+<!--
 `axis.ticks.x`, `axis.ticks.y` and `axis.ticks` controls the marks of x, y or both axis ticks.
 
 To remove the tick marks on both axes, use `theme(axis.ticks=element_blank())`, and to remove the tick marks of y axes use `theme(axis.ticks.y=element_blank())`. This will remove the tick marks.
+-->
 
 ```{r pl_1_remove_tick_marks_labels_1}
 pl_1 + 
@@ -364,52 +442,80 @@ pl_1 +
   theme(axis.ticks = element_blank(), axis.text = element_blank())
 ```
 
+Per rimuovere i tick marks, le labels, e le grid lines per gli assi continui, è necessario impostare l'argomento `breaks` a `NULL` nella funzione `scale_y_continuous()` (lo stesso vale per `scale_x_continuous()`) 
+
+<!--
 To remove the tick marks, the labels, and the grid lines for continuous axis, set `breaks` to `NULL` in `scale_y_continuous` (the same for `scale_x_continuous`).
+-->
 
 ```{r pl_1_remove_tick_marks_labels_2}
 pl_1 + 
   scale_y_continuous(breaks=NULL)
 ```
 
+### Cambiare il testo dei tick labels
+
+Consideriamo lo scatterplot che mosra la relazione tra la percentuale di inchiostro e di solvente nel dataset `bands`, allocato nell'oggetto `pl_2`:
+
+<!--
 ### Changing the Text of Tick Labels
 
 Let us consider the scatterplot showing the relationship between ink and solvent percentage in cylinder banding process in rotogravure printing, stored in `pl_2` object:
-
+-->
 ```{r pl_2_show}
 pl_2
 ```
 
-To change the text of ticks marks in continuous axes, set `breaks` and `labels` in `scale_y_continuous` function:
+Per cambiare il testo dei tick amrks negli assi continui, è necessario impostare gli argomenti `breaks` e `labels` della funzione `scale_y_continuous()`:
 
+<!--
+To change the text of ticks marks in continuous axes, set `breaks` and `labels` in `scale_y_continuous` function:
+-->
 ```{r pl_2_change_tick_labels_text}
 pl_2 +  
   scale_y_continuous(breaks=c(40, 50, 60, 70), 
                      labels=c("Less", "Medium-\nLess", "Medium-\nHigh", "High"))
 ```
 
+Fate attenzione al carattere `"\n"`, è necessario per comunicare a `ggplot()` di andare a capo.
+
+Consideriamo l'esempio visto nel paragrafo _Trasformazione della scala dell'asse_, che analizza la relazione tra corpo e cervello di 15 spece animali, allocato nell'oggetto `pl_3`:
+
+<!--
 Pay attention to `"\n"` character, which tells `ggplot()` to put a line break.
 
-
-
 Let us consider the example described in _Axis scale transformations_ paragraph, which analyze the relationship between body  and brain weight of 15 species of animals, stored in `pl_3` object:   
-
+-->
 ```{r pl_3_show}
 pl_3
 ```
 
+Applichiamo una trasformazione logaritmica all'asse:
+
+<!--
 We applied a logarithmic transformation to the axis: 
+-->
 ```{r pl_3_log_scale_show}
 pl_3 +
   scale_x_log10()+
   scale_y_log10()
 ```
 
+Con un asse logaritmico, ogni unità nell'asse rappresenta una costante di cambiamento proporzionale; ad esempio, ogni centimetro nell'asse delle y potrebbe rappresentare una moltiplicazione per 10. In presenza di assi lineari, inveci, ogni unità rappresenta una quantità di cambiamento costante; ogni centimetro potrebbe rappresentare un'aggiunta di 10. 
+
+`ggplot2 ` cerca sempre di posizionare i tick marks nel modo più opportuno, ma è possibile modificare il default impostando l'argomento `breaks` e, facoltativamente, anche i labels. In quest'esempio, i tick marks sono più distanziati di quanto si vorrebbe. Per i tick marks dell'asse delle y, possiamo definire un vettore per contenente ogni potenza 10 da
+$10^{0}$ a $10^{3}$ come:
+
+`10^(0:3)`
+
+<!--
 With a log axis, a given visual distance represents a constant proportional change; for example, each centimeter on the y-axis might represent a multiplication of the quantity by 10. In contrast, with a linear axis, a given visual distance represents a constant quantity change; each centimeter might represent adding 10 to the quantity.
 
 `ggplot2 ` will try to make good decisions about where to place the tick marks, but if you don’t like them, you can change them by specifying breaks and, optionally, labels . In the example here, the automatically generated tick marks are spaced farther apart than is ideal. For the y-axis tick marks, we can get a vector of every power of 10 from $10^{0}$ to
 $10^{3}$ like this:
 
 `10^(0:3)`
+-->
 
 ```{r pl_3_change_tick_labels_text}
 pl_3 + 
@@ -417,55 +523,41 @@ pl_3 +
   scale_y_log10(breaks=10^(0:3))
 ```
 
+Invece di utilizzare la notazione esponenziale per le labels dei breaks, possiamo fare riferimento alla funzione `trans_format()` del package `scales`:
+
+Supponendo che tale package sia già stato installato, è necessario caricarlo nel workspace:
+
+<!--
 To instead use exponential notation for the break labels, use the `trans_format()` function, from the `scales` package:.
 
 Supposing `scales` is already installed, it must be loaded:
+-->
 
 ```{r load_scales, eval=FALSE}
 require(scales)
 ```
 
-```{r pl_3_change_tick_labels_text_math_format_1}
-pl_3 + 
-  scale_x_log10(breaks=10^(-1:5), labels=trans_format("log10", math_format(10^.x))) +
-  scale_y_log10(breaks=10^(0:3), labels=trans_format("log10", math_format(10^.x)))
-```
+Torniamo all'esempio del box plot che mostra la distribuzione della variabile `ink_pct` per ogni livello di `press_type` nel dataset `bands`. Per cambiare il testo dei tock amrks negli assi discreti, è necessario impostare l'argomento `labels` nella funzione `scale_x_discrete()`:
 
-`trans_format()` function set a format to labels after a transformation. The transformation is "log10" and the format is specified by the function `math_format()` (of `scales` package), which define the arbitrary expression to use for the label.
-
-
-Talking about the plot in which scales have been transformed by natural log and $log_{2}$:
-
-```{r pl_3_transformed_scales}
-pl_3 + 
-  scale_x_continuous(trans = log_trans()) +
-  scale_y_continuous(trans = log2_trans())
-```
-
-The labels can be modified in this way:
-
-```{r pl_3_change_tick_labels_text_math_format_2}
-pl_3 + 
-  scale_x_continuous(trans = log_trans(), breaks = trans_breaks("log", function(x) exp(x)),
-    labels = trans_format("log", math_format(e^.x))) + 
-  scale_y_continuous(trans = log2_trans(), breaks = trans_breaks("log2", function(x) 2^x),
-    labels = trans_format("log2", math_format(2^.x)))
-```
-
-`trans_breaks()` function of `scales` package define the breaks according to the transformation applied.
-
+<!--
 Let us go back to boxplot showing the distribution of `ink_pct` by `press_type` in `bands` dataset.   
 To change the text of ticks marks in discrete axes, set the `labels` argument in `scale_x_discrete()` function.
+-->
 
 ```{r pl_1_change_tick_labels_text_discrete}
 pl_1 + 
   scale_x_discrete(labels=c("Albert70", "Motter70", "Motter94", "Woodhoe70"))
 ```
 
+### Cambiare l'aspetto estetico dei tick labels
 
+Le proprietà del testo come l'angolatura, la dimensione, lo stile (grassetto, corsivo, normale) e il font (come Times o Helvetica) posssono essere impostati all'interno della funzione `element_text()` in `theme()`:
+
+<!--
 ### Changing the Appearance of Tick Labels
 
 Text properties like rotation, size, style (bold/italic/normal), and the font family (such as Times or Helvetica) can be set with `element_text()` theme function: 
+-->
 
 ```{r pl_1_change_tick_labels_appearance_1}
 # To rotate the text 90 degrees counterclockwise
@@ -476,36 +568,61 @@ pl_1 +
   theme(axis.text.x = element_text(angle=30, hjust=1, vjust=1))
 ```
 
-The `angle` setting specifies the text rotation and the `hjust` and `vjust` settings specify the horizontal alignment (left/center/right) and vertical alignment (top/middle/bottom).
+Il parametro `angle` specifica l'angolatura del testo e `hjust` e `vjust` specificano l'allineamento orizzontale (sinistra/centro/destra) e verticale (alto/mezzo/basso), rispettivamente. 
 
+<!--
+The `angle` setting specifies the text rotation and the `hjust` and `vjust` settings specify the horizontal alignment (left/center/right) and vertical alignment (top/middle/bottom).
+-->
 ```{r pl_1_change_tick_labels_appearance_2}
 pl_1 + 
   theme(axis.text.x = element_text(family="Times", face="bold", colour="darkgreen", size=rel(0.8)))
 ```
 
+Il parametro `family` specifica il font da utilizzare, `face` identifica lo stile, `colour` il colore del testo e `size` la grandezza sempre del teso. In questo esempio notiamo che il parametro `size` è impostato a `rel(0.8)`, cioè la dimensione del testo deve essere 0.8 volte la dimensione base per il theme.
+
+<!--
 The `family` setting specifies the font family, `face` the font face, `colour` the text colour and `size` the text size.
 In this example, the size is set to `rel(0.8)`, which means that it is 0.8 times the size of the base font size for the theme.
+-->
 
+### Cambiare l'aspetto estetico dei tick marks
+
+L'aspetto estetico dei tick amrks può essere cambiato utilizzando la funzione `element_line()` all'interno di `theme()`.
+
+<!--
 ### Changing the Appearance of Tick marks
 
 The appearance of tick marks can be changed by `element_line()` theme function.
+-->
 
 ```{r pl_1_change_tick_marks_appearance}
 pl_1 + 
   theme(axis.ticks.x = element_line(colour="green", size=4), axis.ticks.y=element_line(colour="red"))
 ```
 
+In particolare, l'argomento `colour` indica il colore della linea e `size` la dimensione della linea.
+
+<!--
 In particular, `colour` setting specifies the line colour and `size` the line size.
+-->
 
 <!--
 aggiungere esempio sul log?
 -->
 
+### Cambiare il testo dei labels degli assi
+
+Per default, i grafici utilizzano i nomi di colonna del data frame come labels degli assi. Questo può andare bene per avere un immediato riferimento ai dati, ma non per presentazioni, per le quali sono necessarie labels con descrizioni più accurate.
+
+`ggplot2` fornisce tre modi equivalenti per canbiare i labels degli assi:
+
+<!--
 ### Changing the Text of Axis Labels
 
 By default the graphs will just use the column names from the data frame as axis labels. This might be fine for exploring data, but for presenting it, you may want more descriptive axis labels.
 
 `ggplot2` provides these three equivalent ways to change the axis labels:
+-->
 
 ```{r pl_1_change_axis_labels, eval=FALSE}
 pl_1 + 
@@ -518,55 +635,98 @@ pl_1 +
   scale_x_discrete(name="Pressure type")
 ```
 
+I tre comandi visti sopra producono lo stesso risultato:
+
+<!--
 Which produces the same results:
+-->
 
 ```{r, echo=FALSE, purl=FALSE}
 pl_1 + 
   labs(x = "Pressure type", y = "Ink percentage")
 ```
 
-Using `scale_y_continuous()` may look a bit awkward, but it can be useful if you’re also setting other properties of the scale, such as the tick mark placement, range, and so on.
+Utilizzare la funzione `scale_y_continuous()` può sembrare un pò più articolato, ma è utile nel momento in cui si necessita di impostare altre caratteristiche della scala, come il posizionamento dei tick marks, il range degli assi, e così via.
 
+<!--
+Using `scale_y_continuous()` may look a bit awkward, but it can be useful if you’re also setting other properties of the scale, such as the tick mark placement, range, and so on.
+-->
+
+### Rimuovere i labels degli assi
+
+Spesso i albels degli assi sono ridontanti opore ovvi a partire dal contesto, quindi non si necessità che vengano mostrati.
+
+Possiamo impostare il label dell'asse delle x come una stringa vuota:
+
+<!--
 ### Removing Axis Labels
 
 Sometimes axis labels are redundant or obvious from the context, and don’t need to be displayed.
 
 You can set x label to an empty string:
+-->
 ```{r pl_1_remove_axis_labels_1}
 pl_1 + 
   xlab("")
 ```
 
+O possiamo utilizzare la funzione `theme()` impostando al suo interno `axis.title.x=element_blank()`:  
+
+<!--
 or you can use `theme()` function to set `axis.title.x=element_blank()`:
+-->
+
 ```{r pl_1_remove_axis_labels_2}
 pl_1 + 
   theme(axis.title.x=element_blank())
 ```
 
-The difference between the two ways is that `theme()` function doesn't change axis name. The text is not displayed and no space is reserved for it. When you set the label to "" in `xlab()` function, the name of the scale is changed and the (empty) text is displayed.
+La differenza tra questi due modi stà nel fatto che la funzione `theme()` non cambia il nome dell'asse. Il testo, infatti, non viene mostrato e alcun spazio viene riservato ad esso. Quando, invece, si imposta il label a `""` nella funzione `xlab()`, il nome della scala non viene cambiato e viene mostrato del testo vuoto.
 
+<!--
+The difference between the two ways is that `theme()` function doesn't change axis name. The text is not displayed and no space is reserved for it. When you set the label to "" in `xlab()` function, the name of the scale is changed and the (empty) text is displayed.
+-->
+
+### Cambiare l'aspetto estetico delle labels degli assi
+
+Gli argomenti `axis.title.x`, `axis.title.y` e `axis.title` della funzione `theme()` controllano i labels di `x`, `y` o di entrambi gli assi. 
+
+La funzione di riferimento è `element_text()` e lavora come visto nel paragrafo _Cambiare l'aspetto estetico dei tick labels_.
+
+<!--
 ### Changing the appearance of axis labels
 
 `axis.title.x`, `axis.title.y` and `axis.title` arguments of `theme()` function controls the label of x, y or both axis.
 
 The reference function is `element_text()` and works at the same way as we saw in _Changing the Appearance of Tick Labels_ paragraph.
-
+-->
 ```{r pl_1_change_axis_labels_appearance}
 pl_1 + 
   theme(axis.title.y=element_text(angle=0, face="italic", size=14, colour = "green"))
 ```
 
+## Usare le date negli assi
+
+`ggplot2` tratta due tipi di oggetti "data": le date (oggetti di classe `Date`) e le date-ore (oggetti di classe `POSIXt`). La differenza tra questi è che gli oggetti di classe `Date` rappresentano date con risoluzione di una giornata, mentre quelli di classe `POSIXt` rappresentano momenti nel tempo e hanno una risoluzione di una frazione di secondo. 
+
+La specifica dei `breaks` è simile a quella degli assi numerici. La differenza principale è nella specificazione di una sequenza did ate da utilizzare. Utilizzeremo per quest esempio, un sottoinsieme del dataset `economics`, disponibile all'interno del package `ggplot2`, che va da maggio 1992 a giugno 1993.   
+
+<!--
 ## Using Dates on an Axis
 
 `ggplot2` handles two kinds of time-related objects: dates (objects of class Date ) and date-times (objects of class POSIXt). The difference between these is that Date objects represent dates and have a resolution of one day, while POSIXt objects represent moments in time and have a resolution of a fraction of a second.  
 Specifying the breaks is similar to with a numeric axis, the main difference is in specifying the sequence of dates to use.  
 We use a subset of the `economics` data, provided in `ggplot2` package which ranges from may 1992 to june 1993. 
-
+-->
 ```{r economics_sample}
 econ <- subset(economics, date >= as.Date("1992-05-01") & date < as.Date("1993-06-01"))
 ```
 
+Supponiamo di voler generare una serie storica del tasso di risparmio personale:
+
+<!--
 Suppose we want to generate the time series plot of personal savings rate:
+-->
 
 ```{r pl_4}
 pl_4 <- ggplot(econ, aes(x=date, y=psavert)) + 
@@ -574,7 +734,11 @@ pl_4 <- ggplot(econ, aes(x=date, y=psavert)) +
 pl_4
 ```
 
+La funzione `scale_x_date()` tratte le scale di date, l'argomento `date_breaks` specifica la distanza tra i breaks.
+
+<!--
 `scale_x_date()` function handle with date scales, the argument `date_breaks` specifies the distance between breaks.
+-->
 
 ```{r pl_4_change_axis_labels_1}
 # Use breaks, and rotate text labels
@@ -583,7 +747,11 @@ pl_4 +
   theme(axis.text.x = element_text(angle=30, hjust=1))
 ```
 
+Notiamo che la formattazione dei breaks cambia. Possiamo specificare la formattazione utilizzando la funzione `date_format()` dal package `scales` come valore dell'argomento `label`: 
+
+<!--
 Notice that the formatting of the breaks changed. You can specify the formatting by using the `date_format()` function from the `scales` package as `label` value: 
+-->
 
 ```{r pl_4_change_axis_labels_2}
 pl_4 + 
@@ -591,10 +759,31 @@ pl_4 +
   theme(axis.text.x = element_text(angle=30, hjust=1))
 ```
 
+Il formato specificato è `"%Y %b"`, che risulta come `"1992 Jun"`. Tale formato deve essere passato come strimga alla funzione `date_format()` e gli indicatori di formato saranno sostituiti con i valori appropriati. per esempio, se si imposta `"%B %d, %Y"`, risulteranno labels come "June 01, 1992"`.
+
+<!--
 The format specified is `"%Y %b"`, which results like `"1992 Jun"`.
 
 The format specified is to be put in a string that is passed to `date_format()`, and the format specifiers will be replaced with the appropriate values. For example, if you use `"%B %d, %Y"`, it will result in labels like `"June 01, 1992"`.
+-->
 
+La seguente tabella elenca i più importanti formati data-ora:
+
+Opzione   | Descrizione 
+--------- | ------------------------------------------------------------------------------------- 
+%Y        |  Anno con secolo (2012)
+%y        |  Anno senza secolo (12)
+%m        |  Mese come numero decimale (08)
+%b        |  Abbreviazione del nome del mese nella posizione corrente (Aug)
+%B        |  Nome del mese completo nella posizione corrente (August)
+%d        |  Giorno del mese come numero decimale (04)
+%U        |  Settimana dell'anno come numero decimale, con Domenica come primo giorno della settimana (00–53)
+%W        |  Settimana dell'anno come numero decimale, con Lunedì come primo giorno della settimana (00–53)
+%w        |  giorno della settimana (0–6, Domenica è 0)
+%a        |  Abbreviazione dei nomi della settimana (Thu)
+%A        |  Nomi della settimana completi (Thursday)
+
+<!--
 The following table lists the most important date-time format:
 
 
@@ -611,6 +800,6 @@ Option    | Description
 %w        |  Day of week (0–6, Sunday is 0)
 %a        |  Abbreviated weekday name (Thu)
 %A        |  Full weekday name (Thursday)
-
+-->
 
 
