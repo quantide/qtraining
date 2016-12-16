@@ -366,6 +366,20 @@ Here are some rules of thumb for specifying and adjusting RGB colors:
 * to get a shade of grey, set all the channels to the same value
 -->
 
+
+## Cambiare i colori ad una variabile continua mappata
+
+Supponiamo di voler utilizzare colori diversi per una variabile continua.
+
+Mappare valori continui ad una scala di colore richiede un continuo cambio della palette di colori. La tabella seguente elenca le scale continue per `fill` e `colour`:
+
+Scala `fill`             | Scala `colour`             | Descrizione                               
+-------------------------|----------------------------|-------------------------------------------
+`scale_fill_gradient()`  | `scale_colour_gradient()`  | Sfumatura a due colori 
+`scale_fill_gradient2()` | `scale_colour_gradient2()` | Sfumatura con un colore centrale e due colori divergenti da questo
+`scale_fill_gradientn()` | `scale_colour_gradientn()` | Sfumatura con n colori, equamente distanziati 
+
+<!--
 ### Change the colours for a continuous mapped variable
 
 You want to use different colors for a continuous variable.
@@ -373,23 +387,32 @@ You want to use different colors for a continuous variable.
 Mapping continuous values to a color scale requires a continuously changing palette of colors.   
 The following table lists the continuous color and fill scales:
 
+
 Fill scale               | Colour scale               | Description                               
 -------------------------|----------------------------|-------------------------------------------
 `scale_fill_gradient()`  | `scale_colour_gradient()`  | Two-color gradient 
 `scale_fill_gradient2()` | `scale_colour_gradient2()` | Gradient with a middle color and two colors that diverge from it
 `scale_fill_gradientn()` | `scale_colour_gradientn()` | Gradient with n colors, equally spaced
+-->
 
+Supponiamo di essere interessati nella relazione tra `humidity`, `viscosity` e `solvent_pct` nel dataset `bands`:   
 
+<!--
 Supposing we are interested in the relationship between `humidity`, `viscosity` and `solvent_pct` in `bands` dataset:   
+-->
 
 ```{r colour_aes_continuous}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point()
 ```
 
+Diamo un occhio al funzionamento delle funzioni elencate nella tabella precedente. In particolare, specificheremo i colori da utilizzare per una variabile continua utilizzando varie scale di sfumature. I colori possono essere specificati per nome, o attraverso i codici RGB:
+
+<!--
 Let us see how the previous fuctions work. 
 We will specify the colours for a continuous variable using various gradient scales. 
 The colors can be named, or they can be specified with RGB values:
+-->
 
 ```{r scale_colour_gradient}
 # scale_colour_gradient()
@@ -413,21 +436,31 @@ ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent
   scale_colour_gradientn(colours = c("darkred", "orange", "yellow", "white"))
 ```
 
-
+E' possibile anche utilizzare palettes di colori derivanti da un package esterno:
+<!--
 You can also use palettes produced by another package:
+-->
 ```{r scale_colour_gradientn_2}
 ggplot(data = bands, mapping = aes(x = humidity, y = viscosity, colour = solvent_pct)) +
   geom_point() + 
   scale_colour_gradientn(colours = terrain.colors(n=8))
 ```
 
+Utilizziamo per esempio la palette `terrain.colors` del package `grDevices` con 8 colori. 
+
+<!--
 In this case we use `terrain.colors` palette with 8 colours. `terrain.colors` is a palette of `grDevices` package.
+-->
 
+## Personalizzazione dei tipi di linea
 
+R fornisce i seguenti tipi di linea:
+
+<!--
 ## Customizing linetype
 
 R provides the following line types:
-
+-->
 ```{r plot_linetypes, echo=FALSE, fig=TRUE, purl=FALSE}
 par(mar=rep(0,4))
 # Make an empty chart
@@ -462,11 +495,21 @@ text(x = x0, y = 1, labels = '6. "twodash"', cex = cex0, pos = pos0)
 lines(x = c(xs, xe), y = c(1, 1), lty = 6, lwd = lwd0)
 ```
 
-`linetype` aesthetic has to be mapped to discrete variables.
+L'estetica `linetype` deve essere mappata ad una variabile discreta.
 
+<!---
+`linetype` aesthetic has to be mapped to discrete variables.
+-->
+
+### Cambiare il tipo di linea
+
+Consideriamo la crescita media dei polli per i diversi tipi di dieta del dataset `ChickWeights`, utilizzato nel capitolo _Creare un Line Plot_: 
+
+<!--
 ### Changing line types 
 
 Let us consider the average growth of chicks for the different diets by using `ChickWeights` dataset, as seen in _Creating a Line Plot_:
+-->
 
 ```{r ChickWeightMean}
 # data
@@ -476,26 +519,44 @@ ChickWeightMean <- ChickWeight %>%
   mutate(Diet = factor(Diet, levels=1:4, labels=c("A","B","C","D")))
 ```
 
+
+L'obiettivo è capire se c'è una differenza nella crescita media dei polli per i diversi tipi di dieta. per fare ciò, mapperemo la variabile `Diet` all'estetica `linetype`:  
+
+<!--
 We want to se the difference in the average growth of chicks for the different diets, by mapping `Diet` variable to `linetype` aestethics:   
+-->
 
 ```{r linetype_aes}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
   geom_line(mapping=aes(linetype=Diet)) 
 ```
 
-To change linetypes we have to set `values` argument of `scale_linetype_manual()` function:
+Per cambiare i tipi di linea dobbiamo impostare l'argomento `values` della funzione `scale_linetype_manual()` in questo modo:
 
+<!--
+To change linetypes we have to set `values` argument of `scale_linetype_manual()` function:
+-->
 ```{r scale_linetype_manual}
 ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
   geom_line(mapping=aes(linetype=Diet)) +  
   scale_linetype_manual(values=c(3,4,5,6))
 ```
 
-Line type values can be passed as numbers or strings.
+I valori che identificano il tipo di linea da utilizzare possono essere passati alla funzione come numeri o come stringhe. 
 
+<!--
+Line type values can be passed as numbers or strings.
+-->
+
+## Personalizzazione delle Forme
+
+R fornisce le seguenti forme:
+
+<!--
 ## Customizing Shape
 
 R provides the following shapes symbols:
+-->
 
 ```{r plot_shape, echo=FALSE, fig=TRUE, purl=FALSE}
  par(mar=rep(0,4))
@@ -518,11 +579,21 @@ R provides the following shapes symbols:
  text((1:5) + 0.4, rep(1, 5), cex = 1, (21:25))
 ```
 
-`shape` aesthetic has to be mapped to discrete variables.
+L'estetica `shape` devee essere mappata su una variabile continua.
 
+<!--
+`shape` aesthetic has to be mapped to discrete variables.
+-->
+
+### Cambiare il tipo di forma
+
+Per personalizzare la scale relativa alle forme (`shape`) è necessario impostare l'argomento `values` della funzione `scale_shape_manual()`:
+
+<!--
 ### Changing shape types
 
 If you want to customize shape scale you have to set `values` argument of `scale_shape_manual()` function:
+-->
 
 ```{r scale_shape_manual}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=press_type)) +
@@ -530,31 +601,43 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=press_type)) +
   scale_shape_manual(values = c(12, 13, 8, 3))
 ```
 
+## personalizzazione della dimensione
 
+L'estetica `size` (dimensione) è comunemente utilizzata per punti e testo, dato che l'occhio umano percepisce l'area dei punti (e non il loro raggio), quindi questa cosa fornisce un'ottima percezione. L'estetica `size` può essee mappata solo su variabili continue.
+
+<!--
 ## Customizing Size
 
 The size aesthetic is most commonly used for points and text, and humans perceive the area of points (not their radius), so this provides for optimal perception. `size` can be mapped only to continuous variables.
 
 ### Change the size of plotting symbols
+-->
 
 ```{r size_aes}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   geom_point()
 ```
 
-When a variable is mapped to size, the results can be perceptually misleading. If it is important for the sizes to proportionally represent the quantities, you can change the range of sizes. By default the sizes of points go from 1 to 6 mm. You could reduce the range to, say, 2 to 4 mm, with `scale_size_continuous(range=c(2, 4))`:
+Quando una variabile è mappata sulla scala dimensione (`size`), il risulatato finale può sembrare un pò fuorviante. Se si ritiene che sia importante che le dimensioni nel grafico rappresentino le quantità, allora è necessario cambiare la gamma di diemnsioni, per default le dimensionidei punti vanno da 1 a 6 mm, E' possibile ridurre il range, ad esempio, da 2 a 4 mm, impostando `scale_size_continuous(range=c(2, 4))`:
 
+<!--
+When a variable is mapped to size, the results can be perceptually misleading. If it is important for the sizes to proportionally represent the quantities, you can change the range of sizes. By default the sizes of points go from 1 to 6 mm. You could reduce the range to, say, 2 to 4 mm, with `scale_size(range=c(2, 4))`:
+-->
 ```{r scale_size}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   geom_point() +
-  scale_size(range=c(2, 4))
+  c
 ```
 
+Per questo motivo, è necessario impostare l'argomento `range` della funzione `scale_size()` al minimo e al massimo della dimensione dei simboli tracciati. Tuttavia, la dimensione dei punti non viene mappata linearmente al diametro a all'area, quindi ciò contribuisce ad una rappresentazione poco accurata dei valori. Per ottenere che un valor pari a zero sia sempre rappresentato di diemnsione 0, si consiglia di utilizzare la funzione `scale_size_area()` invece di `scale_size()`: 
+
+<!--
 So you have to set to the `range` argument the minimum and the maximum size of the plotting symbols.
 
 However, the point size numbers don't map linearly to diameter or area, so this still won't give a very accurate representation of the values.
 
 If you want that a value of zero is always mapped to size 0, use `scale_size_area()` instead of `scale_size()`:  
+-->
 
 ```{r scale_size_area_1}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
@@ -562,7 +645,11 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   scale_size_area()
 ```
 
+Tuttavia `scale_size_area()` non ci dà la possibilità di controllare la dimensione dei simboli plottati, come era possibile con `scale_size(range=c())`. `scale_size_area()` dà la possibilità di impostare solo la dimensione massima dei punti impostando l'argomento `max_size`:
+
+<!--
 However with `scale_size_area()` you can not control the size of plotting symbols by using `range` argument. You can set only the size of largest points by setting `max_size` argument:
+-->
 
 ```{r scale_size_area_2}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
@@ -570,7 +657,11 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   scale_size_area(max_size = 3)
 ```
 
+E' possibile anche utilizzare il raggio per controllare la dimensione dei simboli rappresentati, utilizzando la funzione `scale_radius()`:
+
+<!--
 You can also use radiuos to control the size of plotting symbols by setting `scale_radius()` function:
+-->
 
 ```{r scale_radius}
 ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
@@ -578,4 +669,8 @@ ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
   scale_radius()
 ```
 
+Tuttavia, l'utilizzo di questa funzione non è raccomandato.
+
+<!--
 This choice is always not recommended.
+-->
