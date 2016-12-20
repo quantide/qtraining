@@ -1,8 +1,8 @@
 ---
 title: '`qtraining` repository'
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 Date of documentation update: 20161220  
