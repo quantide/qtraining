@@ -1,0 +1,73 @@
+
+```{r solution, echo=FALSE, message=FALSE}
+require(knitr)
+opts_chunk$set(list(fig.show='hold', dpi=100, fig.width=4, fig.height=3.5, fig.pos='H!'))
+show_solution <- FALSE
+```
+
+# Data Mining
+
+Before starting the exercises, load the following libraries, supposing they are already installed.
+
+```{r, message=FALSE}
+require(qdata)
+require(dplyr)
+require(ggplot2)
+require(nnet)
+```
+
+## Neural Networks
+
+### Exercise 1
+
+Consider `iris` dataset.
+
+```{r load_data}
+data(iris)
+head(iris)
+```
+
+A botanist wants to to find a prediction model to assess the probability of belonging to a specific species, for each flower, based on its sepal and petal features. 
+
+a. Analyze the relationship between `Species` and the other variables of `iris` dataset. The following lines of code produces a scatterplot of `Sepal.Length` and `Sepal.Width` by `Species`.
+
+    ```{r scatterplot_1}
+ggplot(data=iris, mapping=aes (x=Sepal.Length, y=Sepal.Width, colour=Species)) +
+  geom_point()
+    ```
+    
+    Generate a scatterplot to analyze the relationship between `Petal.Length` and `Petal.Width` by `Species`.    Comment the results.
+    
+```{r scatterplot_2, echo=show_solution, eval=show_solution}
+ggplot(data=iris, mapping=aes (x=Petal.Length, y=Petal.Width, colour=Species)) +
+  geom_point()
+```
+
+b. Divide the dataset in train and test dataset in this way:
+
+    ```{r train_test_sample}
+set.seed(1)
+samp <- c(sample(1:50,25), sample(51:100,25), sample(101:150,25))
+train <- iris[samp,] 
+test <- iris[-samp,]  
+    ```
+    and estimate a Neural Network model on train sample to assess the probability of belonging to a specific species, for each flower, based on its measures of `Sepal.Length`, `Sepal.Width`, `Petal.Length`, and `Petal.Width`.  Use `nnet()` function and set the `size` (number of units in the hidden layer) to 2.
+
+```{r nn_mod, echo=show_solution, eval=show_solution}
+nn_mod <- nnet(Species ~ ., data = train, size = 2)
+```
+
+c. Use `predict()` function to gain the predictions on test sample. Add `type = "class"` argument to `predict()` function. Add the prediction estimated to `test` dataset.
+
+```{r nn_pred, echo=show_solution, eval=show_solution}
+test$pr <- predict(object = nn_mod, newdata = test, type = "class")
+```
+
+d. Built a frequency table to compare the original distribution of `Species` and that predicted in `test` data. Comment the results.  
+
+```{r freq_table, echo=show_solution, eval=show_solution}
+test %>% 
+  group_by(Species, pr) %>%
+  summarise(n = n()) %>%
+  mutate(freq = paste(round(n/sum(n)* 100, 2), "%"))
+```

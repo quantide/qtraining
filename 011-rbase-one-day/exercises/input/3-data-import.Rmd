@@ -1,0 +1,120 @@
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="../../data")
+show_solution <- FALSE
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+
+# Data Import from external sources
+ 
+First of all, set your working directory in the _data_ folder, using `setwd()` function, like in this example
+
+```{r setwd_fake, eval=FALSE}
+setwd("C:/Users/Veronica/Documents/rbase/data")
+```
+
+We will work inside this folder.
+
+## Text Files
+### Exercise 1
+
+a. Import text file named _"tuscany.txt"_ and save it in an R object named `tuscany_df`.   
+Open the text file before importing it to control if the first row contains column names and to control the field and the decimal separator characters. Remember to not import the character columns as factors.   
+```{r ex1a-txt, echo=show_solution, eval=show_solution}
+tuscany_df <- read.table("tuscany.txt", header = TRUE, sep = "|", 
+                         dec=".", stringsAsFactors = FALSE)
+```
+
+b. Visualize the first rows of `tuscany_df`
+```{r ex1b-txt, echo=show_solution, eval=show_solution}
+head(tuscany_df)
+```
+
+
+### Exercise 2
+
+a. Import text file named _"solar.txt"_ and save it in an R object `solar_df`.   
+Open the text file before importing it to control if the first row contains column names and to control the field and the decimal separator characters. Remember to not import the character columns as factors.   
+```{r ex2a-txt, echo=show_solution, eval=show_solution}
+solar_df <- read.table("solar.txt", header = FALSE, sep = ",", 
+                       dec=".", stringsAsFactors = FALSE)
+```
+
+b. Visualize the first rows of `solar_df`.
+
+```{r ex2b-txt, echo=show_solution, eval=show_solution}
+head(solar_df)
+```
+
+
+## Excel Files
+
+### Exercise 1
+
+a. Import `iris` sheet of .xlsx file _"flowers.xlsx"_ by using `read_excel` function of `readxl` package and save it in a R object named `flowers`.  
+  Remember to load `read_excel` package, supposing it is already installed.
+
+```{r ex1-xlsx-require, message=FALSE}
+require(readxl)
+```
+
+```{r ex1a-xlsx, echo=show_solution, eval=show_solution}
+flowers <-read_excel(path = "flowers.xlsx", sheet = 'iris', col_names = TRUE)
+```
+
+b. Visualize the first rows of `flowers` 
+```{r ex1b-xlsx, echo=show_solution, eval=show_solution}
+head(flowers)
+```
+
+
+## Databases
+
+### Exercise 1
+
+a. Connect to _"plant.sqlite"_ SQLite database, using `dbConnect()` function of `RSQLite` package. Save the connection in an R object, named `con`.   
+  Remember to load `RSQLite` package, supposing it is already installed.
+
+```{r ex1a-db-require, message=FALSE}
+require(RSQLite)
+```
+
+```{r ex1a-db, echo=show_solution, eval=show_solution}
+con <- dbConnect(RSQLite::SQLite(), "plant.sqlite")
+```
+
+b. See the list of available tables in _"plant.sqlite"_ db, using `dbListTables()` function.
+```{r ex1b-db, echo=show_solution, eval=show_solution}
+dbListTables(con)
+```
+
+c. See list of fields in _"PlantGrowth"_ table of  _"plant.sqlite"_ db, using `dbListFields()` function.
+
+```{r ex1c-db, echo=show_solution, eval=show_solution}
+dbListFields(con, name = "PlantGrowth")
+```
+
+d.  Send query to _"PlantGrowth"_ table of _"plant.sqlite"_ which select the records with `weight` greater than 5.5.
+
+```{r ex1d-db, echo=show_solution, eval=show_solution}
+dbGetQuery(con, "SELECT * FROM PlantGrowth WHERE weight >= 5.5")
+```
+
+e. Disconnect from the database, using `dbDisconnect()` function. 
+
+```{r ex1e-db, echo=show_solution, eval=show_solution}
+dbDisconnect(con)
+```
+
+
+
+
+
+
+
+
+

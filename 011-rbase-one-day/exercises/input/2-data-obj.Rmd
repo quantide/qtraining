@@ -1,0 +1,117 @@
+
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+show_solution <- FALSE
+```
+
+
+# Data Objects
+
+## Data Frames, Vectors and Factors
+
+### Exercise 1 
+a. Generate a data frame, named `df`, corresponding to:
+
+```{r ex1a, echo=show_solution}
+df <- data.frame(country = c("Italy", "France", "China", "Japan", "Libya", "Cameroon"),
+                 population = c(59801004, 64668129, 1382323332, 126323715, 6330159, 23924407),
+                 continent = c("Europe", "Europe", "Asia", "Asia", "Africa", "Africa"), 
+                 stringsAsFactors = FALSE)
+df
+```
+
+Remember to maintain character vectors as they are, specifiyng `stringsAsFactors = FALSE`.    
+```{r ex1b, echo=show_solution, eval=show_solution}
+df <- data.frame(country = c("Italy", "France", "China", "Japan", "Libya", "Cameroon"),
+                 population = c(59801004, 64668129, 1382323332, 126323715, 6330159, 23924407),
+                 continent = c("Europe", "Europe", "Asia", "Asia", "Africa", "Africa"), 
+                 stringsAsFactors = FALSE)
+df
+```
+
+b. Supposing `dplyr` package is already installed, convert the previously defined data frame in tbl_df class.
+
+```{r ex1c, message=FALSE}
+require(dplyr)
+```
+
+```{r ex1d, echo=show_solution, eval=show_solution}
+df <- tbl_df(df)
+```
+
+### Exercise 2 
+
+a. Generate a numeric vector, named `num_vec`, containing the values from 1 to 7.
+
+```{r ex2a, echo=show_solution, eval=show_solution}
+num_vec <- c(1, 2, 3, 4, 5, 6, 7)
+```
+
+b. Genarate a character vector, named `char_vec` with the days of the week.
+
+```{r ex2b, echo=show_solution, eval=show_solution}
+char_vec <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+```
+
+c. Starting from the vector:  
+
+    ```{r ex2c}
+fac <- c("F", "F", "M", "M", "F", "F", "M")
+    ```
+  Generate the corresponding factor, named `fac`, with two levels: "F" and "M"
+
+```{r ex2d, echo=show_solution, eval=show_solution}
+fac <- factor(fac, levels = c("F", "M"))
+fac
+```
+
+d. Generate a data frame, named `df2`, containing the previously defined: `num_vec`, `char_vec` and `fac`. Remember to maintain character vectors as they are, specifiyng `stringsAsFactors = FALSE`. 
+
+```{r ex2e, echo=show_solution, eval=show_solution}
+df <- data.frame(num_vec, char_vec, fac, stringsAsFactors = FALSE)
+df
+```
+
+e. Supposing `dplyr` package is already installed and loaded, convert the previously defined data frame in tbl_df class. 
+
+```{r ex2f, echo=show_solution, eval=show_solution}
+df <- df %>% tbl_df()
+df
+```
+
+## Matrices
+
+### Exercise 1 
+
+Generate a matrix, named `mat`, with 5 rows and 3 columns containing numbers from 1 to 15, using `matrix()` function.
+
+```{r ex3a, echo=show_solution, eval=show_solution}
+mat <- matrix(1:15, nrow = 5, ncol = 3, byrow = TRUE)
+mat
+```
+
+## Lists
+
+### Exercise 1 
+
+Generate a list, named `my_list` that contains the following R elements:
+
+```{r ex4a}
+char <- "Veronica"
+mat <- matrix(1:9, ncol = 3)
+log_vec <- c(TRUE, FALSE, TRUE, TRUE)
+```
+
+```{r ex4b, echo=show_solution, eval=show_solution}
+my_list <- list(char <- "Veronica", 
+              mat = matrix(1:9, ncol = 3), 
+              log_vec = c(TRUE, FALSE, TRUE, TRUE))
+my_list
+```
+
+
+
+

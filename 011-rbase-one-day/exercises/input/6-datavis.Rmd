@@ -1,0 +1,223 @@
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(fig.show='hold', dpi=100, fig.width=4, fig.height=3.5, fig.pos='H!'))#, fig.path="figures/lm-"))
+show_solution <- FALSE
+```
+ 
+# Data Visualization with `ggplot2`
+
+Load `ggplot2` package, supposing it is already installed.
+
+```{r require_dplyr, message=FALSE}
+require(ggplot2)
+```
+
+## Data
+
+### iris
+
+Almost all the following exercises are based on the `iris` dataset, taken from the `datasets` package.  
+It is a base package so it is already installed and loaded.  
+
+```{r data_iris}
+data("iris")
+```
+
+This dataset gives the measurements in centimeters of length and width of sepal and petal, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.   
+
+`iris` dataset contains the following variables:
+
+* `Sepal.Length`: length of iris sepal 
+* `Sepal.Width`: width of iris sepal
+* `Petal.Length`: length of iris petal
+* `Petal.Width`: width of iris petal
+* `Species`: species of iris
+
+
+```{r data-dim}
+dim(iris)
+head(iris)
+str(iris)
+```
+
+### mpg
+
+Some of the exercises are based on `mpg` dataset, taken from the `ggplot2` package.  
+
+```{r data_mpg}
+data("mpg")
+```
+
+This dataset contains the fuel economy data from 1999 and 2008 for 38 popular models of car.  
+`mpg` dataset contains the following variables:
+
+* `manufacturer`
+* `model`
+* `displ`: engine displacement, in litres
+* `year`
+* `cyl`: number of cylinders
+* `trans`: type of transmission
+* `drv`: drivetrain type, f = front-wheel drive, r = rear wheel drive, 4 = 4wd
+* `cty`: city miles per gallon
+* `hwy`: highway miles per gallon
+* `fl`:  fuel type
+
+```{r data-mpg}
+dim(mpg)
+head(mpg)
+str(mpg)
+```
+
+\clearpage
+
+## Scatterplot
+
+### Exercise 1
+
+Let us consider `iris` dataset.
+
+a. Generate a scatterplot to analyze the relationship between `Sepal.Width` and `Sepal.Length` variables.  
+
+```{r ex1a-scatterplot, echo=show_solution}
+pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length)) +
+        geom_point()
+pl
+```
+
+b. Map `Species` to `colour` in `aes()`.
+
+```{r ex1b-scatterplot, echo=show_solution}
+pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length, colour=Species)) +
+  geom_point() 
+  
+pl
+```
+
+c. Add the title to the plot: `"Scatterplot of Petal.Width and Petal.Length"` (use `ggtitle()` function).
+
+```{r ex1c-scatterplot, echo=show_solution}
+pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length, colour=Species)) +
+  geom_point() +
+  ggtitle("Scatterplot of Petal.Width and Petal.Length")
+  
+pl
+```
+
+d. Customize plot title by adding `theme(plot.title = element_text())` to the plot and setting `colour` argument to `"red"`, `size` to 16 and `face` to `"bold"`.
+
+```{r ex1d-scatterplot, echo=show_solution, fig.width=5}
+pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length, colour=Species)) +
+  geom_point() +
+  ggtitle("Scatterplot of Petal.Width and Petal.Length") +
+  theme(plot.title = element_text(colour = "red", size = 16, face = "bold"))
+  
+pl
+```
+
+
+## Barplot
+
+### Exercise 1
+
+Let us consider `mpg` dataset.
+
+a. Represent graphically with a barplot the number of cars for each class.
+
+```{r ex2a-bargraph, echo=show_solution}
+pl <- ggplot(mpg, aes(class)) +
+  geom_bar()
+pl
+```
+
+b. Represent graphically with a barplot, the distribution of manufacturer for each class (map `manufacturer` variable to `fill`). 
+
+```{r ex2b-bargraph, echo=show_solution, fig.width=5, fig.height=5}
+pl <- ggplot(mpg, aes(class, fill=manufacturer)) +
+  geom_bar()
+pl
+```
+
+
+\clearpage
+
+## Histogram
+
+### Exercise 1
+
+Let us consider `iris` dataset.
+
+a. Represent the distribution of `Sepal_Length` variable with an histogram.
+
+```{r ex3a-histogram, echo=show_solution, message=FALSE}
+pl <- ggplot(data=iris, aes(x=Sepal.Length)) + 
+    geom_histogram()
+pl
+```
+
+b. Represent each level of `Species` variable in a different panel. Use `facet_grid()` function.
+
+```{r ex3b-histogram, echo=show_solution, message=FALSE}
+pl <- ggplot(data=iris, aes(x=Sepal.Length)) + 
+    geom_histogram() +
+  facet_grid(. ~ Species)
+pl
+```
+
+\clearpage
+
+## Boxplot
+
+### Exercise 1 
+
+Let us consider `iris` dataset.
+
+a. Build a boxplot to compare the differences of sepal width accordingly to the type of iris species.
+
+```{r ex4a-boxplot, echo=show_solution}
+pl <- ggplot(data=iris, aes(x=Species, y=Sepal.Width)) + 
+  geom_boxplot()
+
+pl 
+```
+
+b. Set the fill colour of boxes as `"#00FFFF"`, the lines colour of boxes as `"#0000FF"` and the outliers colour as `"red"`.
+
+```{r ex4b-boxplot, echo=show_solution}
+pl <- ggplot(data=iris, aes(x=Species, y=Sepal.Width)) + 
+  geom_boxplot(fill="#00FFFF", colour="#0000FF", outlier.colour = "red")
+
+pl 
+```
+
+c. Add the plot title: `"Boxplot of Sepal.Width vs Species"`. 
+
+```{r ex4c-boxplot, echo=show_solution}
+pl <- ggplot(data=iris, aes(x=Species, y=Sepal.Width)) + 
+  geom_boxplot(fill="#00FFFF", colour="#0000FF", outlier.colour = "red") +
+  ggtitle("Boxplot of Sepal.Width vs Species")
+pl 
+```
+
+\clearpage
+
+## Lineplot
+
+### Exercise 1 
+
+Let us suppose that the observations on `iris` are taken along time.  
+So let us consider the following dataset, named `iris2`, in which `time` variable is added:
+
+```{r ex5a-lineplot, message=FALSE}
+require(dplyr)
+iris2 <- iris %>% mutate(time=1:150)
+```
+
+a. Build a lineplot to visualize the measures of `Sepal.Length` variable along time.
+
+```{r ex5b-lineplot, echo=show_solution}
+ggplot(data = iris2, mapping = aes(y=Sepal.Width, x= time)) + 
+  geom_line()
+```
+
