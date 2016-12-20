@@ -1,8 +1,8 @@
 ---
-title: "`qtraining` repository"
+title: '`qtraining` repository'
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 Date of documentation update: 20161220  
