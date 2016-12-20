@@ -1,0 +1,92 @@
+
+# Data Discovery with R
+
+```{r setup, include=FALSE, purl=FALSE, message=FALSE}
+require(knitr)
+opts_chunk$set(echo = TRUE)
+```
+
+
+```{r g, echo=FALSE, purl=FALSE}
+include_graphics("images/flow-dtman.png", dpi=150)
+```
+
+`dplyr` provides also the tools for discovering your data. We are talking about `summarise()` verb, which collapse many values into a summary and about other best practices that allows us to combine together multiple operations. 
+
+```{r load_dplyr, message=FALSE}
+require(dplyr)
+```
+
+In the following examples, we will refer to `bank` data set. 
+
+```{r bank_tbl_df, message=FALSE}
+require(qdata)
+data(bank)
+bank
+```
+
+
+## Descriptive statistics with `summarise()` and `group_by()`
+
+`summarise()` collapses a data frame to a single row and allows us to compute descriptive statistics.
+Let us see some examples:
+
+```{r summarise}
+# Compute the mean of balance of the accounts
+summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
+# Compute the sum of balance of the accounts
+bank %>% summarise(max_balance = sum(balance, na.rm = TRUE))
+# Compute the minimum and the maximum balance of the accounts
+bank %>% summarise(max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
+# Compute the summary (number of obs, minimum, first quartile, median, mean, third quartile, 
+# maximum and standard deviation) of balance of the accounts  
+bank %>% summarise(n_obs = n(),
+              min=min(balance, na.rm = TRUE),
+              first_q=quantile(balance, prob = 0.25, na.rm = TRUE),
+              median=median(balance, na.rm = TRUE),
+              mean=mean(balance, na.rm =TRUE),
+              third_q=quantile(balance, prob = 0.75, na.rm = TRUE),
+              max=max(balance, na.rm = TRUE),
+              sd=sd(balance, na.rm =TRUE))
+```
+
+Descriptive statistics can be computed also by groups, by using `group_by()`, which is a `dplyr` function that allows us to group observations according to the levels of a variable/s.
+
+```{r group_by}
+# Compute the mean of balance of the accounts by job
+bank %>% 
+  group_by(job) %>%
+  summarise(mean_balance = mean(balance, na.rm = TRUE))
+# Compute the summary (number of obs, minimum, first quartile, median, mean, third quantile, 
+# maximum and standard deviation) of balance of the accounts by job 
+bank %>% 
+  group_by(job) %>%
+  summarise(n_obs = n(),
+            min=min(balance, na.rm = TRUE),
+            first_q=quantile(balance, prob = 0.25, na.rm = TRUE),
+            median=median(balance, na.rm = TRUE),
+            mean=mean(balance, na.rm =TRUE),
+            third_q=quantile(balance, prob = 0.75, na.rm = TRUE),
+            max=max(balance, na.rm = TRUE),
+            sd=sd(balance, na.rm =TRUE))
+```
+
+
+## Multiple operations
+
+You can also chain together multiple operations to achieve a complex result.
+Let us have a look!
+
+```{r multiple_op}
+# Compute the mean of balance of the accounts and the number of obs by job for people not older than 40 years and 
+# sort the result in ascending order  
+bank %>%
+  filter(age < 40) %>%
+  group_by(job) %>%
+  summarise(n_obs =n(),
+            mean_balance = mean(balance, na.rm = TRUE)) %>%
+  arrange(mean_balance)
+```
+
+
+

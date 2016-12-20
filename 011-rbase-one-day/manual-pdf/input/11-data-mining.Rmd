@@ -1,0 +1,150 @@
+# Data Mining with R
+
+```{r setup, include=FALSE, purl=FALSE, message=FALSE}
+require(knitr)
+opts_chunk$set(echo = TRUE)
+```
+
+
+```{r g, echo=FALSE, purl=FALSE}
+include_graphics("images/flow-dtanal.png", dpi=150)
+```
+
+Data Mining is the process to discover interesting, previously unknown and potentially useful information from large amounts of data. It is an interdisciplinary field with contributions from many areas, such as statistics, machine learning, information retrieval, pattern recognition and bioinformatics. Data mining is widely used in many domains, such as retail, finance, telecommunication and social media.
+
+```{r g1, echo=FALSE, purl=FALSE}
+include_graphics("images/DataMining.jpg", dpi=50)
+```
+
+R well supports data mining research and projects, providing lots of packages for data minig techniques.
+
+In this chapter we will analize Neural Networks, which is an advanced data mining method.
+
+## Neural Networks
+
+Neural networks tries to artificially simulate the organization and functioning of the human brain structures.
+A neural network can be seen as a system capable of giving an answer to a question or provide an output in response to an input. In particular, it takes a set of inputs (explanatory variables), transforms and weights these within a set of hidden units and hidden layers to produce a set of outputs or predictions (that are also transformed).
+
+Usually, neural networks are made up by three layers:
+
+* input layer, that capture of the network input signals
+* hidden layer, that transform the inputs into something that the output layer can use 
+* output layer, that produces output signals
+
+Next figure is an example of a feed forward neural network consisting of four inputs, a hidden layer that contains three units and an output layer that contains two outputs. The outputs of nodes in one layer are inputs to the next layer. The inputs to each node are combined using a weighted linear combination. The result is then usually modified by a nonlinear function before being output.
+
+```{r g2, echo=FALSE, purl=FALSE}
+include_graphics("images/nnet.png", dpi=250)
+```
+
+The R `nnet` package provides `nnet()` function, which fits a single-hidden-layer neural network to data. 
+
+```{r require_nnet, message=FALSE}
+require(nnet)
+```
+
+`nnet()` function syntax is very similar to the one used for linear models:
+
+```{r nnet_model, eval=FALSE, purl=FALSE}
+nn_mod <- nnet(formula, data, size)
+```
+
+`nnet()` function requires `formula` argument, which is a symbolic description of the model to be fitted, which has the form: `response variable ∼ predictor variables`.
+The variables involved in `formula` should be columns of a data frame specified in `data` argument.
+Unlike linear model definiton, you have to define `size` argument, which represents the number of units in the hidden layer. 
+
+The resulting object is of `nnet` or `nnet.formula` class and it can be investigated by most of the functions seen for linear model like `summary()`, `predict()`, `coef()` and `resid()`.
+
+### Titanic
+
+Let us see how Neural Network works, considering `titanic` data, included in `qdata` package. `titanic` data contains information about surviving to Titanic wreck along with personal and travel information of the single passengers.
+
+```{r load_data, message=FALSE}
+require(qdata)
+data(titanic)
+head(titanic)
+```
+
+The aim of study is to find a prediction model to assess the probability of die for each passenger based on its `Age`, `Gender`, and `Class` of accomodation. 
+
+Some tables could help in describing the relations between die probability and explicative variables (`Age`, `Gender`, and `Class`):
+
+```{r table_status, message=FALSE}
+require(dplyr)
+# frequency table of the counts and percentage of Died and Survived people 
+titanic %>% 
+  group_by(Status) %>%
+  summarise(n = n()) %>%
+  mutate(freq = paste(round(n/sum(n)* 100, 2), "%")) 
+```
+
+```{r table_status_class}
+# frequency table of the counts and percentage of Died and Survived people by Class
+titanic %>% 
+  group_by(Status, Class) %>%
+  summarise(n = n()) %>%
+  mutate(freq = paste(round(n/sum(n)* 100, 2), "%"))
+```
+
+```{r table_status_gender}
+# frequency table of the counts and percentage of Died and Survived people by Gender
+titanic %>% 
+  group_by(Status, Gender) %>%
+  summarise(n= n()) %>%
+  mutate(freq = paste(round(n/sum(n)* 100, 2), "%"))
+```
+
+The above tables show counts and percentages of died and survived for each combination of Sex and Class factors. Some relations appear, but its interpretation is not really simple.
+
+
+The following graph shows if some relations exist between Status and Age:
+
+```{r plot_status_age, message=FALSE, fig.width=4, fig.height=3.5}
+require(ggplot2)
+ggplot(data=titanic, mapping=aes(x=Status, y=Age)) +
+  geom_boxplot(fill="#74a9cf", colour="#034e7b")+ 
+  ggtitle("Box-plot of Age within levels of Status")
+```
+
+Apparently, a slightly lower age is in survived passengers.
+
+Neural Network method allows us to assess the probability of die for each passenger based on its `Age`, `Gender` and `Class` of accomodation.
+
+Let us divide the data in train and test samples in order to estimate the model on train sample and to test the results on test sample. 
+
+```{r train_test_samples}
+# generate train and test sample 
+train <- titanic %>% sample_frac(0.7)
+test <- titanic %>% slice(-as.numeric(rownames(train)))
+```
+
+Neural Network model estimate on train sample:
+
+```{r nn_mod_estimate}
+nn_mod <- nnet(Status ~ Class + Gender + Age, data = train, size = 3)
+```
+
+The predictions on test sample can be gained using `predict()` function:
+
+```{r nn_mod_predictions}
+pr <- predict(object = nn_mod, newdata = test)
+head(pr)
+```
+
+The predictions included the probability of survive in the Titanic wreck according to `Gender`, `Age` and `Class`. We define that probabilities below 0.5 represent `Died` (`TRUE`) and probabilities over 0.5 represent `Survived` (`FALSE`).   
+
+```{r nn_mod_predictions_class}
+test <- test %>% mutate(pr_mod = pr < .5)
+```
+
+Let us see how the performance of the fitted model on the test sample:
+
+```{r performance_table}
+test %>% 
+  group_by(Status, pr_mod) %>%
+  summarise(n = n()) %>%
+  mutate(freq = paste(round(n/sum(n)* 100, 2), "%"))
+```
+
+We conclude that the model has quite good performance in the prediction of the probability of die in the Titanic wreck according to `Gender`, `Age` and `Class`. 
+
