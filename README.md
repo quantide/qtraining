@@ -44,7 +44,7 @@ The structure is organized in the following folders:
 
 All previous folders includes courses material, apart from _00-qdata_, _courses-index_ and _include_ folders.  
 
-## An overview on courses material folders
+# An overview on courses material folders
 
 Each course material folder name must be identified by a __number__ and by the __course name__, in the following format: "number-course name".  
 The __number__ to be assigned to the course name must consist of three digits and the __course name__ must describe the course name in short. If the __course name__ consists in more than one word, the words must be separated by `-`.  
@@ -60,15 +60,34 @@ The courses material folders have the same base structure:
 
 In some courses material folder is included also _data_ folder, which contains data that can't be included in `qdata` package.
 
-### input folder
+## input folder
 
 It includes:
 
-* _Markdown and R Markdown scripts with course content_. Course content is organized in chapters. Each chapter is identified by a script.  
-* _images_ folder, which contains figures to be included in course content 
-* _TOC_ file, which contains course index. In particular, it associates each md or rmd script with its title, in the correct order.
+* _Markdown and R Markdown scripts with course content_. Course content is organized in chapters. Each chapter is identified by a script. It is recommended to add a number to the script names for ordering them (e.g. 01-first.Rmd).
+* _images_ folder, which contains figures to be included in the course content 
+* _TOC_ file, which contains course index. 
 
-### output folder
+
+### TOC file
+
+TOC files includes the structure of the course manual.
+
+The md or Rmd files must be ordered from the first to the last and must be associated with a title.
+In particular, you have to write firstly the title, then "|" and finally the md and Rmd name.
+You can also divide the rmd into sections, writing only the title of the section before the belonging Rmds.
+
+Here an example:
+
+First Section 
+First Rmd				| 1-first.Rmd
+Second Rmd  		| 2-second.Rmd
+
+Second Section
+Third Rmd				| 1-third.Rmd
+
+
+## output folder
 
 It includes:
 
@@ -76,11 +95,11 @@ It includes:
 * _purl_ folder, which contains R script with R code extracted from html (one R script for each html file), and a zip folder containing all R scripts (the folder name is "R.zip")
 * _pdf_ folder, which contains pdf file/s of courses exercises (this folder is not always present)
 
-### exercises folder
+## exercises folder
 
 It includes:
 
-* Markdown and R Markdown scripts with course exercises_.  
+* Markdown and R Markdown scripts with course exercises_.
 * _images_ folder, which contains figures to be included in exercises content 
 
 This folder is not populated in all material courses folders.
@@ -98,7 +117,7 @@ In _020-models_ script exercises and built pdf and html files are included in _e
 The course building follows the instructions provided by _Makefile_. For more details see the _Makefile_ of the course of interest.
 
 
-## _00-qdata_ folder
+# _00-qdata_ folder
 
 This folder contains courses data organized as an R package, named `qdata`.  
 It is structured in the following way:
@@ -106,7 +125,7 @@ It is structured in the following way:
 * _data_ folder, which contains data in .RData format included in `qdata` package
 * _R_ folder, which contains two R script: `qdata.R` and `qdata-data.R` with package and data documentation (written with roxigen2)
 * _pkgs_ folder, which contains `qdata` package versions realized
-* _doc_ folder, which contains an R script `raw-data.R`. This script includes some commands of operations done on data before including them in package.  
+* _doc_ folder, which contains an R script `raw-data.R`. This script includes some commands of operations done on data before including them in package.
 * _rowdata_ folder, which contains original data files
 * _DESCRIPTION_ file, which contains library desciption
 * _NAMESPACE_ file, which contains informations about imported and exported functions (automatically
@@ -115,9 +134,9 @@ created by library ‘build’)
 
 On Decembre 20 2016, the version of qdata is 0.27.
 
-### Guide for building `qdata`
+## Guide for building `qdata`
 
-#### Build `qdata`
+### Build `qdata`
 
 `qdata` is an R package so its building works as well as any R package building.
 
@@ -127,7 +146,7 @@ On Decembre 20 2016, the version of qdata is 0.27.
 
 _Note:_ When one ore more data file/s are added or when data documentation is modified, the package version MUST be updated. To update the package version modify _Version:_ tag in _DESCRIPTION_ file going forward of one digit (e.g. 027 -> 0.28)  
 
-#### Create source package
+### Create source package
 
 When you edit a new version of qdata, you MUST build a Source package of the new version:
 
@@ -141,7 +160,7 @@ Follow these steps:
 6. Move the file _qdata\_x.xx.tar.gz_ from "~dev/qtraining/00-qdata" into "~dev/qtraining/00-qdata/pkgs" 
 
 
-### Guide for installing and loading `qdata`  
+## Guide for installing and loading `qdata`  
 
 1. Open RStudio
 2. Install the package typing the following lines on the R console: 
@@ -162,7 +181,15 @@ require(qdata)
 data("bank")
 ```
 
-### qdata locations 
+Otherwise, you can install `qdata` from Rstudio "Packages" tab:
+
+1. Open RStudio
+2. Click on "Install"
+3. Set "Install from" filed to "Package Archive (.tar.gz)"
+4. Choose "qdata" for "Packages" field
+
+
+## qdata locations 
 
 The materials included into _00-qdata_ folder is included also in another github repository:
 [https://github.com/quantide/qdata](https://github.com/quantide/qdata).
@@ -174,8 +201,7 @@ Advice to update version: in _qdata_ repository, add the added .Rdata files into
 _Future Developments:_ develop _qdata_ package into a single location. 
 
 
-
-## _include_ folder
+# _include_ folder
 
 This folder contains files with the instructions on output files structure building for each course. It means that the _Makefile_ of each course refers to these files for building the structure of output files.
 
@@ -186,15 +212,16 @@ It is structured in these folders:
 * _r_
 * _tex_
 
-## _courses-index_ folder
+
+# _courses-index_ folder
 
 The content of this folder is used for building an index of courses.  
 It includes:
 
-* _course-index.html_, html file of courses index 
-* _images_ folder, which includes figures used in _course-index.html_ file 
+* _course-index.html_: html file of courses index 
+* _images_ folder: which includes figures used in _course-index.html_ file 
 
-### Modify courses index
+## Modify courses index
 
 1. Open _course-index.html_ with a text editor
 2. Modify the file. The code is written in HTML
