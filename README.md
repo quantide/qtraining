@@ -1,71 +1,86 @@
-Date of documentation update: 20160906  
+---
+title: "`qtraining` repository"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+Date of documentation update: 20161220  
 Documentation updated by: Veronica
 
-# `qtraining` repository
+# Introduction
 
 `qtraining` repository contains Quantide training courses material. 
 
 The courses included are:
 
-* R for Beginners
-* Statistical Models with R
-* Base R programming 
-* Data Manipulation with R
-* Data Visualization with R
-* Data Mining with R
+* __R for Beginners__ (two days course)
+* __R for Beginners__ (one day course)
+* __Statistical Models with R__
+* __Base R programming__
+* __Data Manipulation with R__
+* __Data Visualization with R__ in english and in italian (under development) 
+* __Data Mining with R__
+* __Big Data__ (under development)
 
-## Structure
+
+# `qtraining` Structure
 
 `qtraining` repository contains both courses development material and courses manuals.  
 The structure is organized in the following folders:  
 
 * _00-qdata_: containing courses data organized as an R package, named `qdata`
-* _010-rbase_: containing "R for Beginners" course
-* _020-models_: containing "Statistical Models with R" course  
+* _010-rbase-two-days_: containing "R for Beginners" (two days) course
+* _011-rbase-one-days_: containing "R for Beginners" (one day) course
+* _020-models_: containing "Statistical Models with R" course 
 * _030-rprogramming-base_: containing "Base R programming" course
 * _050-dplyr-datamanage_: containing "Data Manipulation with R" course
 * _060-ggplot_: containing "Data Visualization with R" course 
+* _061-ggplot-ita_: containing "Data Visualization with R" course in italian (under development)
 * _080-data-mining_: containing "Data Mining with R" course
+* _100-bigdata-spark_: contanis "Big Data" course 
 * _courses-index_: containing courses index
 * _include_: containing files for output structure building
 
-### Courses material folders
+All previous folders includes courses material, apart from _00-qdata_, _courses-index_ and _include_ folders.  
 
-The courses material folders are: _010-rbase_, _020-models_, _030-rprogramming-base_, _050-dplyr-datamanage_, _060-ggplot_ and _080-data-mining_.  
+## An overview on courses material folders
 
-Each course material folder name must be identified by a number and by the course name, in the following format: "number-course name".  
-The number to be assigned to the course name must consist of three digits.
+Each course material folder name must be identified by a __number__ and by the __course name__, in the following format: "number-course name".  
+The __number__ to be assigned to the course name must consist of three digits and the __course name__ must describe the course name in short. If the __course name__ consists in more than one word, the words must be separated by `-`.  
 
-These folders have the same base structure:
+The courses material folders have the same base structure:
 
-1. _input_ folder, which contains source files of course material  
+1. _input_ folder, which contains source files of course material
 2. _output_ folder, which contains built course material files
 3. _exercises_ folder, which contains source files of exercises 
-4. _docs_ folder, which contains documents useful for course development  
+4. _docs_ folder, which contains documents useful for course development
 5. _Makefile_, which is a text file containg code written in Linux kernel. It is a simple way to organize code compilation. It contains the instructions for building the content of `output` folder
 6. RStudio project file, named `course name.Rproj`
 
-In some courses material folder is included also __data__ folder, which contains data that can't be included in `qdata` package.
+In some courses material folder is included also _data_ folder, which contains data that can't be included in `qdata` package.
 
-In particular:
+### input folder
 
-__input__ folder includes:
+It includes:
 
 * _Markdown and R Markdown scripts with course content_. Course content is organized in chapters. Each chapter is identified by a script.  
 * _images_ folder, which contains figures to be included in course content 
 * _TOC_ file, which contains course index. In particular, it associates each md or rmd script with its title, in the correct order.
 
+### output folder
 
-__output__ folder includes:
+It includes:
 
 * _html_ folder, which contains htmls files with the full content of the course and a zip folder containing all html files (the folder name is "course name.zip") 
 * _purl_ folder, which contains R script with R code extracted from html (one R script for each html file), and a zip folder containing all R scripts (the folder name is "R.zip")
 * _pdf_ folder, which contains pdf file/s of courses exercises (this folder is not always present)
 
+### exercises folder
 
-__exercises__
+It includes:
 
-* _Markdown and R Markdown scripts with course exercises_.  
+* Markdown and R Markdown scripts with course exercises_.  
 * _images_ folder, which contains figures to be included in exercises content 
 
 This folder is not populated in all material courses folders.
@@ -74,7 +89,7 @@ In _010-rbase_ and _050-dplyr-datamanage_, exercises are organized in chapters. 
 In _020-models_ script exercises and built pdf and html files are included in _exercises_ folder. They are not built by the _Makefile_, but manually clicking "Knit PDF" from RStudio toolbar, because the exercises are not yet completed. 
 
  
-### Guide for building course material
+## Guide for building course material
 
 1. Open RStudio
 2. Double-click on the project file
@@ -82,7 +97,8 @@ In _020-models_ script exercises and built pdf and html files are included in _e
 
 The course building follows the instructions provided by _Makefile_. For more details see the _Makefile_ of the course of interest.
 
-### _00-qdata_ folder
+
+## _00-qdata_ folder
 
 This folder contains courses data organized as an R package, named `qdata`.  
 It is structured in the following way:
@@ -97,7 +113,11 @@ It is structured in the following way:
 created by library ‘build’)
 * R project file, named `qdata.Rproj`
 
+On Decembre 20 2016, the version of qdata is 0.27.
+
 ### Guide for building `qdata`
+
+#### Build `qdata`
 
 `qdata` is an R package so its building works as well as any R package building.
 
@@ -105,13 +125,29 @@ created by library ‘build’)
 2. Double-click on the project file
 3. Click "Build & Reload" on RStudio "Build" tab or click "Ctrl+Shift+B" on the keyboard
 
+_Note:_ When one ore more data file/s are added or when data documentation is modified, the package version MUST be updated. To update the package version modify _Version:_ tag in _DESCRIPTION_ file going forward of one digit (e.g. 027 -> 0.28)  
+
+#### Create source package
+
+When you edit a new version of qdata, you MUST build a Source package of the new version:
+
+Follow these steps:
+
+1. Move the folders: _pkgs_ and _rowdata_ from _00-qdata_ folder into another location (cut and paste), in order to not include them in the source package
+2. Open RStudio
+3. Open "More" window on RStudio "Build" Tab
+4. Click on "Build Source package"
+5. Reinsert the folders: _pkgs_ and _rowdata_ into _00-qdata_ folder
+6. Move the file _qdata\_x.xx.tar.gz_ from "~dev/qtraining/00-qdata" into "~dev/qtraining/00-qdata/pkgs" 
+
+
 ### Guide for installing and loading `qdata`  
 
 1. Open RStudio
 2. Install the package typing the following lines on the R console: 
 
 ```{r}
-install.packages("~/dev/qtraining/00-qdata/pkgs/qdata_0.24.tar.gz", repo = NULL )
+install.packages("~/dev/qtraining/00-qdata/pkgs/qdata_0.27.tar.gz", repo = NULL )
 ```
 
 3. Loading `qdata` package on the workspace, typing:
@@ -125,6 +161,19 @@ require(qdata)
 ```{r}
 data("bank")
 ```
+
+### qdata locations 
+
+The materials included into _00-qdata_ folder is included also in another github repository:
+[https://github.com/quantide/qdata](https://github.com/quantide/qdata).
+
+_qdata_ is a public Quantide repository contining the data necessary for public courses available on Quantide website. So also this version has to be updated. When you update the version on _qtraining_ repository you have to update also that in _qdata_ repository. 
+
+Advice to update version: in _qdata_ repository, add the added .Rdata files into _data_ folder, and replace the scripts included in _R_ folder with that modified of _qtraining_ version.  
+
+_Future Developments:_ develop _qdata_ package into a single location. 
+
+
 
 ## _include_ folder
 
@@ -151,6 +200,8 @@ It includes:
 2. Modify the file. The code is written in HTML
 3. Save the file
 
+
+# Other Details
 
 ## Generate a PDF BOOK starting from rmds (bookdown)
 
