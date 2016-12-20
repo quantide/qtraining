@@ -1,0 +1,18 @@
+About R
+R and a bit of history                          | 01-rhistory.Rmd
+Online resources                                | 02-online-resources.Rmd
+R and R-Studio installation and configuration   | 03-r-installation.Rmd
+
+First Steps with R
+Your first R session                            | 04-first-rsession.Rmd
+Data Objects                                    | 05-data-obj.Rmd
+
+Knowledge from data with R
+Data Import                                     | 06-data-import.Rmd
+Data Manipulation                               | 07-data-manipulation.Rmd
+Data Discovery                                  | 08-data-discovery.Rmd
+Data Visualization                              | 09-data-visualization.Rmd
+Statistical Models                              | 10-statistical-models.Rmd
+Data Mining                                     | 11-data-mining.Rmd
+Reports with R Markdown                         | 12-rmarkdown.Rmd  
+
