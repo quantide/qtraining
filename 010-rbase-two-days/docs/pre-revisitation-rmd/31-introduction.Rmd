@@ -1,0 +1,23 @@
+---
+title: "Introduction to Data Import and Export"
+---
+
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
+options(width = 108)
+require(knitr)
+opts_knit$set(root.dir = "./../data")
+outDir <- "."
+```
+
+
+![](./images/flow-robj.png)
+
+In the following chapters we will explore data import and export methods for:
+
+* Text files
+* Microsoft Excel files
+* Databases
+* R data files
+
+
+

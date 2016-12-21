@@ -1,0 +1,28 @@
+---
+title: "Introduction to R Objects"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+
+
+There are different types of objects in R, which can be divided in:
+
+* data objects
+* function object
+ 
+**Data objects** are specific types of data structures by which is possible to organize data. The most important are:
+
+* vectors 
+* matrices 
+* lists 
+* factors
+* data frames
+
+**Function object** refers to operation done on data.
+
+We will deepen these two categories of R objetcs in the following chapters.
+

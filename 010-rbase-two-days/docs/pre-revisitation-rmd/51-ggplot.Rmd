@@ -1,0 +1,629 @@
+---
+title: "Data Visualization with ggplot2"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+```{r first, message=FALSE}
+require(dplyr)
+require(ggplot2)
+require(qdata)
+data(bands)
+```
+
+
+![](./images/flow-dtvisual.png)
+
+
+`ggplot2` is a data visualization package for the statistical programming language R. Created by Hadley Wickham in 2005, `ggplot2` is an implementation of Leland Wilkinson's Grammar of Graphics, a general scheme for data visualization which breaks up graphs into semantic independent components, such as scales and layers, that can be composed in many different ways. This makes `ggplot2` very powerful, because there are no limitations due to a set of pre-specified graphics, so it is possible to create new graphics that are precisely tailored for the problem in analysis. 
+
+```{r, eval=FALSE, purl=FALSE}
+require(ggplot2)
+```
+
+In this chapter we will know how to build the following types of graph with `ggplot2`: 
+
+* scatterplot
+* line graph
+* bar graph
+* histogram
+* box plot
+
+## Scatterplot
+
+Scatter plots are used to display the relationship between two continuous variables. Axes represent a variable each, while each point represents an observation. This plot is often the first way to describe data when you look at it. 
+
+```{r scatterplots, message=FALSE, echo=FALSE, purl=FALSE}
+set.seed(123456)
+ds <- data.frame(matrix(rnorm(40*4, 4), ncol=4))
+
+ggplot(data=ds) + geom_point(aes(x=X1, y=X2, size=X3*1), colour="#2B4C6F", show.legend = FALSE) +
+  xlab("Explanatory variable\n(x)") + ylab("Response variable\n(y)") +
+  theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+```
+
+
+Let us know how to build a scatterplot.  
+Suppose you are interested in the relationship between the humidity and the viscosity in the `bands` dataset.  
+In particular, `bands` dataset provides data about process delays known as cylinder banding in rotogravure printing.
+
+```{r scatterplot_first, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point()
+``` 
+
+The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: 
+
+* _data_ refers to the dataframe to use for the plot, in this case is the `bands` data frame 
+* _mapping_ refers to the  list of aesthetic mappings (visual properties) to use for plot, passed as arguments of the `aes()` function. In this case you _map_ the data to _aesthetics_  of plot like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `viscosity` variable. Note that the variable names must be unquoted.
+
+The `ggplot()` function does not return anything. You have to add to `ggplot()`, which geometric object (_geom_) you want to add. A scatter plot is made by points, and so you will use the `geom_point()` function, without any argument. 
+
+Alternatively, the plot can be initialized with `ggplot()` without any argument and the same arguments have to be passed to `geom_point()`, but these arguments are valid only for this geom.
+
+```{r scatterplot_geompoint, message=FALSE, warning=FALSE}
+ggplot() + geom_point(data=bands, mapping=aes(x=humidity, y=viscosity))
+```
+
+
+### Assigning `ggplot`s to a variable
+
+From a formal point of view, a ggplot is an R object like anything else; so you can assign it to a variable.
+
+```{r scatterplot_assignment1, message=FALSE, warning=FALSE}
+gp1 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + geom_point() 
+```
+
+And now you can recall the plot named `gp1`.
+
+```{r scatterplot_assignment2, message=FALSE, warning=FALSE}
+gp1
+```
+
+Once you assigned the scatter plot to `gp1`, you can add to this plot an horizontal line by doing:
+```{r scatterplot_assignment3, message=FALSE, warning=FALSE}
+gp2 <- gp1 + geom_hline(yintercept = 50)
+gp2
+```
+
+
+### Changing the shape and size of points
+
+To change the aspect of points like shape or size: it suffices to set the `shape` or the `size` as a parameter of `geom_point()`.
+
+```{r scatterplot_shape, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point(shape=2)
+```
+
+The following shapes are available in R graphics. Point shapes from 0 to 14 have just an outline, shapes from 15 to 20 are solid and shapes from 21 to 25 have both an outline and a fill. Default shape for `ggplot2` graphics is 16.
+
+```{r plot_shape, echo=FALSE, fig=TRUE, purl=FALSE}
+ par(mar=rep(0,4))
+ # Make an empty chart
+ plot(1, 1, xlim = c(1, 5.5), ylim=c(0.5, 9.5), type = "n", axes = FALSE, ann = FALSE, frame.plot = TRUE, mar=0)
+ # Plot symbols 0-4 with increasing size
+ points(1:5, rep(9, 5), cex = 2, pch = 0:4, col="red", bg="green")
+ text((1:5) + 0.4, rep(9, 5), cex = 1, (0:4))
+ # Plot symbols 5-9 with labels
+ points(1:5, rep(7, 5), cex = 2, pch = (5:9), col="red", bg="green")
+ text((1:5) + 0.4, rep(7, 5), cex = 1, (5:9))
+ # Plot symbols 10-14 with labels
+ points(1:5, rep(5, 5), cex = 2, pch = (10:14), col="red", bg="green")
+ text((1:5) + 0.4, rep(5, 5), cex = 1, (10:14))
+ # Plot symbols 15-19 with labels
+ points(1:6 * 0.8 + 0.2, rep(3, 6), cex = 2, pch = (15:20), col="red", bg="green")
+ text((1:6) * 0.8 + 0.6, rep(3, 6), cex = 1, (15:20))
+ # Plot symbols 20-25 with labels
+ points((1:5), rep(1, 5), cex = 2, pch = (21:25), col="red", bg="green")
+ text((1:5) + 0.4, rep(1, 5), cex = 1, (21:25))
+```
+
+Shape can also be a (single) character string.
+
+```{r scatterplot_shape_char, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point(shape="$", size=3)
+```
+
+The same way works for `size` too.
+
+```{r scatterplot_size, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point(size=5)
+```
+
+```{r scatterplot_shape_size, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point(shape=3, size=1)
+```
+
+
+### Changing the colour of points
+
+Colour can be set in a similar way than `shape` and `size`: setting `colour` as a `geom_point()` parameters. Both UK and US spellings (`color`) can be used.
+
+```{r scatterplot_colour, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point(colour="red")
+```
+
+Shapes from 21 to 25 allow two colours. In these cases, `colour` set the outline and `fill` set the internal colour.
+
+```{r scatterplot_fill, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
+  geom_point(shape=21, colour="red", fill="#FF0000")
+```
+
+When you need to pass a colour to R, you can use a string with the colour name ("red") or with the hexadecimal code (e.g. "#FF0000").
+
+Data used in these examples has 540 observations but the plot seems have less points. This is because many points overlap. Transparencies are useful in this cases. The `alpha` aesthetic set the transparency level: legal `alpha` values are any numbers from 0 (transparent) to 1 (opaque). 
+
+```{r scatterplot_alpha, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
+  geom_point(alpha=0.25)
+```
+
+Since `alpha=0.25` (and 0.25 is 1/4) a point will be drawn as solid when four points overlap.
+
+
+### Mapping a third variable to scatter plots
+
+Scatter plots were born to visualize the relationship between two variables: one mapped to the x-axis and one mapped to the y-axis. Sometimes, a third variable should be visualized. In these case, you can map a third variable to other aesthetics: size, shape or colour.
+
+Suppose you're interested in the relationship between `humidity` and  `viscosity` accordingly the presence or absence of `band_type`. To perform this task, you have to map `band_type` to `colour`. 
+
+```{r scatterplot_map_colour, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type)) +
+  geom_point()
+```
+
+Note that mapping occurs within `aes()`, while setting occurs outside of `aes()`.
+
+The plot shows the same points that previous ones with different colours and a legend will be added.
+
+Alternatively, you can map `band_type` to another aesthetic, like `shape`.
+
+```{r scatterplot_map_shape, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=band_type)) +
+  geom_point()
+```
+
+Since different shapes are more difficult to read when you have many points, this solution provide an alternative when you are printing in black and white, without colours. You can improve your result using both aesthetics together.
+
+```{r scatterplot_map_colour_shape, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type, shape=band_type)) +
+  geom_point()
+```
+
+You can map `band_type` to size, but the result advise against this choice. 
+```{r scatterplot_map_size, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=band_type)) +
+  geom_point()
+```
+
+If you're interested in a continuous variable as third variable you can `map` it to `colour` or to `size`. It makes no sense map a continuous value to `shape`.
+
+```{r scatterplot_map_colour_continuous, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=ink_pct)) +
+  geom_point()
+```
+
+```{r scatterplot_map_size_continuous, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
+  geom_point()
+```
+
+It is more difficult perceiving small differences in size and colour, so variable mapped to these aesthetic attributes will be interpreted with a much lower accuracy than those mapped to spatial coordinates (`x` and `y`).
+
+### Mapping four variables to scatter plots
+
+Although the interpretation may be difficult, different variable can map to different aesthetics at the same time. From a theoretical point of view you can map as many variable as the number of aesthetics, but it is not suggested map more than four variable.
+
+This is the result when you are interested to the ink percentage and band type, at the same time.
+
+```{r scatterplot_map_four_variables, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct, colour=band_type)) +
+  geom_point()
+```
+
+When a variable is mapped to `size` it is not suggested to map another variable to `shape`. This is because it is difficult to compare the sizes of different shapes.
+
+## Line Graph
+
+Line Graphs are used to display how one continuous variable, on the y-axis, changes in relation to another continuous variable, on the x-axis. It is similar to a scatter plot, except that points are ordered in the x-axis and connected by a segment. Points can also be missing. 
+
+```{r linegraphs, message=FALSE, echo=FALSE, purl=FALSE}
+ds = data.frame(x=0:6, y=c(0,3,7,12,20,30,45.6))
+
+ggp <- ggplot(data=ds, aes(x=x, y=y)) + 
+  geom_line(colour="#2B4C6F") +  
+  xlab("Explanatory variable\n(x)") + ylab("Response variable\n(y)") +
+  theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+
+gridExtra::grid.arrange(ggp+geom_point(colour="#2B4C6F"), ggp, ncol=2)
+```
+
+
+Let us know how to build a line graph.  
+`ChickWeight` data contains the body weight of 50 chicks over time. Suppose you are interested to the growth of the first chick.
+
+```{r linegraph_first, message=FALSE}
+ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + geom_line()
+```
+
+Points can be easily added with `geom_point()`.
+
+```{r linegraph_geompoint, message=FALSE}
+ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) + geom_line() + geom_point()
+```
+
+You can change the appearance of the plot setting an aesthetic to a value. For example, the following plot has a dark blue line with squared and bigger points.
+
+```{r linegraph_set, message=FALSE}
+ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
+  geom_line(colour="darkblue") + geom_point(shape=15, size=2)
+```
+
+Available aesthetic are `x`, `y`, `alpha`, `colour` and `size` with the same (intuitive) meaning already seen for `geom_point()`.
+
+To choose the style of the line you can use `linetype`. 
+
+<!--
+If you are experienced with R basic graphic, `linetype` has the same meaning that `lty`.
+-->
+
+```{r linegraph_linetype, message=FALSE}
+ggplot(data=(ChickWeight %>% filter(Chick==1)), mapping=aes(x=Time, y=weight)) +
+  geom_line(colour="darkblue", linetype=2)
+```
+
+The `linetype` can be a number (0-6) or a description (like `"solid"` or `"dashed"`). Available line types are:
+
+```{r plot_linetypes, echo=FALSE, fig=TRUE, purl=FALSE}
+par(mar=rep(0,4))
+# Make an empty chart
+plot(1, 1, xlim = c(0.5, 5.5), ylim=c(0.5, 7.5), type = "n", axes = FALSE, ann = FALSE, frame.plot = TRUE, mar=0)
+# Default values
+x0 = 0.5 # Text x coordinate
+xs = 1.8 # Line start point
+xe = 5.2 # Line end point
+cex0 = 1 # Default text size (cex)
+pos0 = 4 # Default text position (pos): right
+lwd0 = 2 # Default line width (lwd)
+# Line 0
+text(x = x0, y = 7, labels = '0. "blank"', cex = cex0, pos = pos0)
+lines(x = c(xs, xe), y = c(7, 7), lty = 0, lwd = lwd0)
+# Line 1
+text(x = x0, y = 6, labels = '1. "solid"', cex = cex0, pos = pos0)
+lines(x = c(xs, xe), y = c(6, 6), lty = 1, lwd = lwd0)
+# Line 2
+text(x = x0, y = 5, labels = '2. "dashed"', cex = cex0, pos = pos0)
+lines(x = c(xs, xe), y = c(5, 5), lty = 2, lwd = lwd0)
+# Line 3
+text(x = x0, y = 4, labels = '3. "dotted"', cex = cex0, pos = pos0)
+lines(x = c(xs, xe), y = c(4, 4), lty = 3, lwd = lwd0)
+# Line 4
+text(x = x0, y = 3, labels = '4. "dotdash"', cex = cex0, pos = pos0)
+lines(x = c(xs, xe), y = c(3, 3), lty = 4, lwd = lwd0)
+# Line 5
+text(x = x0, y = 2, labels = '5. "longdash"', cex = cex0, pos = pos0)
+lines(x = c(xs, xe), y = c(2, 2), lty = 5, lwd = lwd0)
+# Line 6
+text(x = x0, y = 1, labels = '6. "twodash"', cex = cex0, pos = pos0)
+lines(x = c(xs, xe), y = c(1, 1), lty = 6, lwd = lwd0)
+```
+
+
+### Mapping variables to line graphs
+
+If you are interested in the average growth of chicks for the different diets, you must first summarize data.
+
+```{r linegraph_ChickWeightMean, message=FALSE}
+ChickWeightMean <- ChickWeight %>% group_by(Time, Diet) %>% summarize(weight=mean(weight))
+ChickWeightMean
+```
+
+If you draw the same plot as above with new data, you will obtain a figure like this one.
+
+```{r linegraph__sawtooth, message=FALSE}
+ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight)) +
+  geom_line() + geom_point()
+```
+
+A jagged line appears when there are multiple data at each `x` and you tell ggplot to connect them. A plot like this one should sounds as a warning that something is wrong. In order to have a single point for each `x` you can summarize your data, or you can draw several lines, accordingly to a third variable, just adding a new aesthetic.
+
+```{r linegraph_aes, message=FALSE}
+ggplot(data=ChickWeightMean, mapping=aes(x=Time, y=weight, colour=Diet)) +
+  geom_line() + geom_point()
+```
+
+
+
+## Bar graph
+
+Bar Graphs are used to display numeric values for different categories. Although they appears similar to Histograms, these plots are very different: bar plot are used for categorical x values, bars should be spaced and the weight of the bar has no meaning while histograms are used for continuous y values, bars (that are called _bins_) must not be spaced and the weight of bins depends on data.
+
+To avoid confusion between bar graphs and histograms, some authors suggest to build bars horizontally.
+
+```{r bargraphs, message=FALSE, echo=FALSE, purl=FALSE}
+ds = data.frame(x=factor(1:4), y=c(4,2,6,5))
+
+ggp <- ggplot(data=ds, aes(x=x, y=y)) +
+  geom_bar(stat="identity", fill=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b")) + 
+  theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+
+ggp1 <- ggp +
+  xlab("Discrete variable\n(x)") + ylab("Frequencies\n(y)")
+
+ggp2 <- ggp +
+  xlab("Discrete variable\n(y)") + ylab("Frequencies\n(x)") +
+  coord_flip()
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
+```
+
+Let us know how to build a bar graph.  
+As seen in the previous paragraph, in `ChickWeight` dataset chicks receive one of four diets. A graphical summary about how chicks receive each diet can be obtained.
+
+```{r bargraph_first, message=FALSE}
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar()
+```
+
+If you prefer horizontal bars, just flip the plot with `coord_flip()`.
+
+```{r bargraph_coordflip, message=FALSE}
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar() + coord_flip()
+```
+
+Another way to distinguish bar graphs and histograms are tiny bars, to increase the space among bars.
+
+```{r bargraph_width, message=FALSE}
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) + geom_bar(width=0.5)
+```
+
+### Setting and mapping variables to bar graphs
+
+Colours and other available aesthetics (`linetype` and `size`) can be set or mapped as usual. Remember that `colour` controls the bar outline, while `fill` controls the bar colour.
+
+If you do not set four different fill colours, all bars have the same colours as shown above. You can specify bar colours in `fill` argument of `geom_bar()`:
+
+```{r bargraph_setcolour, message=FALSE}
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
+  geom_bar(fill=c("#74a9cf", "#3690c0", "#0570b0", "#034e7b"))
+```
+
+
+or mapping fill colours to the level of `Diet` in `geom_bar()` function:
+
+```{r bargraph_mapping, message=FALSE}
+ggplot(data=ChickWeight, mapping=aes(x=Diet)) +
+  geom_bar(mapping=aes(fill=Diet))
+```
+
+
+### Summarized data and `stat`s
+
+Sometimes data comes already summarized. As an example, you can have the following frequency tables without the original data.
+
+```{r bargraph_ChickWeightFreq, message=FALSE}
+ChickWeightFreq <- ChickWeight %>% group_by(Diet) %>% summarize(n=n())
+ChickWeightFreq
+```
+
+You can try to build the previous plot in the same way.
+
+```{r bargraph_error, message=FALSE}
+ggplot(data=ChickWeightFreq, mapping=aes(x=Diet)) + geom_bar()
+```
+
+The result is a plot with four bars of length 1. Why? The reason is quite simple. By default, `geom_bar()` scans the `Diet` column counting how many observations have Diet=1, how many have Diet=2 and so on. In this case, you must tell `ggplot` you already have the count.
+
+```{r bargraph_identity, message=FALSE}
+ggplot(data=ChickWeightFreq, mapping=aes(x=Diet, y=n)) + geom_bar(stat="identity")
+```
+
+Since you have an `y` variable containing frequencies, you tell `ggplot` the variable containing counts (`y=n` in the example) and to `geom_bar` that `stat="identity"` must be used. 
+
+A statistical transformation, or `stat`, transforms the data, typically by summarizing it in some manner. By default, almost all `geom`s seen until now uses `stat="identity"`, that do not transform data. As just seen, by default `geom_bar()` uses `stat="count"` that counts the number of cases at each `x` position. If you do not want to transform your data, `stat="identity"` must be supplied.
+
+
+### Stacked and grouped bar graphs
+
+If you are a quality engineer analysing the `bands` data, you may be interested to the number of presses for each type, distinguishing them by the cylinder size.
+
+```{r bargraph_stack, message=FALSE}
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar()
+```
+
+Mapping `fill` to `cylinder_size` does the job. Notice a small gray area at the top of the last two bars: this means there are few cases in which `cylinder_size` is missing. 
+
+Sometimes you may be interested at the distribution of `cylinder_size` for each `press_type`.
+
+```{r bargraph_fill, message=FALSE}
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar(position="fill")
+```
+
+In the case you prefer a bar for each combination of `press_type` and `cylinder_size`, you can `dodge` the bars.
+
+```{r bargraph_dodge, message=FALSE}
+ggplot(data=bands, mapping=aes(x=press_type, fill=cylinder_size)) + geom_bar(position="dodge")
+```
+
+## Histogram
+
+Histograms are used to summarize a continuous variable into classes, called _bins_. The area (and not the height) of each bin is proportional to the frequency of cases in the bin. The vertical axis is not frequency but density. When bins are equal size, a rectangle is erected over the bin with height proportional to the frequency. As the adjacent bins leave no gaps, the rectangles of a histogram touch each other to indicate that the original variable is continuous.
+
+```{r histograms, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE}
+ggp <- ggplot(data=bands, aes(x=ink_pct)) + 
+  xlab("Continuous variable\n(x)") +
+  theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+
+ggp1 <- ggp + geom_histogram(fill="#2B4C6F") + ylab("Frequency\n(y)")
+
+ggp2 <- ggp + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins = 8) + ylab("Density\n(y)")
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
+```
+
+
+
+Let us know how to build an histogram.    
+Suppose you are a quality engineer and you are interested to the distribution of ink percentage in `bands` data.
+
+```{r histogram_first, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram()
+```
+
+As usual, aesthetics can be set to modify the appearance of plot.
+
+```{r histogram_aes, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0")
+```
+
+By default, the data is grouped into 30 bins. You can modify the number of bins:
+
+ - setting the number of bins:
+    ```{r histogram_bins, message=FALSE, warning=FALSE}
+    ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0", bins=6)
+    ```
+    
+ - setting the width of each bin:
+    ```{r histogram_binwidth, message=FALSE, warning=FALSE}
+    ggplot(data=bands, mapping=aes(x=ink_pct)) + geom_histogram(fill="#2B4C6F", colour="#3690c0", binwidth=7)
+    ```  
+    
+### Mapping variables to histograms and faceting
+
+May be interesting analysing the distribution of ink percentage for each level of `proof_on_ctd_ink`. 
+
+```{r histogram_mapping, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(mapping=aes(fill=proof_on_ctd_ink))
+```
+
+Mapping the grouping variable to `fill`, two overlapped distributions are shown. In some cases, as shown above, this solution may work. In other cases, the result may be very difficult to be understood.
+
+```{r histogram_mapping_hide, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(mapping=aes(fill=press_type))
+```
+
+In this cases, four different histograms may produce a more readable result.
+
+```{r histogram_facetgrid_col, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") +
+  facet_grid(. ~ press_type)
+```
+
+`facet_grid()` produces a different panel for each level of `press_type`. It requires a formula style: `rows ~ columns`. The dot in the formula is used to indicate there should be no faceting on this dimension (either row or column). The following example shows faceting on rows.
+
+```{r histogram_facetgrid_row, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") +
+  facet_grid(type_on_cylinder ~ .)
+```
+
+Faceting on both dimensions:
+
+```{r histogram_facetgrid_row_col, message=FALSE, warning=FALSE}
+ggplot(data=bands, mapping=aes(x=ink_pct)) +
+  geom_histogram(fill="#2B4C6F") +
+  facet_grid(type_on_cylinder ~ press_type)
+```
+
+
+## Box Plot
+
+A Box-and-Whiskers Plot, or Box Plot, is a convenient way to draw data distribution. The box ranges from the first quartile to the third (inter-quartile range or IQR) with a line indicating the median (second quartile). The whiskers contains the lowest datum still within 1.5 IQR of the lower quartile, and the highest datum still within 1.5 IQR of the upper quartile. If there are data outside the range of whiskers, they are represented by a dot. Box Plots are very popular among data analyst, but they are not suggested for a wider audience. Box plots can be drawn either horizontally or vertically.
+
+```{r boxplots, message=FALSE, warning=FALSE, echo=FALSE, purl=FALSE}
+ggp <- ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#3690c0") +
+  ylab("Continuos variable") + xlab("Grouping variable") + 
+  theme(
+    axis.text.x = element_blank(), axis.text.y = element_blank()
+  )
+
+ggp1 <- ggp + theme(axis.ticks.x = element_blank())
+  
+ggp2 <- ggp + theme(axis.ticks.y = element_blank()) + coord_flip()
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
+```
+
+
+Let us know how to build a box plot.   
+Supposing you are interested in the differences of ink percentage accordingly to the type of press in `bands` data. You can build four box plots to compare distributions.
+
+```{r boxplot_first, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#3690c0")
+```
+
+Appearance aesthetics work as seen until now; `fill` controls the box filling, while `colour` controls the box outline, whiskers and outline points. 
+
+```{r boxplot_colour, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b")
+```
+
+There are also a few `outline.*` parameter to set aesthetics for outlier points.
+
+```{r boxplot_outlines, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b", outlier.colour="red", outlier.shape=18, outlier.size=3)
+```
+
+
+### Customizing Titles and Axis
+
+Also axes title can be changed. This is useful when the name of the variable is not enough clear. `xlab()` function sets the y-axis title, `ylab()` set the y-axis title, while `ggtitle()` should be used when you want a title for the whole plot. Note the use of the escape code `\n` to break lines.
+
+```{r boxplot_ylab, message=FALSE, warning=FALSE}
+ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+  geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+  xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)")
+```
+
+Then, `theme()` function sets many theme settings. Here only a few options regarding axis and titles are shown:
+
+ - `axis.ticks.x` (or `axis.ticks.y`) controls the ticks of x-axis (or y-axis). `axis.ticks` performs the same action to both axis. You can suppress ticks with `element_blank()` or use `element_line()` to change the aspect of ticks setting `colour`, `size` or `linetype`.
+ 
+    ```{r boxplot_axis_ticks, message=FALSE, warning=FALSE}
+    ggplot(data=bands, aes(x="0", y=ink_pct)) + 
+      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
+      theme(axis.ticks.x = element_line(colour="green", size=4), axis.ticks.y=element_line(colour="red"))
+    ```
+
+ - `axis.text.x`, `axis.text.y` and `axis.text` controls the text of x, y or both axis ticks. You can suppress text with `element_blank()` or use `element_text()` to change the aspect of ticks setting font `family`, font `face`, `colour`, `size`, `angle` and other options.
+ 
+    ```{r boxplot_axis_text, message=FALSE, warning=FALSE}
+    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
+      theme(axis.text = element_text(face="bold", colour="#034e7b"))
+    ```
+    
+ - `axis.text.x`, `axis.text.y` and `axis.text` controls the title of x, y or both axes. You can suppress text with `element_blank()` or use `element_text()` to change the aspect of axis text.
+ 
+    ```{r boxplot_axis_title, message=FALSE, warning=FALSE}
+    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
+      theme(axis.title = element_text(face="italic", colour="#034e7b"))
+    ```
+    
+ - `plot.title` controls the text of the overall plot. You can use `element_text()` to change the aspect of title.
+ 
+    ```{r boxplot_plot_title, message=FALSE, warning=FALSE}
+    ggplot(data=bands, aes(x=press_type, y=ink_pct)) + 
+      geom_boxplot(fill="#74a9cf", colour="#034e7b") +
+      xlab("Press type") + ylab ("Ink %") + ggtitle("Distribution\n(bands data set)") +
+      theme(plot.title = element_text(face="bold", size=18))
+    ```
+    
