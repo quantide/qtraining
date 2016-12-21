@@ -120,11 +120,11 @@ $(document).ready(function () {
 </div>
 
 
-<p>Date of documentation update: 20161220<br />
+<p>Date of documentation update: 20161221<br />
 Documentation updated by: Veronica</p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p><code>qtraining</code> repository contains Quantide training courses material.</p>
+<p><code>qtraining</code> is a private Github repository containing Quantide training courses material.</p>
 <p>The courses included are:</p>
 <ul>
 <li><strong>R for Beginners</strong> (two days course)</li>
@@ -137,6 +137,22 @@ Documentation updated by: Veronica</p>
 <li><strong>Big Data</strong> (under development)</li>
 </ul>
 </div>
+<div id="clone-qtraining-repository-on-your-pc" class="section level1">
+<h1>Clone <code>qtraining</code> repository on your pc</h1>
+<p><code>qtraining</code> repository is a private Quantide repository on Github, so to work on it you have to belong to Quantide team on Github.</p>
+<p>If you want to work on <code>qtraining</code> repository, you have to clone it on your pc. Github projects must be developed on <em>dev</em> folder inside your “/home/user-name”. If you don’t have this folder you have to create it.</p>
+<p>Follow these steps:</p>
+<ol style="list-style-type: decimal">
+<li>Open your browser</li>
+<li>Go on <a href="https://github.com/quantide/qtraining" class="uri">https://github.com/quantide/qtraining</a></li>
+<li>Click on “Clone or Download” green button</li>
+<li>Choose “Clone with ssh” and copy the address (press “copy to clickboard” button)</li>
+<li>Open a shell</li>
+<li>Place yourself inside <em>dev</em> folder</li>
+<li>Enter <code>git clone &lt;address&gt;</code></li>
+</ol>
+<p>A folder, named <em>qtraining</em> will be created into <em>dev</em> folder. It will include <code>qtraining</code> repository.</p>
+</div>
 <div id="qtraining-structure" class="section level1">
 <h1><code>qtraining</code> Structure</h1>
 <p><code>qtraining</code> repository contains both courses development material and courses manuals.<br />
@@ -148,7 +164,7 @@ The structure is organized in the following folders:</p>
 <li><em>020-models</em>: containing “Statistical Models with R” course</li>
 <li><em>030-rprogramming-base</em>: containing “Base R programming” course</li>
 <li><em>050-dplyr-datamanage</em>: containing “Data Manipulation with R” course</li>
-<li><em>060-ggplot</em>: containing “Data Visualization with R” course</li>
+<li><em>060-ggplot</em>: containing “Data Visualization with R” course in english</li>
 <li><em>061-ggplot-ita</em>: containing “Data Visualization with R” course in italian (under development)</li>
 <li><em>080-data-mining</em>: containing “Data Mining with R” course</li>
 <li><em>100-bigdata-spark</em>: contanis “Big Data” course</li>
@@ -175,17 +191,21 @@ The <strong>number</strong> to be assigned to the course name must consist of th
 <h2>input folder</h2>
 <p>It includes:</p>
 <ul>
-<li><em>Markdown and R Markdown scripts with course content</em>. Course content is organized in chapters. Each chapter is identified by a script. It is recommended to add a number to the script names for ordering them (e.g. 01-first.Rmd).</li>
+<li><em>Markdown and R Markdown scripts with course content</em>. Course content is organized in chapters. Each chapter is identified by a script. It is recommended to add a number to the script names for ordering them (e.g. 01-first.Rmd). The course material is usually written in english.</li>
 <li><em>images</em> folder, which contains figures to be included in the course content</li>
 <li><em>TOC</em> file, which contains course index.</li>
 </ul>
 <div id="toc-file" class="section level3">
 <h3>TOC file</h3>
 <p>TOC files includes the structure of the course manual.</p>
-<p>The md or Rmd files must be ordered from the first to the last and must be associated with a title. In particular, you have to write firstly the title, then “|” and finally the md and Rmd name. You can also divide the rmd into sections, writing only the title of the section before the belonging Rmds.</p>
+<p>The md or Rmd files must be ordered, in column, from the first to the last.<br />
+Each file must be associated with a title. In particular, each row identifies a chapter: you have to write firstly the title, then “|” and finally the md and Rmd name related to that chapter. You can also divide the rmd into sections, writing only the title of the section before the belonging Rmds.</p>
 <p>Here an example:</p>
-<p>First Section First Rmd | 1-first.Rmd Second Rmd | 2-second.Rmd</p>
-<p>Second Section Third Rmd | 1-third.Rmd</p>
+<p>First Section<br />
+First Rmd | 1-first.Rmd<br />
+Second Rmd | 2-second.Rmd</p>
+<p>Second Section<br />
+Third Rmd | 1-third.Rmd</p>
 </div>
 </div>
 <div id="output-folder" class="section level2">
@@ -193,7 +213,7 @@ The <strong>number</strong> to be assigned to the course name must consist of th
 <p>It includes:</p>
 <ul>
 <li><em>html</em> folder, which contains htmls files with the full content of the course and a zip folder containing all html files (the folder name is “course name.zip”)</li>
-<li><em>purl</em> folder, which contains R script with R code extracted from html (one R script for each html file), and a zip folder containing all R scripts (the folder name is “R.zip”)</li>
+<li><em>purl</em> folder, which contains R script with R code extracted from the Rmds (one R script for each Rmd), and a zip folder containing all R scripts (the folder name is “R.zip”)</li>
 <li><em>pdf</em> folder, which contains pdf file/s of courses exercises (this folder is not always present)</li>
 </ul>
 </div>
@@ -201,7 +221,7 @@ The <strong>number</strong> to be assigned to the course name must consist of th
 <h2>exercises folder</h2>
 <p>It includes:</p>
 <ul>
-<li>Markdown and R Markdown scripts with course exercises_.</li>
+<li><em>Markdown and R Markdown scripts with course exercises</em>.</li>
 <li><em>images</em> folder, which contains figures to be included in exercises content</li>
 </ul>
 <p>This folder is not populated in all material courses folders. It is populated in: <em>010-rbase</em>, <em>020-models</em>, <em>050-dplyr-datamanage</em>.<br />
@@ -228,10 +248,11 @@ It is structured in the following way:</p>
 <li><em>pkgs</em> folder, which contains <code>qdata</code> package versions realized</li>
 <li><em>doc</em> folder, which contains an R script <code>raw-data.R</code>. This script includes some commands of operations done on data before including them in package.</li>
 <li><em>rowdata</em> folder, which contains original data files</li>
-<li><em>DESCRIPTION</em> file, which contains library desciption</li>
+<li><em>DESCRIPTION</em> file, which contains library description</li>
 <li><em>NAMESPACE</em> file, which contains informations about imported and exported functions (automatically created by library ‘build’)</li>
 <li>R project file, named <code>qdata.Rproj</code></li>
 </ul>
+<p>Once built the package, <em>man</em> folder is created. It contains documentation files. I recommend you to not add to commit and push this folder.</p>
 <p>On Decembre 20 2016, the version of qdata is 0.27.</p>
 <div id="guide-for-building-qdata" class="section level2">
 <h2>Guide for building <code>qdata</code></h2>
@@ -243,7 +264,7 @@ It is structured in the following way:</p>
 <li>Double-click on the project file</li>
 <li>Click “Build &amp; Reload” on RStudio “Build” tab or click “Ctrl+Shift+B” on the keyboard</li>
 </ol>
-<p><em>Note:</em> When one ore more data file/s are added or when data documentation is modified, the package version MUST be updated. To update the package version modify <em>Version:</em> tag in <em>DESCRIPTION</em> file going forward of one digit (e.g. 027 -&gt; 0.28)</p>
+<p><em>Note:</em> When one ore more data file/s are added or when data documentation is modified, the package version MUST be updated. To update the package version modify <em>Version:</em> tag in <em>DESCRIPTION</em> file going forward of one digit (e.g. 027 –&gt; 0.28)</p>
 </div>
 <div id="create-source-package" class="section level3">
 <h3>Create source package</h3>
@@ -277,17 +298,17 @@ It is structured in the following way:</p>
 <p>Otherwise, you can install <code>qdata</code> from Rstudio “Packages” tab:</p>
 <ol style="list-style-type: decimal">
 <li>Open RStudio</li>
-<li>Click on “Install”</li>
-<li>Set “Install from” filed to “Package Archive (.tar.gz)”</li>
+<li>Click on “Install” into Rstudio “Packages” tab</li>
+<li>Set “Install from” field to “Package Archive (.tar.gz)”</li>
 <li>Choose “qdata” for “Packages” field</li>
 </ol>
 </div>
 <div id="qdata-locations" class="section level2">
 <h2>qdata locations</h2>
 <p>The materials included into <em>00-qdata</em> folder is included also in another github repository: <a href="https://github.com/quantide/qdata" class="uri">https://github.com/quantide/qdata</a>.</p>
-<p><em>qdata</em> is a public Quantide repository contining the data necessary for public courses available on Quantide website. So also this version has to be updated. When you update the version on <em>qtraining</em> repository you have to update also that in <em>qdata</em> repository.</p>
-<p>Advice to update version: in <em>qdata</em> repository, add the added .Rdata files into <em>data</em> folder, and replace the scripts included in <em>R</em> folder with that modified of <em>qtraining</em> version.</p>
-<p><em>Future Developments:</em> develop <em>qdata</em> package into a single location.</p>
+<p><em>qdata</em> is a public Quantide repository contining the data necessary for public courses available on Quantide website. So also this version has to be updated. When you update the version of <code>qdata</code> on <em>qtraining</em> repository you have to update also that in <em>qdata</em> repository.</p>
+<p><em>Advice to update the version</em>: in <em>qdata</em> repository, add the new .Rdata files into <em>data</em> folder, and replace the scripts included in <em>R</em> folder with that modified of <em>qtraining</em> version.</p>
+<p><em>Future Developments</em>: develop <em>qdata</em> package into a single location.</p>
 </div>
 </div>
 <div id="include-folder" class="section level1">
@@ -303,11 +324,11 @@ It is structured in the following way:</p>
 </div>
 <div id="courses-index-folder" class="section level1">
 <h1><em>courses-index</em> folder</h1>
-<p>The content of this folder is used for building an index of courses.<br />
+<p>The content of this folder is used for building an html index of courses.<br />
 It includes:</p>
 <ul>
 <li><em>course-index.html</em>: html file of courses index</li>
-<li><em>images</em> folder: which includes figures used in <em>course-index.html</em> file</li>
+<li><em>images</em> folder: which includes figures to be used in <em>course-index.html</em> file</li>
 </ul>
 <div id="modify-courses-index" class="section level2">
 <h2>Modify courses index</h2>
@@ -318,40 +339,88 @@ It includes:</p>
 </ol>
 </div>
 </div>
-<div id="other-details" class="section level1">
-<h1>Other Details</h1>
-<div id="generate-a-pdf-book-starting-from-rmds-bookdown" class="section level2">
-<h2>Generate a PDF BOOK starting from rmds (bookdown)</h2>
-<p>To buid a book in PDF containing the rmds:</p>
+<div id="github" class="section level1">
+<h1>Github</h1>
+<p>You are working on a team, so you need to remain aligned with your colleagues.</p>
+<p>In particular, you have to add your work to the repository and to remain aligned with the work of the others.</p>
+<p>You can do these operations on the terminal or from “Git” tab on Rstudio. We will see in details both options.</p>
+<div id="add-new-files-to-the-repository" class="section level2">
+<h2><em>Add</em> new files to the repository</h2>
+<p>Now we should add some new files. Create new files or copy your project files inside this folder. Then FOR EACH FILE we tell git to add them to the list of file to add or update to the repository. Usually, a Github repository includes only the source code, but in this case we will make an exception. Indeed, it is useful also to add also compiled files (html and purl) of a stable version of the course material.</p>
+<p><strong>First option: terminal</strong></p>
 <ol style="list-style-type: decimal">
-<li>See PDF BOOK section in Makefile of 060-ggplot</li>
-<li>Use <em>bookdown</em> package</li>
+<li><p>Open the terminal, position inside repository folder and type this command:</p>
+<p>$ git add example-file.R</p></li>
+<li><p>Check the list of added file typing (not mandatory):</p>
+<p>$ git status</p></li>
+<li><p>Finally we add these files with:</p>
+<p>$ git commit -m “comment of this version”</p></li>
 </ol>
-<p>Using <em>bookdown</em> is the better option.<br />
-It organizes in a better way the materials, avoiding problems with LateX (spaces, positioning, …)</p>
-<div id="to-use-bookdown" class="section level3">
-<h3>To use <em>bookdown</em>:</h3>
-<ol style="list-style-type: decimal">
-<li>set working directory inside <em>input</em> folder</li>
-<li>De-comment <em>bookdown::pdf_book:</em> part and comment html_document part</li>
-<li>Modify <em>manual-with-written-cover.tex</em>, lines 174 and 176, respectitively with:</li>
-</ol>
-<p><code>\begin{flushleft}\includegraphics[scale=.175]{./images/quantide.png}\end{flushleft}</code><br />
-<code>\begin{flushright}\includegraphics[scale=.25]{./images/R-training.png}\end{flushright}</code></p>
-<ol start="4" style="list-style-type: decimal">
-<li>De-comment the first level title in each rmd (# Title)</li>
-<li>Run</li>
-</ol>
-<p><code>bookdown::render_book(&quot;index.md&quot;, &quot;bookdown::pdf_book&quot;, new_session = T)</code></p>
-<p>A <em>_book</em> folder and other files will be automathically created. <em>_main.pdf</em> is the PFD book and it is included in <em>_book</em> folder.</p>
-</div>
-<div id="to-use-pdf-book-section-in-makefile-of-060-ggplot" class="section level3">
-<h3>To use PDF BOOK section in Makefile of 060-ggplot</h3>
-<ol style="list-style-type: decimal">
-<li>Copy <em>images</em> folder outside <em>input</em></li>
-<li>Click on <em>Build All</em> in <em>Build</em> tab</li>
+<p><strong>Second option: Rstudio “Git” tab</strong></p>
+<p>Rstudio “Git” tab includes all files added or modified in the repository.</p>
+<p>1.To add the one or more file/s, select it/them into Rstudio “Git” tab.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><p>Then, click on “Commit”. A Window will appear. That window has a space in top left where you have to write the “comment of this version”.</p></li>
+<li><p>Done this, click on “Commit”.</p></li>
 </ol>
 </div>
+<div id="push-changes-on-the-remote-repository-github.com" class="section level2">
+<h2><em>Push</em> changes on the remote repository (github.com)</h2>
+<p>We want propagate changes to the remote repository.</p>
+<p><strong>First option: terminal</strong></p>
+<p>Git retains the remote repository link so it is enough to type, always in the terminal:</p>
+<pre><code>$ git push</code></pre>
+<p><strong>Second option: Rstudio “Git” tab</strong></p>
+<p>Once you have done a commit, you can push it by click on green upward arrow on Rstudio “Git” tab.</p>
+</div>
+<div id="pull-changes-committed-by-others" class="section level2">
+<h2><em>Pull</em> changes committed by others</h2>
+<p>When your colleague <code>commit</code> and <code>push</code> its changes, you need to update your local files.</p>
+<p><strong>First option: terminal</strong></p>
+<p>In order to update them, type on the terminal:</p>
+<pre><code>$ git pull</code></pre>
+<p><strong>Second option: Rstudio “Git” tab</strong></p>
+<p>In order to update them, click on light blue downward arrow on Rstudio “Git” tab.</p>
+</div>
+<div id="note" class="section level2">
+<h2>Note</h2>
+<p>Although you are working on a single project to build a course, Rstudio “Git” tab or <code>git status</code> on the terminal, shows the files to be added to commit and pushed of all folders of <code>qtraining</code> repository. The same when you do the pull, you will pull the committed changes of all folders of <code>qtraining</code> repository and not that of the single project (course folder) you are working to.</p>
+</div>
+</div>
+<div id="bookdown" class="section level1">
+<h1>Bookdown</h1>
+<p><code>bookdown</code> is an R package, built on top of R Markdown, and inherits the simplicity of the Markdown syntax, as well as the possibility of multiple types of output formats (PDF/HTML/Word/…).</p>
+<p>To use it, you need a version of RStudio higher than 1.0.0.</p>
+<p>First of all you have to install and load <code>bookdown</code>.</p>
+<p>To build a book with bookdown, you have to refer to a particular .Rproj file, <code>bookdown-demo.Rproj</code>, which is available on <a href="https://github.com/rstudio/bookdown-demo" class="uri">https://github.com/rstudio/bookdown-demo</a>. I recommend you to download it as a Zip file and to uso it as a structure for your book.</p>
+<p>In <code>qtraining</code>, I used bookdown-demo into <em>manual-pdf</em> and <em>exercises</em> folders of <code>011-rbase-one-day</code>. These folders represents my first trial to use <code>bookdown</code>, so I advice you to look at the structure of that folders and to read the <a href="https://bookdown.org/yihui/bookdown/get-started.html">Bookdown web book</a>.</p>
+<div id="my-idea-of-structure" class="section level2">
+<h2>My idea of structure</h2>
+<ol style="list-style-type: decimal">
+<li><p>Generate into bookdown-demo folder two subfolders, <em>input</em> and <em>output</em> and includes all the content of bookdown-demo into input.</p></li>
+<li><p>Generate your Rmd containing the course content in <em>input</em> folder. Each Rmd represents a chapter of your book, so you have to put a number at the beginning of the Rmd name. The number have to correspond to the Rmd order in the book.</p></li>
+<li><p><em>input</em> folder must contain <code>index.Rmd</code> file, which will be the first chapter of your book.</p></li>
+<li><p>Open <code>_bookdown.yml</code> file and set these paramters:</p></li>
+</ol>
+<ul>
+<li><code>book_filename</code>: name of the file name created</li>
+<li><code>chapter_name: &quot;Chapter &quot;</code>: name to be added at the beginning of each chapter</li>
+<li><code>new_session: yes</code>: set a new session for each rmd run<br />
+</li>
+<li><code>output_dir: &quot;../output&quot;</code>, in this way the output will be created into <em>output</em> folder</li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
+<li>Open <code>_output.yml</code> and set <code>bookdown::pdf_book:</code> if you want to create a pdf book, <code>bookdown::gitbook:</code> if you want to create a web book, … . Here, you have to specify the related .css or .tex files. <code>preamble.tex</code> is a style .tex file that contains the instructions to create the cover of my book. You can start from here of you can can create your own style .tex file.</li>
+</ol>
+</div>
+<div id="build-book" class="section level2">
+<h2>Build book</h2>
+<ol style="list-style-type: decimal">
+<li>Open RStudio</li>
+<li>Open <code>bookdown-demo.Rprok</code></li>
+<li>Click on “Build Book” on “Build” tab</li>
+</ol>
+<p>Before building the book I advice you to click on “More” on “Build tab” and to choose “Clean All”, in order to delete all old results.</p>
 </div>
 </div>
 
