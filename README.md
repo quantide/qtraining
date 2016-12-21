@@ -1,8 +1,8 @@
 ---
 title: '`qtraining` repository'
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 Date of documentation update: 20161221  
@@ -57,7 +57,7 @@ The structure is organized in the following folders:
 * _060-ggplot_: containing "Data Visualization with R" course in english
 * _061-ggplot-ita_: containing "Data Visualization with R" course in italian (under development)
 * _080-data-mining_: containing "Data Mining with R" course
-* _100-bigdata-spark_: contanis "Big Data" course 
+* _100-bigdata-spark_: contanis "Big Data" course (under development)
 * _courses-index_: containing courses index
 * _include_: containing files for output structure building
 
@@ -123,8 +123,8 @@ It includes:
 * _images_ folder, which contains figures to be included in exercises content 
 
 This folder is not populated in all material courses folders.
-It is populated in: _010-rbase_, _020-models_, _050-dplyr-datamanage_.   
-In _010-rbase_ and _050-dplyr-datamanage_, exercises are organized in chapters. Each chapter is identified by a script. The pdf file/s of courses exercises are built by the _Makefile_ and included in _output/pdf_ folder.   
+It is populated in: _010-rbase-two-days_, _020-models_, _050-dplyr-datamanage_.   
+In _010-rbase-two-days_ and _050-dplyr-datamanage_, exercises are organized in chapters. Each chapter is identified by a script. The pdf file/s of courses exercises are built by the _Makefile_ and included in _output/pdf_ folder.   
 In _020-models_ script exercises and built pdf and html files are included in _exercises_ folder. They are not built by the _Makefile_, but manually clicking "Knit PDF" from RStudio toolbar, because the exercises are not yet completed. 
 
  
@@ -259,7 +259,7 @@ You can do these operations on the terminal or from "Git" tab on Rstudio. We wil
 
 ## *Add* new files to the repository
 
-Now we should add some new files. Create new files or copy your project files inside this folder. Then FOR EACH FILE we tell git to add them to the list of file to add or update to the repository. Usually, a Github repository includes only the source code, but in this case we will make an exception. Indeed, it is useful also to add also compiled files (html and purl) of a stable version of the course material.
+Now we should add some new files. Create new files or copy your project files inside this folder. Then FOR EACH FILE we tell git to add them to the list of file to add or update to the repository. Usually, a Github repository includes only the source code, but in this case we will make an exception. Indeed, it is useful to add also compiled files (html and purl) of a stable version of the course material.
 
 __First option: terminal__
 
@@ -279,9 +279,9 @@ __Second option: Rstudio "Git" tab__
 
 Rstudio "Git" tab includes all files added or modified in the repository.
 
-1.To add the one or more file/s, select it/them into Rstudio "Git" tab.  
+1. To add the one or more file/s, select it/them into Rstudio "Git" tab.  
 
-2. Then, click on "Commit". A Window will appear. That window has a space in top left where you have to write the "comment of this version". 
+2. Then, click on "Commit". A window will appear. That window has a space in top left where you have to write the "comment of this version". 
 
 3. Done this, click on "Commit".
 
@@ -297,7 +297,7 @@ Git retains the remote repository link so it is enough to type, always in the te
 
 __Second option: Rstudio "Git" tab__
 
-Once you have done a commit, you can push it by click on green upward arrow on Rstudio "Git" tab.
+Once you have done a commit, you can push it by clicking on green upward arrow on Rstudio "Git" tab.
 
 ## *Pull* changes committed by others
 
@@ -317,7 +317,7 @@ In order to update them, click on light blue downward arrow on Rstudio "Git" tab
 
 ## Note 
 
-Although you are working on a single project to build a course, Rstudio "Git" tab or `git status` on the terminal, shows the files to be added to commit and pushed of all folders of `qtraining` repository. The same when you do the pull, you will pull the committed changes of all folders of `qtraining` repository and not that of the single project (course folder) you are working to.  
+Although you are working on a single project to build a course, Rstudio "Git" tab or `git status` on the terminal, shows the files to be added to commit of all folders of `qtraining` repository. The same when you do the pull, you will pull the committed changes of all folders of `qtraining` repository and not that of the single project (course folder) you are working to.  
 
 
 # Bookdown
@@ -326,25 +326,25 @@ Although you are working on a single project to build a course, Rstudio "Git" ta
 
 To use it, you need a version of RStudio higher than 1.0.0.
 
-First of all you have to install and load `bookdown`.
+First of all you have to install and load `bookdown` package.
 
-To build a book with bookdown, you have to refer to a particular .Rproj file, `bookdown-demo.Rproj`, which is available on [https://github.com/rstudio/bookdown-demo](https://github.com/rstudio/bookdown-demo). I recommend you to download it as a Zip file and to uso it as a structure for your book.
+To build a book with bookdown, you have to refer to a particular .Rproj file, `bookdown-demo.Rproj`, which is available on [https://github.com/rstudio/bookdown-demo](https://github.com/rstudio/bookdown-demo) repository. I recommend you to download the whole repository as a Zip file and to use it as a structure for your book.
 
-In `qtraining`, I used bookdown-demo into _manual-pdf_ and _exercises_ folders of `011-rbase-one-day`. These folders represents my first trial to use `bookdown`, so I advice you to look at the structure of that folders and to read the [Bookdown web book](https://bookdown.org/yihui/bookdown/get-started.html). 
+In `qtraining`, I used bookdown-demo into _manual-pdf_ and _exercises_ folders of _011-rbase-one-day_. These folders represents my first trial to use `bookdown`, so I advice you to look at the structure of that folders and to read the [Bookdown web book](https://bookdown.org/yihui/bookdown/get-started.html). 
 
 ## My idea of structure
 
-1. Generate into bookdown-demo folder two subfolders, _input_ and _output_ and includes all the content of bookdown-demo into input.  
+1. Generate into bookdown-demo folder two subfolders, _input_ and _output_ and includes all the content of bookdown-demo into _input_.  
 
 2. Generate your Rmd containing the course content in _input_ folder. Each Rmd represents a chapter of your book, so you have to put a number at the beginning of the Rmd name. The number have to correspond to the Rmd order in the book.  
 
 3. _input_ folder must contain `index.Rmd` file, which will be the first chapter of your book.
 
-4. Open `_bookdown.yml` file and set these paramters:
+4. Open `_bookdown.yml` file and set these parameters:
 
-* `book_filename`: name of the file name created
+* `book_filename`: name of the file that will be created
 * `chapter_name: "Chapter "`: name to be added at the beginning of each chapter
-* `new_session: yes`: set a new session for each rmd run   
+* `new_session: yes`: set a new session for each rmd run
 * `output_dir: "../output"`, in this way the output will be created into _output_ folder
 
 5. Open `_output.yml` and set `bookdown::pdf_book:` if you want to create a pdf book, `bookdown::gitbook:` if you want to create a web book, ... . Here, you have to specify the related .css or .tex files. `preamble.tex` is a style .tex file that contains the instructions to create the cover of my book. You can start from here of you can can create your own style .tex file.   
@@ -352,7 +352,7 @@ In `qtraining`, I used bookdown-demo into _manual-pdf_ and _exercises_ folders o
 ## Build book
 
 1. Open RStudio
-2. Open `bookdown-demo.Rprok`
+2. Open `bookdown-demo.Rproj`
 3. Click on "Build Book" on "Build" tab 
 
 Before building the book I advice you to click on "More" on "Build tab" and to choose "Clean All", in order to delete all old results.  
