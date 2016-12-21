@@ -120,7 +120,6 @@ include_graphics("images/import-db.png", dpi=150)
 ```
 
 
-
 ## ODBC
 
 Open Database Connectivity (ODBC) is a standard programming language interface for accessing database management systems (DBMS). ODBC is independent from database systems and operating systems. An application can use ODBC to query data from a DBMS, regardless of the operating system or DBMS it uses. ODBC accomplishes DBMS independence by using an ODBC driver as a translation layer between the application and the DBMS.
