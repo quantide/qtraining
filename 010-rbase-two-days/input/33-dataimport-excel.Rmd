@@ -8,6 +8,10 @@ require(knitr)
 opts_knit$set(root.dir = "./../data")
 ```
 
+```{r g, echo=FALSE, purl=FALSE}
+include_graphics("images/import-excel-2.png", dpi=150)
+```
+
 
 ## XLConnect
 

@@ -8,6 +8,10 @@ options(width = 108)
 ```
 
 
+The structures of data objects are represented in the following figure:
+
+![](./images/dataStructure.png)
+
 ## Vectors
 
 In R the simplest data structure is a vector. A vector is defined as an ordered sequence of elements of the same kind.
@@ -227,6 +231,15 @@ x[c(1,3), c(1, 4)]
 x[-1, ]
 x[1:18]
 x[x >= 3 & x < 12]
+```
+
+## Array  
+
+They are similar to matrices but they can be multi-dimensional (more than two dimensions)
+
+```{r array}
+z <- array(1:24, dim=c(2,3,4))
+z
 ```
 
 

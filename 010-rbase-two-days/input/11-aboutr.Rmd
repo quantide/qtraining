@@ -20,6 +20,8 @@ The R name is partly based on the (first) names of the first two R authors (Robe
 
 S is a statistical programming language developed by John Chambers and others in Bell Laboratories.
 
+![](./images/s-rev.png)
+
 A bit of history:
 
  - 1976: the first version of S is developed  as an internal statistical analysis environment. It is originally implemented as Fortran libraries.
@@ -38,6 +40,8 @@ S-PLUS is a commercial implementation of the S programming language.
 
 S-PLUS provides a number of fancy features (GUIs, mostly) on top of it, hence the "PLUS".
 
+![](./images/s+.png)
+
 A bit of history:
 
  - 1993: Statistical Sciences, Inc. acquires the exclusive license to distribute S and merges with MathSoft.
@@ -48,6 +52,8 @@ A bit of history:
 
 ### R: a bit of history
 
+![](./images/r.png)
+
  - 1993: First announcement of R to the public.
  - 1995: Martin Maechler convinces Ross Ihaka and Robert Gentleman to use the GNU General Public License to make R free software.
  - 1997: The R Development Core Team is formed. The team controls the source code for R.
@@ -55,7 +61,14 @@ A bit of history:
  - 2004: R version 2.0.0 released. Introduced lazy loading, which enables fast loading of data with minimal expense of system memory.
  - 2013: R version 3.0.0 released. Introduced long vectors.
 
-![](./images/mappa-temporale.png)
+While R is an open source project supported by the community developing it, some companies strive to provide commercial support and/or extensions for their customers. R history is intertwined with that of its commercial support:
+
+- 2007: Revolution Analytics was founded to provide commercial support for Revolution R, the distribution of R developed by Revolution Analytics which also includes components developed by the company.
+- 2010: RStudio was founded. It is a company that develops free and open tools for the R community.
+- 2014: Microsoft Corporation starts the release of Microsoft R Open, an enhanced distribution of R, formerly known as Revolution R Open (RRO).
+- 2015: Microsoft Corporation completed the acquisition of Revolution Analytics.
+
+We will deepen the commercial support tools mentioned in _R commercial support_ paragraph.
 
 In April 2016, R is in 18th place of TIOBE Programming Community Index, that is an indicator of the popularity of programming languages. R is above SAS that is in 23th place.
 
@@ -72,20 +85,6 @@ R is free:
  - you can copy and re-use the software (free software);
  - you can access source code and modify it (open source).
 
-
-### R Commercial Support
-
-#### RStudio Inc.
-RStudio, Inc. [(www.rstudio.com)](http://www.rstudio.com/) is a company that develops free and open tools for the R community, inspired by the innovations of R users in science, education, and industry. These include the RStudio development environment as well as the `shiny`, `ggvis`, and `dplyr` packages (among many others).
-
-RStudio has a mission to provide the most widely used open source and enterprise-ready professional software for the R statistical computing environment. These tools will further the cause of expanding the use of R and the field of data science. It also offers open source and enterprise ready tools for the R computing environment. The flagship product of the RStudio team is an Integrated Development Environment (IDE) which makes it easy for analysts, scientists, data scientists and quants to perform their analyses. It also offer Shiny: a platform that allows you to take those analyses and share them with your team/organization by creating interactive web applications. 
-
-<!--
-#### Revolution R
-Revolution Analytics [(www.revolutionanalytics.com)](http://www.revolutionanalytics.com/) was founded in 2007 to provide commercial support for Revolution R. Revolution R is the distribution of R developed by Revolution Analytics which also includes components developed by the company.
-
-Revolution R Enterprise includes all of R's advanced data analysis and graphics capabilities, plus additional components. Major additional components include: ParallelR (for parallel computing), the R Productivity Environment IDE, RevoScaleR (for big data analysis), RevoDeployR (web services framework and the ability for reading and writing data in the SAS file format).
--->
 
 ### What R does?
 
@@ -132,11 +131,20 @@ Main R disadvantages are:
  - Data preparation and cleaning can be messier and more mistake prone in R vs SPSS or SAS.
 
 
-### R Resources
+## R Online Resources
 
-#### R-project Website
+R strength is its community, which is distributed and keeps growing all over the World!
 
-The R-project website  [(www.r-project.org)](http://www.r-project.org/) is the starting point for R materials.
+![](./images/r-users-distribution.png)
+
+Thanks to its community, R can boast a wide variety of online resources, free and otherwise, to learn more about it, ranging from websites, blogs and commercial support tools.
+
+Let us have a look at the most important.
+
+
+### R-project Website
+
+The R-project website [(www.r-project.org)](http://www.r-project.org/) is the starting point for R materials.
 
 The website contains:
 
@@ -149,17 +157,16 @@ The website contains:
 
 The on-line documentation includes the following manuals. These manuals have been written by the R Development Core Team itself and contain precious information.
 
- - _An Introduction to R_ gives an introduction to the language and how to use R for doing statistical analysis and graphics.
+ - *An Introduction to R* gives an introduction to the language and how to use R for doing statistical analysis and graphics.
  - *Writing R Extensions* covers how to create your own packages, write R help files, and the foreign language (C, C++, Fortran, ...) interfaces.
  - *R Data Import/Export* describes the import and export facilities available either in R itself or via packages which are available from CRAN.
  - *R Installation and Administration*.
 
 Other manuals and tutorials provided by R users can be downloaded from the R-project website [(cran.r-project.org/other-docs.html)](http://cran.r-project.org/other-docs.html).
 
-
 Mailing lists is the most important tool to contact the R community. Mailing lists can be accessed from the R-project website [(www.r-project.org/mail.html)](http://www.r-project.org/mail.html).
 
-There are four general mailing lists devoted to R:
+There are five general mailing lists devoted to R:
 
  - _R-announce_:
    This list is for major announcements about the development of R and the availability of new code.
@@ -169,44 +176,34 @@ There are four general mailing lists devoted to R:
    The "main" R mailing list, for discussion about problems and solutions using R, announcements about the availability of new functionality for R and documentation of R, comparison and compatibility with S-plus, and for the posting of nice examples and benchmarks. 
  - _R-devel_:
    This list is intended for questions and discussion about code development in R.
+ - _R-package-devel_:
+   This list is to get help about package development in R.
 
 
-#### Other Online Resources
+### Other Online Resources
 
 It is very difficult estimate how many sites about R are on-line. However, Google returns 224.000.000 sites searching "R stat blog". Also if only the 0.1% of these sites talk about R, it means almost 220.000 sites about R.
 
 R-bloggers [(www.r-bloggers.com)](http://www.r-bloggers.com/) is a blog aggregator of content collected from bloggers who write about R. R-bloggers contains R news and tutorials contributed by hundreds of R bloggers.
 
+We suggest you to visit MilanoR [(www.milanor.net)](http://www.milanor.net/), which is the blog of R users in the Milan Area. Its aim is to exchange knowledge, learn and share tricks and techniques and provide R beginners with an opportunity to meet more experienced users.
+
 Other useful websites about R are:
 
+ - Stack Overflow [(www.stackoverflow.com)](http://stackoverflow.com/) is a website that features questions and answers on a wide range of topics in computer programming, among which r.
  - Quick-R [(www.statmethods.net)](http://www.statmethods.net/) is a useful on-line guide to R. It provides many examples and useful tips.
  - R seek [(rseek.org)](http://rseek.org/) uses Google to search in a selected list of websites about R.
- - Graphiques avec R [(zoonek2.free.fr/UNIX/48\_R\_2004/04.html)](http://zoonek2.free.fr/UNIX/48_R_2004/04.html) provides also a gallery of R-made graphics.
 
 
-#### Books
+### R Commercial Support
 
-A partially annotated list of books that are related to S or R may be found in the R-project website [(www.r-project.org/doc/bib/R-books.html)](http://www.r-project.org/doc/bib/R-books.html).
+#### RStudio Inc.
+RStudio, Inc. [(www.rstudio.com)](http://www.rstudio.com/) is a company that develops free and open tools for the R community, inspired by the innovations of R users in science, education, and industry. These include the RStudio development environment as well as the `shiny`, `ggvis`, and `dplyr` packages (among many others).
 
-The following book may be considered the milestone book about R:
- - William N. Venables and Brian D. Ripley. Modern Applied Statistics with S. Fourth Edition. Springer, New York, 2002. ISBN 0-387-95457-0.
+RStudio has a mission to provide the most widely used open source and enterprise-ready professional software for the R statistical computing environment. These tools will further the cause of expanding the use of R and the field of data science. It also offers open source and enterprise ready tools for the R computing environment. The flagship product of the RStudio team is an Integrated Development Environment (IDE) which makes it easy for analysts, scientists, data scientists and quants to perform their analyses. It also offer Shiny: a platform that allows you to take those analyses and share them with your team/organization by creating interactive web applications. 
 
+#### Microsoft Corporation
 
-![](./images/booksTwo.png)
-
-
-Other suggested books are:
-
- - Everitt and Hothorn (2009). _A handbook of statistical analyses using R_. Chapman & Hall/CRC.
- - Chambers (2008). _Software for Data Analysis_, Springer.
- - Chambers (1998). _Programming with Data_, Springer.
- - Murrell (2005). _R Graphics_, Chapman & Hall/CRC Press.
- - Dalgard (2002). _Introductory Statistics with R_. Springer.
- - Kabakoff (2011). _R in Action_. Manning.
- - Braun and Murdoch (2007). _A First Course in Statistical Programming with R_. Cambridge University Press.
-
-Springer is developing a series of books called _Use R!_.
-
-
-![](./images/booksMany.png)
+Microsoft Corporation provides Microsoft R Open [www.mran.microsoft.com/open](https://mran.microsoft.com/open/), an enhanced distribution of R, formerly known as Revolution R Open (RRO). It is a complete open source platform for statistical analysis and data science. The current version, Microsoft R Open 3.3.2, is based on (and 100% compatible with) R-3.3.2 and is therefore fully compatibility with all packages, scripts and applications that work with that version of R. It includes additional capabilities for improved performance, reproducibility, as well as support for Windows and Linux-based platforms.
+Like R, Microsoft R Open is open source and free to download, use, and share. It is available for Windows, Linux and Mac Os operative systems and you can download it [here](https://mran.microsoft.com/download/).
 

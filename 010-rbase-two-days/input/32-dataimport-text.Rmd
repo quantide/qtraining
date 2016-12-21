@@ -9,6 +9,9 @@ opts_knit$set(root.dir = "./../data")
 outDir <- "."
 ```
 
+```{r g, echo=FALSE, purl=FALSE}
+include_graphics("images/import-text-2.png", dpi=150)
+```
 
 ## Data Import 
 
