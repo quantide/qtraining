@@ -1,0 +1,92 @@
+---
+title: "`dplyr` verbs for combining data: `join`"
+output: html_document
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+require(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r first, message=FALSE}
+require(dplyr)
+```
+
+Very often you will have to deal with many tables that contribute to the analysis you are performing and you need flexible tools to combine them. Supposing that the two tables are already in a tidy form: the rows are observations and the columns are variables, `dplyr` provides  __mutating joins__, which add new variables to one table from matching rows in another.
+
+There are four types of mutating join, which differ in their behaviour when a match is not found. 
+
+* `inner_join(x, y)`
+* `left_join(x, y)`
+* `right_join(x, y)`
+* `outer_join(x, y)`
+
+All these verbs work similarly: 
+
+* the first two arguments, `x` and `y`, provide the tables to combine
+* the output is always a new table with the same type as `x`
+
+For the next examples we will consider these two small data frames:
+
+```{r}
+df1 <- data.frame(id = 1:4, x1 = letters[1:4])
+df1
+df2 <- data.frame(id = 3:5, x2 = letters[3:5])
+df2
+```
+
+### `inner_join(x, y)`
+
+```{r g2, echo=FALSE, purl=FALSE}
+include_graphics("images/inner_join.png", dpi=150)
+```
+
+`inner_join(x, y)` only includes observations that match in both x and y:
+
+```{r}
+inner_join(df1, df2)
+```
+
+### `left_join(x, y)`
+
+```{r g3, echo=FALSE, purl=FALSE}
+include_graphics("images/left_join.png", dpi=150)
+```
+
+
+`left_join(x, y)` includes all observations in `x`, regardless of whether they match or not. This is the most commonly used join because it ensures that you don't lose observations from your primary table:
+
+```{r}
+left_join(df1, df2)
+```
+
+### `right_join(x, y)`
+
+```{r g4, echo=FALSE, purl=FALSE}
+include_graphics("images/right_join.png", dpi=150)
+```
+
+`right_join(x, y)` includes all observations in `y`. It’s equivalent to `left_join(y, x)`, but the columns will be ordered differently:
+
+```{r}
+right_join(df1, df2)
+left_join(df2, df1)
+```
+
+
+### `full_join()`
+
+```{r g5, echo=FALSE, purl=FALSE}
+include_graphics("images/full_join.png", dpi=150)
+```
+
+
+`full_join()` includes all observations from `x` and `y`:
+
+```{r}
+full_join(df1, df2)
+```
+
+The left, right and full joins are collectively know as outer joins. When a row doesn't match in an outer join, the new variables are filled in with missing values.
+
+

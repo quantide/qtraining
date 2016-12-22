@@ -53,9 +53,9 @@ The first argument is the name of the data frame, and the second and subsequent 
 # Select columns: year, month and day of bank data frame
 select(bank, year, month, day)
 # Select columns: year, month and day of bank data frame
-select(bank, year:day)
+bank %>% select(year:day)
 # Select all columns of bank data frame apart from: year, month and day
-select(bank, -(year:day))
+bank %>% select(-(year:day))
 ```
 
 
@@ -63,7 +63,7 @@ You can rename variables with `select()` by using named arguments:
 
 ```{r select_rename}
 # Rename id variable as ID
-select(bank, ID = id)
+bank %>% select(ID = id)
 ```
 
 
@@ -87,28 +87,28 @@ filter(bank, job == "student", balance > 20000)
 
 ```{r filter2}
 # Select all calls made to student of 18 years 
-filter(bank, age == 18 & job == "student")
+bank %>% filter(age == 18 & job == "student")
 ```
 
 ```{r filter3}
 # Select all calls made to people of 18 or 95 years
-filter(bank, age == 18 | age == 95)
+bank %>% filter(age == 18 | age == 95)
 ```
 
 `filter()` can be used also with `%in%` to establish conditions under which filter: 
 
 ```{r filter4}
 # Select all calls made to people of 18 or 95 years
-filter(bank, age %in% c(18,95))
+bank %>% filter(age %in% c(18,95))
 ```
 
 An other example is:
 
 ```{r filter5}
 # Select all calls made to people whose job is admin. or technician 
-filter(bank, job %in% c("admin.","technician"))
+bank %>% filter(job %in% c("admin.","technician"))
 # Select all calls made to people whose job is admin. or technician 
-filter(bank, job == "admin." | job == "technician")
+bank %>% filter(job == "admin." | job == "technician")
 ```
 
 
@@ -128,7 +128,7 @@ arrange(bank, balance)
 or in descending order by using function `desc()` within `arrange()`: 
 
 ```{r arrange2}
-arrange(bank, desc(balance))
+bank %>% arrange(desc(balance))
 ```
 
 You can order a data frame by one or more than one variables.
@@ -137,7 +137,7 @@ Ordering data frame bank by `age` first and descending `balance` afterward requi
 
 
 ```{r arrange3}
-arrange(bank, age, desc(balance))
+bank %>% arrange(age, desc(balance))
 ```
 
 
@@ -152,7 +152,7 @@ As well as selecting from the set of existing columns, it’s often useful to ad
 The first argument is the name of the data frame, and the second and subsequent are expressions for creating new columns to add to that data frame or for modifying the existing ones: 
 
 
-```{r mutate}
+```{r mutate_1}
 df <- data.frame(x = 1:3, y = 3:1)
 
 mutate(df, x1 = x+1)
@@ -169,10 +169,17 @@ mutate(df, xx = x)
 ```
 
 
+```{r mutate_2}
+# generate a variable indicating the total number of times each person has been contacted 
+# during this campaign and during the previous ones 
+mutate(bank, contacts_n = campaign + previous)
+```
+
 `mutate()` allows you to refer to columns that you just created:
 
 ```{r mutate_col_just_created}
-mutate(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
+# generate two variable: one indicating the year of birth and one the year of birth without century 
+bank %>% mutate(year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 ```
 
 
@@ -184,9 +191,9 @@ The first argument is the name of the data frame, and the second and subsequent 
 
 ```{r summarise}
 # Compute the mean of balance variable of bank data frame
-summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
+bank %>% summarise(mean_balance = mean(balance, na.rm = TRUE))
 # Compute the minimum and the maximum value of balance of bank data frame
-summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
+bank %>% summarise(max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
 ```
 
 
