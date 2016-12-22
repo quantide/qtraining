@@ -327,6 +327,7 @@ $(document).ready(function () {
   <li><a href="41-dplyr-intro.html">Introduction to dplyr</a></li>
   <li><a href="42-dplyr-verbs.html">Verb Functions</a></li>
   <li><a href="43-group-chain.html">Group Data and Chain Verbs</a></li>
+  <li><a href="44-join.html">Combining Data Frames</a></li>
   <li class="nav-header">Data Visualization</li>
   <li><a href="51-ggplot.html">Data Visualization with ggplot2</a></li>
   <li class="nav-header">Data Analysis</li>
@@ -401,7 +402,7 @@ select(bank, year, month, day)</code></pre>
 ## 10  2008    may     5
 ## # ... with 45,201 more rows</code></pre>
 <pre class="r"><code># Select columns: year, month and day of bank data frame
-select(bank, year:day)</code></pre>
+bank %&gt;% select(year:day)</code></pre>
 <pre><code>## # A tibble: 45,211 × 3
 ##     year  month   day
 ##    &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -417,7 +418,7 @@ select(bank, year:day)</code></pre>
 ## 10  2008    may     5
 ## # ... with 45,201 more rows</code></pre>
 <pre class="r"><code># Select all columns of bank data frame apart from: year, month and day
-select(bank, -(year:day))</code></pre>
+bank %&gt;% select(-(year:day))</code></pre>
 <pre><code>## # A tibble: 45,211 × 17
 ##       id   age          job  marital education default balance housing   loan contact       date duration
 ##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt;     &lt;dttm&gt;    &lt;int&gt;
@@ -435,7 +436,7 @@ select(bank, -(year:day))</code></pre>
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>You can rename variables with <code>select()</code> by using named arguments:</p>
 <pre class="r"><code># Rename id variable as ID
-select(bank, ID = id)</code></pre>
+bank %&gt;% select(ID = id)</code></pre>
 <pre><code>## # A tibble: 45,211 × 1
 ##       ID
 ##    &lt;int&gt;
@@ -471,7 +472,7 @@ select(bank, ID = id)</code></pre>
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p><code>filter()</code> allows you to give it any number of filtering conditions which are joined together with <code>&amp;</code> and/or the other operators.</p>
 <pre class="r"><code># Select all calls made to student of 18 years 
-filter(bank, age == 18 &amp; job == &quot;student&quot;)</code></pre>
+bank %&gt;% filter(age == 18 &amp; job == &quot;student&quot;)</code></pre>
 <pre><code>## # A tibble: 12 × 20
 ##       id   age     job marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;  &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -490,7 +491,7 @@ filter(bank, age == 18 &amp; job == &quot;student&quot;)</code></pre>
 ## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <pre class="r"><code># Select all calls made to people of 18 or 95 years
-filter(bank, age == 18 | age == 95)</code></pre>
+bank %&gt;% filter(age == 18 | age == 95)</code></pre>
 <pre><code>## # A tibble: 14 × 20
 ##       id   age     job  marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -512,7 +513,7 @@ filter(bank, age == 18 | age == 95)</code></pre>
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p><code>filter()</code> can be used also with <code>%in%</code> to establish conditions under which filter:</p>
 <pre class="r"><code># Select all calls made to people of 18 or 95 years
-filter(bank, age %in% c(18,95))</code></pre>
+bank %&gt;% filter(age %in% c(18,95))</code></pre>
 <pre><code>## # A tibble: 14 × 20
 ##       id   age     job  marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -534,7 +535,7 @@ filter(bank, age %in% c(18,95))</code></pre>
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>An other example is:</p>
 <pre class="r"><code># Select all calls made to people whose job is admin. or technician 
-filter(bank, job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
+bank %&gt;% filter(job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
 <pre><code>## # A tibble: 12,768 × 20
 ##       id   age        job  marital education default balance housing   loan contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;     &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -551,7 +552,7 @@ filter(bank, job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
 ## # ... with 12,758 more rows, and 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;,
 ## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <pre class="r"><code># Select all calls made to people whose job is admin. or technician 
-filter(bank, job == &quot;admin.&quot; | job == &quot;technician&quot;)</code></pre>
+bank %&gt;% filter(job == &quot;admin.&quot; | job == &quot;technician&quot;)</code></pre>
 <pre><code>## # A tibble: 12,768 × 20
 ##       id   age        job  marital education default balance housing   loan contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;     &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -594,7 +595,7 @@ You may want to order the <code>bank</code> data frame by the balance of the acc
 ## # ... with 45,201 more rows, and 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;,
 ## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>or in descending order by using function <code>desc()</code> within <code>arrange()</code>:</p>
-<pre class="r"><code>arrange(bank, desc(balance))</code></pre>
+<pre class="r"><code>bank %&gt;% arrange(desc(balance))</code></pre>
 <pre><code>## # A tibble: 45,211 × 20
 ##       id   age          job  marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -612,7 +613,7 @@ You may want to order the <code>bank</code> data frame by the balance of the acc
 ## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>You can order a data frame by one or more than one variables.</p>
 <p>Ordering data frame bank by <code>age</code> first and descending <code>balance</code> afterward requires:</p>
-<pre class="r"><code>arrange(bank, age, desc(balance))</code></pre>
+<pre class="r"><code>bank %&gt;% arrange(age, desc(balance))</code></pre>
 <pre><code>## # A tibble: 45,211 × 20
 ##       id   age     job marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;  &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -669,8 +670,27 @@ mutate(df, x1 = x+1)</code></pre>
 ## 1 1 3  1
 ## 2 2 2  2
 ## 3 3 1  3</code></pre>
+<pre class="r"><code># generate a variable indicating the total number of times each person has been contacted 
+# during this campaign and during the previous ones 
+mutate(bank, contacts_n = campaign + previous)</code></pre>
+<pre><code>## # A tibble: 45,211 × 21
+##       id   age          job  marital education default balance housing   loan contact   day  month  year
+##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
+## 1      1    58   management  married  tertiary      no    2143     yes     no unknown     5    may  2008
+## 2      2    44   technician   single secondary      no      29     yes     no unknown     5    may  2008
+## 3      3    33 entrepreneur  married secondary      no       2     yes    yes unknown     5    may  2008
+## 4      4    47  blue-collar  married   unknown      no    1506     yes     no unknown     5    may  2008
+## 5      5    33      unknown   single   unknown      no       1      no     no unknown     5    may  2008
+## 6      6    35   management  married  tertiary      no     231     yes     no unknown     5    may  2008
+## 7      7    28   management   single  tertiary      no     447     yes    yes unknown     5    may  2008
+## 8      8    42 entrepreneur divorced  tertiary     yes       2     yes     no unknown     5    may  2008
+## 9      9    58      retired  married   primary      no     121     yes     no unknown     5    may  2008
+## 10    10    43   technician   single secondary      no     593     yes     no unknown     5    may  2008
+## # ... with 45,201 more rows, and 8 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;,
+## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;, contacts_n &lt;int&gt;</code></pre>
 <p><code>mutate()</code> allows you to refer to columns that you just created:</p>
-<pre class="r"><code>mutate(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)</code></pre>
+<pre class="r"><code># generate two variable: one indicating the year of birth and one the year of birth without century 
+bank %&gt;% mutate(year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)</code></pre>
 <pre><code>## # A tibble: 45,211 × 22
 ##       id   age          job  marital education default balance housing   loan contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -693,13 +713,13 @@ mutate(df, x1 = x+1)</code></pre>
 <p>The last verb is <code>summarise()</code>, which collapses a data frame to a single row.</p>
 <p>The first argument is the name of the data frame, and the second and subsequent are summarising expressions.</p>
 <pre class="r"><code># Compute the mean of balance variable of bank data frame
-summarise(bank, mean_balance = mean(balance, na.rm = TRUE))</code></pre>
+bank %&gt;% summarise(mean_balance = mean(balance, na.rm = TRUE))</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   mean_balance
 ##          &lt;dbl&gt;
 ## 1     1362.272</code></pre>
 <pre class="r"><code># Compute the minimum and the maximum value of balance of bank data frame
-summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))</code></pre>
+bank %&gt;% summarise(max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))</code></pre>
 <pre><code>## # A tibble: 1 × 2
 ##   max_balance min_balance
 ##         &lt;int&gt;       &lt;int&gt;
