@@ -20,7 +20,9 @@ Introduction to dplyr              					| 41-dplyr-intro.Rmd
 Verb Functions								              | 42-dplyr-verbs.Rmd
 Group Data and Chain Verbs          				| 43-group-chain.Rmd
 Combining Data Frames                       | 44-join.Rmd
-
+DB Interface                                | 45-databases.Rmd
+Reshaping data with tidyr                   | 46-tidyr.Rmd
+Managing dates with lubridate               | 47-lubridate.Rmd
 
 Data Visualization  
 Data Visualization with ggplot2 					  | 51-ggplot.Rmd

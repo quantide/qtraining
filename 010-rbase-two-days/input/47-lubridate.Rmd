@@ -1,0 +1,322 @@
+---
+title: "Managing dates with lubridate"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(lubridate)
+require(dplyr)
+require(ggplot2)
+require(tidyr)
+require(qdata)
+```
+
+
+# A First Look to `lubridate`
+
+Among packages that deals with dates and times in R, `lubridate` provides a set of intuitive and coherent functions. Intuitive since each function usually perform a single task described by its name; coherent since `lubridate` is well integrated with other data management tools, like `dplyr`.
+
+Supposing `lubridate` is currently installed, it must be loaded in order to use its functions.
+```{r lubridate_require, message=FALSE}
+require(lubridate)
+```
+
+The starting point is a character string.
+```{r lubridate_str}
+chr <- "01-02-12"
+class(chr)
+```
+
+The above string is an ambiguous date: 
+
+ + in Europe, it can be easily interpreted as 1st February 2012, 
+ + in the US, it can be read as January 2, 2012,
+ + IT developers write in this way the day 12 February 2001. 
+
+`lubridate` provides a single function for each one of these cases: `dmy()`, `mdy()` and `ymd()`. These functions parse dates according to the order provided, where `y` is the _year_, `m` is the _month_ and `d` is the _day_.
+
+```{r lubridate_ymd}
+dmy(chr)
+mdy(chr)
+ymd(chr)
+```
+
+```{r lubridate_class}
+class(dmy(chr))
+```
+
+Parsed objects have now two new classes: `POSIXct` and `POSIXt`. As Wikipedia states, _the Portable Operating System Interface (POSIX) is a family of standards specified by the IEEE Computer Society for maintaining compatibility between operating systems_.
+
+The `POSIXct` format stores dates as the number of seconds since the start of January 1, 1970, as shown by `as.numeric()` below; `POSIXt` is a virtual class common to `POSIXct` and other `POSIX*` classes that are not used here.
+
+```{r lubridate_posix}
+as.numeric(dmy(chr))
+```
+
+The `lubridate` package provides other parsing functions, to deal with less frequent cases `myd()`, `dym()` and `ydm()`.
+
+```{r lubridate_myd}
+myd(chr)
+dym(chr)
+ydm(chr)
+```
+
+Accordingly to the help, `ymd()`-style _functions recognize arbitrary non-digit separators as well as no separator. As long as the order of formats is correct, these functions will parse dates correctly even when the input vectors contain differently formatted dates_.
+
+```{r lubridate_all}
+x <- c(20160101, "2016-01-02", "2016 01 03", "2016-1-4", "2016-1, 5", "Created on 2016 1 6", "201601 !!! 07")
+ymd(x)
+```
+
+
+# Extract Date Components
+
+The following function returns an `IBM` data frame with IBM quotation data from Yahoo! Finance. Notice that the function refer to the `quantmod` package, so it should be installed.
+
+```{r lubridate_IBM, message=FALSE, warning=FALSE}
+quantmod::getSymbols("IBM", return.class = 'data.frame')
+head(IBM)
+```
+
+
+The data frame contains dates as row names but data manipulation can be performed better on a variable. With a bit of `dplyr` code the new column can be added.
+
+```{r lubridate_row_names}
+IBM <- IBM %>% mutate(date = row.names(.)) %>% tbl_df 
+IBM
+```
+
+At this point, the new `date` column is a string and it must be parsed to be interpreted by R as a date.
+
+```{r lubridate_IBM_mutate}
+IBM <- IBM %>% mutate(date = ymd(date))
+IBM
+```
+
+The `lubridate` package provide a set of function to extract single components of a date: `month()`, `day()` and `year()`. Using just `lubridate` and `dplyr` the components of a date can be added as new variables to a data frame.
+
+```{r lubridate_extract}
+IBM <- IBM %>% mutate(month = month(date), day = day(date), year = year(date))
+IBM
+```
+
+At this point, you can easily draw a time series plot with adjusted quotations for the IBM, with a facet for each year.
+
+
+```{r lubridate_ggp_facets}
+ggplot(data=IBM, mapping=aes(x=date)) +
+  geom_line(aes(y=IBM.Adjusted)) + 
+  facet_wrap(~ year, scales="free_x")
+```
+
+Similarly, you can explore differences among months with a box plot for each month.
+
+```{r lubridate_ggp_boxplot}
+ggplot(data=IBM, mapping=aes(x=factor(month), y=IBM.Adjusted, group=month)) +
+  geom_boxplot() +
+  facet_wrap(~ year)
+```
+
+The last function shown here is `wday()`: it extracts the week day of a date, returning a number from Sunday (1) to Saturday (7).
+
+```{r lubridate_IBM_weekday}
+IBM <- IBM %>% mutate(weekday = wday(date))
+IBM
+```
+
+Of course, also the new variable can be used as grouping variable for box plots.
+
+```{r lubridate_ggp_weekday}
+ggplot(data=IBM, mapping=aes(
+    x=factor(weekday, labels=c("Mon", "Tue", "Wed", "Thu", "Fri")), y=IBM.Volume, group=weekday)
+  ) + geom_boxplot() + xlab("Week day")
+```
+
+# Dealing with Years: Leap Year and Date Differences 
+
+A leap year (also known as a bissextile year) is a year containing 366 days instead of the usual 365, by extending February to 29 days rather than the common 28.
+
+Since 2016 is a leap year, the difference between March 17, 2016 and March 17, 2015 is 366 days.
+
+```{r lubridate_leap}
+ymd("2016-03-17") - ymd("2015-03-17")
+```
+
+By the way, if you add an year to a date may be you expect the same day/month of the following year. The function `years()` add a number of years, ignoring leap years. Notice the spelling difference among this function, `years()` and the function to extract the `year()` component of a date, that have the singular form of the units as a name.
+
+```{r lubridate_years}
+ymd("2015-03-17") + years(1)
+```
+
+In some cases, you may be interested in the exact time differences. The function `dyears()` adds an year (i.e. 365 days) according to leap years.
+
+```{r lubridate_dyears}
+ymd("2015-03-17") + dyears(1)
+```
+
+
+# Dealing with Months and Days
+Similarly to `years()`, the `months()` function return the same day shifted by a specified number of months.
+
+```{r lubridate_months}
+ymd("2016-06-01") + months(1)
+ymd("2016-06-01") - months(6)
+```
+
+If you try to add a month to January 31, you get a `NA` value. This is because February does _not_ have 31 days.
+
+```{r lubridate_months_na}
+ymd("2016-01-31") + months(1)
+```
+
+In these cases you may want to add to January 31 a "standard" month, that is 30 days. You can solve the issue with the `days()` function.
+
+```{r lubridate_days_30}
+ymd("2016-01-31") + days(30)
+```
+
+Otherwise, you may want a month later January 31, without exceeding the following month. The package `lubridate` allows you to deal with this case, using the special operator `%m+%`.
+
+```{r lubridate_months_m}
+ymd("2016-01-31") %m+% months(1)
+```
+
+As shown above, you can shift a date by a given number of `days()`:
+```{r lubridate_days}
+ymd("2016-01-31") + days(7)
+ymd("2016-03-26") - days(360)
+```
+
+
+# Time Parsing
+Package `lubridate` allow you to deal with times, too. Times have no mean without dates, so you will parse the whole date-time string.
+
+When data has date and time in two different variables, you can merge it an a single variable with a bit of `tidyr`. The following example requires data frame `diabetes` from `qdata` package.
+
+```{r lubridate_diabetes, message=FALSE}
+data(diabetes)
+names(diabetes)
+diabetes <- diabetes %>% unite(datetime, date, time)
+diabetes
+```
+
+As for dates, you can use the parsing functions to tell R that `datetime` is a date-time object.
+
+```{r lubridate_diabetes_ymd}
+diabetes <- diabetes %>% mutate(datetime = mdy_hm(datetime))
+diabetes
+```
+
+The `lubridate` package provides three types of functions that deal with date-time strings: 
+
+* `ymd_h()` when time has only hours
+* `ymd_hm()` when time has hours and minutes
+* `ymd_hms()` when time has hours, minutes and seconds. 
+
+Notice that `ymd()` can be replaced by any date style (e.g. `mdy`, `dmy` etc.) as seen above. Also in this case, functions recognize arbitrary separators.
+
+```{r lubridate_h_hm_hms}
+ymd_h("2016-03-10 08")
+ymd_hm("2016-03-10 08:15")
+ymd_hms("2016-03-10 08:15:40")
+ymd_hms("16+03/10*08.15,40")
+ymd_hms("160310:081540")
+```
+
+The function `now` returns the current date-time.
+
+```{r lubridate_now}
+now()
+```
+
+
+
+# Time Zones
+Date and times may vary with refer to timezone. When you define a `POSIXct` class object with parsing function seen above, you can refer to a specified timezone.
+
+For example, you can set March 1, 2016 at 2.00 PM in the Central European Time (CET).
+
+```{r lubridate_tz}
+ymd_hms("2016-03-01 14:00:00", tz="CET")
+```
+
+In the same way, you can set April 1, 2016 at 2.00 PM.
+
+```{r lubridate_tz_cest}
+ymd_hms("2016-04-01 14:00:00", tz="CET")
+```
+The parsed object return `CEST` instead of `CET`. This is because April is during Daylight Saving Time, and CET area move to Central European _Summer_ Time (CEST).
+
+
+The next examples show how to set timezone when parsing date. 
+
+<!--
+The following examples will show how to modify a date to change its timezone. 
+-->
+
+Function `force_tz()` forces a date-time to a new time zone
+
+Function `with_tz()` returns a date-time as it would appear in a different time zone
+
+```{r lubridate_dat}
+d <- ymd_hms("2016-03-01 14.00.00")
+d
+force_tz(d, tz="CET")
+with_tz(d, tz="CET")
+```
+
+
+# Dealing with Hours, Minutes and Seconds
+
+Similarly to functions `years()` and `dyears`, `lubridate` provides functions for time duration: 
+
+* `hours()`
+* `minutes()`
+* `seconds()` 
+
+for relative time spans and:
+
+* `dhours()`
+* `dminutes()`
+* `dseconds()` 
+
+for exact time spans.  
+
+Relative time spans shift times according to the input (e.g. one hour more), while exact time spans return the exact time after _n_ seconds, being _n_ the function input. Relative and exact time spans are identical, unless there are "external" adjustments of time, like Daylight Saving Time.
+
+As an example, you can substract an hour to October 30, 2016 at 2.00 AM. The `hours()` function returns 1.00 AM, since it just subtract an hour; the `dhours()` function returns 2.00 AM again, because in this night DST ends and clocks are set back, as if to repeat one hour.
+
+```{r lubridate_times}
+ymd_hms("2016-10-30 02:00:00", tz="CET") - hours(1)
+ymd_hms("2016-10-30 02:00:00", tz="CET") - dhours(1)
+```
+
+If you want to go crazy, take a look to this example. If you add an hour to 1.30 AM of March 27, 2016 using `hours()` you get a `NA` value, because the 2.59 AM does not exists in this night: DST begins and clocks skip an hour. If you add an hour to 1.30 AM of March 27, 2016 using `dhours()` you get 3.30 AM, the exact time an hour later.
+
+```{r lubridate_crazy}
+ymd_hms("2016-03-27 01:30:00", tz="CET") + hours(1)
+ymd_hms("2016-03-27 01:30:00", tz="CET") + dhours(1)
+```
+
+
+# Rounding Date and Times
+
+The `lubridate` package provides a set of functions to round date and times, whose names recall numeric rounding functions of base R:
+
+- `ceiling_date()` rounds a date-time up to the nearest integer value;
+- `floor_date()` rounds a date-time down to the nearest integer value;
+- `round_date()` rounds a date-time to the nearest integer value.
+  
+Value refers to the specified time unit: you can specify whether to round to the nearest second, minute, hour, day, week, month, or year using the `unit` argument.
+
+```{r lubridate_round}
+dttm <- c(ymd_hms("2016-03-27 14:15:00"), ymd_hms("2016-03-27 14:30:00"), ymd_hms("2016-03-27 14:45:00"))
+dttm
+ceiling_date(dttm, unit="hour")
+floor_date(dttm, unit="hour")
+round_date(dttm, unit="hour")
+```
+
