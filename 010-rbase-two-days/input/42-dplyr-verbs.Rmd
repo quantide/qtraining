@@ -196,6 +196,6 @@ bank %>% summarise(mean_balance = mean(balance, na.rm = TRUE))
 bank %>% summarise(max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
 ```
 
-
-
-
+<!--
+ragionare sul fatto di aggiungere i nuovi esempi di data discovery
+-->

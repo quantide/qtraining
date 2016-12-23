@@ -9,6 +9,8 @@ options(width = 108)
 
 ![](./images/flow-dtman.png)
 
+This chapter provides an overview of data management with `R` through the `dplyr`, `tidyr` and `lubridate` packages.
+
 The `dplyr` package for `R` is very powerful for data management since:
 
 * it simplifies how you can think about common data manipulation tasks;
@@ -19,31 +21,50 @@ The `dplyr` package for `R` is very powerful for data management since:
 require(dplyr)
 ```
 
-The examples of these chapter will refer to `bank` data set which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls. 
+`tidyr` is a modern `R` package which provides a standard way to organise data values within a dataset. 
 
-```{r bank_tbl_df, message=FALSE}
-require(qdata)
-data(bank) 
-bank
+```{r message=FALSE}
+require(tidyr)
 ```
 
-In the following chapters, we will explore the innovations introduced by `dplyr` to make our lifes easier when dealing with dataframes manipulation tasks.     
+`lubridate` is an R packages that deals with dates and times in an intuitive and coherent way.
+
+```{r message=FALSE}
+require(lubridate)
+```
+
+In the following chapters, we will explore the innovations introduced by `dplyr`, `tidyr` and `lubridate` to make our lifes easier when dealing with dataframes manipulation tasks.     
 In particular:
 
 * pipe operator (`%>%`) 
 * `tbl_df` data frame class
-* dplyr verbs for data manipulation 
-* dplyr verbs for combining data
+* `dplyr` verbs for data manipulation 
+* `dplyr` verbs for combining data
+* `dplyr` with backend databases
+* reshaping data with `tidyr`
+* managing dates with `lubridate`
 
-In the following two paragraph we will explore pipe operator (`%>%`) and `tbl_df` data frame class
+In the following two paragraphs we will explore two important `dplyr` innovations: pipe operator (`%>%`) and `tbl_df` data frame class
 
-## Pipe operator (`%>%`)
+<!--
+aggiungere qualcosa a questa frase: dire magari che sono le innovazioni base
+-->
+
+
+## Pipe operator  
 
 `dplyr` pipe operator (`%>%`) allows us to pipe the output from one function to the input of another function. The idea of piping is to read the functions from left to right. It is particularly useful with nested functions (reading from the inside to the outside) or with multiple operations.
 
 ![<small>Source: www.datacamp.com</small>](./images/pipe.png)
 
 Pipes can work with nearly any functions (`dplyr` and not-`dplyr` functions), let us see an example.
+
+Let us consider `bank` data set, included in `qdata` package, which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls. 
+
+```{r bank_tbl_df}
+require(qdata)
+data(bank) 
+```
 
 Suppose we want to visualize the first rows of `bank` dataframe, by using `head()` function.   
 
@@ -77,7 +98,6 @@ Let us consider `mtcars`, a dataset included in `datasets` package (automaticall
 
 ```{r tbl_df, message=FALSE}
 # Example of data frame
-data("mtcars")
 class(mtcars)
 
 # If we do not convert it as a tbl_df, all mtcars rows and columns will be printed when calling mtcars 

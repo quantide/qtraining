@@ -1,10 +1,15 @@
 ## ----message=FALSE-------------------------------------------------------
 require(dplyr)
 
-## ----bank_tbl_df, message=FALSE------------------------------------------
+## ----message=FALSE-------------------------------------------------------
+require(tidyr)
+
+## ----message=FALSE-------------------------------------------------------
+require(lubridate)
+
+## ----bank_tbl_df---------------------------------------------------------
 require(qdata)
 data(bank) 
-bank
 
 ## ----pipe1---------------------------------------------------------------
 head(bank)
@@ -17,7 +22,6 @@ bank %>% head(n=10)
 
 ## ----tbl_df, message=FALSE-----------------------------------------------
 # Example of data frame
-data("mtcars")
 class(mtcars)
 
 # If we do not convert it as a tbl_df, all mtcars rows and columns will be printed when calling mtcars 

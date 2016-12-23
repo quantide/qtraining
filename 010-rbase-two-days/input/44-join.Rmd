@@ -89,4 +89,6 @@ full_join(df1, df2)
 
 The left, right and full joins are collectively know as outer joins. When a row doesn't match in an outer join, the new variables are filled in with missing values.
 
-
+<!--
+versione ristretta usata per il corso di un giorno: usare l'originale del corso dplyr?
+-->
