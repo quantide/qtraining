@@ -14,6 +14,7 @@ HTML_FILES := $(patsubst %.Rmd, %.html, $(wildcard $(INPUT_DIR)/*.Rmd)) \
 
 ### COMPILE
 all: toc html zip
+#all: html zip
 
 zip:
 	rm -f $(OUTPUT_DIR)/$(PROJECT).zip
