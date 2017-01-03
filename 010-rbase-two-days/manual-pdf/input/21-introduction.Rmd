@@ -1,0 +1,840 @@
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+# Introduction to R Objects
+
+There are different types of objects in R, which can be divided in:
+
+* data objects
+* function object
+ 
+**Data objects** are specific types of data structures by which is possible to organize data. The most important are:
+
+* vectors 
+* matrices 
+* lists 
+* factors
+* data frames
+
+**Function object** refers to operation done on data.
+
+We will deepen these two categories of R objetcs in the following chapters.
+
+\clearpage
+
+## Data Objects
+
+The structures of data objects are represented in the following figure:
+
+![](./images/dataStructure.png)
+
+### Vectors
+
+In R the simplest data structure is a vector. A vector is defined as an ordered sequence of elements of the same kind.
+
+A vector can be defined according to the data type it contains. Therefore, there are:
+
+ - numeric vectors;
+ - logical (or Boolean) vectors;
+ - character (or string) vectors.
+
+The most common method to define a vector is the `c()` function.
+
+```{r, numeric}
+# Numeric vector
+num <- c(1, 2, 5.3, 6, -2, 4)
+num
+```
+
+```{r, character}
+# Character vector
+char <- c("one", "two", "three")
+char
+```
+
+Logical vectors are often defined as the result of control actions on numerical or character vectors. 
+
+```{r, logical1}
+# Logical vector
+logic1 <- num > 3
+logic1
+```
+
+Of course, a logical vector can be created using the `c()` function.
+
+```{r, logical2}
+# Logical vector
+logic2 <- c(TRUE, FALSE, TRUE)
+logic2
+```
+
+If a vector mixes different data types, R will store it as a character vector.
+
+```{r, mixed}
+mixed <- c("foo", 1, TRUE)
+mixed
+```
+
+The `c()` function can be used to create a vector combining several vectors.
+
+```{r, concatenate}
+vec1 <- c(11, 12, 13)
+vec2 <- c(21, 22, 23)
+vec3 <- c(31, 32, 33)
+comb <- c(vec1, vec2, vec3)
+comb
+```
+
+
+A vector can be created using sequences. The easiest method is using the operator `:`. The inputs of the operator `:` are the first number on the left and the last number on the right. The vector will be composed of numbers comprised between the first and the last number (by one unit).
+
+```{r, sequence1}
+go <- 1:20
+go
+back <- 20:1
+back
+```
+
+Other sequences can be created using the `seq()` function. The parameters `from` and `to` of the `seq()` function refer to the starting and end values of the sequence, respectively. The parameter `by` indicates the number by which the sequence has to be incremented. Alternatively, the `length.out` parameter refers to the desired length of the sequence.
+
+```{r, sequence2}
+seqby <- seq(from = 1, to = 5, by = 0.5)
+seqby
+seqlength <- seq(from = 1, to = 5, length.out = 13) 
+seqlength
+```
+
+Finally, vectors can be created with the `rep()` function which repeats the elements of a vector. The first parameter of the `rep()` function, `x`, is the value or vector to be repeated and the second parameter, `times`, represents the number of repetitions to be made. Alternatively, the `each` parameter enables the repetition of each element of the vector as many times as indicated by the number. 
+
+```{r, rep}
+rep(x = 1 , times = 10)
+rep(x = 1:5, times = 3)
+rep(x = 1:5 , each = 3)
+rep(c("ALI", "IPERLANDO"), times=4)
+rep(x = 1:5 , times = 2 , each = 3)
+
+
+rep(x = "no",  times = 5)
+rep(x = c("a", "b", "c"), times = c(3, 2, 1))
+rep(x = c("a", "b", "c"), times = rep(4,3))
+
+mydata <- c("a", "b", "c")
+myrep <- rep(4,3)
+rep(x = mydata, times = myrep)
+```
+
+A subset of the vector `x` can be extracted with `x[subscripts]`. The selection can be done in three ways.
+
+ 1. A vector of positive integers indicating the elements of the vector to be extracted.
+
+```{r, subsetting1}
+x <- c(1, 4, 2, 5, 6, 8, 6, 9, 10)
+x[3]
+x[1:3]
+x[c(2,4)]
+```
+
+ 2. A vector of negative integers indicating the elements which must not be extracted. 
+
+```{r, subsetting2}
+x <- c(1, 4, 2, 5, 6, 8, 6, 9, 10)
+x[-2]
+x[-c(2, 5, 7)]
+```
+
+ 3. A Boolean vector indicating the elements to be extracted (`TRUE`) or to be left (`FALSE`).
+
+```{r, subsetting3}
+x <- c(1, 4, 2, 5, 6)
+x[c(TRUE, TRUE, FALSE, FALSE, TRUE)]
+y <- c(TRUE, TRUE, FALSE, FALSE, TRUE)
+x[y]
+x[!y]
+```
+
+  The `!` symbol identifies the "not" logical operator. The logical operator "not" reverses the logical value of a condition on which it operates.  
+  
+  In this way elements satisfying a logical condition can be extracted. Usually, the logical vectors are obtained as the result of logical expressions.
+
+
+```{r, subsetting4}
+x <- c(1, 4, 2, 5, 6, 8, 6, 9, 10)
+y <- x > 5
+x[y]
+```
+
+  The logical expression can be defined inside the square brackets, directly.
+
+```{r, subsetting5}
+x[x > 5]
+```
+
+  The `&` symbol identifies the "and" logical operator. The "and" logical operator compare two (or more) logical expression and return TRUE if both are TRUE. The following example returns the `x` values greater or equal than 2 but less or equal than 8.
+  
+```{r, subsetting6}  
+x[x >= 2 & x <= 8]
+```
+
+  The `|` symbol identifies the "or" logical operator. The "or" logical operator compare two (or more) logical expression and return TRUE if at least one is TRUE. The following example returns the `x` values less than 2 or greater than 8.
+  
+```{r, subsetting7}
+x[x < 2 | x > 8]
+```
+
+<!--
+x[!(x >= 2 & x <= 8)]
+-->
+
+Extracting unique values contained in a vector can sometimes be useful. This can be done with the `unique()` function. 
+
+```{r, unique}
+x <- c(1, 2, 1, 1, 2, 3, 3, 2, 1, 2, 2, 3)
+unique(x)
+```
+
+
+### Matrices
+
+Matrices are generalizations of vectors. Like vectors, matrices need to contain elements of the same kind. This Paragraph introduces numeric matrices.
+
+A matrix can be created using the `matrix()` function.
+
+```{r, matrix}
+matrix(1:8, nrow = 2, ncol = 4)
+```
+
+By default, a matrix is filled by columns. The `byrow = TRUE` argument of the `matrix()` function fills the matrix by rows. 
+
+```{r, byrow}
+matrix(1:8, nrow = 2, ncol = 4, byrow = TRUE)
+```
+
+Alternatively, a matrix can be created by applying the `dim()` function to a vector. 
+
+```{r, dim}
+x <- 1:8
+x
+dim(x) <- c(2, 4)
+x
+```
+
+Finally, a matrix can be created by joining two or more vectors, both as column vectors (`cbind()` function) and row vectors (`rbind()` function).
+
+```{r, bind1}
+cmat <- cbind(1:3, 4:6, 7:9)
+cmat
+rmat <- rbind(1:3, 4:6, 7:9)
+rmat
+```
+
+The `cbind()` and `rbind()` functions can be used to join two (ore more) matrices or vectors and matrices.
+
+```{r, bind2}
+cbind(cmat, 10:12)
+rbind(cmat, rmat, cmat)
+```
+
+Like vectors, a subset of the matrix `x` can be extracted with `x[subscripts]`. Subscripts can be: 
+
+ 1. a set `[rows, cols]`, where `rows` is a vector of row numbers and `cols` is a vector of column numbers. Numbers are negative when they indicate a row or column to be excluded.
+ 2. A number, a vector of numbers or a logical condition. In this case, the matrix is treated as if it were a single vector created by stacked matrix columns.
+
+```{r, matrix subsetting}
+x <- matrix(1:24, nrow = 4, ncol = 6, byrow = TRUE)
+x[1:2, ]
+x[, c(1, 3, 5)]
+x[c(1,3), c(1, 4)]
+x[-1, ]
+x[1:18]
+x[x >= 3 & x < 12]
+```
+
+### Array  
+
+They are similar to matrices but they can be multi-dimensional (more than two dimensions)
+
+```{r array}
+z <- array(1:24, dim=c(2,3,4))
+z
+```
+
+
+### Lists
+
+A list is an ordered collection of objects. Each object is a component of the list. Each element of the list can have a different structure. It can be a list itself, a vector, a matrix, an array, a factor or a data frame. A list allows you to gather a variety of (possibly unrelated) objects under one name.
+
+Lists are not usually created by users but are the result of statistical procedures in R.
+
+For example, in its simplest form, the `lsfit()` function estimates a least-squares regression.
+
+```{r, list}
+x <- 1:5
+y <- c(-0.0921, 0.4543, -0.1473, -0.0235, -0.3923)
+out <- lsfit(x, y)
+out
+```
+
+The output of the function is a list made of four objects called "coefficients", "residuals", "intercept" e "qr". The first element of the list is a vector with intercept and slope. The second element is a vector with the residuals of the model. The third element is a Boolean vector of length one indicating if the model contains the intercept. The fourth element is a list containing the QR matrix decomposition of the independent variables.
+
+Even if rarely used, `list()` is the basic function to create a list. Its arguments are the elements of the list.
+
+```{r, list create}
+my_list <- list(vec = 1:7, mat = matrix(1:12, ncol = 3),
+  lis = list(a = 1, b = letters[1:4]))
+my_list
+```
+
+The elements of a list can be extracted in three different ways:
+
+  1. with square brackets;
+  2. with double square brackets;
+  3. with the name of the object inside the list.
+
+In the first case, square brackets can be used to extract a list made of one or more objects. As for vectors, the position of the elements to be included or excluded ought to be specified. 
+
+```{r, list subsetting1}
+my_list[1:2]
+my_list[-3]
+ml1 <- my_list[1]
+ml1
+```
+
+In the second case, double square brackets can be used to extract one object (only) from the list. 
+
+```{r, list subsetting2}
+ml2 <- my_list[[1]]
+ml2
+my_list[[2]]
+my_list[[3]]
+```
+
+Please note the difference between `my_list[1]` and `my_list[[1]]`. The first argument extracts a list with only the first object contained in `my_list`; in our case a vector. On the other hand, the second argument extracts the vector, which is the content of the first object of the list.
+
+The third way enables the extraction of the content of an object in the list. The use of the object position in the list, as for double square brackets, is replaced by the use of the object name preceded by the symbol $.
+
+```{r, list subsetting3}
+my_list$vec
+my_list$mat
+my_list$lis
+```
+
+Indices for the selection can be combined to extract elements in an object of the list using the above-mentioned methods. 
+
+```{r, list subsetting4}
+my_list[[1]][1:3]
+my_list$mat[3:4, c(1, 3)]
+my_list$lis[1]
+my_list$lis[[1]]
+my_list$lis$a
+```
+
+
+### Factors
+
+A factor is a vector-like object used to specify a discrete classification (grouping) of the components of other vectors of the same length. R provides both _ordered_ and _unordered_ factors.
+
+Factor variables are categorical variables that can be either numeric or string variables. There are a number of advantages to converting categorical variables to factor variables. Perhaps the most important advantage is that they can be used in statistical modeling where they will be implemented correctly, e.g., they will then be assigned the correct number of degrees of freedom. Factor variables are also very useful in many different types of graphics. Furthermore, storing string variables as factor variables is a more efficient use of memory.
+
+Vectors, matrices and lists contain numerical data, characters or logics and are basic objects in R. Factors, on the other hand, are a more complex structure, as they contain both the numerical data vector and the labels associated with each level.
+
+To create a factor variable the `factor()` function is used. The only required argument is a vector of values which can be either string or numeric. Optional arguments include the `levels` argument, which determines the categories of the factor variable, and the default is the sorted list of all the distinct values of the data vector. The `labels` argument is another optional argument which is a vector of values that will be the labels of the categories in the `levels` argument. The `exclude` argument is also optional; it defines which levels will be classified as NA in any output using the factor variable.
+
+```{r, factors}
+grade <- c(3, 4, 2, 2, 4, 1, 1, 4, 2, 2)
+factor(grade)  
+gender <- c(rep("male", 3), rep("female", 4))
+gender <- factor(gender, levels=c("male", "female", "trans"))
+gender
+```
+
+Once a vector has been defined, it is always possible to modify the labels of the vector's levels. This can be done with the `levels()` function.
+
+```{r, factor labels}
+size <- factor(c(2, 3, 1, 1, 1, 2, 3, 3), levels = c(1, 2, 3),
+  labels = c("small", "medium", "large"))
+levels(size)
+levels(size) <- c("S", "M", "L")
+size
+```
+
+The `order` parameter of the `factor()` function creates a factor with ordered levels. 
+
+```{r, ordered factor}
+mark <- sample(c("D", "C", "B", "A"), 12, replace = T)
+mark1 <- factor(mark)
+mark2 <- factor(mark, levels = c("D", "C", "B", "A"), order = T)
+mark1
+mark2
+```
+
+The `as.numeric()` and `as.character()` functions transform a factor into a numeric vector or into a vector whose elements are the levels' labels. 
+```{r, as.numeric as.character}
+as.numeric(size)
+as.character(size)
+```
+
+The elements of a factor can be extracted in the same way as the elements of a vector. The logic conditions on the elements of a factor are referred to the factor's levels which can be obtained with the`levels()` function.
+
+```{r, levels}
+size <- factor(c(2, 3, 1, 1, 1, 2, 3, 3), levels = c(1, 2, 3),
+  labels = c("small", "medium", "large"))
+size
+size[1:5]
+size[-4]
+levels(size)
+size[size == "medium" | size == "large"]
+```
+
+
+### Data Frames
+
+A data frame in R can be thought of as:
+
+ - a generalization of a matrix;
+ - a list of particular kind.
+
+In the first case a data frame can be thought of as a matrix whose columns can be both factors and vectors of the same length but (possibly) of different types (numeric, character, Boolean).
+
+In the second case, the data frame is a list completely made of either vectors (of any kind) or factors, all with the same length.
+
+From a formal point of view, data frames are not a new type of objects. They are objects of list type and data frame class. From a practical point of view, a data frame is a very well-know structure in statistics. Its different kinds of information are organized in columns, whereas rows represent different types of observational units.
+
+Furthermore, data imported in R from external sources, such as text files, Excel files or databases, is saved in R as data frame-like objects.
+
+To sum up, unless we have specific needs, data frames in R are the ideal tool for data filing and management.
+
+Data frames are usually imported from external sources but the creation of a data frame object in R might sometimes be needed. The most widespread method to define a data frame is the `data.frame()` function. Its inputs are a series of vectors or factors of the same length. The generated object is made of as many columns as input elements. 
+
+```{r, data frame1}
+name <- c("James", "Stevie", "Otis", "Bob", "Levon", "Patti", "Karen")
+height <- c(180, 170, 175, 190, 168, 160, 165)
+gender <- factor(c("M", "M", "M", "M", "M", "F", "F"))
+df <- data.frame(name, height, gender, stringsAsFactors = FALSE)
+df
+```
+
+Alternatively, the vectors composing the data frame can be defined inside the `data.frame()` function itself.
+
+```{r, data frame2}
+df <- data.frame(
+  height = c(180, 170, 175, 190, 168, 160, 165),
+  name = c("James", "Stevie", "Otis", "Bob", "Levon", "Patti", "Karen"),
+  gender = factor(c("M", "M", "M", "M", "M", "F", "F")),
+  stringsAsFactors = FALSE
+)
+df
+```
+
+The management of character vectors in R requires a detailed explanation. By default, numeric vectors become part of data frames as such, whereas character vectors are transformed into factors whose levels correspond to the vector's unique values.
+
+This behaviour is surely effective when character vectors represent categorical variables with a definite number of modes, such as education qualification or job.
+
+A character vector can also represent a set of strings which are not necessarily referable to a definite number of modes (e.g. person's proper names) or to numerous and/or unique modes (e.g. Italian municipalities are about 8,000 and have different names). In this case R's behaviour becomes a disturbing factor because it tends to transform variables of a different nature into factors. 
+ 
+Unfortunately, there is not an optimal solution to this problem. Much depends on the most used types of variables dealt with by a single user.
+
+This behaviour is managed by the `stringsAsFactors` logical parameter.
+
+As already mentioned, the default setting is `stringsAsFactors = TRUE` which tells R to transform character vectors into factors inside a data frame; `stringsAsFactors = FALSE` does not change character vectors. This parameter can be set both in "local" option with the `stringsAsFactors` parameter inside the `data.frame()` function and in "global" option with `stringsAsFactors` inside the `options()` function.
+Clearly, the "global" option of the `stringsAsFactors` lasts for the whole session of work but can be locally modified in any moment in a single call to a function.
+
+There are several ways to extract a subset from a data frame. Data management is not among topics of this introductory manual. Like matrices, data can be extracted using `x[subscripts]` where subscripts is a set `[rows, cols]`, where `rows` is a vector of row numbers and `cols` is a vector of column numbers. Numbers are negative when they indicate a row or column to be excluded. 
+
+The following code chunk shows how to extract the first, the third and the seventh row from the `df` dataframe.
+
+```{r, dfsubsetting1}
+df[c(1, 3, 7), ]
+```
+
+The code below shows how to extract the first and the second column from the `df` dataframe.
+
+```{r, dfsubsetting2}
+df[, c(1, 2)]
+```
+
+Like lists, data can be extracted using `x$column` where column is the column name.
+
+```{r, dfsubsetting3}
+df$height
+is.vector(df$height)
+```
+
+The above code returns a vector. To get a data frame, the `data.frame()` function can be used.
+
+```{r, dfsubsetting4}
+data.frame(height = df$height)
+data.frame(height = df$height, name = df$name)
+```
+
+The `dim()` function can be used to know the number of rows and of columns of a data frame. The same information can be obtained using `nrow()` and `ncol()` functions, respectively.
+
+```{r, dim2}
+dim(df)
+nrow(df)
+ncol(df)
+```
+
+The `str()` function returns the structure of a dataframe. For each variable (column), it shows: the name, the type (numeric, character, factor etc.) and first elements.
+
+```{r, str}
+df
+str(df)
+```
+
+The `head()` function show the first rows of a data frame. Its use is particularly convenient when data sets are long. `iris` is a built in R data set. It contains the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris.
+
+```{r, head}
+nrow(iris)
+head(iris)
+```
+
+
+### Missing Values, Null Objects and Infinite
+
+In R missing values are represented by the symbol `NA` (Not Available).
+
+```{r, na}
+x <- c(4, 1, "a")
+y <- as.integer(x)
+y
+```
+
+The above chunk create a vector `x`.  The vector contains three values: 4, 1 and the character string "a". Then, elements of the vector are transformed into integer values. 
+
+The character string "a" cannot be transformed, so a `NA` value is returned.
+
+To check if data is missing, the function `is.na()` can be used.
+
+```{r, is.na}
+is.na(y)
+```
+
+The `NaN` symbol (Not a Number) represents a missing value obtained as a result of an impossible numerical operation. `NaN` can be detected with the function is.nan. 
+
+```{r, nan}
+log(-1)
+sqrt(-4)
+x <- log(c(-1, 1, 2))
+x
+is.nan(x)
+```
+
+The `NULL` symbol represents the null object in R. `NULL` is often returned by expressions and functions whose value is undefined. The `is.null()` function returns `TRUE` if its argument is `NULL` and FALSE otherwise.
+
+```{r, null}
+x <- c()
+x
+is.null(x)
+
+```
+
+Infinite values are represented by the `+Inf` and `-Inf` symbols in R.
+
+```{r, inf}
+log(0)
+```
+
+In the above example, R calculates the limit of the function $log(x)$ as $x$ approaches zero.
+
+## Function Object
+
+Functions are one of the most important objects in R as when working with R we all make constant use of functions.
+
+A function is characterised by an input and an output. The input of the function, i.e. the set of the arguments, can be either null or made of one or more R objects. The output of the function can be either null or a single R object. If the function has to return more than one object, the objects are to be inserted in a list.
+
+Let us see some examples:
+
+The function `ls()` doesn't require any input and returns an output.
+
+```{r, argument1}
+ls()
+```
+
+The function `rm()` requires an input and doesn't return an output.
+
+```{r, argument2}
+foo <- 3
+rm(foo)
+```
+
+Usually, functions require an input and returns an output.
+
+```{r, argument3}
+sum(1:10)
+```
+
+It is advisable to use the help command of each function to understand not only the arguments which can be used as function inputs, but also the output:
+  
+```{r, help3, eval=F}
+help(read.table)
+```
+
+or
+
+```{r, help4, eval=F}
+?read.table
+```
+
+
+Let us deeply explore function structure.
+
+### Function structure
+
+We can create and assign functions to a variable name as we do with any other object:
+
+```{r functions-create}
+f <- function(x, y = 0) {
+  z <- x + y
+  z
+}
+```
+
+Eventually, we can delete any function with the usual call to `rm()` or `remove()`
+
+Function structure is made up by three basic components: 
+
+* a formal arguments list
+* a body
+* an environment. 
+
+```{r functions-002}
+formals(f)
+body(f)
+environment(f)
+```
+
+
+#### Formals
+Formals are the formal arguments of a function.
+
+When we call a function, formals arguments can be specified by position or by name and we can mix positional matching with matching by name so that the following are equivalent:
+
+```{r functions-formals-argument}
+mean(x = 1:5, trim = 0.1)
+mean(1:5, trim = 0.1)
+mean(x = 1:5, 0.1)
+mean(1:5, 0.1)
+mean(trim = 0.1, x = 1:5)
+```
+
+Along with position and name, we can also specify formals by partial matching so that:
+
+```{r functions-formals-argument2}
+mean(1:5, tr = 0.1)
+mean(tr = 0.1, x = 1:5)
+```
+
+would work anyway.
+
+Functions formals may also have the construct `symbol = default`, that unless differently specified, forces any argument to be used with its default value.
+
+Specifically, function `mean()` also have a third argument `na.rm` that defaults to `FALSE` and, as a result passing vectors with `NA` values to `mean()` returns `NA`
+
+```{r functions-formals-arguments3}
+mean(c(1, 2, NA))
+```
+
+While, by specifying `na.rm=TRUE` we get the mean of all non missing elements of vector `x`.
+
+```{r functions-formals-arguments4}
+mean(c(1, 2, NA), na.rm = TRUE)
+```
+
+The order `R` uses for matching formals against value is:
+
+1. Check for exact match for a named argument
+2. Check for a partial match
+3. Check for a positional match
+
+
+#### Body of a function
+
+The body of a function is a parsed R statement. In practice, this implies that the body of a function needs to be correct from a formal point of view but no evaluation of the body of a function occurred yet. 
+
+As a result, this function would return an error:
+
+```{r functions-body-wrong, eval=FALSE}
+wrong <- function(x) {x =}
+```
+
+as its body is not a correct `R` statement.
+
+While this function:
+
+```{r functions-body-right}
+right <- function(x){x+h}
+```
+
+is accepted by `R` as is formally correct even thought, except under specific circumstances, will always return an error:
+
+```{r functions-body-right-error, error=TRUE}
+right(x = 2)
+```
+
+The body of a function, is usually a collection of statements in braces but it can be a single statement, a symbol or even a constant.
+
+#### Environment of a function
+
+Environments are a fundamental concept in R and their knowledge is essential for advanced programming.
+
+Environments have the following fundamental concepts:
+
+ * The environment of a function is the environment that was active at the time that the function was created. Generally, for user defined function, the Global environment:
+
+    ```{r functions-environment-userdefined}
+    f <- function(x){x+1}
+    environment(f)
+    ```
+    or, when a function is defined within a package, the environment associated to that package:
+
+    ```{r functions-environment-package}
+    environment(mean)
+    ```
+
+ * Objects defined within a function, exists in the environment of the function itself.
+ 
+    ```{r functions-environment-global, error=TRUE}
+    f <- function(x){x+1}
+    x
+   ```
+
+### Function Examples
+   
+There are lots of function types, let us see some examples.
+
+#### Mathematical Functions
+
+The names of the basic functions and mathematical operators in R follow the standards of programming languages. In this paragraph the functions and operators enabling basic mathematical operations to be performed will be dealt with. R can also be used to perform more complex calculations, such as matrix operations or calculations with complex numbers.
+
+Functions are usually applied to one or more vectors. In this case, operations are performed on each element of each vector. Vectors have to be the same length.
+
+```{r, operations}
+x <- 1:10
+y <- 11:20
+z <- -4:5
+x + y + z
+exp(x)
+log(z)
+abs(z)
+sqrt(x)
+```
+
+The `sum()` function calculates the sum of all the elements of a vector.
+
+```{r, sum}
+sum(x)
+```
+
+The `floor`, `ceiling`, `trunc` and `round` functions can be used to round a number. `floor()` returns a numeric vector containing the largest integers not greater than the corresponding input elements. `ceiling()` returns a numeric vector containing the smallest integers not less than the corresponding input elements. `trunc()` returns a numeric vector containing the integers formed by truncating the input values toward 0. `round()` rounds the values in its first argument to the specified number of decimal places (default 0).
+
+```{r, round}
+floor(3.14)
+floor(3.67)
+ceiling(3.14)
+ceiling(3.67)
+trunc(3.14)
+trunc(3.67)
+round(3.14, digits = 1)
+round(3.19, digits = 1)
+```
+
+#### Probabilistic Functions
+
+Probabilistic functions in R fall into four categories:
+
+ 1. `r*` functions for generating random numbers,
+ 2. `d*` functions for calculating the value of the density function in a point,
+ 3. `p*` functions for calculating the cumulative distribution function,
+ 4. `q*` functions for calculating quantiles.
+
+The asterisk indicates the distribution which is used: `norm` for normal distribution, `t` for Student's t-distribution, `binom` for binomial distribution, `gamma` distribution, `beta` distribution, `weibull` distribution, etc. R integrates numerous statistical distributions. The list of all the probability distributions included in the base R can be obtained by typing `help(Distributions)`. Other probability distributions become available when loading additional packages.
+
+The following functions:
+```{r, random}
+rnorm(n = 10)
+rnorm(n = 20, mean = 3, sd = 5)
+rbinom(n = 50, size = 20, prob = 0.8)
+rweibull(n = 30, shape = 5, scale = 3)
+```
+generate, respectively:
+
+ - 10 pseudorandom values from a normal distribution with parameters (0, 1);
+ - 20 pseudorandom values from a normal distribution with parameters (3, 5);
+ - 50 pseudorandom values from a binomial distribution with $n = 20$ and $\pi = 0.8$;
+ - 50 pseudorandom values from a Weibull distribution with parameters (5, 3).
+
+The following functions:
+```{r, density}
+dbinom(x = 20, size = 20, prob = 0.8)
+dnorm(x = -5:5, mean = 0, sd = 1)
+```
+calculate, respectively:
+
+ - the probability that `x` is equal to 20, if `x` is distributed as a binomial distribution with $n = 20$ and $\pi = 0.8$;
+ - thee values of the density function of a standard normal for integer values comprised between -5 and 5. As expected, the highest value is obtained with 0. 
+
+The following functions:
+```{r, cdf}
+pnorm(q = 0, mean = 0, sd = 1)
+pbinom(q = 20, size = 20, prob = 0.8)
+```
+calculate, respectively:
+
+ - the value of the cumulative distribution function of a standard normal distribution at zero; as expected the result is 0.5.
+ - the value of a cumulative distribution function of a binomial distribution with parameters $n = 20$ and $\pi = 0.8$ at 20; as expected, the result is 1.
+
+The following functions:
+```{r, quantiles}
+qnorm(p = 0.5, mean = 0, sd = 1)
+qbinom(p = 0.5, size = 20, prob = 0.8)
+```
+calculate, respectively:
+
+ - the quantile with which a 0.5 probability on the left is obtained in a standard normal distribution;
+ - The quantile with which a 0.5 probability on the left is obtained in a binomial distribution with parameters $n = 20$ and $\pi = 0.8$.
+
+#### Statistical Functions
+
+Any kind of statistical analysis can be performed in R thanks to the built-in functions of the base version or the numerous additional packages. The functions enabling the calculation of the main descriptive statistical analyses are explained below.
+ 
+The `mean()`, `median()`, `sd()` and `var()` functions are used to calculate the mean, the median, the sample standard deviation and the sample variance of a numeric vector. 
+
+```{r, stats}
+x <- mtcars$mpg
+mean(x)
+median(x)
+sd(x)  
+var(x)
+```
+
+The `quantile()` function calculates one or more quantiles.
+
+```{r, quantile}
+quantile(x, .9) 
+quantile(x, c(.3, .84))
+quantile(x, c(.25, .50, .75))
+```
+
+The `min()` and `max()` functions return the minimum and maximum  value respectively.
+
+```{r, minmax}
+min(x)
+max(x)
+```
+
+The `summary()` generic function applied to a numeric vector returns minimum, maximum, quartiles and arithmetic mean.
+
+```{r, summary}
+summary(x)
+```
+
+Correlation and covariance can be calculated with the `cor()` and `cov()` functions, respectively.
+
+```{r, corcov}
+data <- mtcars[, c(1, 3, 4, 5, 6)]
+cor(data)
+cov(data)
+```
+
