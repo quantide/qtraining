@@ -28,7 +28,7 @@ The base R can be downloaded from the Comprehensive R Archive Network (CRAN) web
 Go to [www.r-project.org](http://www.r-project.org/). Here you can read about R and see what's new in the latest version.
 
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=4.44in]{./images/r-project} 
 
@@ -58,7 +58,7 @@ The Figure [Screenshot of a first try with R](#fig:ssFirsttry) shows a first try
 
 <div id="fig:ssFirsttry">
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=3.94in]{./images/RfirstPlot} 
 
@@ -84,7 +84,7 @@ R is provided with a Command Line Interface (CLI), which is the preferred user i
 
 R is available for many different operative systems so it does not provide the same graphical interface. When you use the R program interactively, it issues a prompt when it expects input commands. The default prompt is '>'. In Windows, RGui is the default GUI. Inside RGui there is the RConsole window. In Macintosh, RConsole is the default GUI. In Linux, R does not provide any graphical interface by default and it can be used through CLI.
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=6.13in]{./images/ssDefaultGui} 
 
@@ -105,7 +105,7 @@ R is available for many different operative systems so it does not provide the s
  - Sweave authoring including one-click PDF preview;
  - searchable command history.
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=6.33in]{./images/ssGuiRstudio} 
 
@@ -128,7 +128,7 @@ R functions are collected in packages. Packages that are not contained in the "b
 
 This is the R packages universe!
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=3.04in]{./images/r-packages-universe} 
 

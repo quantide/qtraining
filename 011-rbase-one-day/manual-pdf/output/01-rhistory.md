@@ -79,27 +79,27 @@ We will deepen the commercial support tools mentioned in _Online Resources_ chap
 
 In December 2016, R is in 17th place of TIOBE Programming Community Index ([www.tiobe.com](http://www.tiobe.com/tiobe-index/)), that is an indicator of the popularity of programming languages. R is above SAS that is in 22th place.
 
-R is the leading analytics tools for data science used by respondents to the Rexer Analytics Survey in 2015:
+R is the leading analytics tools for data science used by respondents to the Rexer Analytics Survey in 2015.
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=5.23in]{images/r-popularity} 
 
 }
 
-\caption{Source: r4stats.com/2015/10/13/rexer-analytics-survey-results}(\#fig:g5)
+\caption{Source: www.r4stats.com/2015/10/13/rexer-analytics-survey-results}(\#fig:g5)
 \end{figure}
 
 
-Moreover, the number of companies using R is grown all over the world:
+Moreover, the number of companies using R is grown all over the world.
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=6.75in]{images/company-using-r} 
 
 }
 
-\caption{Source: blog.revolutionanalytics.com}(\#fig:g6)
+\caption{Source: www.blog.revolutionanalytics.com}(\#fig:g6)
 \end{figure}
 
 

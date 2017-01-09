@@ -13,6 +13,7 @@ In the following paragraphs we will explore data import methods for:
 * Microsoft Excel files
 * Databases
 
+Datasets used in this chapter are available at www.github.com/quantide/my-first-date-with-r/tree/master/data. 
 
 ## Text files
 
@@ -196,7 +197,7 @@ head(ds)
 
 
 
-## ODBC
+### ODBC
 
 Open Database Connectivity (ODBC) is a standard programming language interface for accessing database management systems (DBMS). ODBC is independent from database systems and operating systems. An application can use ODBC to query data from a DBMS, regardless of the operating system or DBMS it uses. ODBC accomplishes DBMS independence by using an ODBC driver as a translation layer between the application and the DBMS.
 
@@ -220,7 +221,7 @@ odbcClose(conn)
 ```
 
 
-## SQLlite 
+### SQLlite 
 
 `RSQLite` package embeds the SQLite database engine in R, providing a DBI-compliant interface. SQLite is a public-domain, single-user, very light-weight database engine that implements a decent subset of the SQL 92 standard, including the core table creation, updating, insertion, and selection operations, plus transaction management.  
 

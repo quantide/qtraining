@@ -18,7 +18,7 @@ The `dplyr` package for `R` is very powerful for data management since:
 require(dplyr)
 ```
 
-The examples of this chapter will refer to `bank` data set which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls. 
+The examples of this chapter will refer to `bank` dataset which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls. `bank` dataset is included in `qdata`, which is an R package containing about 80 datasets. It is provided and mantained by Quantide and it is available on a Github repository at www.github.com/quantide/qdata.
 
 
 ```r
@@ -59,9 +59,8 @@ In particular:
 
 `dplyr` pipe operator (`%>%`) allows us to pipe the output from one function to the input of another function. The idea of piping is to read the functions from left to right. It is particularly useful with nested functions (reading from the inside to the outside) or with multiple operations.
 
-\clearpage
 
-\begin{figure}
+\begin{figure}[h]
 
 {\centering \includegraphics[width=4in]{images/pipe} 
 
@@ -73,6 +72,8 @@ In particular:
 Pipes can work with nearly any functions (`dplyr` and not-`dplyr` functions), let us see an example.
 
 Suppose we want to visualize the first rows of `bank` dataframe, by using `head()` function.   
+
+\clearpage
 
 Usually we write:
 
@@ -498,7 +499,8 @@ bank %>% arrange(desc(balance))
 
 
 ```r
-# Order `bank` data frame by age of the client and by the balance of the account in descending order
+# Order `bank` data frame by age of the client and by the balance of the account in
+# descending order
 bank %>% arrange(age, desc(balance))
 ```
 
@@ -561,7 +563,8 @@ mutate(bank, contacts_n = campaign + previous)
 
 
 ```r
-# generate two variable: one indicating the year of birth and one the year of birth without century 
+# generate two variable: one indicating the year of birth and one the year of birth 
+# without century 
 bank %>% mutate(year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 ```
 

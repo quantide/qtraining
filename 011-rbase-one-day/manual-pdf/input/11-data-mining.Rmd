@@ -30,7 +30,7 @@ Usually, neural networks are made up by three layers:
 
 Next figure is an example of a feed forward neural network consisting of four inputs, a hidden layer that contains three units and an output layer that contains two outputs. The outputs of nodes in one layer are inputs to the next layer. The inputs to each node are combined using a weighted linear combination. The result is then usually modified by a nonlinear function before being output.
 
-```{r g2, echo=FALSE, purl=FALSE, fig.cap= "Neural Network scheme", fig.pos='h'}
+```{r g2, echo=FALSE, purl=FALSE, fig.cap= "Feed Forward Neural Network scheme", fig.pos='h', fig.align='center'}
 include_graphics("images/nnet.png", dpi=300)
 ```
 

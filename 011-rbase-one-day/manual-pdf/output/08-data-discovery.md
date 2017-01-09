@@ -14,7 +14,7 @@
 require(dplyr)
 ```
 
-In the following examples, we will refer to `bank` data set. 
+In the following examples, we will refer to `bank` dataset. 
 
 
 ```r
@@ -176,8 +176,8 @@ Let us have a look!
 
 
 ```r
-# Compute the mean of balance of the accounts and the number of obs by job for people not older than 40 years and 
-# sort the result in ascending order  
+# Compute the mean of balance of the accounts and the number of obs by job for people
+# not older than 40 years and sort the result in ascending order  
 bank %>%
   filter(age < 40) %>%
   group_by(job) %>%

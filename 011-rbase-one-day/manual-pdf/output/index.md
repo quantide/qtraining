@@ -25,10 +25,6 @@ This course offers the basics of R, and get an overview on methods for data impo
 
 This manual was realized for a free R course which took place on Tuesday 13 December in Milan, organized by Microsoft in collaboaration with Quantide. For more info about the event, visit MilanoR blog (www.milanor.net/blog/my-first-date-with-r-free-live-class-in-milano) or Facebook Page (www.facebook.com/MilanoRcommunity).
 
-This manual is available also on a Github repository and you can download it here:    
-
-www.github.com/quantide/your-first-date-with-r/archive/master.zip
-
 
 ## Acknowledgements
 

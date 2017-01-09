@@ -2,7 +2,7 @@
 
 ```{r setup, include=FALSE, purl=FALSE, message=FALSE}
 require(knitr)
-opts_chunk$set(echo = TRUE, fig.widht = 4, fig.height= 3.5, fig.align='center')
+opts_chunk$set(echo = TRUE, fig.widht = 4, fig.height= 3.5, fig.align='center', fig.pos = 'h')
 ```
 
 R is a programming environment for data analysis, graphics and statistical computing. The R language is widely used among statisticians for developing statistical software and data analysis. 
@@ -85,16 +85,16 @@ We will deepen the commercial support tools mentioned in _Online Resources_ chap
 
 In December 2016, R is in 17th place of TIOBE Programming Community Index ([www.tiobe.com](http://www.tiobe.com/tiobe-index/)), that is an indicator of the popularity of programming languages. R is above SAS that is in 22th place.
 
-R is the leading analytics tools for data science used by respondents to the Rexer Analytics Survey in 2015:
+R is the leading analytics tools for data science used by respondents to the Rexer Analytics Survey in 2015.
 
-```{r g5, echo=FALSE, purl=FALSE, fig.cap="Source: r4stats.com/2015/10/13/rexer-analytics-survey-results"}
+```{r g5, echo=FALSE, purl=FALSE, fig.cap="Source: www.r4stats.com/2015/10/13/rexer-analytics-survey-results"}
 include_graphics("images/r-popularity.png", dpi=150)
 ```
 
 
-Moreover, the number of companies using R is grown all over the world:
+Moreover, the number of companies using R is grown all over the world.
 
-```{r g6, echo=FALSE, purl=FALSE, fig.cap="Source: blog.revolutionanalytics.com"}
+```{r g6, echo=FALSE, purl=FALSE, fig.cap="Source: www.blog.revolutionanalytics.com"}
 include_graphics("images/company-using-r.png", dpi=150)
 ```
 

@@ -19,7 +19,9 @@ linear_model <- lm(formula, data)
 anova_model <- aov(formula, data)
 ```
 
-`formula` argument is a symbolic description of the model to be fitted, which has the form: `response variable ∼ predictor variables`. The variables involved in `formula` should be columns of a dataframe specified in `data` argument.
+\clearpage
+
+`formula` argument is a symbolic description of the model to be fitted, which has the form: `response variable` $\sim$ `predictor variables`. The variables involved in `formula` should be columns of a dataframe specified in `data` argument.
 
 The resulting object (`linear_model` or `anova_model`) is a list of elements containing information about regression results. This information can be investigated by the following functions:
 

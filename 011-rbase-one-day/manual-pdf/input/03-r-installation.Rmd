@@ -3,7 +3,7 @@
 
 ```{r setup, include=FALSE, purl=FALSE, message=FALSE}
 require(knitr)
-opts_chunk$set(echo = TRUE, fig.align='center')
+opts_chunk$set(echo = TRUE, fig.align='center', fig.pos='h')
 ```
 
 

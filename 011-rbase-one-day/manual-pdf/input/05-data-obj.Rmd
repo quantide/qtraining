@@ -3,7 +3,7 @@
 
 ```{r setup, include=FALSE, purl=FALSE, message=FALSE}
 require(knitr)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'h')
 ```
 
 
@@ -86,7 +86,7 @@ mtcars_tbl
 
 The structures of data objects are represented in the following figure:
 
-```{r g1, echo=FALSE, purl=FALSE, fig.cap= "Source:  venus.ifca.unican.es/Rintro/dataStruct.html"}
+```{r g1, echo=FALSE, purl=FALSE, fig.cap= "Source:  www.venus.ifca.unican.es/Rintro/dataStruct.html"}
 include_graphics("./images/dataStructure.png", dpi=150)
 ```
 

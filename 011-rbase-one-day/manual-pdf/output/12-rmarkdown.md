@@ -72,3 +72,5 @@ Otherwise, use the "Knit" button in the RStudio IDE to render the file and previ
 
 
 R Markdown generates a new file that contains selected text, code, and results from the .Rmd file. The new file can be a finished web page, PDF, MS Word document, slide show, notebook, handout, book, dashboard, package vignette or other format.
+
+More information about R Markdown is available at [rmarkdown.rstudio.com](http://rmarkdown.rstudio.com/).

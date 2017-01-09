@@ -27,7 +27,12 @@ Usually, neural networks are made up by three layers:
 Next figure is an example of a feed forward neural network consisting of four inputs, a hidden layer that contains three units and an output layer that contains two outputs. The outputs of nodes in one layer are inputs to the next layer. The inputs to each node are combined using a weighted linear combination. The result is then usually modified by a nonlinear function before being output.
 
 \begin{figure}[h]
-\includegraphics[width=3.97in]{images/nnet} \caption{Neural Network scheme}(\#fig:g2)
+
+{\centering \includegraphics[width=3.97in]{images/nnet} 
+
+}
+
+\caption{Feed Forward Neural Network scheme}(\#fig:g2)
 \end{figure}
 
 
@@ -175,18 +180,18 @@ nn_mod <- nnet(Status ~ Class + Gender + Age, data = train, size = 3)
 
 ```
 ## # weights:  16
-## initial  value 997.297049 
-## iter  10 value 924.823475
-## iter  20 value 792.467557
-## iter  30 value 787.742979
-## iter  40 value 786.919231
-## iter  50 value 785.340304
-## iter  60 value 781.830746
-## iter  70 value 779.632855
-## iter  80 value 778.798058
-## iter  90 value 778.208582
-## iter 100 value 777.123373
-## final  value 777.123373 
+## initial  value 1003.295388 
+## iter  10 value 943.842659
+## iter  20 value 794.382124
+## iter  30 value 770.023598
+## iter  40 value 765.986907
+## iter  50 value 761.763342
+## iter  60 value 760.162853
+## iter  70 value 760.021058
+## iter  80 value 759.922590
+## iter  90 value 759.849667
+## iter 100 value 759.814211
+## final  value 759.814211 
 ## stopped after 100 iterations
 ```
 
@@ -200,12 +205,12 @@ head(pr)
 
 ```
 ##        [,1]
-## 1 0.6471217
-## 2 0.6471217
-## 3 0.6471217
-## 4 0.6471217
-## 5 0.6471217
-## 6 0.6466071
+## 1 0.6385946
+## 2 0.6385946
+## 3 0.6385946
+## 4 0.6385946
+## 5 0.6385946
+## 6 0.6383599
 ```
 
 The predictions included the probability of survive in the Titanic wreck according to `Gender`, `Age` and `Class`. We define that probabilities below 0.5 represent `Died` (`TRUE`) and probabilities over 0.5 represent `Survived` (`FALSE`).   

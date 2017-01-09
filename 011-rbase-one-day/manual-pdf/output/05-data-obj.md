@@ -208,8 +208,8 @@ mtcars_tbl
 
 The structures of data objects are represented in the following figure:
 
-\begin{figure}
-\includegraphics[width=6.92in]{./images/dataStructure} \caption{Source:  venus.ifca.unican.es/Rintro/dataStruct.html}(\#fig:g1)
+\begin{figure}[h]
+\includegraphics[width=6.92in]{./images/dataStructure} \caption{Source:  www.venus.ifca.unican.es/Rintro/dataStruct.html}(\#fig:g1)
 \end{figure}
 
 
