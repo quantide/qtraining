@@ -2,6 +2,7 @@
 # Data Objects
 
 ```{r setup, include=FALSE, purl=FALSE, message=FALSE}
+require(knitr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -85,7 +86,12 @@ mtcars_tbl
 
 The structures of data objects are represented in the following figure:
 
-![](./images/dataStructure.png)
+```{r g1, echo=FALSE, purl=FALSE, fig.cap= "Source:  venus.ifca.unican.es/Rintro/dataStruct.html"}
+include_graphics("./images/dataStructure.png", dpi=150)
+```
+
+
+
 
 
 We have already seen data frames, vectors and factors. Let us have a look to matrices, array and lists.

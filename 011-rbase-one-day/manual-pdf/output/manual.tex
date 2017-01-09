@@ -143,19 +143,20 @@
   \thispagestyle{empty}%
   % scommentare se si vuole costruire l'eserciziario ( commentare la riga dopo)
   % \begin{flushleft}\includegraphics[scale=.175]{exercises/images/quantide.png}\end{flushleft}
-  %\hspace{-2cm}
-   \begin{flushleft}\includegraphics[width=50mm]{./images/logo-microsoft.png}\end{flushleft}
+  \hspace{-2cm}
+   \begin{flushleft}\includegraphics[width=50mm]{./images/quantide.png}\end{flushleft}
   \vspace{-2cm}
   % scommentare se si vuole costruire l'eserciziario ( commentare la riga dopo)
-  % \begin{flushright}\includegraphics[scale=.25]{exercises/images/R-training.png}\end{flushright}
-  \begin{flushright}\includegraphics[width=50mm]{./images/quantide.png}\end{flushright}
-  \vskip 5cm
+  %\begin{flushright}\includegraphics[scale=.25]{exercises/images/R-training.png}\end{flushright}
+  \begin{flushright}\includegraphics[width=20mm]{./images/Rlogo.png}\end{flushright}
+  \vskip 3cm
   \hrule height 2pt
   \begin{center} \par \huge \strut \textbf{$My  First  Date  with  R$}\\ $Manual$ \par  \end{center}
   \vspace{0.5cm}
   \hrule height 2pt
   \vspace{0.5cm}
-  \includegraphics[width=165mm]{./images/locandina.png}
+  \vspace{2cm}
+  \includegraphics[width=165mm]{./images/Locandina_Florida_Banner.png}
   \clearpage
 }
 
@@ -176,11 +177,18 @@
 \includegraphics[width=3.6in]{images/flow}
 
 This course offers the basics of R, and get an overview on methods for
-data import, data manipulation, data visualization and data analysis.\\
-You can download the course material here:
-www.github.com/quantide/your-first-date-with-r/archive/master.zip
+data import, data manipulation, data visualization and data analysis.
 
-\clearpage
+This manual was realized for a free R course which took place on Tuesday
+13 December in Milan, organized by Microsoft in collaboaration with
+Quantide. For more info about the event, visit MilanoR blog
+(www.milanor.net/blog/my-first-date-with-r-free-live-class-in-milano) or
+Facebook Page (www.facebook.com/MilanoRcommunity).
+
+This manual is available also on a Github repository and you can
+download it here:
+
+www.github.com/quantide/your-first-date-with-r/archive/master.zip
 
 \section{Acknowledgements}\label{acknowledgements}
 
@@ -210,10 +218,14 @@ on R that provided solid foundations to my knowledge on this subject.
 Moreover \href{http://www.statmethods.net/}{Quick R} often provides some
 useful ready-to-cook recipe.
 
-I would finally like to express my special gratitude to Hadley Wickham
-for providing and sharing his research on the \texttt{R} packages:
+I would like to express my special gratitude to Hadley Wickham for
+providing and sharing his research on the \texttt{R} packages:
 \texttt{dplyr}, \texttt{ggplot2} and \texttt{readxl}. Without his
 contribution, a part of this manual would never have been written.
+
+I should like to thank also \href{https://www.datacamp.com/}{DataCamp}
+for providing useful R courses for learning data science, from which
+parts of this manuals are inspired.
 
 I finally express my sincere excuses to all researchers and R
 enthusiasts I have borrowed any knowledge from without mentioning them.
@@ -243,7 +255,7 @@ others in Bell Laboratories. The aim of the language, as expressed by
 John Chambers, is ``to turn ideas into software, quickly and
 faithfully''.
 
-\includegraphics[width=6.24in]{images/s-rev}
+\begin{center}\includegraphics[width=6.24in]{images/s-rev} \end{center}
 
 A bit of history:
 
@@ -283,7 +295,7 @@ S-PLUS is a commercial implementation of the S programming language.
 S-PLUS provides a number of fancy features (GUIs, mostly) on top of it,
 hence the ``PLUS''.
 
-\includegraphics[width=6.16in]{images/s+}
+\begin{center}\includegraphics[width=6.16in]{images/s+} \end{center}
 
 A bit of history:
 
@@ -315,7 +327,7 @@ Zealand. The R name is partly based on the (first) names of the first
 two R authors (Robert Gentleman and Ross Ihaka), and partly a play on
 the name of S.
 
-\includegraphics[width=5.73in]{images/r}
+\begin{center}\includegraphics[width=5.73in]{images/r} \end{center}
 
 A bit of history:
 
@@ -377,12 +389,24 @@ that is in 22th place.
 R is the leading analytics tools for data science used by respondents to
 the Rexer Analytics Survey in 2015:
 
-\includegraphics[width=5.23in]{images/r-popularity}
+\begin{figure}
+
+{\centering \includegraphics[width=5.23in]{images/r-popularity} 
+
+}
+
+\caption{Source: r4stats.com/2015/10/13/rexer-analytics-survey-results}\label{fig:g5}
+\end{figure}
 
 Moreover, the number of companies using R is grown all over the world:
 
 \begin{figure}
-\includegraphics[width=6.75in]{images/company-using-r} \caption{Source: blog.revolutionanalytics.com}\label{fig:g6}
+
+{\centering \includegraphics[width=6.75in]{images/company-using-r} 
+
+}
+
+\caption{Source: blog.revolutionanalytics.com}\label{fig:g6}
 \end{figure}
 
 \chapter{Online Resources}\label{online-resources}
@@ -390,11 +414,16 @@ Moreover, the number of companies using R is grown all over the world:
 R strength is its community, which is distributed and keeps growing all
 over the World!
 
-\begin{figure}[htbp]
-\centering
-\includegraphics{./images/r-users-distribution.png}
-\caption{}
+\begin{figure}
+
+{\centering \includegraphics[width=6.17in]{images/r-users-distribution} 
+
+}
+
+\caption{Figure generated by Ramnath Vaidyanathan}\label{fig:g1}
 \end{figure}
+
+Ramnath Vaidyanathan
 
 Thanks to its community, R can boast a wide variety of online resources,
 free and otherwise, to learn more about it, ranging from websites, blogs
@@ -634,7 +663,14 @@ extensions, documentation for R, and binaries.
 Go to \href{http://www.r-project.org/}{www.r-project.org}. Here you can
 read about R and see what's new in the latest version.
 
-\includegraphics[width=4.44in]{./images/r-project}
+\begin{figure}
+
+{\centering \includegraphics[width=4.44in]{./images/r-project} 
+
+}
+
+\caption{Screenshot of www.r-project.org}\label{fig:g1}
+\end{figure}
 
 Click on CRAN under Download in the left list. That'll take you to a
 list of servers (mirrors) in different countries where you can download
@@ -668,7 +704,14 @@ The Figure \protect\hyperlink{fig:ssFirsttry}{Screenshot of a first try
 with R} shows a first try with R, just after installation.
 
 \hypertarget{fig:ssFirsttry}{}
-\includegraphics[width=3.94in]{./images/RfirstPlot}
+\begin{figure}
+
+{\centering \includegraphics[width=3.94in]{./images/RfirstPlot} 
+
+}
+
+\caption{Screenshot of a first try with R}\label{fig:g2}
+\end{figure}
 
 \subsection{Updating R}\label{updating-r}
 
@@ -703,7 +746,14 @@ Inside RGui there is the RConsole window. In Macintosh, RConsole is the
 default GUI. In Linux, R does not provide any graphical interface by
 default and it can be used through CLI.
 
-\includegraphics[width=6.13in]{./images/ssDefaultGui}
+\begin{figure}
+
+{\centering \includegraphics[width=6.13in]{./images/ssDefaultGui} 
+
+}
+
+\caption{R Default Interfaces}\label{fig:g3}
+\end{figure}
 
 \clearpage
 
@@ -730,7 +780,14 @@ projects. It provides:
   searchable command history.
 \end{itemize}
 
-\includegraphics[width=6.33in]{./images/ssGuiRstudio}
+\begin{figure}
+
+{\centering \includegraphics[width=6.33in]{./images/ssGuiRstudio} 
+
+}
+
+\caption{Screenshot of an RStudio session}\label{fig:g4}
+\end{figure}
 
 \subsection{Installing RStudio}\label{installing-rstudio}
 
@@ -755,9 +812,16 @@ prerelease, incomplete packages, ``abandoned'' packages (i.e.~not more
 updated) and/or packages containing functions with errors or
 compatibility troubles.
 
-This is the R package universe!
+This is the R packages universe!
 
-\includegraphics[width=3.04in]{./images/r-packages-universe}
+\begin{figure}
+
+{\centering \includegraphics[width=3.04in]{./images/r-packages-universe} 
+
+}
+
+\caption{R packages universe}\label{fig:g5}
+\end{figure}
 
 The simple way to install an R package is through the
 \texttt{install.packages()} function, directly from R. In Linux, R must
@@ -1295,10 +1359,8 @@ package (automatically loaded at the start of an R session):
 
 The structures of data objects are represented in the following figure:
 
-\begin{figure}[htbp]
-\centering
-\includegraphics{./images/dataStructure.png}
-\caption{}
+\begin{figure}
+\includegraphics[width=6.92in]{./images/dataStructure} \caption{Source:  venus.ifca.unican.es/Rintro/dataStruct.html}\label{fig:g1}
 \end{figure}
 
 We have already seen data frames, vectors and factors. Let us have a
@@ -1800,7 +1862,7 @@ And finally disconnect from the database:
 
 \chapter{Data Manipulation with R}\label{data-manipulation-with-r}
 
-\includegraphics[width=3.33in]{images/flow-dtman}
+\begin{center}\includegraphics[width=3.33in]{images/flow-dtman} \end{center}
 
 The \texttt{dplyr} package for \texttt{R} is very powerful for data
 management since:
@@ -1882,7 +1944,12 @@ the outside) or with multiple operations.
 \clearpage
 
 \begin{figure}
-\includegraphics[width=4in]{images/pipe} \caption{Source: www.datacamp.com}\label{fig:g2}
+
+{\centering \includegraphics[width=4in]{images/pipe} 
+
+}
+
+\caption{Source: www.datacamp.com}\label{fig:g2}
 \end{figure}
 
 Pipes can work with nearly any functions (\texttt{dplyr} and
@@ -2019,7 +2086,7 @@ columns.
 \begin{figure}[htbp]
 \centering
 \includegraphics{images/sel.png}
-\caption{}
+\caption{select scheme}
 \end{figure}
 
 \begin{Shaded}
@@ -2131,7 +2198,7 @@ frame.
 \begin{figure}[htbp]
 \centering
 \includegraphics{images/fil.png}
-\caption{}
+\caption{filter scheme}
 \end{figure}
 
 \begin{Shaded}
@@ -2311,7 +2378,7 @@ column will be used to break ties in the values of preceding columns:
 \begin{figure}[htbp]
 \centering
 \includegraphics{images/arr.png}
-\caption{}
+\caption{arrange scheme}
 \end{figure}
 
 \begin{Shaded}
@@ -2405,7 +2472,7 @@ of \texttt{mutate()}:
 \begin{figure}[htbp]
 \centering
 \includegraphics{images/mut.png}
-\caption{}
+\caption{mutate scheme}
 \end{figure}
 
 \begin{Shaded}
@@ -2535,7 +2602,7 @@ For the next examples we will consider these two small data frames:
 
 \subsection{\texorpdfstring{\texttt{inner\_join(x,\ y)}}{inner\_join(x, y)}}\label{inner_joinx-y}
 
-\includegraphics[width=1.73in]{images/inner_join}
+\begin{center}\includegraphics[width=1.73in]{images/inner_join} \end{center}
 
 \texttt{inner\_join(x,\ y)} only includes observations that match in
 both x and y:
@@ -2558,7 +2625,7 @@ both x and y:
 
 \subsection{\texorpdfstring{\texttt{left\_join(x,\ y)}}{left\_join(x, y)}}\label{left_joinx-y}
 
-\includegraphics[width=1.7in]{images/left_join}
+\begin{center}\includegraphics[width=1.7in]{images/left_join} \end{center}
 
 \texttt{left\_join(x,\ y)} includes all observations in \texttt{x},
 regardless of whether they match or not. This is the most commonly used
@@ -2585,7 +2652,7 @@ primary table:
 
 \subsection{\texorpdfstring{\texttt{right\_join(x,\ y)}}{right\_join(x, y)}}\label{right_joinx-y}
 
-\includegraphics[width=1.73in]{images/right_join}
+\begin{center}\includegraphics[width=1.73in]{images/right_join} \end{center}
 
 \texttt{right\_join(x,\ y)} includes all observations in \texttt{y}.
 It's equivalent to \texttt{left\_join(y,\ x)}, but the columns will be
@@ -2627,7 +2694,7 @@ ordered differently:
 
 \subsection{\texorpdfstring{\texttt{full\_join()}}{full\_join()}}\label{full_join}
 
-\includegraphics[width=1.68in]{images/full_join}
+\begin{center}\includegraphics[width=1.68in]{images/full_join} \end{center}
 
 \texttt{full\_join()} includes all observations from \texttt{x} and
 \texttt{y}:
@@ -3472,8 +3539,6 @@ statistics, machine learning, information retrieval, pattern recognition
 and bioinformatics. Data mining is widely used in many domains, such as
 retail, finance, telecommunication and social media.
 
-\includegraphics[width=12in]{images/DataMining}
-
 R well supports data mining research and projects, providing lots of
 packages for data minig techniques.
 
@@ -3510,7 +3575,9 @@ inputs to the next layer. The inputs to each node are combined using a
 weighted linear combination. The result is then usually modified by a
 nonlinear function before being output.
 
-\includegraphics[width=4.77in]{images/nnet}
+\begin{figure}[h]
+\includegraphics[width=3.97in]{images/nnet} \caption{Neural Network scheme}\label{fig:g2}
+\end{figure}
 
 The R \texttt{nnet} package provides \texttt{nnet()} function, which
 fits a single-hidden-layer neural network to data.
@@ -3686,18 +3753,18 @@ Neural Network model estimate on train sample:
 
 \begin{verbatim}
 ## # weights:  16
-## initial  value 1212.247907 
-## iter  10 value 969.414267
-## iter  20 value 935.253285
-## iter  30 value 799.012911
-## iter  40 value 781.244224
-## iter  50 value 772.035693
-## iter  60 value 771.491500
-## iter  70 value 771.393474
-## iter  80 value 771.334736
-## iter  90 value 771.289089
-## iter 100 value 771.266657
-## final  value 771.266657 
+## initial  value 997.297049 
+## iter  10 value 924.823475
+## iter  20 value 792.467557
+## iter  30 value 787.742979
+## iter  40 value 786.919231
+## iter  50 value 785.340304
+## iter  60 value 781.830746
+## iter  70 value 779.632855
+## iter  80 value 778.798058
+## iter  90 value 778.208582
+## iter 100 value 777.123373
+## final  value 777.123373 
 ## stopped after 100 iterations
 \end{verbatim}
 
@@ -3713,12 +3780,12 @@ function:
 
 \begin{verbatim}
 ##        [,1]
-## 1 0.6517604
-## 2 0.6517604
-## 3 0.6517604
-## 4 0.6517604
-## 5 0.6517604
-## 6 0.6510782
+## 1 0.6471217
+## 2 0.6471217
+## 3 0.6471217
+## 4 0.6471217
+## 5 0.6471217
+## 6 0.6466071
 \end{verbatim}
 
 The predictions included the probability of survive in the Titanic wreck
@@ -3800,7 +3867,9 @@ You can install the R Markdown package from CRAN as follows:
 This is an R Markdown file, a plain text file that has the extension
 \texttt{.Rmd}:
 
-\includegraphics[width=18cm]{images/rmd-1.png}
+\begin{figure}[h]
+\includegraphics[width=6.46in]{images/rmd-1} \caption{R Markdown File}\label{fig:g1}
+\end{figure}
 
 Notice that the file contains three types of content:
 
@@ -3824,7 +3893,11 @@ like plain-text email.
 This section provides quick references to the most commonly used R
 Markdown syntax.
 
-\includegraphics[width=14cm]{images/rmd-cheatsheet.png}
+\begin{figure}[h]
+\includegraphics[width=5.23in]{images/rmd-cheatsheet} \caption{Source: R Markdown Cheat Sheet}\label{fig:g2}
+\end{figure}
+
+\clearpage
 
 \section{Rendering Output}\label{rendering-output}
 
@@ -3841,7 +3914,9 @@ Otherwise, use the ``Knit'' button in the RStudio IDE to render the file
 and preview the output with a single click or the keyboard shortcut
 \emph{Ctrl + Shift + K}.
 
-\includegraphics[width=18cm]{images/rmd-3.png}
+\begin{figure}[h]
+\includegraphics[width=6.46in]{images/rmd-3} \caption{R Markdown Output}\label{fig:g3}
+\end{figure}
 
 R Markdown generates a new file that contains selected text, code, and
 results from the .Rmd file. The new file can be a finished web page,

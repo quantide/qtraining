@@ -208,7 +208,12 @@ mtcars_tbl
 
 The structures of data objects are represented in the following figure:
 
-![](./images/dataStructure.png)
+\begin{figure}
+\includegraphics[width=6.92in]{./images/dataStructure} \caption{Source:  venus.ifca.unican.es/Rintro/dataStruct.html}(\#fig:g1)
+\end{figure}
+
+
+
 
 
 We have already seen data frames, vectors and factors. Let us have a look to matrices, array and lists.

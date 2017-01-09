@@ -28,8 +28,14 @@ The base R can be downloaded from the Comprehensive R Archive Network (CRAN) web
 Go to [www.r-project.org](http://www.r-project.org/). Here you can read about R and see what's new in the latest version.
 
 
+\begin{figure}
 
-\includegraphics[width=4.44in]{./images/r-project} 
+{\centering \includegraphics[width=4.44in]{./images/r-project} 
+
+}
+
+\caption{Screenshot of www.r-project.org}(\#fig:g1)
+\end{figure}
 
 
 Click on CRAN under Download in the left list. That'll take you to a list of servers (mirrors) in different countries where you can download R.
@@ -52,8 +58,14 @@ The Figure [Screenshot of a first try with R](#fig:ssFirsttry) shows a first try
 
 <div id="fig:ssFirsttry">
 
+\begin{figure}
 
-\includegraphics[width=3.94in]{./images/RfirstPlot} 
+{\centering \includegraphics[width=3.94in]{./images/RfirstPlot} 
+
+}
+
+\caption{Screenshot of a first try with R}(\#fig:g2)
+\end{figure}
 
 </div>
 
@@ -70,11 +82,16 @@ In Linux, usually one R version at time can be installed. R can be updated follo
 
 R is provided with a Command Line Interface (CLI), which is the preferred user interface for power users because it allows direct control on calculations and it is flexible. However, good knowledge of the language is required. CLI is thus intimidating for beginners. 
 
-
 R is available for many different operative systems so it does not provide the same graphical interface. When you use the R program interactively, it issues a prompt when it expects input commands. The default prompt is '>'. In Windows, RGui is the default GUI. Inside RGui there is the RConsole window. In Macintosh, RConsole is the default GUI. In Linux, R does not provide any graphical interface by default and it can be used through CLI.
 
+\begin{figure}
 
-\includegraphics[width=6.13in]{./images/ssDefaultGui} 
+{\centering \includegraphics[width=6.13in]{./images/ssDefaultGui} 
+
+}
+
+\caption{R Default Interfaces}(\#fig:g3)
+\end{figure}
 
 \clearpage
 
@@ -88,8 +105,14 @@ R is available for many different operative systems so it does not provide the s
  - Sweave authoring including one-click PDF preview;
  - searchable command history.
 
+\begin{figure}
 
-\includegraphics[width=6.33in]{./images/ssGuiRstudio} 
+{\centering \includegraphics[width=6.33in]{./images/ssGuiRstudio} 
+
+}
+
+\caption{Screenshot of an RStudio session}(\#fig:g4)
+\end{figure}
 
 
 ### Installing RStudio
@@ -103,10 +126,16 @@ RStudio is available for Windows, Mac Os and Linux and you can install it from i
 
 R functions are collected in packages. Packages that are not contained in the "base" R systems can be downloaded from the CRAN website. A list of R packages accompanied by a brief description can be found on the CRAN website where there are more than 9500 packages available. Many of these packages are very useful; however, there are some packages in prerelease, incomplete packages, "abandoned" packages (i.e. not more updated) and/or packages containing functions with errors or compatibility troubles.
 
-This is the R package universe!
+This is the R packages universe!
 
+\begin{figure}
 
-\includegraphics[width=3.04in]{./images/r-packages-universe} 
+{\centering \includegraphics[width=3.04in]{./images/r-packages-universe} 
+
+}
+
+\caption{R packages universe}(\#fig:g5)
+\end{figure}
 
 
 The simple way to install an R package is through the `install.packages()` function, directly from R. In Linux, R must be executed as administrator to install a package. Installation must be executed before the first use of a library.

@@ -8,12 +8,10 @@
 
 Data Mining is the process to discover interesting, previously unknown and potentially useful information from large amounts of data. It is an interdisciplinary field with contributions from many areas, such as statistics, machine learning, information retrieval, pattern recognition and bioinformatics. Data mining is widely used in many domains, such as retail, finance, telecommunication and social media.
 
-
-\includegraphics[width=12in]{images/DataMining} 
-
 R well supports data mining research and projects, providing lots of packages for data minig techniques.
 
 In this chapter we will analize Neural Networks, which is an advanced data mining method.
+
 
 ## Neural Networks
 
@@ -28,8 +26,10 @@ Usually, neural networks are made up by three layers:
 
 Next figure is an example of a feed forward neural network consisting of four inputs, a hidden layer that contains three units and an output layer that contains two outputs. The outputs of nodes in one layer are inputs to the next layer. The inputs to each node are combined using a weighted linear combination. The result is then usually modified by a nonlinear function before being output.
 
+\begin{figure}[h]
+\includegraphics[width=3.97in]{images/nnet} \caption{Neural Network scheme}(\#fig:g2)
+\end{figure}
 
-\includegraphics[width=4.77in]{images/nnet} 
 
 The R `nnet` package provides `nnet()` function, which fits a single-hidden-layer neural network to data. 
 
@@ -175,18 +175,18 @@ nn_mod <- nnet(Status ~ Class + Gender + Age, data = train, size = 3)
 
 ```
 ## # weights:  16
-## initial  value 1212.247907 
-## iter  10 value 969.414267
-## iter  20 value 935.253285
-## iter  30 value 799.012911
-## iter  40 value 781.244224
-## iter  50 value 772.035693
-## iter  60 value 771.491500
-## iter  70 value 771.393474
-## iter  80 value 771.334736
-## iter  90 value 771.289089
-## iter 100 value 771.266657
-## final  value 771.266657 
+## initial  value 997.297049 
+## iter  10 value 924.823475
+## iter  20 value 792.467557
+## iter  30 value 787.742979
+## iter  40 value 786.919231
+## iter  50 value 785.340304
+## iter  60 value 781.830746
+## iter  70 value 779.632855
+## iter  80 value 778.798058
+## iter  90 value 778.208582
+## iter 100 value 777.123373
+## final  value 777.123373 
 ## stopped after 100 iterations
 ```
 
@@ -200,12 +200,12 @@ head(pr)
 
 ```
 ##        [,1]
-## 1 0.6517604
-## 2 0.6517604
-## 3 0.6517604
-## 4 0.6517604
-## 5 0.6517604
-## 6 0.6510782
+## 1 0.6471217
+## 2 0.6471217
+## 3 0.6471217
+## 4 0.6471217
+## 5 0.6471217
+## 6 0.6466071
 ```
 
 The predictions included the probability of survive in the Titanic wreck according to `Gender`, `Age` and `Class`. We define that probabilities below 0.5 represent `Died` (`TRUE`) and probabilities over 0.5 represent `Survived` (`FALSE`).   

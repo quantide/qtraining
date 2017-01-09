@@ -12,9 +12,7 @@ Let us see a bit of history.
 S is a statistical programming language developed by John Chambers and others in Bell Laboratories. The aim of the language, as expressed by John Chambers, is "to turn ideas into software, quickly and faithfully".
 
 
-\includegraphics[width=6.24in]{images/s-rev} 
-
-
+\begin{center}\includegraphics[width=6.24in]{images/s-rev} \end{center}
 
 
 A bit of history:
@@ -34,7 +32,7 @@ The S language itself has not changed dramatically since 1998.
 S-PLUS is a commercial implementation of the S programming language. S-PLUS provides a number of fancy features (GUIs, mostly) on top of it, hence the "PLUS".
 
 
-\includegraphics[width=6.16in]{images/s+} 
+\begin{center}\includegraphics[width=6.16in]{images/s+} \end{center}
 
 
 
@@ -52,7 +50,7 @@ A bit of history:
 R was initially developed in early 90s by Robert Gentleman and Ross Ihaka at the Department of Statistics of the University of Auckland, New Zealand. The R name is partly based on the (first) names of the first two R authors (Robert Gentleman and Ross Ihaka), and partly a play on the name of S.
 
 
-\includegraphics[width=5.73in]{images/r} 
+\begin{center}\includegraphics[width=5.73in]{images/r} \end{center}
 
 
 A bit of history:
@@ -83,14 +81,25 @@ In December 2016, R is in 17th place of TIOBE Programming Community Index ([www.
 
 R is the leading analytics tools for data science used by respondents to the Rexer Analytics Survey in 2015:
 
+\begin{figure}
 
-\includegraphics[width=5.23in]{images/r-popularity} 
+{\centering \includegraphics[width=5.23in]{images/r-popularity} 
+
+}
+
+\caption{Source: r4stats.com/2015/10/13/rexer-analytics-survey-results}(\#fig:g5)
+\end{figure}
 
 
 Moreover, the number of companies using R is grown all over the world:
 
 \begin{figure}
-\includegraphics[width=6.75in]{images/company-using-r} \caption{Source: blog.revolutionanalytics.com}(\#fig:g6)
+
+{\centering \includegraphics[width=6.75in]{images/company-using-r} 
+
+}
+
+\caption{Source: blog.revolutionanalytics.com}(\#fig:g6)
 \end{figure}
 
 

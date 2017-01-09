@@ -3,7 +3,7 @@
 
 ```{r setup, include=FALSE, purl=FALSE, message=FALSE}
 require(knitr)
-opts_chunk$set(echo = TRUE)
+opts_chunk$set(echo = TRUE, fig.align = 'center')
 ```
 
 
@@ -96,7 +96,7 @@ Often you work with large datasets with many columns where only a few are actual
 
 `select()` allows you to rapidly zoom in on a useful subset of columns.  
 
-![](images/sel.png) 
+![select scheme](images/sel.png) 
 
 
 
@@ -121,7 +121,7 @@ bank %>% select(ID = id)
 
 `filter()` allows you to select a subset of the rows of a data frame.
 
-![](images/fil.png) 
+![filter scheme](images/fil.png) 
 
 
 ```{r filter1}
@@ -157,7 +157,7 @@ bank %>% filter(job == "admin." | job == "technician")
 
 Function `arrange()` reorders a data frame by one or more variables. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns:
 
-![](images/arr.png)
+![arrange scheme](images/arr.png)
 
 
 ```{r arrange1}
@@ -184,7 +184,7 @@ bank %>% arrange(age, desc(balance))
 
 As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing ones. This is the job of `mutate()`:
 
-![](images/mut.png) 
+![mutate scheme](images/mut.png) 
 
 ```{r mutate}
 # generate a variable indicating the total number of times each person has been contacted 

@@ -2,7 +2,7 @@
 
 ```{r setup, include=FALSE, purl=FALSE, message=FALSE}
 require(knitr)
-opts_chunk$set(echo = TRUE, fig.widht = 4, fig.height= 3.5)
+opts_chunk$set(echo = TRUE, fig.widht = 4, fig.height= 3.5, fig.align='center')
 ```
 
 R is a programming environment for data analysis, graphics and statistical computing. The R language is widely used among statisticians for developing statistical software and data analysis. 
@@ -17,8 +17,6 @@ S is a statistical programming language developed by John Chambers and others in
 ```{r g1, echo=FALSE, purl=FALSE}
 include_graphics("images/s-rev.png", dpi=150)
 ```
-
-
 
 
 A bit of history:
@@ -89,7 +87,7 @@ In December 2016, R is in 17th place of TIOBE Programming Community Index ([www.
 
 R is the leading analytics tools for data science used by respondents to the Rexer Analytics Survey in 2015:
 
-```{r g5, echo=FALSE, purl=FALSE}
+```{r g5, echo=FALSE, purl=FALSE, fig.cap="Source: r4stats.com/2015/10/13/rexer-analytics-survey-results"}
 include_graphics("images/r-popularity.png", dpi=150)
 ```
 

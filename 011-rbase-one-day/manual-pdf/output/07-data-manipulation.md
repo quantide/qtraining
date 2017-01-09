@@ -5,7 +5,7 @@
 
 
 
-\includegraphics[width=3.33in]{images/flow-dtman} 
+\begin{center}\includegraphics[width=3.33in]{images/flow-dtman} \end{center}
 
 The `dplyr` package for `R` is very powerful for data management since:
 
@@ -62,7 +62,12 @@ In particular:
 \clearpage
 
 \begin{figure}
-\includegraphics[width=4in]{images/pipe} \caption{Source: www.datacamp.com}(\#fig:g2)
+
+{\centering \includegraphics[width=4in]{images/pipe} 
+
+}
+
+\caption{Source: www.datacamp.com}(\#fig:g2)
 \end{figure}
 
 Pipes can work with nearly any functions (`dplyr` and not-`dplyr` functions), let us see an example.
@@ -166,7 +171,7 @@ Often you work with large datasets with many columns where only a few are actual
 
 `select()` allows you to rapidly zoom in on a useful subset of columns.  
 
-![](images/sel.png) 
+![select scheme](images/sel.png) 
 
 
 
@@ -269,7 +274,7 @@ bank %>% select(ID = id)
 
 `filter()` allows you to select a subset of the rows of a data frame.
 
-![](images/fil.png) 
+![filter scheme](images/fil.png) 
 
 
 
@@ -434,7 +439,7 @@ bank %>% filter(job == "admin." | job == "technician")
 
 Function `arrange()` reorders a data frame by one or more variables. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns:
 
-![](images/arr.png)
+![arrange scheme](images/arr.png)
 
 
 
@@ -523,7 +528,7 @@ bank %>% arrange(age, desc(balance))
 
 As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing ones. This is the job of `mutate()`:
 
-![](images/mut.png) 
+![mutate scheme](images/mut.png) 
 
 
 ```r
@@ -637,7 +642,7 @@ df2
 ### `inner_join(x, y)`
 
 
-\includegraphics[width=1.73in]{images/inner_join} 
+\begin{center}\includegraphics[width=1.73in]{images/inner_join} \end{center}
 
 `inner_join(x, y)` only includes observations that match in both x and y:
 
@@ -659,7 +664,7 @@ inner_join(df1, df2)
 ### `left_join(x, y)`
 
 
-\includegraphics[width=1.7in]{images/left_join} 
+\begin{center}\includegraphics[width=1.7in]{images/left_join} \end{center}
 
 `left_join(x, y)` includes all observations in `x`, regardless of whether they match or not. This is the most commonly used join because it ensures that you don't lose observations from your primary table:
 
@@ -683,7 +688,7 @@ left_join(df1, df2)
 ### `right_join(x, y)`
 
 
-\includegraphics[width=1.73in]{images/right_join} 
+\begin{center}\includegraphics[width=1.73in]{images/right_join} \end{center}
 
 `right_join(x, y)` includes all observations in `y`. It’s equivalent to `left_join(y, x)`, but the columns will be ordered differently:
 
@@ -722,7 +727,7 @@ left_join(df2, df1)
 ### `full_join()`
 
 
-\includegraphics[width=1.68in]{images/full_join} 
+\begin{center}\includegraphics[width=1.68in]{images/full_join} \end{center}
 
 `full_join()` includes all observations from `x` and `y`:
 

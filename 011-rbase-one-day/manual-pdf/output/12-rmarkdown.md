@@ -26,12 +26,14 @@ You can install the R Markdown package from CRAN as follows:
 install.packages("rmarkdown")
 ```
 
+
 ## Markdown Basics
 
 This is an R Markdown file, a plain text file that has the extension `.Rmd`:
 
-
-\includegraphics[width=18cm]{images/rmd-1.png}
+\begin{figure}[h]
+\includegraphics[width=6.46in]{images/rmd-1} \caption{R Markdown File}(\#fig:g1)
+\end{figure}
 
 Notice that the file contains three types of content:
 
@@ -45,7 +47,11 @@ Markdown is a simple formatting language designed to make authoring content easy
 
 This section provides quick references to the most commonly used R Markdown syntax.
 
-\includegraphics[width=14cm]{images/rmd-cheatsheet.png}
+\begin{figure}[h]
+\includegraphics[width=5.23in]{images/rmd-cheatsheet} \caption{Source: R Markdown Cheat Sheet}(\#fig:g2)
+\end{figure}
+
+\clearpage
 
 ## Rendering Output
 
@@ -59,6 +65,10 @@ render("example.Rmd")
 
 Otherwise, use the "Knit" button in the RStudio IDE to render the file and preview the output with a single click or the keyboard shortcut _Ctrl + Shift + K_.
 
-\includegraphics[width=18cm]{images/rmd-3.png}
+
+\begin{figure}[h]
+\includegraphics[width=6.46in]{images/rmd-3} \caption{R Markdown Output}(\#fig:g3)
+\end{figure}
+
 
 R Markdown generates a new file that contains selected text, code, and results from the .Rmd file. The new file can be a finished web page, PDF, MS Word document, slide show, notebook, handout, book, dashboard, package vignette or other format.
