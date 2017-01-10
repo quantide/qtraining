@@ -1,7 +1,7 @@
 ## ---- message=FALSE------------------------------------------------------
 require(ggplot2)
 require(GGally)
-require(ggmap)
+require(ggmap) # install it from github to fix a bug
 require(qdata)
 require(survival)
 data(lung)
