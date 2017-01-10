@@ -168,7 +168,7 @@ IBM
 ```
 
 ```
-## # A tibble: 2,518 × 7
+## # A tibble: 2,523 × 7
 ##    IBM.Open IBM.High IBM.Low IBM.Close IBM.Volume IBM.Adjusted       date
 ##       <dbl>    <dbl>   <dbl>     <dbl>      <dbl>        <dbl>      <chr>
 ## 1     97.18    98.40   96.26     97.27    9196800     78.35465 2007-01-03
@@ -181,7 +181,7 @@ IBM
 ## 8     98.99    99.69   98.50     99.34    6636500     80.02211 2007-01-12
 ## 9     99.40   100.84   99.30    100.82    9602200     81.21431 2007-01-16
 ## 10   100.69   100.90   99.90    100.02    8200700     80.56988 2007-01-17
-## # ... with 2,508 more rows
+## # ... with 2,513 more rows
 ```
 
 At this point, the new `date` column is a string and it must be parsed to be interpreted by R as a date.
@@ -193,7 +193,7 @@ IBM
 ```
 
 ```
-## # A tibble: 2,518 × 7
+## # A tibble: 2,523 × 7
 ##    IBM.Open IBM.High IBM.Low IBM.Close IBM.Volume IBM.Adjusted       date
 ##       <dbl>    <dbl>   <dbl>     <dbl>      <dbl>        <dbl>     <date>
 ## 1     97.18    98.40   96.26     97.27    9196800     78.35465 2007-01-03
@@ -206,7 +206,7 @@ IBM
 ## 8     98.99    99.69   98.50     99.34    6636500     80.02211 2007-01-12
 ## 9     99.40   100.84   99.30    100.82    9602200     81.21431 2007-01-16
 ## 10   100.69   100.90   99.90    100.02    8200700     80.56988 2007-01-17
-## # ... with 2,508 more rows
+## # ... with 2,513 more rows
 ```
 
 The `lubridate` package provide a set of function to extract single components of a date: `month()`, `day()` and `year()`. Using just `lubridate` and `dplyr` the components of a date can be added as new variables to a data frame.
@@ -218,7 +218,7 @@ IBM
 ```
 
 ```
-## # A tibble: 2,518 × 10
+## # A tibble: 2,523 × 10
 ##    IBM.Open IBM.High IBM.Low IBM.Close IBM.Volume IBM.Adjusted       date month   day  year
 ##       <dbl>    <dbl>   <dbl>     <dbl>      <dbl>        <dbl>     <date> <dbl> <int> <dbl>
 ## 1     97.18    98.40   96.26     97.27    9196800     78.35465 2007-01-03     1     3  2007
@@ -231,7 +231,7 @@ IBM
 ## 8     98.99    99.69   98.50     99.34    6636500     80.02211 2007-01-12     1    12  2007
 ## 9     99.40   100.84   99.30    100.82    9602200     81.21431 2007-01-16     1    16  2007
 ## 10   100.69   100.90   99.90    100.02    8200700     80.56988 2007-01-17     1    17  2007
-## # ... with 2,508 more rows
+## # ... with 2,513 more rows
 ```
 
 At this point, you can easily draw a time series plot with adjusted quotations for the IBM, with a facet for each year.
@@ -266,7 +266,7 @@ IBM
 ```
 
 ```
-## # A tibble: 2,518 × 11
+## # A tibble: 2,523 × 11
 ##    IBM.Open IBM.High IBM.Low IBM.Close IBM.Volume IBM.Adjusted       date month   day  year weekday
 ##       <dbl>    <dbl>   <dbl>     <dbl>      <dbl>        <dbl>     <date> <dbl> <int> <dbl>   <dbl>
 ## 1     97.18    98.40   96.26     97.27    9196800     78.35465 2007-01-03     1     3  2007       4
@@ -279,7 +279,7 @@ IBM
 ## 8     98.99    99.69   98.50     99.34    6636500     80.02211 2007-01-12     1    12  2007       6
 ## 9     99.40   100.84   99.30    100.82    9602200     81.21431 2007-01-16     1    16  2007       3
 ## 10   100.69   100.90   99.90    100.02    8200700     80.56988 2007-01-17     1    17  2007       4
-## # ... with 2,508 more rows
+## # ... with 2,513 more rows
 ```
 
 Of course, also the new variable can be used as grouping variable for box plots.
@@ -532,7 +532,7 @@ now()
 ```
 
 ```
-## [1] "2017-01-03 13:26:58 CET"
+## [1] "2017-01-10 15:28:33 CET"
 ```
 
 

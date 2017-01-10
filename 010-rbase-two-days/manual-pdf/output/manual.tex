@@ -155,7 +155,7 @@
   \vspace{0.5cm}
   \hrule height 2pt
   \vspace{0.5cm}
-  \includegraphics[width=165mm]{./images/locandina.png}
+  % \includegraphics[width=165mm]{./images/locandina.png}
   \clearpage
 }
 
@@ -1213,7 +1213,7 @@ using for allocating objects
 \begin{verbatim}
 ##          used (Mb) gc trigger (Mb) max used (Mb)
 ## Ncells 412003 22.1     750400 40.1   592000 31.7
-## Vcells 590170  4.6    1308461 10.0   812817  6.3
+## Vcells 590174  4.6    1308461 10.0   812630  6.2
 \end{verbatim}
 
 \section{The Working Directory}\label{the-working-directory}
@@ -2519,7 +2519,7 @@ factor with ordered levels.
 \end{Shaded}
 
 \begin{verbatim}
-##  [1] C A D A A A A A C D B A
+##  [1] B D D A B D C A A D B D
 ## Levels: A B C D
 \end{verbatim}
 
@@ -2530,7 +2530,7 @@ factor with ordered levels.
 \end{Shaded}
 
 \begin{verbatim}
-##  [1] C A D A A A A A C D B A
+##  [1] B D D A B D C A A D B D
 ## Levels: D < C < B < A
 \end{verbatim}
 
@@ -3664,8 +3664,8 @@ The following functions:
 \end{Shaded}
 
 \begin{verbatim}
-##  [1]  0.02337421 -1.44410066 -0.43434366 -0.04781239 -0.34635967  0.11256413  0.07641944  0.42482086
-##  [9]  0.53604628  0.31538745
+##  [1]  0.03671286  1.44157390 -2.54593783  1.20381478  0.17470718  0.71825907  0.90201773 -0.81875316
+##  [9]  0.41442748 -0.23316441
 \end{verbatim}
 
 \begin{Shaded}
@@ -3675,9 +3675,9 @@ The following functions:
 \end{Shaded}
 
 \begin{verbatim}
-##  [1]  5.3239927  3.3400441  4.4148980  0.5964838 19.1105153  5.3903611  3.6090670  4.4191646 -5.1875807
-## [10]  7.0353226 -4.4877227  3.4662121  5.2164005 -5.6929351  9.8080872  7.2742448 -2.4244734  9.8496841
-## [19]  6.3544117  4.6772858
+##  [1]  8.1161315  4.1175142  0.4305539 -3.2560182 10.1279865  0.5123030  2.4498182 10.0185880  0.4435542
+## [10]  5.3219403  1.9810591 -1.0541618  2.5490966  3.7378717 -0.3524744  6.4293541  3.2363052  4.5638334
+## [19]  3.9127530  3.0003167
 \end{verbatim}
 
 \begin{Shaded}
@@ -3687,8 +3687,8 @@ The following functions:
 \end{Shaded}
 
 \begin{verbatim}
-##  [1] 16 11 20 16 13 17 14 18 15 17 14 17 15 16 18 16 16 17 13 14 13 15 15 16 19 16 16 14 20 14 16 13 16 14
-## [35] 15 18 15 17 19 16 16 14 18 14 18 19 14 18 16 19
+##  [1] 16 17 15 16 18 15 17 19 15 13 16 17 14 18 16 15 15 18 18 16 17 16 16 18 16 17 17 14 17 17 15 15 15 17
+## [35] 17 18 16 16 15 16 17 18 16 16 16 13 17 11 14 16
 \end{verbatim}
 
 \begin{Shaded}
@@ -3698,9 +3698,9 @@ The following functions:
 \end{Shaded}
 
 \begin{verbatim}
-##  [1] 1.743297 2.161191 3.681191 2.646652 1.756540 2.784472 3.198930 1.682767 2.309938 2.361880 2.541066
-## [12] 2.460120 1.928519 2.473901 1.855068 2.857655 2.785827 3.155953 2.253992 2.801523 2.753235 2.993436
-## [23] 3.200559 2.797460 1.371322 2.415364 3.553419 2.900355 2.251122 2.618322
+##  [1] 2.982094 2.011687 1.794671 3.147264 2.388938 2.320514 2.494149 3.053366 1.220845 2.529022 1.919187
+## [12] 3.067260 3.259476 1.747864 2.957188 2.141522 3.313209 3.085932 3.017064 3.369909 3.382658 2.365779
+## [23] 2.828647 2.393660 2.943538 2.191707 2.649564 3.673390 2.700337 2.580711
 \end{verbatim}
 
 generate, respectively:
@@ -4771,6 +4771,8 @@ And finally disconnect from the database:
 ## [1] TRUE
 \end{verbatim}
 
+\clearpage
+
 \section{R Data Files}\label{r-data-files}
 
 \subsection{Save R Data Files}\label{save-r-data-files}
@@ -4835,8 +4837,7 @@ To upload \texttt{Rda} files in R use the \texttt{load()} function.
 \includegraphics[width=2.94in]{images/flow-dtman}
 
 This chapter provides an overview of data management with \texttt{R}
-through the \texttt{dplyr}, \texttt{tidyr} and \texttt{lubridate}
-packages.
+through the \texttt{dplyr} package.
 
 The \texttt{dplyr} package for \texttt{R} is very powerful for data
 management since:
@@ -4859,27 +4860,9 @@ management since:
 \end{Highlighting}
 \end{Shaded}
 
-\texttt{tidyr} is a modern \texttt{R} package which provides a standard
-way to organise data values within a dataset.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{require}\NormalTok{(tidyr)}
-\end{Highlighting}
-\end{Shaded}
-
-\texttt{lubridate} is an R packages that deals with dates and times in
-an intuitive and coherent way.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{require}\NormalTok{(lubridate)}
-\end{Highlighting}
-\end{Shaded}
-
 In the following chapters, we will explore the innovations introduced by
-\texttt{dplyr}, \texttt{tidyr} and \texttt{lubridate} to make our lifes
-easier when dealing with dataframes manipulation tasks.\\
+\texttt{dplyr} to make our lifes easier when dealing with dataframes
+manipulation tasks.\\
 In particular:
 
 \begin{itemize}
@@ -4894,10 +4877,6 @@ In particular:
   \texttt{dplyr} verbs for combining data
 \item
   \texttt{dplyr} with backend databases
-\item
-  reshaping data with \texttt{tidyr}
-\item
-  managing dates with \texttt{lubridate}
 \end{itemize}
 
 In the following two paragraphs we will explore two important
@@ -5193,6 +5172,8 @@ banking institution based on phone calls.
 \KeywordTok{data}\NormalTok{(bank) }
 \end{Highlighting}
 \end{Shaded}
+
+\clearpage
 
 \subsection{\texorpdfstring{\texttt{select()}}{select()}}\label{select}
 
@@ -7358,10 +7339,10 @@ And summarise them:
 ## # A tibble: 4 × 4
 ##     hloc     n          avg         sd
 ##   <fctr> <int>        <dbl>      <dbl>
-## 1  close   504 0.0001317910 0.01294992
-## 2   high   504 0.0001055665 0.01137312
-## 3    low   504 0.0001330205 0.01245763
-## 4   open   504 0.0001409560 0.01250028
+## 1  close   509 0.0001504396 0.01291350
+## 2   high   509 0.0001410029 0.01133475
+## 3    low   509 0.0001568441 0.01240202
+## 4   open   509 0.0001752224 0.01244935
 \end{verbatim}
 
 \chapter{Managing dates with
@@ -7582,7 +7563,7 @@ new column can be added.
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 2,518 × 7
+## # A tibble: 2,523 × 7
 ##    IBM.Open IBM.High IBM.Low IBM.Close IBM.Volume IBM.Adjusted       date
 ##       <dbl>    <dbl>   <dbl>     <dbl>      <dbl>        <dbl>      <chr>
 ## 1     97.18    98.40   96.26     97.27    9196800     78.35465 2007-01-03
@@ -7595,7 +7576,7 @@ new column can be added.
 ## 8     98.99    99.69   98.50     99.34    6636500     80.02211 2007-01-12
 ## 9     99.40   100.84   99.30    100.82    9602200     81.21431 2007-01-16
 ## 10   100.69   100.90   99.90    100.02    8200700     80.56988 2007-01-17
-## # ... with 2,508 more rows
+## # ... with 2,513 more rows
 \end{verbatim}
 
 At this point, the new \texttt{date} column is a string and it must be
@@ -7609,7 +7590,7 @@ parsed to be interpreted by R as a date.
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 2,518 × 7
+## # A tibble: 2,523 × 7
 ##    IBM.Open IBM.High IBM.Low IBM.Close IBM.Volume IBM.Adjusted       date
 ##       <dbl>    <dbl>   <dbl>     <dbl>      <dbl>        <dbl>     <date>
 ## 1     97.18    98.40   96.26     97.27    9196800     78.35465 2007-01-03
@@ -7622,7 +7603,7 @@ parsed to be interpreted by R as a date.
 ## 8     98.99    99.69   98.50     99.34    6636500     80.02211 2007-01-12
 ## 9     99.40   100.84   99.30    100.82    9602200     81.21431 2007-01-16
 ## 10   100.69   100.90   99.90    100.02    8200700     80.56988 2007-01-17
-## # ... with 2,508 more rows
+## # ... with 2,513 more rows
 \end{verbatim}
 
 The \texttt{lubridate} package provide a set of function to extract
@@ -7638,7 +7619,7 @@ components of a date can be added as new variables to a data frame.
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 2,518 × 10
+## # A tibble: 2,523 × 10
 ##    IBM.Open IBM.High IBM.Low IBM.Close IBM.Volume IBM.Adjusted       date month   day  year
 ##       <dbl>    <dbl>   <dbl>     <dbl>      <dbl>        <dbl>     <date> <dbl> <int> <dbl>
 ## 1     97.18    98.40   96.26     97.27    9196800     78.35465 2007-01-03     1     3  2007
@@ -7651,7 +7632,7 @@ components of a date can be added as new variables to a data frame.
 ## 8     98.99    99.69   98.50     99.34    6636500     80.02211 2007-01-12     1    12  2007
 ## 9     99.40   100.84   99.30    100.82    9602200     81.21431 2007-01-16     1    16  2007
 ## 10   100.69   100.90   99.90    100.02    8200700     80.56988 2007-01-17     1    17  2007
-## # ... with 2,508 more rows
+## # ... with 2,513 more rows
 \end{verbatim}
 
 At this point, you can easily draw a time series plot with adjusted
@@ -7691,7 +7672,7 @@ day of a date, returning a number from Sunday (1) to Saturday (7).
 \end{Shaded}
 
 \begin{verbatim}
-## # A tibble: 2,518 × 11
+## # A tibble: 2,523 × 11
 ##    IBM.Open IBM.High IBM.Low IBM.Close IBM.Volume IBM.Adjusted       date month   day  year weekday
 ##       <dbl>    <dbl>   <dbl>     <dbl>      <dbl>        <dbl>     <date> <dbl> <int> <dbl>   <dbl>
 ## 1     97.18    98.40   96.26     97.27    9196800     78.35465 2007-01-03     1     3  2007       4
@@ -7704,7 +7685,7 @@ day of a date, returning a number from Sunday (1) to Saturday (7).
 ## 8     98.99    99.69   98.50     99.34    6636500     80.02211 2007-01-12     1    12  2007       6
 ## 9     99.40   100.84   99.30    100.82    9602200     81.21431 2007-01-16     1    16  2007       3
 ## 10   100.69   100.90   99.90    100.02    8200700     80.56988 2007-01-17     1    17  2007       4
-## # ... with 2,508 more rows
+## # ... with 2,513 more rows
 \end{verbatim}
 
 Of course, also the new variable can be used as grouping variable for
@@ -8018,7 +7999,7 @@ The function \texttt{now} returns the current date-time.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] "2017-01-03 13:26:58 CET"
+## [1] "2017-01-10 15:28:33 CET"
 \end{verbatim}
 
 \section{Time Zones}\label{time-zones}

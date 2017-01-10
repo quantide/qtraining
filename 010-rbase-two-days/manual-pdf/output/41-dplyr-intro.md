@@ -7,7 +7,7 @@
 \includegraphics[width=2.94in]{images/flow-dtman} 
 
 
-This chapter provides an overview of data management with `R` through the `dplyr`, `tidyr` and `lubridate` packages.
+This chapter provides an overview of data management with `R` through the `dplyr` package.
 
 The `dplyr` package for `R` is very powerful for data management since:
 
@@ -20,21 +20,7 @@ The `dplyr` package for `R` is very powerful for data management since:
 require(dplyr)
 ```
 
-`tidyr` is a modern `R` package which provides a standard way to organise data values within a dataset. 
-
-
-```r
-require(tidyr)
-```
-
-`lubridate` is an R packages that deals with dates and times in an intuitive and coherent way.
-
-
-```r
-require(lubridate)
-```
-
-In the following chapters, we will explore the innovations introduced by `dplyr`, `tidyr` and `lubridate` to make our lifes easier when dealing with dataframes manipulation tasks.     
+In the following chapters, we will explore the innovations introduced by `dplyr` to make our lifes easier when dealing with dataframes manipulation tasks.     
 In particular:
 
 * pipe operator (`%>%`) 
@@ -42,8 +28,6 @@ In particular:
 * `dplyr` verbs for data manipulation 
 * `dplyr` verbs for combining data
 * `dplyr` with backend databases
-* reshaping data with `tidyr`
-* managing dates with `lubridate`
 
 In the following two paragraphs we will explore two important `dplyr` innovations: pipe operator (`%>%`) and `tbl_df` data frame class
 
@@ -281,6 +265,8 @@ In the following examples we will refer to `bank` data set which contains inform
 ```r
 data(bank) 
 ```
+
+\clearpage
 
 ### `select()`
 

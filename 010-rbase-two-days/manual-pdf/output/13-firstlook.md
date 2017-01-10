@@ -197,7 +197,7 @@ gc()
 ```
 ##          used (Mb) gc trigger (Mb) max used (Mb)
 ## Ncells 412003 22.1     750400 40.1   592000 31.7
-## Vcells 590170  4.6    1308461 10.0   812817  6.3
+## Vcells 590174  4.6    1308461 10.0   812630  6.2
 ```
 
 ## The Working Directory

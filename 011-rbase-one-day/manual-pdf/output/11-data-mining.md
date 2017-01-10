@@ -180,19 +180,12 @@ nn_mod <- nnet(Status ~ Class + Gender + Age, data = train, size = 3)
 
 ```
 ## # weights:  16
-## initial  value 1003.295388 
-## iter  10 value 943.842659
-## iter  20 value 794.382124
-## iter  30 value 770.023598
-## iter  40 value 765.986907
-## iter  50 value 761.763342
-## iter  60 value 760.162853
-## iter  70 value 760.021058
-## iter  80 value 759.922590
-## iter  90 value 759.849667
-## iter 100 value 759.814211
-## final  value 759.814211 
-## stopped after 100 iterations
+## initial  value 1053.557073 
+## iter  10 value 970.307573
+## iter  20 value 968.607565
+## iter  30 value 968.426416
+## final  value 968.426227 
+## converged
 ```
 
 The predictions on test sample can be gained using `predict()` function:
@@ -205,12 +198,12 @@ head(pr)
 
 ```
 ##        [,1]
-## 1 0.6385946
-## 2 0.6385946
-## 3 0.6385946
-## 4 0.6385946
-## 5 0.6385946
-## 6 0.6383599
+## 1 0.3248698
+## 2 0.3248698
+## 3 0.3248698
+## 4 0.3248698
+## 5 0.3248698
+## 6 0.3248698
 ```
 
 The predictions included the probability of survive in the Titanic wreck according to `Gender`, `Age` and `Class`. We define that probabilities below 0.5 represent `Died` (`TRUE`) and probabilities over 0.5 represent `Survived` (`FALSE`).   
@@ -231,15 +224,13 @@ test %>%
 ```
 
 ```
-## Source: local data frame [4 x 4]
+## Source: local data frame [2 x 4]
 ## Groups: Status [2]
 ## 
-##     Status pr_mod     n    freq
-##     <fctr>  <lgl> <int>   <chr>
-## 1     Died  FALSE    81  16.1 %
-## 2     Died   TRUE   422  83.9 %
-## 3 Survived  FALSE    69 43.95 %
-## 4 Survived   TRUE    88 56.05 %
+##     Status pr_mod     n  freq
+##     <fctr>  <lgl> <int> <chr>
+## 1     Died   TRUE   503 100 %
+## 2 Survived   TRUE   157 100 %
 ```
 
 We conclude that the model has quite good performance in the prediction of the probability of die in the Titanic wreck according to `Gender`, `Age` and `Class`. 

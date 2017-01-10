@@ -441,6 +441,7 @@ dbDisconnect(con)
 file.remove("mtcars.sqlite")
 ```
 
+\clearpage
 
 ## R Data Files 
 
