@@ -1,11 +1,12 @@
 ---
-title: "Standard R graphical system"
+title: "Introduction to the standard R graphics system"
 output:
   html_document
 ---
 
 ```{r first, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 require(knitr)
+opts_chunk$set(fig.width=4, fig.height=3.5)
 ```
 
 ```{r require, message=FALSE}
@@ -22,12 +23,19 @@ require(qdata)
 | col 3 is | right-aligned |    $1 |
 -->
 
-# R Graphics
-
-
 ## The Graphic Environment
 
-R comes with a wide variety of graphical functions. The R default graphics package provide standard R graphics. Additional libraries such as `lattice` provide specialized and often very attractive graphics. This chapter is mainly about classical R graphics. Introductory examples of `lattice` graphics will be provided at the end of this chapter. 
+R comes with a wide variety of graphical functions. The R default graphics package provide standard R graphics. 
+
+<!--
+Additional libraries such as `lattice` provide specialized and often very attractive graphics. 
+-->
+
+This chapter is about classical R graphics. 
+
+<!--
+Introductory examples of `lattice` graphics will be provided at the end of this chapter. 
+-->
 
 The graphical functions in the base R system, can be divided into two groups:
 
@@ -40,7 +48,7 @@ A special case is the `plot()` function. This function is a generic function and
 
 As a results:
 
-```{r, plot, fig=T}
+```{r plot, fig.width=8, fig.height=8}
 f <- factor(c("M", "M", "M", "M", "M", "F", "F","F"))
 y <- rnorm(8)
 x <- c(0, 2, 4, 8, 16, 32, 64, 128)
@@ -58,18 +66,20 @@ The scatterplot (or scattergraph) is the main tool for the study of bivariate nu
 
 Generally, the `plot()` function is called to produce simple scatterplot:
 
-```{r, scatterplot1, fig=T}
+```{r scatterplot1}
 data(states)
-str(states, vec.len = 2)
+str(states)
 with(states, plot (x = Income, y = Murder))
 ```
 
 An alternative and more elegant way of calling the `plot()` function consist in specifying the `x` and `y` arguments by mean of a formula. Note that this method allows the data argument to be specified as an argument of the plot function.
 
-```{r, formula, fig=T}
+```{r formula}
 plot(Murder ~ Income, data = states)
 ```
 
+
+<!--
 Some models differing from the basic plot are shown below.
 
  - Addition of further elements, such as the centroid (the point whose coordinates are the arithmetic mean of X and Y, and the barycentre of the distribution), the least-squares line, particular concentration ellipses for the bivariate Gaussian distribution.
@@ -79,18 +89,19 @@ Some models differing from the basic plot are shown below.
  - P-variate numerical distributions, $p > 2$: creation of a scatter plot matrix, a pxp square matrix, where the generic cell $(i, j)$ outside the main diagonal contains the scatter plot of the $i$ and $j$ variables, whereas the diagonal cells contain box-and-whiskers plots or histograms. 
 
 The scatter plot can be created with the `plot()` function (scatter plot for a set of variables), but also with `pairs()` (dispersion matrix) and `coplot()` (scatter plots of a set of variables for specified levels of a third alphanumeric or numeric variable). Moreover, the `locator()` and `identify()` functions enable the interactive use of the plot by adding further elements in the positions indicated by the mouse (locator) and underlying the index or the label of the point closest to the mouse pointer (identify). This function will not be discussed in this document. 
-
+-->
 
 ### Type
+
 When calling the `plot()` function, the argument type is set to its default: `type = "p"`. As a results graphics coordinates are represented by points (empty circles). Different graphical representations are given by: `"l"` for lines, `"o"` for overplotted points and lines, `"b"` for both points and lines, `"c"` for the lines parte alone of `"b"`, `"s"` and `"S"` for stair steps and `"h"` for histogram-like vertical lines. `type = "n"` is particularly important. In this case an empty plot with axes is created. The plot can be later customized in an extremely sophisticated way using more advanced graphic functions.
 
-```{r, type, fig=TRUE, echo = FALSE}
-type = c ("p" , "l" , "o" , "b" , "c" , "s" , "h" , "n")
-y = c (1 , 2, 5 , 8, 9, 9, 7 , 5, 3, 1)
-x = 1:10
-par (mfrow = c (4 ,2))
-par (mar = c (3 , 3, 3 , 1))
-for (i in 1:8) {
+```{r type, fig=TRUE, echo = FALSE, fig.width=8, fig.height=8}
+type <- c ("p" , "l" , "o" , "b" , "c" , "s" , "h" , "n")
+y <- c (1 , 2, 5 , 8, 9, 9, 7 , 5, 3, 1)
+x <- 1:10
+par(mfrow = c (4 ,2))
+par(mar = c (3 , 3, 3 , 1))
+for(i in 1:8){
   plot(x, y, type = type [i], xlab = "", ylab = "")
   title = paste ("type = " , '"', type[i], '"', sep = "")
   mtext (title, side = 3, line = 1)
@@ -101,13 +112,13 @@ for (i in 1:8) {
 ### Symbols
 During the creation of the plot, the shape, the dimensions and the colour of the symbols can be customized with the pch, cex and col parameters respectively. An example of the implementation of these parameters inside `plot()` and the output graph are shown below.
 
-```{r, symbols, fig=TRUE}
+```{r symbols}
 plot(Murder ~ Income, data = states, pch = 16, cex = 2.5)
 ```
 
 There are 25 symbols in R. Figure below shows these symbols and the reference values to be associated with the `pch` parameter.
 
-```{r, echo = F, fig=T}
+```{r, echo = F, fig=T, purl=FALSE}
  # Make an empty chart
  plot(1, 1, xlim = c(1, 5.5), ylim=c(0.5, 5.5), type = "n", axes = FALSE, ann = FALSE, frame.plot = TRUE)
  # Plot symbols 0-4 with increasing size
@@ -130,7 +141,7 @@ There are 25 symbols in R. Figure below shows these symbols and the reference va
 
 If you want to use a symbol which is not one of the standard 25, you can write it explicitly in the `pch` parameter. It needs to have only one character.
 
-```{r, custom, fig=TRUE}
+```{r custom}
 plot(Murder ~ Income, data = states, pch = "R", cex = 2.5)
 ```
 
@@ -154,7 +165,7 @@ In R the `col` parameter manages the colours of the symbols inside the plots. `c
 ### Titles
 The main parameter of the `plot()` function enables the definition of the main title of the plot. This title will be displayed in the top centre of the plot. The sub parameter creates a subtitle which is displayed in the bottom centre of the plot. A title on two or more rows can be defined by inserting the special character "`\n`" in the title string.  Finally, the `xlab` and `ylab` parameters change the titles of the x and y axes respectively.
 
-```{r, titles, fig=TRUE}
+```{r titles}
 plot(Murder ~ Income, data = states, pch = 16, col = "blue",
   cex = 2.5, main = "Murder vs Income", sub="USA (1976)",
   xlab = "Per capita income",
@@ -164,7 +175,7 @@ plot(Murder ~ Income, data = states, pch = 16, col = "blue",
 
 ### Axes
 The `xlim` parameter sets a range for the x-axis. The `ylim` parameter sets a range for the y-axis. 
-```{r, axes, fig=TRUE}
+```{r axes}
 plot(Murder ~ Income, data = states, pch = 16, col = "blue",
   cex = 2.5, main = "Murder vs Income", sub="USA (1976)",
   xlab = "Per capita income",
@@ -175,13 +186,13 @@ plot(Murder ~ Income, data = states, pch = 16, col = "blue",
 The axes can be set on a logarithmic scale with the `log` parameter. In particular, `log = "x"` and `log = "y"` set the x and y axes on a logarithmic base respectively.  Use `log = "xy"` if both axes are to be logarithmic.
 In the Figure above the y-axis of the graph on the left is in natural scale, whereas the plot on the right shows a y-axis on a logarithmic scale. The graph on the right is generated by: 
 
-```{r, logaxes0, eval=FALSE, purl=FALSE}
+```{r logaxes0, eval=FALSE, purl=FALSE}
 plot(Murder ~ Income, data = states, pch = 16, cex = 2, 
   col ="lightseagreen", ylab = "Illiteracy (log scale)", log = "y")
 ```
 
-```{r, logaxes, echo=F, fig=TRUE}
-op = par(mfrow = c(1, 2))
+```{r logaxes, echo=F, fig=TRUE}
+op <- par(mfrow = c(1, 2))
 plot(Murder ~ Income, data = states, pch = 16, cex = 2, col ="lightseagreen", ylab = "Illiteracy")
 plot(Murder ~ Income, data = states, pch = 16, cex = 2, col ="lightseagreen", ylab = "Illiteracy (log scale)", log = "y")
 par(op)
@@ -203,7 +214,7 @@ A text can be inserted inside a scatter plot by specifying the coordinates. `tex
 
 Clearly, the three above-mentioned vectors need to have the same length. Therefore, the text in the $i$-th position will be inserted in the Cartesian coordinate system in $(xi, yi)$. 
 
-```{r, text, fig=TRUE}
+```{r text}
 plot(Illiteracy ~ Murder, data = states, type = "n")
 text(Illiteracy ~ Murder, data = states,
   labels = states$states.region.abb, col = "royalblue", cex = 0.8)
@@ -217,7 +228,7 @@ In the Code below one of the arguments of the `text()` function is the `adj` par
  - `adj = c(0.5,0.5)` indicates a central position compared with the x and y axes.
  - `adj = c(1,1)` indicates an alignment on the top right. 
 
-```{r, adj, fig=TRUE}
+```{r adj}
 plot(Illiteracy ~ Murder, data = states, type = "n")
 text(Illiteracy ~ Murder, data = states, labels = states$states.region.abb,
   col = "green", cex = 0.8)
@@ -229,11 +240,11 @@ text(2, 2.5, labels = "By Quantide", adj = c(0, 1), col = "blue", cex = 2)
 
 The `points()` function enables a better control over the symbols used in the scatter plot. The scatter plot below can be created with the instructions of one of codes below.
 
-```{r, points0, eval=FALSE}
+```{r points0, eval=FALSE}
 plot(Murder  Income, data = states, pch = 16, cex = 2.5, col = "red")
 ```
 
-```{r, points, fig=TRUE}
+```{r points}
 plot(Murder ~ Income, data = states, type = "n")
 points(Murder ~ Income, data = states, pch = 16, cex = 2.5, col = "red")
 ```
@@ -242,8 +253,8 @@ The difference between the methods lies in the points not being immediately crea
 
 The `points()` function enables the management of the symbols in terms of a third variable. The instructions contained in Code below provide an example of that kind of use. 
 
-```{r, threevariables, fig=TRUE}
-myCol = as.character(factor(states$states.region.abb, labels = rainbow(4)))
+```{r threevariables}
+myCol <- as.character(factor(states$states.region.abb, labels = rainbow(4)))
 plot(Murder ~ Income, data = states, type = "n")
 points(Murder ~ Income, data = states, pch = 16, cex = 2.5, col = myCol)
 ```
@@ -252,9 +263,9 @@ The `myCol` variable is defined as a character vector with the same length as `s
 
 The `cex` parameter of the `points()` function introduces the information coming from another variable into the plot. As a matter of fact, it is possible to change not only the colour in relation to a variable, but also the dimensions of the points. 
 
-```{r, fourvariables, fig=TRUE}
-myCol = as.character(factor(states$states.region.abb, labels = rainbow(4)))
-myCex = 3 * states$Illiteracy/max(states$Illiteracy)
+```{r fourvariables}
+myCol <- as.character(factor(states$states.region.abb, labels = rainbow(4)))
+myCex <- 3 * states$Illiteracy/max(states$Illiteracy)
 plot(Murder ~ Income, data = states, type = "n")
 points(Murder ~ Income, data = states, pch = 16, cex = myCex, col = myCol)
 ```
@@ -273,7 +284,7 @@ The `lty`, `lwd` and `col` parameters determine the line type, width and colour 
 
 The following Code contains an example of the use of the `lines()` and `ablines()` functions.
 
-```{r, lines, fig=TRUE}
+```{r lines}
 plot(Life.Exp ~ Illiteracy, data = states, type = "n")
 abline(h = mean(states$Life.Exp), v = mean(states$Illiteracy),
   col = "gray80", lwd = 2)
@@ -290,21 +301,18 @@ In the example, the abline function is firstly used to express the `h` and `v` p
 
 When symbols with different colours, dimensions and shapes are used in a plot, a legend is needed. In R the `legend()` function inserts a legend which can be highly customized. The input parameters of the `legend()` function are `x` and `y`. They determine the coordinates where the box with the legend will be inserted. More specifically, the coordinates define the position of the top-left corner of the box. The location of the legend is usually specified by the `x` parameter only, using the following values:
 
-\begin{center}
-  \begin{tabular}{lll}
-    & &  \\
-    \hline
-    \verb|"topleft"| & \verb|"top"| & \verb|"topright"| \\
-    \verb|"left"| & \verb|"center"| & \verb|"right"|\\
-    \verb|"bottomleft"| & \verb|"bottom"| & \verb|"bottomright"| \\
-    \hline
-  \end{tabular}
-\end{center}
+ | |
+----------- | ----------- | -----------
+`"topleft"` | `"top"` | `"topright"` 
+`"left"` | `"center"` | `"right"`
+`"bottomleft"`| `"bottom"` | `"bottomright"`
+
+
 
 The `inset` parameter, as a fraction of the plot region, defines the distance of the legend from the plot margins. A single value refers to the margin of the x-axis. Two values, on the other hand, are referred to the margins of the x and y axes. The `legend` parameter defines the legend text. The `ncol` parameter sets the number of columns of the legend; if it is not specified the legend will have only one column. The width and the line type of the legend box can be set using the `box.lwd` and `box.lty` parameters. The`bty = "n"` parameter eliminates the margins of the legend. 
 The `title` parameter inserts a title for the legend. As it can be seen, there are no limits as to how many legends can be inserted in a plot. 
 
-```{r, legend, fig=TRUE}
+```{r legend}
 myCol = as.character(factor(states$states.region.abb,
   labels = rainbow(4, start = 0.3, end = 0.8)))
 myCex = 4*states$Income/max(states$Income)
@@ -335,13 +343,13 @@ legend(x = "bottomright", legend = c("Linear Regression", "Lowess"),
 
 If the `outer` parameter is set on `TRUE`, the title will be placed in the outer margin of the plot. The `cex` parameter controls the size of the title. The function is usually used to define main titles, whereas axes labels are managed with the `xlab` and `ylab` parameters of the `plot()` function or the `label` parameter of the `axis()` function. The "`\n`" symbol inside the string of the main title splits the title over two lines.
 
-```{r, title0, eval=FALSE}
+```{r title0, eval=FALSE}
 title(main = "Murder vs Illiteracy \n Usa (1974)", cex = 1.2)
 title(sub = "Bouble size proportional to Income level", cex = 1)
 ```
 
 
-```{r, title, echo=F, fig=TRUE}
+```{r title, echo=F, fig=TRUE}
 myCol = as.character(factor(states$states.region.abb, labels = rainbow(4, start = 0.3, end = 0.8)))
 myCex = 4*states$Income/max(states$Income)
 plot(Murder ~ Illiteracy, data = states, type = "n") 
@@ -361,7 +369,7 @@ title(sub = "Bouble size proportional to Income level", cex = 1)
 The `polygon()` function is used to draw a polygon in a plot. The basic arguments of the `polygon()` function are the `x` and `y` vectors which contain the coordinates of the vertices of the polygon. Therefore, the `x` and `y` arguments are numerical vectors with the same length. With this function the polygon is created by uniting the coordinates given in progression and is closed by joining the last point to the first. 
 
 
-```{r, polygon0, eval=FALSE}
+```{r polygon0, eval=FALSE}
 poly.x = c(sort(x), sort(x, dec = T))
 poly.y = c(y1, sort(y2, dec = T))
 ```
@@ -370,7 +378,7 @@ In Code above x-values are defined from a vector with a length of $n/2$ in ascen
 
 The `polygon()` function can be useful to draw a confidence interval for the regression line.
 
-```{r, polygon, fig=TRUE}
+```{r polygon}
 fm = lm(Murder ~ Illiteracy, data = states)
 newdata = data.frame(Illiteracy = sort(states$Illiteracy))
 pred = as.data.frame(predict(object = fm, newdata = newdata,
@@ -394,7 +402,7 @@ Besides properly defined coordinates, the `polygon()` function also uses the `co
 
 The `axis()` function adds one or more axes to the plot. With the `axis()` function it is possible to specify location, density and labels. There are also numerous other functions. In particular, the `side` option determines the position of the axis: `1` = below, `2` = left, `3` = above and `4` = right. This parameter is obviously mandatory. An example of the application of the `axis()` function is provided in Code below. It is also shown how to create the grid in reference to the range defined by the new axes. Beside the `side` parameter, other fundamental arguments of the `axis()` function are `at` and `labels`. The `at` parameter defines the new location of the axes labels. The `labels` arguments indicates the character to be printed in each position. Clearly, the two vectors associated with the `at` and `labels` parameters need to have the same length.
 
-```{r, axes2, fig=TRUE}
+```{r axes2}
 plot(Population ~ Area, data = states, log = "x", pch = "+", cex = 1.5,
   xaxt = "n", xlab = "Area: Square Miles /1000", col = "red")
 atx.mg = c(1, 2, 5, 10, 20, 50, 100, 200, 500) * 1000
@@ -409,7 +417,7 @@ mtext("Area: Square Km / 1000", 3, line = 3)
 
 The parameters of the `axis()` function are used to modify the axes default settings, such as order, colour and dimensions. Code below produces the same basic plot as Code above, but different styles have been applied to the axes. In particular, the label orientation has been modified using the `las` parameter and the colours of labels and axes have been changed with the `col` and `col.axis` parameters respectively. The already-discussed `lty`, `cex` and `lwd` parameters do not define the features of lines and points inside the plot, but are used to manage the characteristics of lines and labels created by the axes.
 
-```{r, axis3, fig=TRUE}
+```{r axis3, fig.width=7}
 plot(Population ~ Area, data = states, log = "x", pch = "+",
   cex = 1.5,xaxt = "n", yaxt = "n",
   xlab = "Area: Square Miles /1000", ylab = "", col = "red")
@@ -429,7 +437,7 @@ A histogram is a representation of a frequency distribution by means of rectangl
 
 When the `freq` argument of `hist()` is set to `FALSE` probability densities are plotted so that the histogram has a total area of one. 
 
-```{r, hist, fig=TRUE}
+```{r hist}
 op = par(mfrow = c(1, 2))
 with (cars, {
   hist(speed, main = "Frequency Histogram")
@@ -439,7 +447,7 @@ with (cars, {
 
 The number of breaks/classes is automatically determined but can be defined if required by specifying either the numbers of classes or the break points: 
 
-```{r, nclass, fig=TRUE, width=8, height=8}
+```{r nclass, width=8, height=8}
 par(mfrow = c(1, 2))
 with (cars, {
   hist(dist, nclass = 12,
@@ -455,7 +463,7 @@ with (cars, {
 A bar plot displays the frequencies (or relative frequencies) for categorical variables. Generally, a grouping function such as `table()` is applied to data prior to draw barplots.
 
 
-```{r, barplot, fig=TRUE}
+```{r barplot}
 data(bwt)
 with (bwt , {
   tb = table (smoke)
@@ -465,7 +473,7 @@ with (bwt , {
 
 When introducing two or more variables, barplots can be constructed in stacked or beside mode. A simple legend may added to the plot by setting to `TRUE` the `legend` argument.
 
-```{r, barplotlegend, fig=TRUE}
+```{r barplotlegend}
 with (bwt , {
   tb = table (smoke, low)
   par(mfrow = c(1,2))
@@ -487,7 +495,7 @@ The "whiskers" shown above and below the boxes technically represent the largest
 
 In comparing the boxplots across groups, a simple summary is to say that the "box" area for one group is higher or lower than that for another group. 
 
-```{r, boxplot, fig = TRUE}
+```{r boxplot}
 data(carseat)
 boxplot(Strength ~ Operator, data = carseat)
 ```
@@ -501,7 +509,7 @@ Three dimensional graphics are quite fashionable and good looking. Nevertheless,
 
 R offers a wide variety of three dimensional graphics. Some not exaustive examples when representing a bivariate normal distribution are:
 
-```{r, 3d, fig=TRUE}
+```{r 3d}
 library(mnormt)               
 mu = c(0,0)
 sigma = matrix(c(1, 0, 0, 1), 2, 2)                                
@@ -519,7 +527,7 @@ contour(x, y, z, add = T)
 ```
 
 By using a different technique from the `lattice` package. The `lattice` package will be presented in the next Paragraph.
-```{r, lattice, fig=TRUE}
+```{r lattice, fig=TRUE}
 library(lattice)
 pl = wireframe(z, shade = TRUE, aspect = c(61/87, 0.4),
   light.source = c(10,0,10))
@@ -527,7 +535,7 @@ print(pl)
 ```
 
 
-
+<!--
 ## Introduction to Alternative Graphic Systems
 
 
@@ -575,7 +583,7 @@ Plot customization is made by mean of the `panel` argument. Panel argument requi
 
 The `istat` dataset contains information about weight and height for females and males. The interests is in understanding in which proportion weight is explained by height and how this relatioship differs from females to males.
 
-```{r, xyplot, fig=TRUE}
+```{r xyplot, message=FALSE}
 library(lattice)
 data(istat)
 p = xyplot(Weight ~ Height | Gender, data = istat,
@@ -588,4 +596,4 @@ p = xyplot(Weight ~ Height | Gender, data = istat,
 print(p)
 ```
 
-
+-->
