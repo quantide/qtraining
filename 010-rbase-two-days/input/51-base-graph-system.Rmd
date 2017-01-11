@@ -488,7 +488,7 @@ The "whiskers" shown above and below the boxes technically represent the largest
 In comparing the boxplots across groups, a simple summary is to say that the "box" area for one group is higher or lower than that for another group. 
 
 ```{r, boxplot, fig = TRUE}
-load("carseat.Rda")
+data(carseat)
 boxplot(Strength ~ Operator, data = carseat)
 ```
 
