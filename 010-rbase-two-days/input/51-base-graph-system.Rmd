@@ -1,28 +1,33 @@
 ---
+title: "Standard R graphical system"
 output:
   html_document
 ---
 
-```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
+```{r first, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 require(knitr)
-opts_knit$set(root.dir = "../data")
-
-.pkgs <- c("ggplot2", "lattice", "mnormt")
-.load <- lapply(.pkgs, FUN=function(x) {if(!require(x, character.only=TRUE)) {install.packages(x)}; library(x, character.only=TRUE); cat(x, "package loaded \n")})
 ```
 
+```{r require, message=FALSE}
+require(lattice)
+require(mnormt)
+require(qdata)
+```
+
+<!--
 | Tables   |      Are      |  Cool |
 |----------|:-------------:|------:|
 | col 1 is |  left-aligned | $1600 |
 | col 2 is |    centered   |   $12 |
 | col 3 is | right-aligned |    $1 |
+-->
 
 # R Graphics
 
 
 ## The Graphic Environment
 
-R comes with a wide variety of graphical functions. The R default graphics package provide standard R graphics. Additional libraries such as `lattice` and `ggplot` provide specialized and often very attractive graphics. This chapter is mainly about classical R graphics. Introductory examples of `lattice` and `ggplot2` graphics will be provided at the end of this chapter. 
+R comes with a wide variety of graphical functions. The R default graphics package provide standard R graphics. Additional libraries such as `lattice` provide specialized and often very attractive graphics. This chapter is mainly about classical R graphics. Introductory examples of `lattice` graphics will be provided at the end of this chapter. 
 
 The graphical functions in the base R system, can be divided into two groups:
 
@@ -36,9 +41,9 @@ A special case is the `plot()` function. This function is a generic function and
 As a results:
 
 ```{r, plot, fig=T}
-f = factor(c("M", "M", "M", "M", "M", "F", "F","F"))
-y = rnorm(8)
-x = c(0, 2, 4, 8, 16, 32, 64, 128)
+f <- factor(c("M", "M", "M", "M", "M", "F", "F","F"))
+y <- rnorm(8)
+x <- c(0, 2, 4, 8, 16, 32, 64, 128)
 par(mfrow = c(2, 2))
 plot(y)
 plot(f)
@@ -47,14 +52,14 @@ plot(f, x)
 ```
 
 
-
 ## Scatterplot
-The scatter plot (or scattergraph) is the main tool for the study of bivariate numerical distributions. $(x_1, y_1), \dots, (x_n, y_n)$ indicate the sets of data obtained from the X, Y numeric variables. The scatter plot is a graph where the points $P_1 = (x_1, y_1), \dots, P_n = (x_n, y_n)$ are defined in a Cartesian coordinate system. The features of the point cloud, such as location, internal cohesion, direction, and presence of isolated points, enable the deduction of the distribution statistical characteristics (position, dispersion, correlation, anomalous data).
 
-Generally, the `plot()` function is called to produce simple scatter plot:
+The scatterplot (or scattergraph) is the main tool for the study of bivariate numerical distributions. $(x_1, y_1), \dots, (x_n, y_n)$ indicate the sets of data obtained from the X, Y numeric variables. The scatter plot is a graph where the points $P_1 = (x_1, y_1), \dots, P_n = (x_n, y_n)$ are defined in a Cartesian coordinate system. The features of the point cloud, such as location, internal cohesion, direction, and presence of isolated points, enable the deduction of the distribution statistical characteristics (position, dispersion, correlation, anomalous data).
+
+Generally, the `plot()` function is called to produce simple scatterplot:
 
 ```{r, scatterplot1, fig=T}
-load("states.Rda")
+data(states)
 str(states, vec.len = 2)
 with(states, plot (x = Income, y = Murder))
 ```
@@ -451,7 +456,7 @@ A bar plot displays the frequencies (or relative frequencies) for categorical va
 
 
 ```{r, barplot, fig=TRUE}
-load("bwt.Rda")
+data(bwt)
 with (bwt , {
   tb = table (smoke)
   barplot(tb, col = c("orange", "darkgreen"))
@@ -572,7 +577,7 @@ The `istat` dataset contains information about weight and height for females and
 
 ```{r, xyplot, fig=TRUE}
 library(lattice)
-load("istat.Rda")
+data(istat)
 p = xyplot(Weight ~ Height | Gender, data = istat,
   panel = function(x, y , ...){
     panel.xyplot(x, y, pch = 16, ...)
