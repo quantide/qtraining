@@ -2630,7 +2630,7 @@ NULL
 #' @name orange
 #' 
 #' 
-#' @description \code{orange} dataset contains information information about the growth of 5 Orange Trees, 
+#' @description \code{orange} dataset contains information about the growth of 5 Orange Trees, 
 #' according to their trunk circumferences.
 #' 
 #' @usage data(orange)
@@ -2649,5 +2649,43 @@ NULL
 #' 
 #' 
 #' @source The original \code{Orange} dataset is included in \code{Datasets} package.
+NULL
+##################################################################################################################################
+
+
+##################################################################################################################################
+#' U.S. States Features
+#' 
+#' 
+#' @name states
+#' 
+#' 
+#' @description \code{states} dataset contains demographic, economic, geographical and social information about
+#' U.S States
+#' 
+#' @usage data(states)
+#' 
+#' 
+#' @format \code{states} is a tbl data frame with 50 observations on 11 variables.
+#' 
+#' 
+#' @details 
+#' The 11 variables of the \code{states} tbl data frame are the following ones:
+#' \itemize{
+#'  \item \code{Population} population (numeric)
+#'  \item \code{Income} income (numeric)
+#'  \item \code{Illiteracy} illiteracy rate (numeric)
+#'  \item \code{Life.Exp} life expectation (character)
+#'  \item \code{Murder} murder rate (numeric)
+#'  \item \code{HS.Grad} high school graduation rate  (numeric)
+#'  \item \code{Frost} frost (numeric)
+#'  \item \code{Area} area (km^2) (numeric)
+#'  \item \code{state.name} state name (factor with 50 levels)
+#'  \item \code{state.region} state region (factor with 4 levels: \code{South}, \code{West}, \code{Northeast} and \code{North Central})
+#'  \item \code{states.region.abb} state region abbreviation (factor with 4 levels: \code{S}, \code{W}, \code{N} and \code{C})
+#' }
+#' 
+#' 
+#' @source 
 NULL
 ##################################################################################################################################
