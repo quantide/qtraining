@@ -82,7 +82,7 @@ In December 2016, R is in 17th place of TIOBE Programming Community Index ([www.
 
 R is the leading analytics tools for data science used by respondents to the Rexer Analytics Survey in 2015:
 
-![<small>Source: [www.r4stats.com/2015/10/13/rexer-analytics-survey-results](http://r4stats.com/2015/10/13/rexer-analytics-survey-results/)</small>](./images/r-popularity.png)
+![](./images/r-popularity.png)
 
 Moreover, the number of companies using R is grown all over the world:
 
