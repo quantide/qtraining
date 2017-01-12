@@ -43,6 +43,14 @@ plot(Murder ~ Income, data = states, pch = 16, cex = 2.5)
 ## ----custom--------------------------------------------------------------
 plot(Murder ~ Income, data = states, pch = "R", cex = 2.5)
 
+## ----colour_spec, eval=FALSE---------------------------------------------
+## plot(Murder ~ Income, data = states, col = "red")
+## plot(Murder ~ Income, data = states, col = "#ff0000")
+## plot(Murder ~ Income, data = states, col = 2)
+
+## ----colour, echo=FALSE--------------------------------------------------
+plot(Murder ~ Income, data = states, col = "red")
+
 ## ----titles--------------------------------------------------------------
 plot(Murder ~ Income, data = states, pch = 16, col = "blue",
   cex = 2.5, main = "Murder vs Income", sub="USA (1976)",
@@ -90,43 +98,31 @@ plot(Life.Exp ~ Illiteracy, data = states, type = "n")
 abline(h = mean(states$Life.Exp), v = mean(states$Illiteracy),
   col = "gray80", lwd = 2)
 abline(lsfit(states$Illiteracy, states$Life.Exp), col = "red", lwd = 2)
-lines(lowess(states$Illiteracy, states$Life.Exp), col = "green3", lwd = 3)
 points(Life.Exp ~ Illiteracy, data = states, pch = 16, col = "darkblue")
 grid()
 
 ## ----legend--------------------------------------------------------------
-myCol = as.character(factor(states$states.region.abb,
+myCol <- as.character(factor(states$states.region.abb,
   labels = rainbow(4, start = 0.3, end = 0.8)))
-myCex = 4*states$Income/max(states$Income)
+myCex <- 4*states$Income/max(states$Income)
 plot(Murder ~ Illiteracy, data = states, type = "n") 
 grid(col = "gray80", lwd = 1, lty = 3)
 abline(reg = lsfit(states$Illiteracy, states$Murder),
   col = "red", lwd = 2)
-lines(lowess(states$Illiteracy, states$Murder),
-  col = "blue", lwd = 3)
 points(Murder ~ Illiteracy, data = states, pch = 16,
   cex = myCex, col = myCol)
-legend(x = "topleft", legend = levels(states$states.region.abb),
+legend(x = "bottomright", legend = levels(states$states.region.abb),
   col = rainbow(4, start = 0.3, end = 0.8), pch = 16, ncol = 4,
   title = "State Region", inset = c(0.02, 0.02), bg = "white")
-legend(x = "bottomright", legend = c("Linear Regression", "Lowess"),
-  col = c("red", "blue"), ncol = 1, lty = 1, lwd = 3,
-  inset = c(0.01, 0.02), bg = "white")
 
-## ----title0, eval=FALSE--------------------------------------------------
-## title(main = "Murder vs Illiteracy \n Usa (1974)", cex = 1.2)
-## title(sub = "Bouble size proportional to Income level", cex = 1)
-
-## ----title, echo=F, fig=TRUE---------------------------------------------
-myCol = as.character(factor(states$states.region.abb, labels = rainbow(4, start = 0.3, end = 0.8)))
-myCex = 4*states$Income/max(states$Income)
+## ----title---------------------------------------------------------------
+myCol <- as.character(factor(states$states.region.abb, labels = rainbow(4, start = 0.3, end = 0.8)))
+myCex <- 4*states$Income/max(states$Income)
 plot(Murder ~ Illiteracy, data = states, type = "n") 
 grid(col = "gray80", lwd = 1, lty = 3)
 abline(reg = lsfit(states$Illiteracy, states$Murder), col = "red", lwd = 2)
-lines(lowess(states$Illiteracy, states$Murder), col = "blue", lwd = 3)
 points(Murder ~ Illiteracy, data = states, pch = 16, cex = myCex, col = myCol)
-legend(x = "topleft", legend = levels(states$states.region.abb), col = rainbow(4, start = 0.3, end = 0.8), pch = 16, ncol = 4, title = "State Region", inset = c(0.02, 0.02), bg = "white")
-legend(x = "bottomright", legend = c("Linear Regression", "Lowess"), col = c("red", "blue"), ncol = 1, lty = 1, lwd = 3, inset = c(0.01, 0.02), bg = "white")
+legend(x = "bottomright", legend = levels(states$states.region.abb), col = rainbow(4, start = 0.3, end = 0.8), pch = 16, ncol = 4, title = "State Region", inset = c(0.02, 0.02), bg = "white")
 title(main = "Murder vs Illiteracy \n Usa (1974)", cex = 1.2)
 title(sub = "Bouble size proportional to Income level", cex = 1)
 

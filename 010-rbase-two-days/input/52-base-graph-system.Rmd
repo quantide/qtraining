@@ -1,5 +1,5 @@
 ---
-title: "Introduction to the standard R graphics system"
+title: "Introduction to standard R graphics system"
 output:
   html_document
 ---
@@ -20,26 +20,14 @@ require(qdata)
 
 ## The Graphic Environment
 
-R comes with a wide variety of graphical functions. The R default graphics package provide standard R graphics. 
-
-<!--
-Additional libraries such as `lattice` provide specialized and often very attractive graphics. 
--->
-
-This chapter is about classical R graphics. 
-
-<!--
-Introductory examples of `lattice` graphics will be provided at the end of this chapter. 
--->
+R comes with a wide variety of graphical functions. The R default `graphics` package provide standard R graphics. This chapter is about classical R graphics. 
 
 The graphical functions in the base R system, can be divided into two groups:
 
- - High level plot functions. These functions produce "complete" graphics and will erase existing plots if not specified otherwise.
- - Low level plot functions. These functions are used to add graphical objects like lines, points and texts to existing plots.
+ - **High level plot functions**. These functions produce "complete" graphics and will erase existing plots if not specified otherwise.
+ - **Low level plot functions**. These functions are used to add graphical objects like lines, points and texts to existing plots.
 
-Generally, high level graphic functions are named according to the corresponding graphics. Simple examples are: `barplot()`, `boxplot()`, `pie()`. 
-
-A special case is the `plot()` function. This function is a generic function and perform differently according to its arguments or, more precisely, according to the class of the objects passed as arguments.
+Generally, high level graphic functions are named according to the corresponding graphics. Simple examples are: `barplot()`, `boxplot()`, `pie()`. A special case is the `plot()` function. This function is a generic function and perform differently according to its arguments or, more precisely, according to the class of the objects passed as arguments.
 
 As a results:
 
@@ -97,7 +85,8 @@ plot(x, y, type = "n", xlab = "", ylab = "", main="type = n")
 
 
 ### Symbols
-During the creation of the plot, the shape, the dimensions and the colour of the symbols can be customized with the pch, cex and col parameters respectively. An example of the implementation of these parameters inside `plot()` and the output graph are shown below.
+
+During the creation of the plot, the shape and the dimensions of the symbols can be customized with the `pch` and `cex` parameters respectively. An example of the implementation of these parameters inside `plot()` and the output graph are shown below.
 
 ```{r symbols}
 plot(Murder ~ Income, data = states, pch = 16, cex = 2.5)
@@ -148,9 +137,22 @@ In R the `col` parameter manages the colours of the symbols inside the plots. `c
     ![](./images/graphics-A-col2.png)
  4. Specification of the colour in the hexadecimal format: \#000000, \#ffffff ecc.
 
+The following three lines of code produce the same result:
+
+```{r colour_spec, eval=FALSE}
+plot(Murder ~ Income, data = states, col = "red")
+plot(Murder ~ Income, data = states, col = "#ff0000")
+plot(Murder ~ Income, data = states, col = 2)
+```
+
+```{r colour, echo=FALSE}
+plot(Murder ~ Income, data = states, col = "red")
+```
+
 
 ### Titles
-The main parameter of the `plot()` function enables the definition of the main title of the plot. This title will be displayed in the top centre of the plot. The sub parameter creates a subtitle which is displayed in the bottom centre of the plot. A title on two or more rows can be defined by inserting the special character "`\n`" in the title string.  Finally, the `xlab` and `ylab` parameters change the titles of the x and y axes respectively.
+
+The `main` parameter of the `plot()` function enables the definition of the main title of the plot. This title will be displayed in the top centre of the plot. The sub parameter creates a subtitle which is displayed in the bottom centre of the plot. A title on two or more rows can be defined by inserting the special character "`\n`" in the title string.  Finally, the `xlab` and `ylab` parameters change the titles of the x and y axes respectively.
 
 ```{r titles}
 plot(Murder ~ Income, data = states, pch = 16, col = "blue",
@@ -161,6 +163,7 @@ plot(Murder ~ Income, data = states, pch = 16, col = "blue",
 
 
 ### Axes
+
 The `xlim` parameter sets a range for the x-axis. The `ylim` parameter sets a range for the y-axis. 
 ```{r axes}
 plot(Murder ~ Income, data = states, pch = 16, col = "blue",
@@ -171,23 +174,6 @@ plot(Murder ~ Income, data = states, pch = 16, col = "blue",
 ```
 
 
-<!--
-The axes can be set on a logarithmic scale with the `log` parameter. In particular, `log = "x"` and `log = "y"` set the x and y axes on a logarithmic base respectively.  Use `log = "xy"` if both axes are to be logarithmic.
-In the Figure above the y-axis of the graph on the left is in natural scale, whereas the plot on the right shows a y-axis on a logarithmic scale. The graph on the right is generated by: 
-
-```{r logaxes0, eval=FALSE, purl=FALSE}
-plot(Murder ~ Income, data = states, pch = 16, cex = 2, 
-  col ="lightseagreen", ylab = "Illiteracy (log scale)", log = "y")
-```
-
-```{r logaxes, echo=F, fig=TRUE, purl=FALSE}
-op <- par(mfrow = c(1, 2))
-plot(Murder ~ Income, data = states, pch = 16, cex = 2, col ="lightseagreen", ylab = "Illiteracy")
-plot(Murder ~ Income, data = states, pch = 16, cex = 2, col ="lightseagreen", ylab = "Illiteracy (log scale)", log = "y")
-par(op)
-```
-
--->
 
 ## Low-level Functions
 
@@ -211,7 +197,7 @@ text(Illiteracy ~ Murder, data = states,
 
 If the instructions in code above are analysed, it becomes clear that the `type = "n"` parameter creates an empty plot, but later on the `text()` function adds the text of the `states.region.abb` variable according to the coordinates provided by the `Murder` and `Illiteracy` variables. Some parameters of the `text()` function have been used to customise the output text. The `ylim` parameter defines the colour, whereas the `cex` parameter manages the size of the text. The `text()` function inserts generic text inside the plot. The coordinates defined in the `text()` function might have no links with those defined in the `plot()` function. An example is provided below.
 
-In the Code below one of the arguments of the `text()` function is the `adj` parameter. The attribute of the `adj` parameter is a vector with two elements comprised between zero and one. These values indicate the horizontal and vertical alignment of the text (specified by `labels`) with its x and y coordinates.  Some examples of alignment are reported below:
+In the code below one of the arguments of the `text()` function is the `adj` parameter. The attribute of the `adj` parameter is a vector with two elements comprised between zero and one. These values indicate the horizontal and vertical alignment of the text (specified by `labels`) with its x and y coordinates.  Some examples of alignment are reported below:
 
  - `adj = c(0,0)` indicates an alignment on the bottom left. 
  - `adj = c(0.5,0.5)` indicates a central position compared with the x and y axes.
@@ -271,19 +257,18 @@ The `lty`, `lwd` and `col` parameters determine the line type, width and colour 
 
 ![](./images/graphics-A-lines.png)
 
-The following Code contains an example of the use of the `lines()` and `ablines()` functions.
+The following code contains an example of the use of the `lines()` and `ablines()` functions.
 
 ```{r lines}
 plot(Life.Exp ~ Illiteracy, data = states, type = "n")
 abline(h = mean(states$Life.Exp), v = mean(states$Illiteracy),
   col = "gray80", lwd = 2)
 abline(lsfit(states$Illiteracy, states$Life.Exp), col = "red", lwd = 2)
-lines(lowess(states$Illiteracy, states$Life.Exp), col = "green3", lwd = 3)
 points(Life.Exp ~ Illiteracy, data = states, pch = 16, col = "darkblue")
 grid()
 ```
 
-In the example, the abline function is firstly used to express the `h` and `v` parameters. In the second use of the function the `lsfit` argument has been specified. The `lines()` function has drawn the local regression line. The `abline()` function does not accept an object produced by the `lowess()` function. This happens because a coefficients method does not exist for this model. By default, the `grid()` function draws a grid which aligns with the tick marks on the axes. A smaller or larger grid can be obtained specifying the `nx` and `ny` parameters which determine the number of vertical and horizontal lines respectively. The grid can be better controlled with the explicit use of `abline()`. The `points()` function has been used at the end of the code to prevent points from being hidden by a line drawn in the plot.
+In the example, the `abline()` function is used to express the `h` and `v` parameters. In the second use of the function the `lsfit` argument has been specified. By default, the `grid()` function draws a grid which aligns with the tick marks on the axes. A smaller or larger grid can be obtained specifying the `nx` and `ny` parameters which determine the number of vertical and horizontal lines respectively. The grid can be better controlled with the explicit use of `abline()`. The `points()` function has been used at the end of the code to prevent points from being hidden by a line drawn in the plot.
 
 
 ### Legend
@@ -294,7 +279,8 @@ When symbols with different colours, dimensions and shapes are used in a plot, a
 ----------- | ----------- | -----------
 `"topleft"` | `"top"` | `"topright"` 
 `"left"` | `"center"` | `"right"`
-`"bottomleft"`| `"bottom"` | `"bottomright"`
+`"bottomleft"`| `"bottom"` | `"bottomright"`  
+
 
 
 
@@ -302,27 +288,23 @@ The `inset` parameter, as a fraction of the plot region, defines the distance of
 The `title` parameter inserts a title for the legend. As it can be seen, there are no limits as to how many legends can be inserted in a plot. 
 
 ```{r legend}
-myCol = as.character(factor(states$states.region.abb,
+myCol <- as.character(factor(states$states.region.abb,
   labels = rainbow(4, start = 0.3, end = 0.8)))
-myCex = 4*states$Income/max(states$Income)
+myCex <- 4*states$Income/max(states$Income)
 plot(Murder ~ Illiteracy, data = states, type = "n") 
 grid(col = "gray80", lwd = 1, lty = 3)
 abline(reg = lsfit(states$Illiteracy, states$Murder),
   col = "red", lwd = 2)
-lines(lowess(states$Illiteracy, states$Murder),
-  col = "blue", lwd = 3)
 points(Murder ~ Illiteracy, data = states, pch = 16,
   cex = myCex, col = myCol)
-legend(x = "topleft", legend = levels(states$states.region.abb),
+legend(x = "bottomright", legend = levels(states$states.region.abb),
   col = rainbow(4, start = 0.3, end = 0.8), pch = 16, ncol = 4,
   title = "State Region", inset = c(0.02, 0.02), bg = "white")
-legend(x = "bottomright", legend = c("Linear Regression", "Lowess"),
-  col = c("red", "blue"), ncol = 1, lty = 1, lwd = 3,
-  inset = c(0.01, 0.02), bg = "white")
 ```
 
 
 ### Titles
+
 `title()` is a low-level function which inserts the title in a plot. There are four different positions for a title in a graph:  
 
  1. top-centre
@@ -332,22 +314,14 @@ legend(x = "bottomright", legend = c("Linear Regression", "Lowess"),
 
 If the `outer` parameter is set on `TRUE`, the title will be placed in the outer margin of the plot. The `cex` parameter controls the size of the title. The function is usually used to define main titles, whereas axes labels are managed with the `xlab` and `ylab` parameters of the `plot()` function or the `label` parameter of the `axis()` function. The "`\n`" symbol inside the string of the main title splits the title over two lines.
 
-```{r title0, eval=FALSE}
-title(main = "Murder vs Illiteracy \n Usa (1974)", cex = 1.2)
-title(sub = "Bouble size proportional to Income level", cex = 1)
-```
-
-
-```{r title, echo=F, fig=TRUE}
-myCol = as.character(factor(states$states.region.abb, labels = rainbow(4, start = 0.3, end = 0.8)))
-myCex = 4*states$Income/max(states$Income)
+```{r title}
+myCol <- as.character(factor(states$states.region.abb, labels = rainbow(4, start = 0.3, end = 0.8)))
+myCex <- 4*states$Income/max(states$Income)
 plot(Murder ~ Illiteracy, data = states, type = "n") 
 grid(col = "gray80", lwd = 1, lty = 3)
 abline(reg = lsfit(states$Illiteracy, states$Murder), col = "red", lwd = 2)
-lines(lowess(states$Illiteracy, states$Murder), col = "blue", lwd = 3)
 points(Murder ~ Illiteracy, data = states, pch = 16, cex = myCex, col = myCol)
-legend(x = "topleft", legend = levels(states$states.region.abb), col = rainbow(4, start = 0.3, end = 0.8), pch = 16, ncol = 4, title = "State Region", inset = c(0.02, 0.02), bg = "white")
-legend(x = "bottomright", legend = c("Linear Regression", "Lowess"), col = c("red", "blue"), ncol = 1, lty = 1, lwd = 3, inset = c(0.01, 0.02), bg = "white")
+legend(x = "bottomright", legend = levels(states$states.region.abb), col = rainbow(4, start = 0.3, end = 0.8), pch = 16, ncol = 4, title = "State Region", inset = c(0.02, 0.02), bg = "white")
 title(main = "Murder vs Illiteracy \n Usa (1974)", cex = 1.2)
 title(sub = "Bouble size proportional to Income level", cex = 1)
 ```
