@@ -6,7 +6,7 @@ A First Look to R Session			| 13-firstlook.Rmd
 R Objects
 Introduction					| 21-introduction.Rmd
 Data Objects					| 22-data-obj.Rmd
-Function Object					| 23-functions-obj.Rmd
+Function Objects					| 23-functions-obj.Rmd
 
 Data Import and Export
 Introduction					| 31-introduction.Rmd
@@ -21,9 +21,10 @@ Verb Functions					| 42-dplyr-verbs.Rmd
 Group Data and Chain Verbs          		| 43-group-chain.Rmd
 
 Data Visualization 
-Standard R graphics system                      | 51-base-graph-system.Rmd
-ggplot2 grammar of graphics		        | 52-ggplot.Rmd
-Managing and exporting graphs                   | 53-presenting.Rmd 
+Introduction					| 51-data-visualization-intro.Rmd
+Standard R graphics system                      | 52-base-graph-system.Rmd
+ggplot2 grammar of graphics		        | 53-ggplot.Rmd
+Managing and exporting graphs                   | 54-presenting.Rmd 
 
 Data Analysis
 Statistical Models with R			| 61-statmodels.Rmd
