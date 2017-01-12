@@ -36,9 +36,7 @@ install.packages("rmarkdown")
 
 This is an R Markdown file, a plain text file that has the extension `.Rmd`:
 
-```{r g1, echo=FALSE, purl=FALSE}
-include_graphics("./images/rmd-1.png", dpi=100)
-```
+![<small>R Markdown File</small>](./images/rmd-1.png)
 
 Notice that the file contains three types of content:
 
@@ -185,9 +183,7 @@ render("example.Rmd")
 
 Otherwise, use the "Knit" button in the RStudio IDE to render the file and preview the output with a single click or the keyboard shortcut _Ctrl + Shift + K_.
 
-```{r g2, echo=FALSE, purl=FALSE}
-include_graphics("./images/rmd-3.png", dpi=100)
-```
+![<small>R Markdown Output</small>](./images/rmd-3.png)
 
 R Markdown generates a new file that contains selected text, code, and results from the .Rmd file. The new file can be a finished web page, PDF, MS Word document, slide show, notebook, handout, book, dashboard, package vignette or other format.
 

@@ -14,10 +14,6 @@ include_graphics("images/flow-dtanal.png", dpi=150)
 
 Data Mining is the process to discover interesting, previously unknown and potentially useful information from large amounts of data. It is an interdisciplinary field with contributions from many areas, such as statistics, machine learning, information retrieval, pattern recognition and bioinformatics. Data mining is widely used in many domains, such as retail, finance, telecommunication and social media.
 
-```{r g1, echo=FALSE, purl=FALSE}
-include_graphics("images/DataMining.jpg", dpi=100)
-```
-
 R well supports data mining research and projects, providing lots of packages for data minig techniques.
 
 In this chapter we will analize Neural Networks, which is an advanced data mining method.
@@ -35,9 +31,8 @@ Usually, neural networks are made up by three layers:
 
 Next figure is an example of a feed forward neural network consisting of four inputs, a hidden layer that contains three units and an output layer that contains two outputs. The outputs of nodes in one layer are inputs to the next layer. The inputs to each node are combined using a weighted linear combination. The result is then usually modified by a nonlinear function before being output.
 
-```{r g2, echo=FALSE, purl=FALSE}
-include_graphics("images/nnet.png", dpi=150)
-```
+
+![<small>Feed Forward Neural Network scheme</small>](./images/nnet.png)
 
 The R `nnet` package provides `nnet()` function, which fits a single-hidden-layer neural network to data. 
 

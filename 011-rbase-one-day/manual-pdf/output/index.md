@@ -22,9 +22,13 @@ github-repo: rstudio/bookdown-demo
 \includegraphics[width=3.6in]{images/flow} 
 
 This course offers the basics of R, and get an overview on methods for data import, data manipulation, data visualization and data analysis.  
-You can download the course material here: www.github.com/quantide/your-first-date-with-r/archive/master.zip
 
-\clearpage
+This manual was realized for a free R course which took place on Tuesday 13 December in Milan,
+held by Quantide in partnership with Microsoft. For more info about the event, visit MilanoR blog ([www.milanor.net/blog/my-first-date-with-r-free-live-class-in-milano](http://www.milanor.net/blog/my-first-date-with-r-free-live-class-in-milano/)) or Facebook Page
+([www.facebook.com/MilanoRcommunity](https://www.facebook.com/MilanoRcommunity/?ref=aymt_homepage_panel)).
+
+You can download the course material also here: www.github.com/quantide/your-first-date-with-r/archive/master.zip
+
 
 ## Acknowledgements
 
@@ -43,6 +47,8 @@ However, it would not have been possible without the sharing of knowledge, infor
 I am grateful to Bill Venables and John Chambers for their publications on R that provided solid foundations to my knowledge on this subject. Moreover [Quick R](http://www.statmethods.net/) often provides some useful ready-to-cook recipe.
 
 I would finally like to express my special gratitude to Hadley Wickham for providing and sharing his research on the `R` packages: `dplyr`, `ggplot2` and `readxl`. Without his contribution, a part of this manual would never have been written.
+
+I should like to thank also DataCamp for providing useful R courses for learning data science, from which parts of this manuals are inspired.
 
 I finally express my sincere excuses to all researchers and R enthusiasts I have borrowed any knowledge from without mentioning them. This was not intentional, simply I had not always tracked my sources. If this is the case, please contact me directly and I will be more than happy to include any appropriate reference in this manual.
 

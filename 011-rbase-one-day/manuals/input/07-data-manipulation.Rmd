@@ -42,7 +42,7 @@ In particular:
 `dplyr` pipe operator (`%>%`) allows us to pipe the output from one function to the input of another function. The idea of piping is to read the functions from left to right. It is particularly useful with nested functions (reading from the inside to the outside) or with multiple operations.
 
 <div style="width:350px; height=250px">
-![<small>Source: www.datacamp.com</small>](./images/pipe.png)
+![<small>Source: [www.datacamp.com](https://www.datacamp.com/)</small>](./images/pipe.png)
 </div>
 
 Pipes can work with nearly any functions (`dplyr` and not-`dplyr` functions), let us see an example.

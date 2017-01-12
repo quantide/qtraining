@@ -177,11 +177,17 @@
 \includegraphics[width=3.6in]{images/flow}
 
 This course offers the basics of R, and get an overview on methods for
-data import, data manipulation, data visualization and data analysis.\\
-You can download the course material here:
-www.github.com/quantide/your-first-date-with-r/archive/master.zip
+data import, data manipulation, data visualization and data analysis.
 
-\clearpage
+This manual was realized for a free R course which took place on Tuesday
+13 December in Milan, held by Quantide in partnership with Microsoft.
+For more info about the event, visit MilanoR blog
+(\href{http://www.milanor.net/blog/my-first-date-with-r-free-live-class-in-milano/}{www.milanor.net/blog/my-first-date-with-r-free-live-class-in-milano})
+or Facebook Page
+(\href{https://www.facebook.com/MilanoRcommunity/?ref=aymt_homepage_panel}{www.facebook.com/MilanoRcommunity}).
+
+You can download the course material also here:
+www.github.com/quantide/your-first-date-with-r/archive/master.zip
 
 \section{Acknowledgements}\label{acknowledgements}
 
@@ -215,6 +221,9 @@ I would finally like to express my special gratitude to Hadley Wickham
 for providing and sharing his research on the \texttt{R} packages:
 \texttt{dplyr}, \texttt{ggplot2} and \texttt{readxl}. Without his
 contribution, a part of this manual would never have been written.
+
+I should like to thank also DataCamp for providing useful R courses for
+learning data science, from which parts of this manuals are inspired.
 
 I finally express my sincere excuses to all researchers and R
 enthusiasts I have borrowed any knowledge from without mentioning them.
@@ -3755,12 +3764,19 @@ Neural Network model estimate on train sample:
 
 \begin{verbatim}
 ## # weights:  16
-## initial  value 1053.557073 
-## iter  10 value 970.307573
-## iter  20 value 968.607565
-## iter  30 value 968.426416
-## final  value 968.426227 
-## converged
+## initial  value 1051.701750 
+## iter  10 value 927.188365
+## iter  20 value 806.971545
+## iter  30 value 780.831792
+## iter  40 value 775.128387
+## iter  50 value 773.093933
+## iter  60 value 769.094503
+## iter  70 value 768.965385
+## iter  80 value 768.903016
+## iter  90 value 768.886336
+## iter 100 value 768.863849
+## final  value 768.863849 
+## stopped after 100 iterations
 \end{verbatim}
 
 The predictions on test sample can be gained using \texttt{predict()}
@@ -3775,12 +3791,12 @@ function:
 
 \begin{verbatim}
 ##        [,1]
-## 1 0.3248698
-## 2 0.3248698
-## 3 0.3248698
-## 4 0.3248698
-## 5 0.3248698
-## 6 0.3248698
+## 1 0.5850612
+## 2 0.5850612
+## 3 0.5850612
+## 4 0.5850612
+## 5 0.5850612
+## 6 0.5892288
 \end{verbatim}
 
 The predictions included the probability of survive in the Titanic wreck
@@ -3806,13 +3822,15 @@ Let us see how the performance of the fitted model on the test sample:
 \end{Shaded}
 
 \begin{verbatim}
-## Source: local data frame [2 x 4]
+## Source: local data frame [4 x 4]
 ## Groups: Status [2]
 ## 
-##     Status pr_mod     n  freq
-##     <fctr>  <lgl> <int> <chr>
-## 1     Died   TRUE   503 100 %
-## 2 Survived   TRUE   157 100 %
+##     Status pr_mod     n    freq
+##     <fctr>  <lgl> <int>   <chr>
+## 1     Died  FALSE    81  16.1 %
+## 2     Died   TRUE   422  83.9 %
+## 3 Survived  FALSE    69 43.95 %
+## 4 Survived   TRUE    88 56.05 %
 \end{verbatim}
 
 We conclude that the model has quite good performance in the prediction

@@ -74,7 +74,7 @@ R is provided with a Command Line Interface (CLI), which is the preferred user i
 
 R is available for many different operative systems so it does not provide the same graphical interface. When you use the R program interactively, it issues a prompt when it expects input commands. The default prompt is '>'. In Windows, RGui is the default GUI. Inside RGui there is the RConsole window. In Macintosh, RConsole is the default GUI. In Linux, R does not provide any graphical interface by default and it can be used through CLI.
 
-![](images/ssDefaultGui.png)
+![<small>R Default Interfaces</small>](images/ssDefaultGui.png)
 
 
 ### RStudio 
@@ -87,7 +87,7 @@ R is available for many different operative systems so it does not provide the s
  - Sweave authoring including one-click PDF preview;
  - searchable command history.
 
-![](images/ssGuiRstudio.png)
+![<small>Screenshot of an RStudio session</small>](images/ssGuiRstudio.png)
 
 ### Installing RStudio
 
@@ -102,7 +102,7 @@ R functions are collected in packages. Packages that are not contained in the "b
 
 This is the R package universe!
 
-![](./images/r-packages-universe.png)
+![<small>R packages universe</small>](./images/r-packages-universe.png)
 
 
 The simple way to install an R package is through the `install.packages()` function, directly from R. In Linux, R must be executed as administrator to install a package. Installation must be executed before the first use of a library.
