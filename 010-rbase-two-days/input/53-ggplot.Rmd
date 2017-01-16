@@ -1,5 +1,5 @@
 ---
-title: "Data Visualization with R"
+title: "Introduction to the ggplot2 Grammar of Graphics"
 ---
 
 ```{r setup, include=FALSE, purl=FALSE, message=FALSE}

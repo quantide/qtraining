@@ -10,7 +10,7 @@ options(width = 108)
 
 The structures of data objects are represented in the following figure:
 
-![](./images/dataStructure.png)
+![<small>Source: www.venus.ifca.unican.es/Rintro/dataStruct.html</small>](./images/dataStructure.png)
 
 ## Vectors
 

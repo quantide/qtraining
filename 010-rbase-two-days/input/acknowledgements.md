@@ -17,6 +17,8 @@ I am grateful to Bill Venables and John Chambers for their publications on R tha
 
 I would finally like to express my special gratitude to Hadley Wickham for providing and sharing his research on the `R` packages: `dplyr` and `ggplot2`. Without his contribution, a part of this manual would never have been written.
 
+I should like to thank also DataCamp for providing useful R courses for learning data science, from which parts of this manuals are inspired.
+
 I finally express my sincere excuses to all researchers and R enthusiasts I have borrowed any knowledge from without mentioning them. This was not intentional, simply I had not always tracked my sources. If this is the case, please contact me directly and I will be more than happy to include any appropriate reference in this manual.
 
 Andrea Spanò,  

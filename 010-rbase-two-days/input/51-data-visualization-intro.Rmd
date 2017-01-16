@@ -14,4 +14,6 @@ In the following chapters we will explore the tools provided by R for data visua
 
 * Standard R graphics system
 * `ggplot2` grammar of graphics
-* Managing and exporting graphics
+
+We will cover also some issues on managing and exporting graphics.
+
