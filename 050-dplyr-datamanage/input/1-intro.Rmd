@@ -1,5 +1,5 @@
 ---
-title: "Data Management with `dplyr` and `tidyr`"
+title: "Data Manipulation with `dplyr` and `tidyr`"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
