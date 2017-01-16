@@ -379,7 +379,7 @@ arrange(bank, date, age)</code></pre>
 ## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>Use <code>desc()</code> to order a column in descending order:</p>
 <pre class="r"><code># Order `bank` data frame by age in descending order
-arrange(bank, desc(age))</code></pre>
+bank %&gt;% arrange(desc(age))</code></pre>
 <pre><code>## # A tibble: 45,211 × 20
 ##       id   age     job  marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;

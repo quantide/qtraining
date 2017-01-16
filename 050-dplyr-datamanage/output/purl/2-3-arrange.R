@@ -9,7 +9,7 @@ arrange(bank, date, age)
 
 ## ------------------------------------------------------------------------
 # Order `bank` data frame by age in descending order
-arrange(bank, desc(age))
+bank %>% arrange(desc(age))
 
 ## ------------------------------------------------------------------------
 bank[order(bank$date, bank$age), ]

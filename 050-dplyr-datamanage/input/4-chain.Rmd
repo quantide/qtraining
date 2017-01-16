@@ -13,9 +13,9 @@ data(bank)
 ```
 
 
-# Chain Together Multiple Operations: the `%>%` Operator
+# Chain Together Multiple Operations
 
-The `dplyr` API is functional in the sense that function calls don’t have side-effects, and you must always save their results. This doesn’t lead to particularly elegant code if you want to do many operations at once. You either have to do it step-by-step:
+The `dplyr` API (Application Program Interface) is functional in the sense that function calls don't have side-effects, and you must always save their results. This doesn't lead to particularly elegant code if you want to do many operations at once. You either have to do it step-by-step:
 
 ```{r}
 a1 <- group_by(bank, date)
@@ -42,7 +42,7 @@ filter(
 )
 ```
 
-This is difficult to read because the order of the operations is from inside to out, and the arguments are a long way away from the function. To get around this problem, `dplyr` provides the `%>%` operator. `x %>% f(y)` turns into `f(x, y)` so you can use it to rewrite multiple operations so you can read from left-to-right, top-to-bottom:
+This is difficult to read because the order of the operations is from inside to out, and the arguments are a long way away from the function. To get around this problem, use the `%>%` operator.
 
 ```{r}
 bank %>%

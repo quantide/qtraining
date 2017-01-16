@@ -24,48 +24,48 @@ bank %>%
   mutate(balance_by_age = balance / age, year_of_birth = year - age)
 
 ## ------------------------------------------------------------------------
-mutate(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
+bank %>% mutate( year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 
 ## ---- error=TRUE---------------------------------------------------------
-transform(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
+bank %>% transform(year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 
 ## ------------------------------------------------------------------------
 transmute(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
 
 ## ------------------------------------------------------------------------
 time <- select(bank, duration)
-mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - duration)
+time %>% mutate(lead_duration = lead(duration), delta_duration = lead_duration - duration)
 
 ## ------------------------------------------------------------------------
-mutate(time, lag_duration = lag(duration), delta_duration = duration - lag_duration)
+time %>% mutate(lag_duration = lag(duration), delta_duration = duration - lag_duration)
 
 ## ------------------------------------------------------------------------
-mutate(time, duration_rank = min_rank(duration))
+time %>% mutate(duration_rank = min_rank(duration))
 
 ## ------------------------------------------------------------------------
-mutate(time, duration_rank = dense_rank(duration))
+time %>% mutate(duration_rank = dense_rank(duration))
 
 ## ------------------------------------------------------------------------
-mutate(time, duration_rank = percent_rank(duration))
+time %>% mutate(duration_rank = percent_rank(duration))
 
 ## ------------------------------------------------------------------------
-mutate(time, duration_rank = row_number(duration))
+time %>% mutate(duration_rank = row_number(duration))
 
 ## ------------------------------------------------------------------------
-mutate(time, duration_rank = ntile(duration, 10))
+time %>% mutate(duration_rank = ntile(duration, 10))
 
 ## ------------------------------------------------------------------------
-mutate(time, duration_rank = cume_dist(duration))
+time %>% mutate(duration_rank = cume_dist(duration))
 
 ## ------------------------------------------------------------------------
-mutate(time, duration_rank = between(duration, 0, 90))
+time %>% mutate(duration_rank = between(duration, 0, 90))
 
 ## ------------------------------------------------------------------------
-mutate(time, long_duration = cumall(duration > 100))
+time %>% mutate(long_duration = cumall(duration > 100))
 
 ## ------------------------------------------------------------------------
-mutate(time, short_duration = cumany(duration < 100))
+time %>% mutate(short_duration = cumany(duration < 100))
 
 ## ------------------------------------------------------------------------
-mutate(time, mean_duration = cummean(duration))
+time %>% mutate(mean_duration = cummean(duration))
 

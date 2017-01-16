@@ -346,16 +346,16 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#chain-together-multiple-operations-the-operator">Chain Together Multiple Operations: the <code>%&gt;%</code> Operator</a></li>
+<li><a href="#chain-together-multiple-operations">Chain Together Multiple Operations</a></li>
 </ul>
 </div>
 
 <pre class="r"><code>require(dplyr)
 require(qdata)
 data(bank)</code></pre>
-<div id="chain-together-multiple-operations-the-operator" class="section level1">
-<h1>Chain Together Multiple Operations: the <code>%&gt;%</code> Operator</h1>
-<p>The <code>dplyr</code> API is functional in the sense that function calls don’t have side-effects, and you must always save their results. This doesn’t lead to particularly elegant code if you want to do many operations at once. You either have to do it step-by-step:</p>
+<div id="chain-together-multiple-operations" class="section level1">
+<h1>Chain Together Multiple Operations</h1>
+<p>The <code>dplyr</code> API (Application Program Interface) is functional in the sense that function calls don’t have side-effects, and you must always save their results. This doesn’t lead to particularly elegant code if you want to do many operations at once. You either have to do it step-by-step:</p>
 <pre class="r"><code>a1 &lt;- group_by(bank, date)
 a2 &lt;- select(a1, age, balance)</code></pre>
 <pre><code>## Adding missing grouping variables: `date`</code></pre>
@@ -392,7 +392,7 @@ a2 &lt;- select(a1, age, balance)</code></pre>
 ## 3 2009-03-20   28.000      5916.00
 ## 4 2009-10-02   39.875      5088.00
 ## 5 2009-12-31   32.000     14533.00</code></pre>
-<p>This is difficult to read because the order of the operations is from inside to out, and the arguments are a long way away from the function. To get around this problem, <code>dplyr</code> provides the <code>%&gt;%</code> operator. <code>x %&gt;% f(y)</code> turns into <code>f(x, y)</code> so you can use it to rewrite multiple operations so you can read from left-to-right, top-to-bottom:</p>
+<p>This is difficult to read because the order of the operations is from inside to out, and the arguments are a long way away from the function. To get around this problem, use the <code>%&gt;%</code> operator.</p>
 <pre class="r"><code>bank %&gt;%
   group_by(date) %&gt;%
   select(age, balance) %&gt;%

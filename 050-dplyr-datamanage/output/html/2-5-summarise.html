@@ -365,7 +365,7 @@ summarise(bank, mean_balance = mean(balance, na.rm = TRUE))</code></pre>
 ##          &lt;dbl&gt;
 ## 1     1362.272</code></pre>
 <pre class="r"><code># Compute the minimum and the maximum value of balance of bank data frame
-summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))</code></pre>
+bank %&gt;% summarise(max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))</code></pre>
 <pre><code>## # A tibble: 1 × 2
 ##   max_balance min_balance
 ##         &lt;int&gt;       &lt;int&gt;
@@ -375,7 +375,7 @@ summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(bala
 <ul>
 <li><code>first</code> returns the first value of a vector:</li>
 </ul>
-<pre class="r"><code>summarise(bank, first(job))</code></pre>
+<pre class="r"><code>bank %&gt;% summarise(first(job))</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   `first(job)`
 ##         &lt;fctr&gt;
@@ -383,7 +383,7 @@ summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(bala
 <ul>
 <li><code>last</code> returns the last value of a vector:</li>
 </ul>
-<pre class="r"><code>summarise(bank, last(job)) </code></pre>
+<pre class="r"><code>bank %&gt;% summarise(last(job)) </code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##    `last(job)`
 ##         &lt;fctr&gt;
@@ -391,7 +391,7 @@ summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(bala
 <ul>
 <li><code>nth</code> returns the nth value of a vector:</li>
 </ul>
-<pre class="r"><code>summarise(bank, nth(job, 8))</code></pre>
+<pre class="r"><code>bank %&gt;% summarise(nth(job, 8))</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   `nth(job, 8)`
 ##          &lt;fctr&gt;
@@ -399,7 +399,7 @@ summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(bala
 <ul>
 <li><code>n()</code> returns the number of values in a vector:</li>
 </ul>
-<pre class="r"><code>summarise(bank, n())</code></pre>
+<pre class="r"><code>bank %&gt;% summarise(n())</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   `n()`
 ##   &lt;int&gt;
@@ -407,12 +407,12 @@ summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(bala
 <ul>
 <li><code>n_distinct</code> returns the number of distinct values in a vector:</li>
 </ul>
-<pre class="r"><code>summarise(bank, n_distinct(job))</code></pre>
+<pre class="r"><code>bank %&gt;% summarise(n_distinct(job))</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   `n_distinct(job)`
 ##               &lt;int&gt;
 ## 1                12</code></pre>
-<pre class="r"><code>summarise(bank, n_distinct(education))</code></pre>
+<pre class="r"><code>bank %&gt;% summarise(n_distinct(education))</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   `n_distinct(education)`
 ##                     &lt;int&gt;

@@ -375,7 +375,7 @@ data(bank)</code></pre>
 ## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>or all calls made on 2008-05-05 to students:</p>
-<pre class="r"><code>filter(bank, job == &quot;student&quot;, as.character(date) == &quot;2008-05-05&quot;)</code></pre>
+<pre class="r"><code>bank %&gt;% filter(job == &quot;student&quot;, as.character(date) == &quot;2008-05-05&quot;)</code></pre>
 <pre><code>## # A tibble: 5 × 20
 ##      id   age     job marital education default balance housing   loan contact   day  month  year
 ##   &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;  &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -386,7 +386,7 @@ data(bank)</code></pre>
 ## 5   298    24 student  single secondary      no      82     yes     no unknown     5    may  2008
 ## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
-<pre class="r"><code>filter(bank, job == &quot;student&quot;, date == ymd(&quot;2008-05-05&quot;))</code></pre>
+<pre class="r"><code>bank %&gt;% filter(job == &quot;student&quot;, date == ymd(&quot;2008-05-05&quot;))</code></pre>
 <pre><code>## # A tibble: 5 × 20
 ##      id   age     job marital education default balance housing   loan contact   day  month  year
 ##   &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;  &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -401,7 +401,7 @@ data(bank)</code></pre>
 <p><code>filter()</code> works similarly to <code>subset()</code> except that you can give it any number of filtering conditions which are joined together with <code>&amp;</code> (not <code>&amp;&amp;</code> which is easy to do accidentally!).</p>
 <p>You can use other boolean operators explicitly:</p>
 <pre class="r"><code># Select all calls made to people of 18 or 95 years
-filter(bank, age == 18 | age == 95)</code></pre>
+bank %&gt;% filter(age == 18 | age == 95)</code></pre>
 <pre><code>## # A tibble: 14 × 20
 ##       id   age     job  marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -423,7 +423,7 @@ filter(bank, age == 18 | age == 95)</code></pre>
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p><code>filter()</code> can be used also with <code>%in%</code> to establish conditions under which filter:</p>
 <pre class="r"><code># Select all calls made to people of 18 or 95 years
-filter(bank, age %in% c(18,95))</code></pre>
+bank %&gt;% filter(age %in% c(18,95))</code></pre>
 <pre><code>## # A tibble: 14 × 20
 ##       id   age     job  marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;  &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -445,7 +445,7 @@ filter(bank, age %in% c(18,95))</code></pre>
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>An other example is:</p>
 <pre class="r"><code># Select all calls made to people whose job is admin. or technician 
-filter(bank, job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
+bank %&gt;% filter(job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
 <pre><code>## # A tibble: 12,768 × 20
 ##       id   age        job  marital education default balance housing   loan contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;     &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -462,7 +462,7 @@ filter(bank, job %in% c(&quot;admin.&quot;,&quot;technician&quot;))</code></pre>
 ## # ... with 12,758 more rows, and 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;,
 ## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <pre class="r"><code># Select all calls made to people whose job is admin. or technician 
-filter(bank, job == &quot;admin.&quot; | job == &quot;technician&quot;)</code></pre>
+bank %&gt;% filter(job == &quot;admin.&quot; | job == &quot;technician&quot;)</code></pre>
 <pre><code>## # A tibble: 12,768 × 20
 ##       id   age        job  marital education default balance housing   loan contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;     &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -496,7 +496,7 @@ filter(bank, job == &quot;admin.&quot; | job == &quot;technician&quot;)</code></
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>Or the last row by:</p>
 <pre class="r"><code># select last row of the dataset
-slice(bank, n()) </code></pre>
+bank %&gt;% slice(n()) </code></pre>
 <pre><code>## # A tibble: 1 × 20
 ##      id   age          job marital education default balance housing   loan  contact   day  month  year
 ##   &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;  &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;   &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;

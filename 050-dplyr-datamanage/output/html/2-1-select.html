@@ -382,7 +382,7 @@ select(bank, year, month, day)</code></pre>
 ## 10  2008    may     5
 ## # ... with 45,201 more rows</code></pre>
 <pre class="r"><code># Select columns: year, month and day of bank data frame
-select(bank, year:day)</code></pre>
+bank %&gt;% select(year:day)</code></pre>
 <pre><code>## # A tibble: 45,211 × 3
 ##     year  month   day
 ##    &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -398,7 +398,7 @@ select(bank, year:day)</code></pre>
 ## 10  2008    may     5
 ## # ... with 45,201 more rows</code></pre>
 <pre class="r"><code># Select all columns of bank data frame apart from: year, month and day
-select(bank, -(year:day))</code></pre>
+bank %&gt;% select(-(year:day))</code></pre>
 <pre><code>## # A tibble: 45,211 × 17
 ##       id   age          job  marital education default balance housing   loan contact       date duration
 ##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt;     &lt;dttm&gt;    &lt;int&gt;
@@ -417,7 +417,7 @@ select(bank, -(year:day))</code></pre>
 <p>This function works similarly to the select argument to the <code>base::subset()</code>. It has its own function in <code>dplyr</code>, because the <code>dplyr</code> philosophy is to have small functions that each do one thing well.</p>
 <p>You can rename variables with <code>select()</code> by using named arguments:</p>
 <pre class="r"><code># Rename id variable as ID
-select(bank, ID = id)</code></pre>
+bank %&gt;% select(ID = id)</code></pre>
 <pre><code>## # A tibble: 45,211 × 1
 ##       ID
 ##    &lt;int&gt;
@@ -447,7 +447,7 @@ select(bank, ID = id)</code></pre>
 <li><p><code>-x</code> allows you to exclude variable <code>x</code> from the dataset</p></li>
 <li><p><code>contains</code> selects all variables whose name contains “at”:</p></li>
 </ul>
-<pre class="r"><code>select(bank, contains(&quot;at&quot;))</code></pre>
+<pre class="r"><code>bank %&gt;% select(contains(&quot;at&quot;))</code></pre>
 <pre><code>## # A tibble: 45,211 × 3
 ##    education       date duration
 ##       &lt;fctr&gt;     &lt;dttm&gt;    &lt;int&gt;
@@ -465,7 +465,7 @@ select(bank, ID = id)</code></pre>
 <ul>
 <li><code>ends_with</code> selects all variables whose name ends in “tion”:</li>
 </ul>
-<pre class="r"><code>select(bank, ends_with(&quot;tion&quot;))</code></pre>
+<pre class="r"><code>bank %&gt;% select(ends_with(&quot;tion&quot;))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    education duration
 ##       &lt;fctr&gt;    &lt;int&gt;
@@ -483,7 +483,7 @@ select(bank, ID = id)</code></pre>
 <ul>
 <li><code>starts_with</code> selects all variables whose name starts with “d”:</li>
 </ul>
-<pre class="r"><code>select(bank, starts_with(&quot;d&quot;))</code></pre>
+<pre class="r"><code>bank %&gt;% select(starts_with(&quot;d&quot;))</code></pre>
 <pre><code>## # A tibble: 45,211 × 4
 ##    default   day       date duration
 ##     &lt;fctr&gt; &lt;int&gt;     &lt;dttm&gt;    &lt;int&gt;
@@ -501,7 +501,7 @@ select(bank, ID = id)</code></pre>
 <ul>
 <li><code>everything()</code> selects all variables:</li>
 </ul>
-<pre class="r"><code>select(bank, everything())</code></pre>
+<pre class="r"><code>bank %&gt;% select(everything())</code></pre>
 <pre><code>## # A tibble: 45,211 × 20
 ##       id   age          job  marital education default balance housing   loan contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -518,7 +518,7 @@ select(bank, ID = id)</code></pre>
 ## # ... with 45,201 more rows, and 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;,
 ## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <pre class="r"><code># change the order of columns
-select(bank, ends_with(&quot;tion&quot;), everything() ) </code></pre>
+bank %&gt;% select(ends_with(&quot;tion&quot;), everything() ) </code></pre>
 <pre><code>## # A tibble: 45,211 × 20
 ##    education duration    id   age          job  marital default balance housing   loan contact   day  month
 ##       &lt;fctr&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt;
@@ -538,7 +538,7 @@ select(bank, ends_with(&quot;tion&quot;), everything() ) </code></pre>
 <li><code>matches()</code> selects all variables whose name matches the regular expression “.r”:</li>
 </ul>
 <pre class="r"><code># match all variables containing &quot;r&quot;, but not at the first place
-select(bank, matches(&quot;.r&quot;)) </code></pre>
+bank %&gt;% select(matches(&quot;.r&quot;)) </code></pre>
 <pre><code>## # A tibble: 45,211 × 4
 ##     marital  year duration previous
 ##      &lt;fctr&gt; &lt;int&gt;    &lt;int&gt;    &lt;int&gt;
@@ -572,7 +572,7 @@ wimbledon</code></pre>
 ## 9   1976              SWE    Björn Borg               ROU   Ilie Năstase   6–4       6–2   9–7            
 ## 10  1977              SWE    Björn Borg               USA  Jimmy Connors   3–6       6–2   6–1   5–7   6–4
 ## # ... with 38 more rows</code></pre>
-<pre class="r"><code>select(wimbledon, num_range(&quot;s&quot;, c(1:3, 5)))</code></pre>
+<pre class="r"><code>wimbledon %&gt;% select(num_range(&quot;s&quot;, c(1:3, 5)))</code></pre>
 <pre><code>## # A tibble: 48 × 4
 ##       s1        s2    s3    s5
 ##    &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
@@ -590,7 +590,7 @@ wimbledon</code></pre>
 <ul>
 <li><code>one_of</code> selects variables provided in a character vector:</li>
 </ul>
-<pre class="r"><code>select(bank, one_of(c(&quot;marital&quot;,&quot;education&quot;)))</code></pre>
+<pre class="r"><code>bank %&gt;% select(one_of(c(&quot;marital&quot;,&quot;education&quot;)))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##     marital education
 ##      &lt;fctr&gt;    &lt;fctr&gt;
@@ -606,7 +606,7 @@ wimbledon</code></pre>
 ## 10   single secondary
 ## # ... with 45,201 more rows</code></pre>
 <pre class="r"><code>vars &lt;- c(&quot;marital&quot;,&quot;education&quot;)
-select(bank, one_of(vars))</code></pre>
+bank %&gt;% select(one_of(vars))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##     marital education
 ##      &lt;fctr&gt;    &lt;fctr&gt;
@@ -624,7 +624,7 @@ select(bank, one_of(vars))</code></pre>
 <ul>
 <li><code>:</code> allows you to select a subset of variables from <code>job</code> to <code>balance</code>:</li>
 </ul>
-<pre class="r"><code>select(bank, job:balance)</code></pre>
+<pre class="r"><code>bank %&gt;% select(job:balance)</code></pre>
 <pre><code>## # A tibble: 45,211 × 5
 ##             job  marital education default balance
 ##          &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;
@@ -642,7 +642,7 @@ select(bank, one_of(vars))</code></pre>
 <ul>
 <li><code>-</code> allows you to specify which variables exclude from the dataset:</li>
 </ul>
-<pre class="r"><code>select(bank, -job)</code></pre>
+<pre class="r"><code>bank %&gt;% select(-job)</code></pre>
 <pre><code>## # A tibble: 45,211 × 19
 ##       id   age  marital education default balance housing   loan contact   day  month  year       date
 ##    &lt;int&gt; &lt;int&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;     &lt;dttm&gt;
@@ -658,7 +658,7 @@ select(bank, one_of(vars))</code></pre>
 ## 10    10    43   single secondary      no     593     yes     no unknown     5    may  2008 2008-05-05
 ## # ... with 45,201 more rows, and 6 more variables: duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;,
 ## #   previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
-<pre class="r"><code>select(bank, -starts_with(&quot;d&quot;))</code></pre>
+<pre class="r"><code>bank %&gt;% select(-starts_with(&quot;d&quot;))</code></pre>
 <pre><code>## # A tibble: 45,211 × 16
 ##       id   age          job  marital education balance housing   loan contact  month  year campaign pdays
 ##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;fctr&gt; &lt;int&gt;    &lt;int&gt; &lt;int&gt;
@@ -700,7 +700,7 @@ distinct(select(bank, housing, loan))</code></pre>
 <h1><code>rename()</code></h1>
 <p>As seen previously, you can rename the variables using <code>select()</code>, however it drops all the variables not explicitly mentioned so it’s not that useful. Instead, use <code>rename()</code>:</p>
 <pre class="r"><code># Rename id variable as ID
-rename(bank, ID = id)</code></pre>
+bank %&gt;% rename(ID = id)</code></pre>
 <pre><code>## # A tibble: 45,211 × 20
 ##       ID   age          job  marital education default balance housing   loan contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;

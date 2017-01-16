@@ -28,7 +28,7 @@ Use `desc()` to order a column in descending order:
 
 ```{r}
 # Order `bank` data frame by age in descending order
-arrange(bank, desc(age))
+bank %>% arrange(desc(age))
 ```
 
 The previous code is equivalent to:

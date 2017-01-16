@@ -414,7 +414,7 @@ df %&gt;% mutate(x1 = x+1)</code></pre>
 ## 10  2008    43     593    13.79069767          1965
 ## # ... with 45,201 more rows</code></pre>
 <p><code>dplyr::mutate()</code> works similarly to <code>base::transform()</code>. The key difference between <code>mutate()</code> and <code>transform()</code> is that <code>mutate()</code> allows you to refer to columns that you just created:</p>
-<pre class="r"><code>mutate(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)</code></pre>
+<pre class="r"><code>bank %&gt;% mutate( year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)</code></pre>
 <pre><code>## # A tibble: 45,211 × 22
 ##       id   age          job  marital education default balance housing   loan contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
@@ -432,7 +432,7 @@ df %&gt;% mutate(x1 = x+1)</code></pre>
 ## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;, year_of_birth &lt;int&gt;,
 ## #   year_of_birth_no_century &lt;dbl&gt;</code></pre>
 <p>while <code>transform()</code> returns an error:</p>
-<pre class="r"><code>transform(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)</code></pre>
+<pre class="r"><code>bank %&gt;% transform(year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)</code></pre>
 <pre><code>## Error in eval(expr, envir, enclos): object 'year_of_birth' not found</code></pre>
 </div>
 <div id="transmute" class="section level1">
@@ -463,7 +463,7 @@ df %&gt;% mutate(x1 = x+1)</code></pre>
 <li><code>lead</code> copies a vector with values shifted by 1:</li>
 </ul>
 <pre class="r"><code>time &lt;- select(bank, duration)
-mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - duration)</code></pre>
+time %&gt;% mutate(lead_duration = lead(duration), delta_duration = lead_duration - duration)</code></pre>
 <pre><code>## # A tibble: 45,211 × 3
 ##    duration lead_duration delta_duration
 ##       &lt;int&gt;         &lt;int&gt;          &lt;int&gt;
@@ -481,7 +481,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>lag</code> copies a vector with values lagged by 1:</li>
 </ul>
-<pre class="r"><code>mutate(time, lag_duration = lag(duration), delta_duration = duration - lag_duration)</code></pre>
+<pre class="r"><code>time %&gt;% mutate(lag_duration = lag(duration), delta_duration = duration - lag_duration)</code></pre>
 <pre><code>## # A tibble: 45,211 × 3
 ##    duration lag_duration delta_duration
 ##       &lt;int&gt;        &lt;int&gt;          &lt;int&gt;
@@ -501,7 +501,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>min_rank</code> is equivalent to <code>rank(ties.method = &quot;min&quot;)</code> and returns the min rank of each observation:</li>
 </ul>
-<pre class="r"><code>mutate(time, duration_rank = min_rank(duration))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(duration_rank = min_rank(duration))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration duration_rank
 ##       &lt;int&gt;         &lt;int&gt;
@@ -519,7 +519,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>dense_rank</code> is like <code>min_rank</code>, but with no gaps between ranks:</li>
 </ul>
-<pre class="r"><code>mutate(time, duration_rank = dense_rank(duration))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(duration_rank = dense_rank(duration))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration duration_rank
 ##       &lt;int&gt;         &lt;int&gt;
@@ -537,7 +537,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>percent_rank</code> returns a number between 0 and 1 computed by rescaling <code>min_rank</code> to [0, 1]:</li>
 </ul>
-<pre class="r"><code>mutate(time, duration_rank = percent_rank(duration))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(duration_rank = percent_rank(duration))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration duration_rank
 ##       &lt;int&gt;         &lt;dbl&gt;
@@ -555,7 +555,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>row_number</code> is equivalent to <code>rank(ties.method = &quot;first&quot;)</code>, which results in a permutation with increasing values at each index set of ties:</li>
 </ul>
-<pre class="r"><code>mutate(time, duration_rank = row_number(duration))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(duration_rank = row_number(duration))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration duration_rank
 ##       &lt;int&gt;         &lt;int&gt;
@@ -573,7 +573,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>ntile()</code> divides the data up into n evenly sized buckets. It’s a coarse ranking, and it can be used in with <code>mutate()</code> to divide the data into buckets for further <code>summary</code>:</li>
 </ul>
-<pre class="r"><code>mutate(time, duration_rank = ntile(duration, 10))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(duration_rank = ntile(duration, 10))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration duration_rank
 ##       &lt;int&gt;         &lt;int&gt;
@@ -591,7 +591,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>cume_dist</code> is a cumulative distribution function. It creates a proportion of all values less than or equal to the current rank:</li>
 </ul>
-<pre class="r"><code>mutate(time, duration_rank = cume_dist(duration))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(duration_rank = cume_dist(duration))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration duration_rank
 ##       &lt;int&gt;         &lt;dbl&gt;
@@ -609,7 +609,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>between</code> is a shortcut for x &gt;= left &amp; x &lt;= right, implemented efficiently in C++ for local values, and translated to the appropriate SQL for remote tables:</li>
 </ul>
-<pre class="r"><code>mutate(time, duration_rank = between(duration, 0, 90))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(duration_rank = between(duration, 0, 90))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration duration_rank
 ##       &lt;int&gt;         &lt;lgl&gt;
@@ -628,7 +628,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>cumany()</code> and <code>cumall()</code> are useful for selecting all rows up to, or all rows after, a condition is true for the first (or last) time:</li>
 </ul>
-<pre class="r"><code>mutate(time, long_duration = cumall(duration &gt; 100))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(long_duration = cumall(duration &gt; 100))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration long_duration
 ##       &lt;int&gt;         &lt;lgl&gt;
@@ -643,7 +643,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 ## 9        50         FALSE
 ## 10       55         FALSE
 ## # ... with 45,201 more rows</code></pre>
-<pre class="r"><code>mutate(time, short_duration = cumany(duration &lt; 100))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(short_duration = cumany(duration &lt; 100))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration short_duration
 ##       &lt;int&gt;          &lt;lgl&gt;
@@ -661,7 +661,7 @@ mutate(time, lead_duration = lead(duration), delta_duration = lead_duration - du
 <ul>
 <li><code>cummean</code> returns a cumulative mean of a vector:</li>
 </ul>
-<pre class="r"><code>mutate(time, mean_duration = cummean(duration))</code></pre>
+<pre class="r"><code>time %&gt;% mutate(mean_duration = cummean(duration))</code></pre>
 <pre><code>## # A tibble: 45,211 × 2
 ##    duration mean_duration
 ##       &lt;int&gt;         &lt;dbl&gt;

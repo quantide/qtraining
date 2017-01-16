@@ -7,21 +7,21 @@ data(bank)
 # Compute the mean of balance variable of bank data frame
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
 # Compute the minimum and the maximum value of balance of bank data frame
-summarise(bank, max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
+bank %>% summarise(max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
 
 ## ------------------------------------------------------------------------
-summarise(bank, first(job))
+bank %>% summarise(first(job))
 
 ## ------------------------------------------------------------------------
-summarise(bank, last(job)) 
+bank %>% summarise(last(job)) 
 
 ## ------------------------------------------------------------------------
-summarise(bank, nth(job, 8))
+bank %>% summarise(nth(job, 8))
 
 ## ------------------------------------------------------------------------
-summarise(bank, n())
+bank %>% summarise(n())
 
 ## ------------------------------------------------------------------------
-summarise(bank, n_distinct(job))
-summarise(bank, n_distinct(education))
+bank %>% summarise(n_distinct(job))
+bank %>% summarise(n_distinct(education))
 
