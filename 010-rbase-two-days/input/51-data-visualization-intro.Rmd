@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ![](./images/flow-dtvisual.png)
 
 
-In the following chapters we will explore the tools provided by R for data visualization, in particular:
+In the following chapters we will explore R systems for data visualization, in particular:
 
 * Standard R graphics system
 * `ggplot2` grammar of graphics

@@ -1,5 +1,5 @@
 ---
-title: "Presenting Plots"
+title: "Managing and Exporting Graphics"
 output: html_document
 ---
 

@@ -54,6 +54,7 @@ A bit of history:
 
 ![](./images/r.png)
 
+ - 1991: R was created by Ross Ihaka and Robert Gentleman at the University of Auckland, New Zeland.
  - 1993: First announcement of R to the public.
  - 1995: Martin Maechler convinces Ross Ihaka and Robert Gentleman to use the GNU General Public License to make R free software.
  - 1997: The R Development Core Team is formed. The team controls the source code for R.
@@ -70,7 +71,7 @@ While R is an open source project supported by the community developing it, some
 
 We will deepen the commercial support tools mentioned in _R commercial support_ paragraph.
 
-In April 2016, R is in 18th place of TIOBE Programming Community Index, that is an indicator of the popularity of programming languages. R is above SAS that is in 23th place.
+In December 2016, R is in 17th place of TIOBE Programming Community Index ([www.tiobe.com](www.tiobe.com)), that is an indicator of the popularity of programming languages. R is above SAS that is in 22th place.
 
 
 ## The R-project and R Licence
@@ -104,7 +105,7 @@ On the contrary, R:
  - it is not a database, but it connects to databases;
  - it does not provide a graphical interface, but it uses Java, TclTk and, under Windows, COM to provide graphical interfaces;
  - it is not a spreadsheet, but it connects to spreadsheets;
- - it does not provide commercial support. Revolution R is a commercially supported distribution of R.
+ - it does not provide commercial support. RStudio and Microsoft R Open are commercially supported distributions of R.
 
 In conclusion, R is an interpreted computer language. R provides a platform for the development and implementation of new algorithms and technology transfer. Most user-visible functions are written in R itself, calling upon a smaller set of internal primitives. It is possible to interface procedures written in C, C+, or FORTRAN languages for efficiency, and to write additional primitives. System commands can be called from within R.
 
@@ -128,7 +129,6 @@ Main R disadvantages are:
  - Sometimes, figuring out correct methods or how to use a function on your own can be frustrating.
  - Easy to make mistakes and not know. 
  - Working with large datasets is limited by RAM.
- - Data preparation and cleaning can be messier and more mistake prone in R vs SPSS or SAS.
 
 
 ## R Online Resources

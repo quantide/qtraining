@@ -1,5 +1,5 @@
 ---
-title: "Function Object"
+title: "Functions Object"
 output: html_document
 ---
 

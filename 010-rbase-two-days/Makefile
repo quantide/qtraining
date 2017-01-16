@@ -69,8 +69,8 @@ html: $(HTML_FILES)
 ### List of source files (without extension: it will be used for .Rmd, .html and .R)
 LIST = \
   1-intro \
-	es-data-import \
 	es-data-obj \
+	es-data-import \
 	es-dplyr \
 	es-ggplot \
 

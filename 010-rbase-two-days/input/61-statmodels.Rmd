@@ -1,5 +1,5 @@
 ---
-title: "Models with R"
+title: "Statistical Models with R"
 output: html_document
 ---
 

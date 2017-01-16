@@ -6,7 +6,7 @@ A First Look to R Session			| 13-firstlook.Rmd
 R Objects
 Introduction					| 21-introduction.Rmd
 Data Objects					| 22-data-obj.Rmd
-Function Objects					| 23-functions-obj.Rmd
+Functions Objects					| 23-functions-obj.Rmd
 
 Data Import and Export
 Introduction					| 31-introduction.Rmd
