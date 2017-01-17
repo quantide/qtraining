@@ -1,33 +1,31 @@
 ## ----require, message=FALSE----------------------------------------------
-require(lattice)
-require(mnormt)
 require(qdata)
 
 ## ----plot, fig.width=8, fig.height=8-------------------------------------
 f <- factor(c("M", "M", "M", "M", "M", "F", "F","F"))
 y <- rnorm(8)
 x <- c(0, 2, 4, 8, 16, 32, 64, 128)
-par(mfrow = c(2, 2))
+op <- par(mfrow = c(2, 2))
 plot(y)
 plot(f)
 plot(x, y)
 plot(f, x)
+par(op)
 
 ## ----scatterplot1--------------------------------------------------------
 data(states)
 str(states)
-with(states, plot (x = Income, y = Murder))
+
+plot(x = states$Illiteracy, y = states$Murder)
 
 ## ----formula-------------------------------------------------------------
-plot(Murder ~ Income, data = states)
+plot(Murder ~ Illiteracy, data = states)
 
-## ----type, fig.width=8, fig.height=8-------------------------------------
+## ----type, fig.width=8, fig.height=9-------------------------------------
 y <- c (1 , 2, 5 , 8, 9, 9, 7 , 5, 3, 1)
 x <- 1:10
 
-par(mfrow = c (4 ,2))
-par(mar = c (3 , 3, 3 , 1))
-
+op <- par(mfrow = c (4 ,2))
 plot(x, y, type = "p", xlab = "", ylab = "", main="type = p") # points (empty circles)
 plot(x, y, type = "l", xlab = "", ylab = "", main="type = l") # lines
 plot(x, y, type = "o", xlab = "", ylab = "", main="type = o") # overplotted points and lines
@@ -36,152 +34,111 @@ plot(x, y, type = "c", xlab = "", ylab = "", main="type = c") # lines parte alon
 plot(x, y, type = "s", xlab = "", ylab = "", main="type = s") # stair steps
 plot(x, y, type = "h", xlab = "", ylab = "", main="type = h") # histogram-like vertical lines
 plot(x, y, type = "n", xlab = "", ylab = "", main="type = n") # empty plot
+par(op)
 
 ## ----symbols-------------------------------------------------------------
-plot(Murder ~ Income, data = states, pch = 16, cex = 2.5)
+plot(Murder ~ Illiteracy, data = states, pch = 16, cex = 2.5)
 
 ## ----custom--------------------------------------------------------------
-plot(Murder ~ Income, data = states, pch = "R", cex = 2.5)
+plot(Murder ~ Illiteracy, data = states, pch = "R", cex = 2.5)
 
 ## ----colour_spec, eval=FALSE---------------------------------------------
-## plot(Murder ~ Income, data = states, col = "red")
-## plot(Murder ~ Income, data = states, col = "#ff0000")
-## plot(Murder ~ Income, data = states, col = 2)
+## plot(Murder ~ Illiteracy, data = states, col = 2)
+## plot(Murder ~ Illiteracy, data = states, col = "red")
+## plot(Murder ~ Illiteracy, data = states, col = "#ff0000")
 
 ## ----colour, echo=FALSE--------------------------------------------------
-plot(Murder ~ Income, data = states, col = "red")
+plot(Murder ~ Illiteracy, data = states, col = "red")
 
 ## ----titles--------------------------------------------------------------
-plot(Murder ~ Income, data = states, 
-     pch = 16, 
-     col = "blue", cex = 2.5, 
-     main = "Murder vs Income", 
+plot(Murder ~ Illiteracy, data = states, 
+     pch = 16, cex = 2.5, col = "blue",  
+     main = "Murder vs Illiteracy", 
      sub="USA (1976)", 
-     xlab = "Per capita income",
+     xlab = "Illiteracy rate",
      ylab = "Murder per 100,000 population")
 
 ## ----axes----------------------------------------------------------------
-plot(Murder ~ Income, data = states, pch = 16, col = "blue",
-  cex = 2.5, main = "Murder vs Income", sub="USA (1976)",
-  xlab = "Per capita income",
-  ylab = "Murder per 100,000 population",
-  xlim = c(3000, 7000), ylim = c(1, 16))
-
-## ----text----------------------------------------------------------------
-plot(Illiteracy ~ Murder, data = states, type = "n")
-text(Illiteracy ~ Murder, data = states,
-  labels = states$states.region.abb, col = "royalblue", cex = 0.8)
-
-## ----adj-----------------------------------------------------------------
-plot(Illiteracy ~ Murder, data = states, type = "n")
-text(Illiteracy ~ Murder, data = states, labels = states$states.region.abb,
-  col = "green", cex = 0.8)
-text(2, 2.5, labels = "By Quantide", adj = c(0, 1), col = "blue", cex = 2)
+plot(Murder ~ Illiteracy, data = states, 
+     pch = 16, col = "blue", cex = 2.5, 
+     main = "Murder vs Illiteracy", 
+     sub="USA (1976)", 
+     xlab = "Illiteracy rate", 
+     ylab = "Murder per 100,000 population",
+     xlim = c(0, 3), ylim = c(0, 18))
 
 ## ----points0, eval=FALSE-------------------------------------------------
-## plot(Murder  Income, data = states, pch = 16, cex = 2.5, col = "red")
+## # High level plot function
+## plot(Murder ~ Illiteracy, data = states, pch = 16, cex = 2.5, col = "red")
 
 ## ----points--------------------------------------------------------------
-plot(Murder ~ Income, data = states, type = "n")
-points(Murder ~ Income, data = states, pch = 16, cex = 2.5, col = "red")
+plot(Murder ~ Illiteracy, data = states, type = "n")
+# Low level plot function
+points(Murder ~ Illiteracy, data = states, pch = 16, cex = 2.5, col = "red")
 
 ## ----threevariables------------------------------------------------------
+# vector of colours to be used in the plot according to states.region.abb levels 
 my_col <- as.character(factor(states$states.region.abb, labels = rainbow(4)))
-plot(Murder ~ Income, data = states, type = "n")
-points(Murder ~ Income, data = states, pch = 16, cex = 2.5, col = my_col)
 
-## ----fourvariables-------------------------------------------------------
-my_col <- as.character(factor(states$states.region.abb, labels = rainbow(4)))
-my_cex <- 3 * states$Illiteracy/max(states$Illiteracy)
-plot(Murder ~ Income, data = states, type = "n")
-points(Murder ~ Income, data = states, pch = 16, cex = my_cex, col = my_col)
-
-## ----lines---------------------------------------------------------------
-plot(Life.Exp ~ Illiteracy, data = states, type = "n")
-abline(h = mean(states$Life.Exp), v = mean(states$Illiteracy),
-  col = "gray80", lwd = 2)
-abline(lsfit(states$Illiteracy, states$Life.Exp), col = "red", lwd = 2)
-points(Life.Exp ~ Illiteracy, data = states, pch = 16, col = "darkblue")
-grid()
+plot(Murder ~ Illiteracy, data = states, type = "n")
+points(Murder ~ Illiteracy, data = states, pch = 16, cex = 2.5, col = my_col)
 
 ## ----legend--------------------------------------------------------------
-my_col <- as.character(factor(states$states.region.abb,
-  labels = rainbow(4, start = 0.3, end = 0.8)))
-my_cex <- 4*states$Income/max(states$Income)
-plot(Murder ~ Illiteracy, data = states, type = "n") 
-grid(col = "gray80", lwd = 1, lty = 3)
-abline(reg = lsfit(states$Illiteracy, states$Murder),
-  col = "red", lwd = 2)
-points(Murder ~ Illiteracy, data = states, pch = 16,
-  cex = my_cex, col = my_col)
+# vector of colours to be used in the plot according to states.region.abb levels 
+my_col <- as.character(factor(states$states.region.abb, labels = rainbow(4)))
+
+plot(Murder ~ Illiteracy, data = states, type = "n")
+points(Murder ~ Illiteracy, data = states, pch = 16, cex = 2.5, col = my_col)
 legend(x = "bottomright", legend = levels(states$states.region.abb),
   col = rainbow(4, start = 0.3, end = 0.8), pch = 16, ncol = 4,
-  title = "State Region", inset = c(0.02, 0.02), bg = "white")
+  title = "State Region")
+
+## ----lines---------------------------------------------------------------
+plot(Murder ~ Illiteracy, data = states, type = "n")
+abline(h = mean(states$Murder), v = mean(states$Illiteracy), col = "gray80", lwd = 2)
+abline(reg = lm(states$Murder~states$Illiteracy), col = "red", lwd = 2)
+points(Murder ~ Illiteracy, data = states, pch = 16, col = "darkblue")
+grid()
 
 ## ----title---------------------------------------------------------------
-my_col <- as.character(factor(states$states.region.abb, labels = rainbow(4, start = 0.3, end = 0.8)))
-my_cex <- 4*states$Income/max(states$Income)
-plot(Murder ~ Illiteracy, data = states, type = "n") 
-grid(col = "gray80", lwd = 1, lty = 3)
-abline(reg = lsfit(states$Illiteracy, states$Murder), col = "red", lwd = 2)
-points(Murder ~ Illiteracy, data = states, pch = 16, cex = my_cex, col = my_col)
-legend(x = "bottomright", legend = levels(states$states.region.abb), col = rainbow(4, start = 0.3, end = 0.8), pch = 16, ncol = 4, title = "State Region", inset = c(0.02, 0.02), bg = "white")
+plot(Murder ~ Illiteracy, data = states, type = "n")
+abline(h = mean(states$Murder), v = mean(states$Illiteracy), col = "gray80", lwd = 2)
+abline(reg = lm(states$Murder~states$Illiteracy), col = "red", lwd = 2)
+points(Murder ~ Illiteracy, data = states, pch = 16, col = "darkblue")
+grid()
 title(main = "Murder vs Illiteracy \n Usa (1974)", cex = 1.2)
-title(sub = "Bouble size proportional to Income level", cex = 1)
+title(sub = "Plot with Regression Line", cex = 1)
 
-## ----axes2---------------------------------------------------------------
-plot(Population ~ Area, data = states, log = "x", pch = "+", cex = 1.5,
-  xaxt = "n", xlab = "Area: Square Miles /1000", col = "red")
-atx_mg = c(1, 2, 5, 10, 20, 50, 100, 200, 500) * 1000
-label_mg = c(1, 2, 5, 10, 20, 50, 100, 200, 500)
-label_km = round(label_mg * 1.61^2, 0)
-aty = seq(0, 20, by = 2.5) * 1000
-axis(1, at = atx_mg, labels = label_mg)
-axis(3, at = atx_mg, labels = label_km)
-abline(h = aty, v = atx_mg, col = "gray80", lty = 3)
-mtext("Area: Square Km / 1000", 3, line = 3)
-
-## ----axis3, fig.width=7--------------------------------------------------
-plot(Population ~ Area, data = states, log = "x", pch = "+",
-  cex = 1.5, xaxt = "n", yaxt = "n",
-  xlab = "Area: Square Miles /1000", ylab = "", col = "red")
-axis(1, at = atx_mg, labels = label_mg)
-axis(2, col = "red", lty = 2, las = 2)
-axis(3, at = atx_mg, labels = label_km, las = 2, col ="blue")
-axis(4, col = "violet", col.axis = "dark violet", lwd = 2)
+## ----cars, message=FALSE-------------------------------------------------
+data(cars)
+str(cars)
 
 ## ----hist----------------------------------------------------------------
-op = par(mfrow = c(1, 2))
-with (cars, {
-  hist(speed, main = "Frequency Histogram")
-  hist(speed, freq = F, main = "Density Histogram")
-})
+op <- par(mfrow = c(1, 2))
+  hist(cars$speed, main = "Frequency Histogram")
+  hist(cars$speed, freq = F, main = "Density Histogram")
+par(op)
 
 ## ----nclass, fig.width=8-------------------------------------------------
-par(mfrow = c(1, 2))
-with (cars, {
-  hist(dist, nclass = 12,
-    main = "Specifying Number of Classes", col = "gray")
-  hist(dist, nclass = seq(0, 120, by = 20), freq = F,
-    main = "Specifying Break Points", col = "lightgray")
-})
+op <- par(mfrow = c(1, 2))
+  hist(cars$dist, nclass = 12, main = "Specifying Number of Classes", col = "gray")
+  hist(cars$dist, nclass = seq(0, 120, by = 20), freq = F, main = "Specifying Break Points", col = "lightgray")
+par(op)
+
+## ----bwt, message=FALSE--------------------------------------------------
+data(bwt)
+str(bwt)
 
 ## ----barplot-------------------------------------------------------------
-data(bwt)
-with (bwt , {
-  tb = table (smoke)
-  barplot(tb, col = c("orange", "darkgreen"))
-})
+tb <- table(bwt$smoke)
+barplot(tb, col = c("orange", "darkgreen"))
 
 ## ----barplotlegend, fig.width=8------------------------------------------
-with (bwt , {
-  tb = table (smoke, low)
-  par(mfrow = c(1,2))
-  barplot(tb, col = c("pink", "gray"), main = "Stacked bars",
-    legend = T)
-  barplot(tb, col = c("darkgreen", "brown"), main = "Beside bars",
-    beside = T, legend = T)
-})
+tb2 <- table (bwt$smoke, bwt$low)
+op <-  par(mfrow = c(1,2))
+barplot(tb2, col = c("pink", "gray"), main = "Stacked bars", legend = T)
+barplot(tb2, col = c("darkgreen", "brown"), main = "Beside bars", beside = T, legend = T)
+par(op)
 
 ## ----boxplot-------------------------------------------------------------
 data(carseat)

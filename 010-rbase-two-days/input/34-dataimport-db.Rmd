@@ -1,5 +1,5 @@
 ---
-title: "Working with databases"
+title: "Working with Databases"
 ---
 
 ```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}

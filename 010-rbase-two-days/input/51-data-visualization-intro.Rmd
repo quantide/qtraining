@@ -12,8 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In the following chapters we will explore R systems for data visualization, in particular:
 
-* Standard R graphics system
-* `ggplot2` grammar of graphics
+* Standard R Graphics System
+* `ggplot2` Grammar of Graphics
 
 We will cover also some issues on managing and exporting graphics.
 
