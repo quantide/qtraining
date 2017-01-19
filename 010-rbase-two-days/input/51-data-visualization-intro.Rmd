@@ -3,7 +3,7 @@ title: "Introduction to Data Visualization"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, purl=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 

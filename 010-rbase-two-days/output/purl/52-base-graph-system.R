@@ -47,9 +47,6 @@ plot(Murder ~ Illiteracy, data = states, pch = "R", cex = 2.5)
 ## plot(Murder ~ Illiteracy, data = states, col = "red")
 ## plot(Murder ~ Illiteracy, data = states, col = "#ff0000")
 
-## ----colour, echo=FALSE--------------------------------------------------
-plot(Murder ~ Illiteracy, data = states, col = "red")
-
 ## ----titles--------------------------------------------------------------
 plot(Murder ~ Illiteracy, data = states, 
      pch = 16, cex = 2.5, col = "blue",  
