@@ -350,9 +350,8 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#pipe-operator">Pipe operator</a><ul>
+<li><a href="#pipe-operator">Pipe operator</a></li>
 <li><a href="#tbl_df-the-dplyr-data-frame-class"><code>tbl_df</code>: the <code>dplyr</code> Data Frame Class</a></li>
-</ul></li>
 </ul>
 </div>
 
@@ -386,9 +385,8 @@ In particular:</p>
 </div>
 <p>Pipes can work with nearly any functions (<code>dplyr</code> and not-<code>dplyr</code> functions), let us see an example.</p>
 <p>Let us consider <code>bank</code> data set, included in <code>qdata</code> package, which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls.</p>
-<pre class="r"><code>require(qdata)</code></pre>
-<pre><code>## Loading required package: qdata</code></pre>
-<pre class="r"><code>data(bank) </code></pre>
+<pre class="r"><code>require(qdata)
+data(bank) </code></pre>
 <p>Suppose we want to visualize the first rows of <code>bank</code> dataframe, by using <code>head()</code> function.</p>
 <p>Usually we write:</p>
 <pre class="r"><code>head(bank)</code></pre>
@@ -434,8 +432,9 @@ In particular:</p>
 ## 10    10    43   technician   single secondary      no     593     yes     no unknown     5    may  2008
 ## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
-<div id="tbl_df-the-dplyr-data-frame-class" class="section level3">
-<h3><code>tbl_df</code>: the <code>dplyr</code> Data Frame Class</h3>
+</div>
+<div id="tbl_df-the-dplyr-data-frame-class" class="section level2">
+<h2><code>tbl_df</code>: the <code>dplyr</code> Data Frame Class</h2>
 <p>Sometimes data frames have large dimensions. <code>dplyr</code> package provide <code>tbl_df</code>, which is a wrapper around a data frame that will not accidentally print a lot of data to the screen; indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.</p>
 <p>When the class of data object is not tbl, <code>tbl_df()</code> function should be used.<br />
 Let us consider <code>mtcars</code>, a dataset included in <code>datasets</code> package (automatically loaded at the start of an R session):</p>
@@ -501,7 +500,6 @@ class(mtcars_tbl)</code></pre>
 <!--
 cambiare mtcars -> rivedere perchè non va
 -->
-</div>
 </div>
 
 

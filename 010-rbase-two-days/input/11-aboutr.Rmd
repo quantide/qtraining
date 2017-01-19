@@ -44,15 +44,18 @@ S-PLUS provides a number of fancy features (GUIs, mostly) on top of it, hence th
 
 A bit of history:
 
+  - 1988: S-PLUS is first produced by a Seattle-based start-up company called Statistical Sciences, Inc. The founder and sole owner is R. Douglas Martin, professor of statistics at the University of Washington, Seattle.
  - 1993: Statistical Sciences, Inc. acquires the exclusive license to distribute S and merges with MathSoft.
  - 2001: MathSoft sells its Cambridge-based Engineering and Education Products Division (EEPD). It changes name to Insightful Corporation.
  - 2004: Insightful purchases the S language from Lucent Technologies for $2 million.
  - 2008: TIBCO acquires Insightful Corporation.
 
 
-### R: a bit of history
+### A a bit of R history
 
 ![](./images/r.png)
+
+A bit of history:
 
  - 1991: R was created by Ross Ihaka and Robert Gentleman at the University of Auckland, New Zeland.
  - 1993: First announcement of R to the public.
@@ -71,7 +74,7 @@ While R is an open source project supported by the community developing it, some
 
 We will deepen the commercial support tools mentioned in _R commercial support_ paragraph.
 
-In December 2016, R is in 17th place of TIOBE Programming Community Index ([www.tiobe.com](www.tiobe.com)), that is an indicator of the popularity of programming languages. R is above SAS that is in 22th place.
+In December 2016, R is in 17th place of TIOBE Programming Community Index ([www.tiobe.com](http://www.tiobe.com/tiobe-index/)), that is an indicator of the popularity of programming languages. R is above SAS that is in 22th place.
 
 
 ## The R-project and R Licence

@@ -48,7 +48,8 @@ X.X.X identify the current version of R. In December 2016, the current version i
 
 To install R, Windows and Mac users must just double click on the file and follow the installation instructions.
 
-Linux users can download and install R using the precompiled R binary for their distribution. Alternatively, experienced Linux users can compile R from sources. Currently, precompiled R binary are available for Debian, Ubuntu, Suse and RedHat. The R installation package for RedHat downloadable from CRAN is obsolete. An R updated version for Red Hat Enterprise Linux 5 is available for free by Revolution Analytics.
+Linux users can download and install R using the precompiled R binary for their distribution. Alternatively, experienced Linux users can compile R from sources. Currently, precompiled R binary are available for Debian, Ubuntu, Suse and RedHat. 
+
 
 The Figure [Screenshot of a first try with R](#fig:ssFirsttry) shows a first try with R, just after installation.
 
@@ -99,7 +100,7 @@ Similarly to RStudio, **JGR** [(rforge.net/JGR)](http://rforge.net/JGR/) and **R
 
 ![<small>JGR Interface</small>](images/ssGuiJgr.png)
 
-**Tinn-R** [(www.sciviews.org/Tinn-R)](http://www.sciviews.org/Tinn-R/) is one of the most used R editor by Windows users. It includes R syntax highlighting, help on R functions syntax while you type them, direct submission of R code and many other tools to control R from within the editor.
+**Tinn-R** is one of the most used R editor by Windows users. It includes R syntax highlighting, help on R functions syntax while you type them, direct submission of R code and many other tools to control R from within the editor.
 
 ![<small>Tinn-R Interface</small>](images/ssGuiTinnr.jpg)
 

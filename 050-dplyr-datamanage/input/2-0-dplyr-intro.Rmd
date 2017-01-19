@@ -33,7 +33,7 @@ Pipes can work with nearly any functions (`dplyr` and not-`dplyr` functions), le
 
 Let us consider `bank` data set, included in `qdata` package, which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls. 
 
-```{r bank_tbl_df}
+```{r bank_tbl_df, message=FALSE}
 require(qdata)
 data(bank) 
 ```

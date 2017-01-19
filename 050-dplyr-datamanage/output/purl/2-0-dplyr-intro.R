@@ -3,7 +3,7 @@
 # that is required by following examples
 require(dplyr)
 
-## ----bank_tbl_df---------------------------------------------------------
+## ----bank_tbl_df, message=FALSE------------------------------------------
 require(qdata)
 data(bank) 
 
