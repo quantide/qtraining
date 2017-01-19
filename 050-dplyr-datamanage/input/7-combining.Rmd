@@ -6,7 +6,7 @@ title: "Combining Data"
 options(width = 108)
 ```
 
-```{r first, include=TRUE, purl=FALSE, message=FALSE}
+```{r first, include=TRUE, message=FALSE}
 require(dplyr)
 require(qdata)
 data(comuni)

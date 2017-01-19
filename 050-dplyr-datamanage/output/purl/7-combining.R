@@ -1,3 +1,12 @@
+## ----first, include=TRUE, message=FALSE----------------------------------
+require(dplyr)
+require(qdata)
+data(comuni)
+data(province)
+data(regioni)
+data(usopen)
+data(wimbledon)
+
 ## ------------------------------------------------------------------------
 df1 <- data.frame(id = 1:4, x1 = letters[1:4])
 df2 <- data.frame(id = 3:5, x2 = letters[3:5])
