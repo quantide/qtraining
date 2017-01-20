@@ -1,7 +1,7 @@
 Package: qdata
 Type: Package
 Title: Quantide's data for R courses
-Version: 0.28
+Version: 0.29
 Date: 2016-11-29
 Authors@R: c(
     person("Andrea Spano", , "andrea.spano@quantide.com", c("aut")),
