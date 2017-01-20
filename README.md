@@ -5,7 +5,7 @@ output:
   html_document: default
 ---
 
-Date of documentation update: 20161221  
+Date of documentation update: 20170120  
 Documentation updated by: Veronica
 
 # Introduction
@@ -17,7 +17,7 @@ The courses included are:
 * __R for Beginners__ (two days course)
 * __R for Beginners__ (one day course)
 * __Statistical Models with R__
-* __Base R programming__
+* __Base R programming__ 
 * __Data Manipulation with R__
 * __Data Visualization with R__ in english and in italian (under development) 
 * __Data Mining with R__
@@ -154,9 +154,19 @@ created by library ‘build’)
 
 Once built the package, _man_ folder is created. It contains documentation files. I recommend you to not add to commit and push this folder. 
 
-On Decembre 20 2016, the version of qdata is 0.27.
+On January 20 2017, the version of qdata is 0.29.
 
 ## Guide for building `qdata`
+
+### Add new data files
+
+1. Open RStudio
+2. Double-click on the project file
+3. Save new data into "data" folder in .RData format (I recommend you to save tbl_df objects)
+4. Add data file documentation in `qdata-data.R` 
+
+_Note:_ When one ore more data file/s are added or when data documentation is modified, the package version MUST be updated. To update the package version modify _Version:_ tag in _DESCRIPTION_ file going forward of one digit (e.g. 027 --> 0.28)  
+
 
 ### Build `qdata`
 
@@ -164,9 +174,9 @@ On Decembre 20 2016, the version of qdata is 0.27.
 
 1. Open RStudio
 2. Double-click on the project file
-3. Click "Build & Reload" on RStudio "Build" tab or click "Ctrl+Shift+B" on the keyboard
+3. Click "Check" on RStudio "Build" tab (without check the changes are not considered)
+4. Click "Build & Reload" on RStudio "Build" tab or click "Ctrl+Shift+B" on the keyboard
 
-_Note:_ When one ore more data file/s are added or when data documentation is modified, the package version MUST be updated. To update the package version modify _Version:_ tag in _DESCRIPTION_ file going forward of one digit (e.g. 027 --> 0.28)  
 
 ### Create source package
 
@@ -176,10 +186,11 @@ Follow these steps:
 
 1. Move the folders: _pkgs_ and _rowdata_ from _00-qdata_ folder into another location (cut and paste), in order to not include them in the source package
 2. Open RStudio
-3. Open "More" window on RStudio "Build" Tab
-4. Click on "Build Source package"
-5. Reinsert the folders: _pkgs_ and _rowdata_ into _00-qdata_ folder
-6. Move the file _qdata\_x.xx.tar.gz_ from "~dev/qtraining/00-qdata" into "~dev/qtraining/00-qdata/pkgs" 
+3. Click "Check" on RStudio "Build" Tab
+4. Open "More" window on RStudio "Build" Tab
+5. Click on "Build Source package"
+6. Reinsert the folders: _pkgs_ and _rowdata_ into _00-qdata_ folder
+7. Move the file _qdata\_x.xx.tar.gz_ from "~dev/qtraining" into "~dev/qtraining/00-qdata/pkgs" 
 
 
 ## Guide for installing and loading `qdata`  
@@ -237,7 +248,7 @@ It is structured in these folders:
 
 # _courses-index_ folder
 
-The content of this folder is used for building an html index of courses.  
+The content of this folder is used for building an html index of course modules.  
 It includes:
 
 * _course-index.html_: html file of courses index 
@@ -248,6 +259,9 @@ It includes:
 1. Open _course-index.html_ with a text editor
 2. Modify the file. The code is written in HTML
 3. Save the file
+
+As example, for using the course index, see "r-course.zip" included into "~/gdrive/quantide/cst/accenture/materiale-corso-giugno2016"
+
 
 # Github 
 
@@ -330,11 +344,11 @@ First of all you have to install and load `bookdown` package.
 
 To build a book with bookdown, you have to refer to a particular .Rproj file, `bookdown-demo.Rproj`, which is available on [https://github.com/rstudio/bookdown-demo](https://github.com/rstudio/bookdown-demo) repository. I recommend you to download the whole repository as a Zip file and to use it as a structure for your book.
 
-In `qtraining`, I used bookdown-demo into _manual-pdf_ and _exercises_ folders of _011-rbase-one-day_. These folders represents my first trial to use `bookdown`, so I advice you to look at the structure of that folders and to read the [Bookdown web book](https://bookdown.org/yihui/bookdown/get-started.html). 
+In `qtraining`, I used bookdown-demo into _manual-pdf_ and _exercises_ folders of _011-rbase-one-day_ and in _manual-pdf_ of _010-rbase-two-days_. These folders represents my first trial to use `bookdown`, so I advice you to look at the structure of that folders and to read the [Bookdown web book](https://bookdown.org/yihui/bookdown/get-started.html). 
 
 ## My idea of structure
 
-1. Generate into bookdown-demo folder two subfolders, _input_ and _output_ and includes all the content of bookdown-demo into _input_.  
+1. Generate into bookdown-demo folder two subfolders, _input_ and _output_ and includes all the content of bookdown-demo into _input_.
 
 2. Generate your Rmd containing the course content in _input_ folder. Each Rmd represents a chapter of your book, so you have to put a number at the beginning of the Rmd name. The number have to correspond to the Rmd order in the book.  
 
@@ -347,7 +361,7 @@ In `qtraining`, I used bookdown-demo into _manual-pdf_ and _exercises_ folders o
 * `new_session: yes`: set a new session for each rmd run
 * `output_dir: "../output"`, in this way the output will be created into _output_ folder
 
-5. Open `_output.yml` and set `bookdown::pdf_book:` if you want to create a pdf book, `bookdown::gitbook:` if you want to create a web book, ... . Here, you have to specify the related .css or .tex files. `preamble.tex` is a style .tex file that contains the instructions to create the cover of my book. You can start from here of you can can create your own style .tex file.   
+5. Open `_output.yml` and set `bookdown::pdf_book:` if you want to create a pdf book, `bookdown::gitbook:` if you want to create a web book, ... . Here, you have to specify the related .css or .tex files. `preamble.tex` is a style .tex file that contains the instructions to create the cover of my book. You can start from here or you can can create your own style .tex file.   
 
 ## Build book
 
@@ -356,5 +370,50 @@ In `qtraining`, I used bookdown-demo into _manual-pdf_ and _exercises_ folders o
 3. Click on "Build Book" on "Build" tab 
 
 Before building the book I advice you to click on "More" on "Build tab" and to choose "Clean All", in order to delete all old results.  
+
+# Create the material folder to sent to customers (my idea of folder)
+
+I send the courses material in a compressed folder (.zip).
+The folder usually contains thee subfolders:
+
+* _data_ : containing the data necessary for examples and exercises 
+* _manual_: containing the course manuals (into html, purl and pdf, if available)
+* _exercises_: containing the course exercises
+
+In particular, _manual_ folder can contain one or more modules.   
+If it contains one module, I advice you to create two/three folders:
+
+* _html_: containing course manual into html format
+* _purl_: containing course manual purl files 
+* _pdf_: containing course manual into pdf format (not always available)
+
+If it contains more than one module, I advice you to use a course index. Course index (`course-index.html` file) is available in _courses-index_ folder of _qtraining_ repository. 
+So _manual_ folder has to contain:
+
+* `course-index.html`: properly modified
+* _images_ folder: containing the images used in `course-index.html`. This folder is available in _courses-index_ folder of _qtraining_ repository
+* a folder for each course module
+
+As an example on how use the course index, see "r-course.zip" included into "~/gdrive/quantide/cst/accenture/materiale-corso-giugno2016"
+
+I created today all courses, ready to be sent to custumers. You find them in "~/gdrive/quantide/int/corsi/corsiR/compiled-courses".  
+
+## Send the material folder to sent to customers
+
+I use [WeTransfer](https://wetransfer.com/).   
+It is really simple.
+
+1. Prepare the course material folder in .zip format
+2. Open your browser and go to [www.wetransfer.com](https://wetransfer.com/)
+3. Add the course folder (in .zip format) in "Add your file" section
+4. Add the email address of the customer in "Email to" section
+5. Add a message (usually I write the course name) in "Message" section
+6. Click on "Transfer" 
+
+At the end of the transfer you receive a mail by WeTransfer saying that the transfer has been successful.
+
+When the customer download the .zip folder you receive a mail by WeTransfer saying that the customer has downloaded the .zip folder, so you are sure that the customer received the course material.
+
+
 
 
