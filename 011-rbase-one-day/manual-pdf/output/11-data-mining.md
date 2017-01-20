@@ -180,17 +180,19 @@ nn_mod <- nnet(Status ~ Class + Gender + Age, data = train, size = 3)
 
 ```
 ## # weights:  16
-## initial  value 976.952391 
-## iter  10 value 950.274668
-## iter  20 value 779.373078
-## iter  30 value 760.558293
-## iter  40 value 760.036300
-## iter  50 value 759.647025
-## iter  60 value 759.519027
-## iter  70 value 759.460938
-## iter  70 value 759.460938
-## final  value 759.460938 
-## converged
+## initial  value 1112.572558 
+## iter  10 value 970.157601
+## iter  20 value 889.062948
+## iter  30 value 774.088081
+## iter  40 value 773.873844
+## iter  50 value 773.241941
+## iter  60 value 772.604255
+## iter  70 value 772.311740
+## iter  80 value 772.273735
+## iter  90 value 772.271221
+## iter 100 value 772.249435
+## final  value 772.249435 
+## stopped after 100 iterations
 ```
 
 The predictions on test sample can be gained using `predict()` function:
@@ -203,12 +205,12 @@ head(pr)
 
 ```
 ##        [,1]
-## 1 0.6613218
-## 2 0.6613218
-## 3 0.6613218
-## 4 0.6613218
-## 5 0.6613218
-## 6 0.6591311
+## 1 0.6841720
+## 2 0.6841720
+## 3 0.6841720
+## 4 0.6841720
+## 5 0.6841720
+## 6 0.6819494
 ```
 
 The predictions included the probability of survive in the Titanic wreck according to `Gender`, `Age` and `Class`. We define that probabilities below 0.5 represent `Died` (`TRUE`) and probabilities over 0.5 represent `Survived` (`FALSE`).   
