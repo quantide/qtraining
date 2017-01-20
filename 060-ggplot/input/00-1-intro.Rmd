@@ -1,8 +1,5 @@
 ---
 title: "Introduction to Graphics"
-author: "Veronica"
-date: "`r Sys.Date()`"
-output: pdf_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
