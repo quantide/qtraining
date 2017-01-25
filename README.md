@@ -86,7 +86,7 @@ It includes:
 * _Markdown and R Markdown scripts with course content_. Course content is organized in chapters. Each chapter is identified by a script. It is recommended to add a number to the script names for ordering them (e.g. 01-first.Rmd). The course material is usually written in english.
 * _images_ folder, which contains figures to be included in the course content 
 * _TOC_ file, which contains course index. 
-
+* *output_yml*, which represents the YAML of the whole manual 
 
 ### TOC file
 
