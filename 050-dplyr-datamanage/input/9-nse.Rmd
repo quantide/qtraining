@@ -16,7 +16,7 @@ data(bank)
 
 # Programming with `dplyr`
 
-Package `dplyr` has been developed to provide end users with a tool for effective yet easy data manipulation tool. Nevertheless, when developing R code with `dplyr`, you may notice some apparently strange behavior. Suppose you to create a simple function that, for any `tbl` object filters for all value of a variable above a given threshold. The `dplyr` interactive code for achieving this, applied as an example to data frame `mtcars`, could be:
+Package `dplyr` has been developed to provide end users with a tool for effective yet easy data manipulation tool. Nevertheless, when developing R code with `dplyr`, you may notice some apparently strange behavior. Suppose you to create a simple function that, for any `tbl` object filters for all value of a variable above a given threshold. The `dplyr` interactive code for achieving this, applied as an example to data frame `mtcars`, can be:
 
 ```{r}
 filter(mtcars, disp > 450) 
