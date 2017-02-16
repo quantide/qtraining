@@ -1,0 +1,66 @@
+---
+title: "Reading your data with `readr`"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+require(knitr)
+options(width = 108)
+opts_chunk$set(echo = TRUE)
+opts_knit$set(root.dir = "../data")
+```
+
+In this chapetr you'll learn how to import flat files in R. We will do this with the use of `readr` package which is part of the `tidyverse` core. As already learned, this means that if we load the package `tidyverse`, `readr` will be automatically loaded:
+
+```{r readr}
+require(tidyverse)
+```
+
+Alternatively, one may load the package `readr`, together with the package `dplyr` and `tibble` that will be useful throughout this chapter:
+
+```{r readr2, message=FALSE}
+require(readr)
+require(dplyr)
+require(tibble)
+```
+
+Suppose we want to import data in tennis.txt. If we open the file itself we notice that 1) variables are separated by many columns of space and 2) variable names are at the top of the file. The function `read_r_table` comes in handy as it is designed to read the type of text data where each column is separate by one (or more) columns of space. In order to import the text file, first of all we need to give the coordinates of the folder in which the text file is stored. First of all, let us view what is the directory where we are currently working:
+
+```{r getwd, eval = FALSE}
+getwd()
+```
+
+and secondly let us use the `set.wd()` function that allows you to set the working directory on the folder containing the data, in this way:
+
+```{r setwd, eval=FALSE}
+setwd("./data")
+```
+
+Now, the text file can be imported just providing its filename:
+
+```{r tennis1}
+read_table("tennis.txt", col_names = TRUE)
+```
+
+Besides space, common delimiters for variable names are tab, commas and semi colons. Hence there are specific functions that do all these actions.
+
+```{r csvs, eval = FALSE}
+read_csv("solar.txt", col_names = TRUE) # for comma separeted variables
+read_tsv("aire_milano.txt", col_names = TRUE) # for tab separeted variables
+read_csv2("milano_tourism", col_names= TRUE) # for semi colon separeted variables
+```
+
+These are special cases of the more general function `read_delim`. The latter reads file with any delimiter, which is specified in the argument `delim`. 
+
+```{r delim}
+read_delim("solar.txt", col_names = TRUE, delim = ",")
+read_delim("tuscany.txt", col_names = TRUE, delim = "|")
+```
+
+Notice that all these functions import data in the dplyr format, that is the tibble. Moreover it identifies the variables type without the need of any further specification. In order to do so R reads the first 1000 rows and uses some heuristics to figure out the type of ech column. If you are curious about it you may explore the functions "guess_parser" and "parse_guess" that are the functions used to guess the column type and parse the column.
+
+This method does not always work, especially when the file is extremely large. There are two basic problems (cit???):
+
+* The first thousand rows might be special cases hence R classifies the variable as that special case. For instance, suppose the first 1000 columns are integer, but the others are not, R will assign the integer although the variable is not.
+* The column might contain a lot of missing values: if the first 1000 rows are only missing values (NAs), readr will guess that it's a character although the remaining rows are, for example, integers.
+
+In order to solve these problems, you may tweak the type of (some of) the columns:
