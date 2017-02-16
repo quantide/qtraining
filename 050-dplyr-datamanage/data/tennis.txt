@@ -1,0 +1,11 @@
+Name               First.Name  Age  Sex  Rank  Slams  Won  Lost Earnings  Citizen
+Sampras            Pete         23   M     1    2      74  11   3607.812   US
+Agassi             Andre        24   M     2    1      51  13   1941.667   US
+Becker             Boris        27   M     3    0      48  16   2029.756   Germany
+Bruguera           Sergi        24   M     4    1      65  23   3031.874   Spain
+Ivanisevic         Goran        23   M     5    0      63  26   2060.278   Croatia
+Graf               Steffi       25   F     1    1      58   6   1487.980   Germany
+"Sanchez Vicario"  Arantxa      23   F     2    2      74   9   2943.665   Spain
+Martinez           Conchita     22   F     3    1      55  15   1540.167   Spain
+Novotna            Jana         26   F     4    0      43  11    876.119   "Czech Republic"
+Pierce             Mary         20   F     5    0      45  18    768.614   France
