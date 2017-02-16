@@ -1,0 +1,74 @@
+---
+title: "Tibbles"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+require(tidyverse)
+```
+
+
+# Introduction
+
+Sometimes data frames have large dimensions. The package  `tibble`, which is part of the core tidyverse, provides a `tbl_df` class that offers better checking and printing capabilities than traditional data frames. Almost all the functions that we'll use in this course produce tibbles as tibbles are one of the unifying features of the tidyverse.
+
+
+# `tbl_df`: the `tidyverse` Data Frame Class
+
+`dplyr`, as well as other packages that we'll see in this course, can work with data frames as is but it is worthwhile to convert them to a `tbl_df`, especially if frames have large dimensions. `tbl_df` is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.
+
+
+When the class of data object is not tibble, you can convert it to a tibble with the function `as_tibble()`.  
+Let us consider `mtcars`, a dataset included in `datasets` package (automatically loaded at the start of an R session): 
+
+```{r data frame, message=FALSE}
+# Example of data frame
+class(mtcars)
+
+# If we do not convert it as a tbl_df, all mtcars rows and columns will be printed when calling mtcars 
+dim(mtcars)
+mtcars
+```
+
+Now, using the package `tibble`, that you loaded when `tidyverse` package was loaded, you can convert mtcars into a `tbl_df` object:
+
+```{r tibble, message=FALSE}
+# tibble version of the same data frame 
+mtcars_tbl <- as_tibble(mtcars)
+mtcars_tbl
+```
+
+Alternatively, you may use the function `tbl_df()`  in the package `dplyr`.
+
+```{r tbl_df, message=FALSE}
+# tibble version of the data frame mtcars with the function tbl_df()
+mtcars_tbl2 <- tbl_df(mtcars)
+class(mtcars_tbl)
+mtcars_tbl
+```
+
+Moreover you may want to create a tibble from individual vectors. This can be easily done with the function `tibble()`.
+
+```{r tibble2, message=FALSE}
+# tibble version of the data frame mtcars with the function tbl_df()
+tb <- tibble(
+  id = 1:5,
+  height = c(1.7, 1.65, 1.6, 1.75, 1.73),
+  weight = c(80, 46, 52, 82, 75),
+  bmi = weight/ (height) ^2
+)
+tb
+```
+
+Notice that it is possibile for a tibble to have column names that are not valid as R variables names, for instance they may be numbers and may contain unsual characters such as spaces.
+
+```{r tibble3, message=FALSE}
+# tibble version of the data frame mtcars with the function tbl_df()
+tb <- tibble(
+  ":)" = "happy",
+  "1" = "one",
+  "/" = "slash",
+  " " = "space"
+)
+tb
+```
