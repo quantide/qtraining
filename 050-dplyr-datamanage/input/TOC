@@ -1,25 +1,33 @@
 Introduction
-Introduction and Data Used            | 1-intro.Rmd
+Introduction to tidyverse          | 00-intro.Rmd
 
-Base dplyr
-Introduction to dplyr                 | 2-0-dplyr-intro.Rmd
-Select		                            | 2-1-select.Rmd
-Filter		                            | 2-2-filter.Rmd
-Arrange     		                      | 2-3-arrange.Rmd
-Mutate                                | 2-4-mutate.Rmd
-Summarise                             | 2-5-summarise.Rmd
-Grouping Data	                        | 3-group.Rmd
-Chaining Verbs                        | 4-chain.Rmd
+Data objects
+Readr                               | 01-1-readr.Rmd
+tbl_df class                        | 01-2-tbl.Rmd
+The pipe operator                   | 01-3-pipe.Rmd
 
-Advanced dplyr
-Each                                  | 5-each.Rmd
-Generic do                            | 6-do.Rmd
-Combining Data                        | 7-combining.Rmd
-Databases                             | 8-databases.Rmd
-Non-Standard Evaluation               | 9-nse.Rmd
+Data manipulation
+Select		                            | 02-1-select.Rmd
+Filter		                            | 02-2-filter.Rmd
+Arrange     		                      | 02-3-arrange.Rmd
+Mutate                                | 02-4-mutate.Rmd
+Summarise                             | 02-5-summarise.Rmd
+Grouping Data	                        | 02-6-group.Rmd
+At, All, Each                         | 02-7-advanced.Rmd
+Generic do                            | 02-8-do.Rmd
+Combining Data                        | 02-9-join.Rmd
 
-tidyr
-Tidy Data with tidyr                  | 10-tidyr.Rmd
+Tidying Data
+Tidy Data with tidyr                  | 03-1-tidy-data.Rmd
+Managing missing values               | 03-2-missing-data.Rmd
 
-lubridate
-Managing dates with lubridate         | 11-lubridate.Rmd
+
+Working with backend engines
+RSQLite                               | 04-1-RSQLite.Rmd
+sparlyr                               | 04-2-sprlyr.Rmd
+dplyrXdf                              | 04-3-dplyrXdf.Rmd
+datatable                             | 04-4-datatable.Rmd
+
+Managing special formats 
+Managing dates with lubridate         | 05-1-lubridate.Rmd
+Managing strings                      | 05-2-strings.Rmd
