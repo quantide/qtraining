@@ -120,7 +120,7 @@ bank %>% select(-job)
 bank %>% select(-starts_with("d"))
 ```
 
-Notice that all helpers functions are now functions that live within
+Notice that all helpers functions are also real exported functions, that means that you can use them also outside the 'select()' function:
 
 ```{r}
 starts_with("b", vars=names(bank))
