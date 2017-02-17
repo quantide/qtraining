@@ -1,0 +1,8 @@
+---
+title: "dplyrXdf"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+

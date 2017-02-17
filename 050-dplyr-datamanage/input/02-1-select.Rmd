@@ -17,7 +17,7 @@ data(bank)
 
 # `select()`
 
-Often you work with large datasets with many columns where only a few are actually of interest to you. 
+Often you work with large datasets with many columns where only a few are  of actual interest to you. 
 
 `select()` allows you to rapidly zoom in on a useful subset of columns by using a set of useful helper functions.
 
@@ -32,9 +32,9 @@ bank %>% select(year:day)
 bank %>% select(-(year:day))
 ```
 
-This function works similarly to the select argument to the `base::subset()`. It has its own function in `dplyr`, because the `dplyr` philosophy is to have small functions that each do one thing well.
+This function works similarly to the select argument of the `base::subset()`. It has its own function in `dplyr`, because the `dplyr` philosophy is to have small functions that each do one thing well.
 
-You can rename variables with `select()` by using named arguments:
+You can also rename variables with `select()` by using named arguments:
 
 ```{r}
 # Rename id variable as ID
@@ -56,10 +56,10 @@ bank %>% select(ID = id)
 * `x:y` allows you to select a subset of adiacent variables from `x` to `y`:
 * `-x` allows you to exclude variable `x` from the dataset
 
-* `contains` selects all variables whose name contains "at":
+* `contains` selects all variables whose name contains "d":
 
 ```{r}
-bank %>% select(contains("at"))
+bank %>% select(contains("d"))
 ```
  
 * `ends_with` selects all variables whose name ends in "tion":
@@ -120,6 +120,11 @@ bank %>% select(-job)
 bank %>% select(-starts_with("d"))
 ```
 
+Notice that all helpers functions are now functions that live
+
+```{r}
+starts_with("b", vars=names(bank))
+```
 
 # `distinct()`
 

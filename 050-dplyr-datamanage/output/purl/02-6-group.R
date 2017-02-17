@@ -1,23 +1,9 @@
----
-title: "Grouping Data"
----
-
-```{r options, include=FALSE, purl=FALSE}
-options(width = 108)
-```
-
-```{r first, include=TRUE, purl=TRUE, message=FALSE}
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 require(dplyr)
 require(qdata)
 data(bank)
-```
 
-# `group_by()`
-
-The verb functions are useful, but they become really powerful when you combine them with the idea of "group by", repeating the operation individually on groups of observations within the dataset.
-In `dplyr`, you use the `group_by()` function to describe how to break a dataset down into groups of rows. You can then use the resulting object in the verbs functions; they’ll automatically work "by group" when the input is a grouped. Let us see some examples (pay attention to objects class).
-
-```{r grouped_df_class}
+## ----grouped_df_class----------------------------------------------------
 # Example data frame
 df <- data.frame(x = 1:6, f = rep(1:2, each = 3))
 
@@ -42,22 +28,15 @@ class(dffa)
 dfg <- summarise(.data = dff, x_avg = mean(x))
 dfg
 class(dfg)
-```
 
-In the following example, you split the complete dataset into years and then summarise each year by counting the number of phone calls (`count = n()`) and computing the average duration call (`mean_duration = mean(duration, na.rm = TRUE)`) and balance (`mean_balance = mean(balance, na.rm = TRUE)`):
-
-```{r}
+## ------------------------------------------------------------------------
 by_year <- group_by(bank, year)
 summarise(by_year,
           count = n(),
           mean_duration = mean(duration, na.rm = TRUE),
           mean_balance = mean(balance, na.rm = TRUE))
-```
 
-<!-- AS comment on tables --->
-
-<!--
-```{r}
+## ------------------------------------------------------------------------
 dm <- mtcars %>% 
   group_by(cyl, carb) %>%
   summarise(mpg_mean = mean(mpg))
@@ -70,20 +49,13 @@ with(dm, tapply(mpg_mean, list(cyl, carb), FUN = I))
 require(xtable)
 xtabs(mpg_mean~cyl+carb, data = dm)
 
-```
--->
 
-Then, you search for the number of days covered per year. You report also the number of phone calls per year:
-
-```{r}
+## ------------------------------------------------------------------------
 summarise(by_year,
           days = n_distinct(date),
           count = n())
-```
 
-When you group by multiple variables, each summary peels off one level of the grouping. That makes it easy to progressively roll up a dataset:
-
-```{r}
+## ------------------------------------------------------------------------
 daily <- group_by(bank, year, month, day)
 groups(daily)
 
@@ -95,9 +67,8 @@ groups(per_month)
 
 per_year <- summarise(per_month, calls = sum(calls))
 groups(per_year)
-```
 
-```{r}
+## ------------------------------------------------------------------------
 df <- data.frame(year = rep(c(2010, 2011, 2012), each = 3), 
                  month = rep(1:3, each = 3), 
                  day = rep(20:22, 3), 
@@ -119,8 +90,5 @@ groups(df2)
 summarise(df2, n())
 
 ungroup(df2) %>% summarise(n())
-
-```
-
 
 

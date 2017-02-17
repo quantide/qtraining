@@ -1,0 +1,16 @@
+---
+title: "Handling missing values"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(dplyr)
+require(tidyr)
+require(qdata)
+require(ggplot2)
+```
+
+

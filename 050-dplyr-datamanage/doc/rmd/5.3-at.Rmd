@@ -1,0 +1,73 @@
+---
+title: "summarise_at and mutate_at"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(dplyr)
+require(qdata)
+data(bank)
+```
+
+
+# The main changes related to `summarise()` and `mutate()`
+
+The main changes are related to the helper functions in `summarise()` and to the introduction of `summarise_at()` and `mutate_at()` that are going to replace `summarise_each()` and `mutate_each()`.
+
+## Helper Functions for `summarise()`
+
+A main change from the previous versions of dplyr is that now the helpers are proper functions, meaning that they "live" even outside of the function summarise. For instance the helper `first` returns the first value of a vector:
+
+```{r}
+first(bank$job) # you may add order_by = for choosing a specific order
+bank %>% summarise(first(job))
+```
+
+Thus all helpers are still available to use in the new version but they are also actual functions.
+
+Moreover, as compared to the previous releases of dplyr summarise_each and mutate_each have been slightly changed in order to manage the naming when applying more than one function to more than one variable.
+
+
+## `summarise_at()` and `mutate_at()`
+
+Last, the two functions summarise_each and mutate_each still exist in the package but are going to be discarded and replaced by summarise_at and mutate_at.
+
+```{r}
+bank %>% 
+  summarise_at(vars(balance_mean = balance), mean)
+
+bank %>% 
+  summarise_at(vars(age_mean = age, balance_mean = balance), mean)
+
+bank %>% 
+  summarise_at(vars(age, balance), funs(mean, sd)) # no need to specify names
+```
+
+Alternatively you can do the following:
+
+```{r}
+bank %>% 
+  summarise_at(c(2, 7), mean) # indicate the position of the variables to summarise
+
+bank %>% 
+  summarise_at(c(2, 7), .funs = mean) 
+
+bank %>% 
+  summarise_at(c(2, 7), funs (mean, sd))
+```
+
+The use of mutate_at is similar to that of summarise_at:
+
+```{r}
+bank %>% 
+  mutate_at(vars(age_log = age), log)
+
+bank %>% 
+  mutate_at(2, .funs = log)
+
+bank %>% 
+  mutate_at(c(2, 7), funs (-10, +1)) # how do you choose the new name?
+```

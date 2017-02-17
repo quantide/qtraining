@@ -1,0 +1,14 @@
+---
+title: "Date Manipulation with lubridate"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(stringr)
+require(forcats)
+require(qdata)
+```
+

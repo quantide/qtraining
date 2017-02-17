@@ -1,0 +1,26 @@
+## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
+require(dplyr)
+
+## ------------------------------------------------------------------------
+my_data <- data.frame(id = 1:10, 
+                      gender = c(rep("F",5), rep("M", 5)),
+                      x = rbinom(10, 1, 0.5), 
+                      y = rnorm(10, 5, 1))
+
+my_data <- tbl_df(my_data)
+
+## ------------------------------------------------------------------------
+my_data %>% 
+  summarise_all(mean) # warning for non numeric
+
+my_data %>% 
+  select(c(x, y)) %>%
+  summarise_all( funs(mean, sd)) # you do not need to specify names for the variables
+
+## ------------------------------------------------------------------------
+squared <- function(x) {x^2}
+
+my_data %>% 
+  select(c(x, y)) %>%
+  mutate_all(funs(squared))
+
