@@ -1,5 +1,5 @@
 ---
-title: "Each"
+title: "Each, At, All"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -468,19 +468,20 @@ mtcars %>%
   summarise_all(c("mean","sd")) %>%
   setNames(c("mean_cyl", "mean_carb", "mean_mpg", "mean_disp", "sdev_cyl", "sdev_carb", "sdev_mpg", "sdev_disp"))
 
+
 # with one group
 mtcars %>% 
   select_if(is.numeric) %>%
   group_by(cyl) %>% 
   summarise_all(c("mean","sd")) %>%
-  setNames(c("mean_cyl", "mean_carb", "mean_mpg", "mean_disp", "sdev_cyl", "sdev_carb", "sdev_mpg", "sdev_disp"))
+setNames(c("cyl", "mean_carb", "mean_mpg", "mean_disp",  "sd_carb",  "sd_mpg",  "disp_sd"))
 
 # with more than one group
 mtcars %>% 
   select_if(is.numeric) %>%
   group_by(cyl, carb) %>% 
   summarise_all(c("mean","sd")) %>%
-  setNames(c("mean_cyl", "mean_carb", "mean_mpg", "mean_disp", "sdev_cyl", "sdev_carb", "sdev_mpg", "sdev_disp"))
+  setNames(c("cyl","carb","mean_mpg", "mean_disp", "sdev_mpg", "sdev_disp"))
 ```
 
 
@@ -848,7 +849,7 @@ mtcars %>%
   select_if(is.numeric) %>%
   group_by(carb, cyl) %>% 
   mutate_all(rescale) %>%
-  setNames(c("rescaled_cyl", "rescaled_carb", "rescaled_mpg", "rescaled_disp"))
+    setNames(c("rescaled_cyl", "rescaled_carb", "rescaled_mpg", "rescaled_disp"))
 ```
 
 
@@ -994,14 +995,14 @@ mtcars %>%
   select_if(is.numeric) %>%
   group_by(carb) %>% 
   mutate_all(c("rescale", "order")) %>%
-  rename(rescale_carb = carb_rescale, rescale_cyl = cyl_rescale, rescale_mpg = mpg_rescale, rescale_disp = disp_rescale, order_carb = carb_order, order_cyl = cyl_order, order_mpg = mpg_order, order_disp = disp_order)
+  rename(rescale_cyl = cyl_rescale, rescale_mpg = mpg_rescale, rescale_disp = disp_rescale, order_cyl = cyl_order, order_mpg = mpg_order, order_disp = disp_order)
 
 # with more than one group
 mtcars %>% 
   select_if(is.numeric) %>%
   group_by(carb, cyl) %>% 
   mutate_all(c("rescale", "order")) %>%
-  rename(rescale_carb = carb_rescale, rescale_cyl = cyl_rescale, rescale_mpg = mpg_rescale, rescale_disp = disp_rescale, order_carb = carb_order, order_cyl = cyl_order, order_mpg = mpg_order, order_disp = disp_order)
+  rename(rescale_mpg = mpg_rescale, rescale_disp = disp_rescale, order_mpg = mpg_order, order_disp = disp_order)
 ```
 
 
