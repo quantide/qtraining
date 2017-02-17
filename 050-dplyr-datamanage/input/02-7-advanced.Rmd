@@ -50,7 +50,7 @@ We will test them by using three `dplyr` verbs:
 
 1. `summarise()`
 2. `summarise_each()`
-3. `summarise_all()`
+3. `summarise_at()`
 
 We will also test them under the three options provided by the `group_by()` verb: 
 
