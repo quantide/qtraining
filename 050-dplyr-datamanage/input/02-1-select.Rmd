@@ -126,6 +126,16 @@ Notice that all helpers functions are also real exported functions, that means t
 starts_with("b", vars=names(bank))
 ```
 
+
+## `select_if()`
+This verb allows you to use a predicate on the columns of a data frame. Only those columns for which the predicate returns TRUE will be selected:
+
+```{r}
+select_if(bank, is.factor)    # select only string variables
+select_if(bank, is.numeric)   # select only numeric values
+```
+
+
 # `distinct()`
 
 A common use of `select()` is to find out which values a set of variables takes. This is particularly useful in conjunction with the `distinct()` verb which only returns the unique values in a table.
