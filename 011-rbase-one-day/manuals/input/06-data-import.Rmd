@@ -5,7 +5,7 @@ title: "Data Import from external sources"
 ```{r setup, include=FALSE, purl=FALSE, message=FALSE}
 require(knitr)
 opts_chunk$set(echo = TRUE)
-opts_knit$set(root.dir = "./../../data")
+opts_knit$set(root.dir = "./data")
 ```
 
 ```{r g, echo=FALSE, purl=FALSE}
