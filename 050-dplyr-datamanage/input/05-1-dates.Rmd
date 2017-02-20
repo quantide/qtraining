@@ -6,6 +6,16 @@ title: "Date Manipulation with lubridate"
 options(width = 108)
 ```
 
+Either:
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(lubridate)
+require(tidyverse)
+require(qdata)
+```
+
+or:
+
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 require(lubridate)
 require(dplyr)
@@ -17,9 +27,10 @@ require(qdata)
 
 # A First Look to `lubridate`
 
-Among packages that deals with dates and times in R, `lubridate` provides a set of intuitive and coherent functions. Intuitive since each function usually perform a single task described by its name; coherent since `lubridate` is well integrated with other data management tools, like `dplyr`.
+Among packages that deal with dates and times in R, `lubridate` provides a set of intuitive and coherent functions. Intuitive since each function usually perform a single task described by its name; coherent since `lubridate` is part of tidyverse thus well integrated with the rest of it.
 
-Supposing `lubridate` is currently installed, it must be loaded in order to use its functions.
+Supposing `lubridate` is currently installed, it must be loaded in order to use its functions (it is not part of the core of tidyverse, thus it is not loaded together with the rest of tidyverse).
+
 ```{r lubridate_require, message=FALSE}
 require(lubridate)
 ```
