@@ -1,5 +1,5 @@
 ---
-title: "Date Manipulation with lubridate"
+title: "Manipulating strings with stringr"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -12,3 +12,23 @@ require(forcats)
 require(qdata)
 ```
 
+# Introduction
+
+# Manipulating strings
+
+## Combining
+
+## Subsetting
+
+## Splitting
+
+## Change cases
+
+
+# Identify string patterns
+
+## Detect matches
+
+## Extract the actual matches
+
+## Replace match
