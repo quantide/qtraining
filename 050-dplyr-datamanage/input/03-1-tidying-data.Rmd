@@ -6,11 +6,6 @@ title: "Tidy Data with `tidyr`"
 options(width = 108)
 ```
 
-```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(tidyverse)
-require(qdata)
-```
-
 In this chapter you'll work mainly with the package `tidyr` which is part of the `tidyverse` core. As already learned, this means that if we load the package `tidyverse`, `tidyr` will be automatically loaded. As we will also use the packages `dplyr` and `ggplot2` that are part of the tidyverse core, this is reccomendable so that all the packages used are loaded at once.
 
 Alternatevely, you can load `tidyr` singularly together with the pakcages `dplyr` and `ggplot2` that will be of use during this chapter:
