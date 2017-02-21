@@ -2,9 +2,10 @@
 title: "Handling missing values"
 ---
 
-```{r options, include=FALSE, purl=FALSE}
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
 options(width = 108)
-opts_knit$set(root.dir = "../data")
+require(knitr)
+opts_knit$set(root.dir = "./../data")
 ```
 
 In this chapter you'll work mainly with the package `tidyr` which is part of the `tidyverse` core. As already learned, this means that if we load the package `tidyverse`, `tidyr` will be automatically loaded. As we will also use the packages `dplyr` that is part of the tidyverse core as well, this is reccomendable so that all the packages used are loaded at once.
@@ -17,7 +18,7 @@ require(tidyr)
 require(qdata)
 ```
 
-# Introduction
+## Introduction
 
 In `R` missing values are represented with `NA` ("not available"). Missingness in `R` is "contagious" meaning that any operation involving an unknown value will also be unknown:
 
@@ -33,22 +34,23 @@ If you want to determine whether a value is missing you may use the function `is
 is.na(x)
 ```
 
-# Types of missing values
+## Types of missing values
 
 A value can be missing in two ways:
 
 1. Explicitely, i.e. it is represented as `NA` or with another value labelled as missing
+
 2. Implicitely, i.e. it is absent from your data frame
 
 
 
-## 1. Explicit missing values
+1. Explicit missing values
 
 Explicit missing values may be already represented as `NA`. This is the easiest case as they are automatically detected by `R` and you can then proceed with any of the operations presented in the next section. 
 
 With a very simple example:
 
-```{missing, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 # example with different types of missing data
 df <- tibble(
   year = c(2013, 2014, 2014, 2015, 2015, 2016, 2016),
@@ -61,38 +63,38 @@ df <- tibble(
 The variable unemplyment_rate contains explicit missing value. If you calculate any summary statistics on that variable, you will get a "NA"
 
 
-```{missing, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 df %>% summarise(mean(unemployment_rate))
 ```
 
 In the variable "lab_force_participation", 999.99 does not seem in line with the others. It may be the case that the person that collected the data for you decided to identify a missing value with, for example "999.99". In this case `R` does not recognise it as missing value and it includes it in your calculations yielding unusual results: 
 
-```{missing, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 df %>% summarise(mean(lab_force_participation))
 ```
 
 Another example may be when the missing value is just left blank, where `R` returns a warning:
 
-```{missing2, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 y <- c(1, 2, 3, "")
 ```
 
 In all these cases it is better to recode the missing values so that they can easily be treated by `R`. The function `na_if` of the package `dplyr` quickly does it:
 
-```{na_if, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 na_if(y, "")
 ```
 
 and on the data frame `df`:
 
-```{na_if2, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 df_new <- na_if(df, 999.99)
 ```
 
 
 
 
-## 2. Implicit missing values
+2. Implicit missing values
 
 There is another type of missing value in the data frame df that has not yet been treated: the variables referring to unemployment rate and labour force participation are missing for the second semester of 2013. You can make the missing values explicit with the function `complete()`:
 
@@ -102,11 +104,11 @@ df %>% complete(year, sem)
 
 Or on the new data frame
 
-```{complete missing, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 df_new <- df_new %>% complete(year, sem)
 ```
 
-# Treating missing values
+## Treating missing values
 
 If you encounter missing values in your data frame you have diffent opstions:
 
@@ -115,20 +117,20 @@ If you encounter missing values in your data frame you have diffent opstions:
 3. Replace the missing values
 
 
-## 1. Drop the entire row
+1. Drop the entire row
 
 This is not reccomandable especially if you have many variables and you find missing values only in a small percentage of the variables. If you think this is the way to go, you can easily drop the row by using `drop_na()`:
 
-```{drop missing, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 df_new %>% drop_na()
 ```
 
 
-## 2. Ignore missing values
+2. Ignore missing values
 
 Most of the functions you use have the option `na.rm`. If the argument is TRUE, the function will just ignore them in the calculations. Notice that this works only if the missing values are coded as `NA`, hence it is important to turn all missing values to `NA`.
 
-```{ignore missing, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 df_new %>% 
 summarise_at(vars(unemployment_rate, lab_force_participation), 
 funs(mean), na.rm = TRUE)
@@ -138,11 +140,11 @@ funs(mean), na.rm = TRUE)
 Notice that if you encounter unusual values in your data frame. For example, suppose you have a variable called age, and you find a value equals 300. This is not a missing value but an error in tyting was obviously made. Thus you may decide to trasmorm it as missing so that you can ignore it as it was a missing value. Recoding unusual values into `NA` may come in handy because the unusual values that may mess up your analysis are ignored from them with the simple use of `na.rm`.
 
 
-## 3. Replace missing values
+3. Replace missing values
 
 If a data source has been used for data entry, missing values may simply indicate that the previous value should be carried forward:
 
-```{ignore missing, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 df <- tibble(
   year = c(2014, NA, 2015, NA, 2016, NA),
   sem = c(1, 2, 1, 2, 1, 2),
@@ -154,7 +156,7 @@ df <- tibble(
 
 The function `fill()` provided by `tidyr` helps deailing with this situation by replacing NAs with the previous value:
 
-```{ignore missing, include=TRUE, purl=TRUE}
+```{r, include=TRUE, purl=TRUE}
 df %>% fill(year)
 ```
 
