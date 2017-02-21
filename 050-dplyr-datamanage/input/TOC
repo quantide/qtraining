@@ -19,7 +19,7 @@ Combining Data                        | 02-9-join.Rmd
 
 Tidying Data
 Tidy Data with tidyr                  | 03-1-tidying-data.Rmd
-Managing missing values               | 03-2-missing-values.Rmd
+Handling missing values               | 03-2-missing-values.Rmd
 
 
 Working with backend engines
