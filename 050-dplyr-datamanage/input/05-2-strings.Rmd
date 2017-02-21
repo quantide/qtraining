@@ -3,10 +3,15 @@ title: "Manipulating strings with stringr"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
+require(knitr)
 options(width = 108)
+opts_chunk$set(echo = TRUE)
+opts_knit$set(root.dir = "../data")
 ```
 
+
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(tidyverse)
 require(stringr)
 require(forcats)
 require(qdata)
@@ -14,21 +19,194 @@ require(qdata)
 
 # Introduction
 
+In this chapter you will learn about string manipulation in `R` with the package `stringr`. You don't always work with textual data, hence this package is installed when you install `tidyverse` but you need to load it explicitely.
+
+At the end of this chapter you will also work with factors with the package `forcats` which is part of the tidyiverse but it is not part of the core, hence you need to install it explicitely as well.
+
+
 # Manipulating strings
+
+Strings are textual data and they are created by using either single quotes or double quoutes, as you have already seen at the beginning of this course. You can store many many strings in a character vector:
+
+```{r}
+# character vector
+char_vector <- c("Hello", "Andrea", "Spanò")
+```
+
+With the function `str_length()` you can see the length of each string:
+
+```{r}
+# character vector
+str_length(char_vector)
+```
+
 
 ## Combining
 
-## Subsetting
+Suppose you do not need to have a store separately name and surname. Hence you would like to "combine" name and surname into the same string:
+
+```{r}
+# character vector
+str_c("Andrea", "Spanò", sep = " ")
+```
+
+The argument `sep` tells the software if and how you should separate the two parts of the new string. You can also add more words and you string gets longer:
+
+```{r}
+# character vector
+str_c("Hello", "Andrea", "Spanò", sep = " ")
+str_length(str_c("Hello", "Andrea", "Spanò", sep = " "))
+```
+
+In the above code, you have collapsed the whole character vector into one string. In these cases you may want to use 
+
+```{r}
+str_c(char_vector, collapse = " ")
+```
+
+
+Now let us make this a bit more interesting. Let us import the file tennis.txt:
+
+```{r}
+setwd("./data")
+tennis <- read_table("tennis.txt", col_names = TRUE)
+head(tennis)
+```
+
+Instead of having one variable that stores first names and one that stores surnames, let us store both name and surname in one column:
+
+```{r}
+tennis %>% 
+  mutate_at(vars(Name), funs(str_c(First.Name, Name, sep = " "))) %>%
+  select(-First.Name)   # drop the column "First.Name"
+```
+
 
 ## Splitting
 
+Similarly, you may want to go the other way around: you have a string containing different parts separated by, for instance, a space, and you want to divide it into many strings:
+
+```{r}
+char_vector <- c("Hello Andrea !")
+str_split(char_vector, " " )
+```
+
+Let us make it a bit more interesting and suppose you have the tennis data with name and surnames of each tennis player in the same variable. You may want to split the into two strings so that you have one variable for names and one for surnames:
+
+```{r}
+str_split(tennis_new$Name, " ")
+```
+
+This returns a list as different strings may be composed by a different number of words. In order to work with a matrix, like other `stringr` functions that return a list, you can set `simplify = TRUE`:
+
+```{r}
+str_split(tennis_new$Name, " ", simplify = TRUE)
+```
+
+You can easily see that there is one observation with a double name and it does not aggregate the two names as they are devided by a space.
+
+## Subsetting
+
+Another useful manipulation you may need/want to do on strings, is to extract part of it. For instance, suppose you have the following data fram containing some Italian cities and their province:
+
+```{r}
+comuni <- tibble(comune = c('Legnano', 'Parabiago', 'Alpette', 'Andezano'),
+                 provincia = c('Milano', 'Mi', 'Torino', 'To'))
+```
+
+Some provinces are stored using an abbrvation (only the first two letters as usual) and others are stored using the full name of the city. Milano and Mi are the same province as well as Torino is the same as To. 
+
+```{r}
+comuni %>% distict(provincia) # 4 different values
+```
+
+To let `R` know that it is not 4 differenct cities, we may give them the same name by taking the first two letters of each province:
+
+```{r}
+comuni %>% 
+  mutate_at(vars(provincia), funs(str_sub(provincia, 1, 2)))
+```
+
+
 ## Change cases
 
+Another important operation on strings is changing the text to lowercase/uppercase. In `R` uppercases and lowercases are not equivalent:
 
-# Identify string patterns
+```{r}
+"hello" == "hello"
+"hello" == "HELLO"
+```
+
+However, "HELLO" for you is equivalent to "hello". Thus it may be useful to let `R` know that you mean they are equivalent by modifying one of the two words to upper or lower case:
+
+```{r}
+str_to_upper(c("hello"))
+str_to_lower(c("HELLO"))
+```
+
+Let us make this a bit more interesting and consider again the example with provinces and municipalities. As we often write provinces with the upper first two letters, let us first select the first two letters and secondly change them to uppercase:
+
+```{r}
+comuni %>% 
+  mutate_at(vars(provincia), funs(str_sub(provincia, 1, 2))) %>%
+  mutate_at(vars(provincia), funs(str_to_upper(provincia)))
+```
+
+Notice that changing cases may be more complicated than it looks. In fact different languages may have different rules for changing cases. You can choose the language by specifying `locale = `. The suggestion is that if you are working with foreign languages you should check additional documentation on the functions `str_to_upper()` and `str_to lower()`.
+
+
+# Identifying string patterns
+
 
 ## Detect matches
 
-## Extract the actual matches
+To check whether a character vector matches a pattern, you can use the function `str_detect()`, where you need to specify the vector in which to look for and the pattern to be found:
+
+1. Contains a (set of) letter(s):
+
+```{r}
+province <- c("milano", "milan", "mi", "milano", "torino", "to", "agrigento")
+str_detect(province, c("to"))
+```
+
+
+
+2. Starts with: 
+
+```{r}
+province <- c("milano", "milan", "mi", "milano", "torino", "to", "agrigento")
+str_detect(province, c("^to"))
+```
+
+
+
+3. Ends with: 
+
+```{r}
+province <- c("milano", "milan", "mi", "milano", "torino", "to", "agrigento")
+str_detect(province, c("to$"))
+```
+
+
+## Extract match
+
+Once you have found a match you may want to extract it so that you can somehow manipulate them:
+
+```{r}
+province <- c("milano", "milan", "mi", "milano", "torino", "to", "agrigento")
+str_extract(province, c("to$"))
+```
+
 
 ## Replace match
+
+Suppose the match you have found corresponds to a typos hence you just want to replace it with the correct word:
+
+```{r}
+colors <- c("gray", "gray", "grey", "white", "white", "white")
+str_replace(colors, c("gray"), "grey")
+```
+
+
+# Factors with forcats
+
