@@ -16,7 +16,7 @@ require(qdata)
 
 or:
 
-```{r first, include=TRUE, purl=TRUE, message=FALSE}
+```{r first2, include=TRUE, purl=TRUE, message=FALSE}
 require(lubridate)
 require(dplyr)
 require(ggplot2)
