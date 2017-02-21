@@ -67,8 +67,11 @@ str_c(char_vector, collapse = " ")
 
 Now let us make this a bit more interesting. Let us import the file tennis.txt:
 
-```{r}
+```{r setwd, eval=FALSE}
 setwd("./data")
+```
+
+```{r}
 tennis <- read_table("tennis.txt", col_names = TRUE)
 head(tennis)
 ```
