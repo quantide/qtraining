@@ -18,16 +18,16 @@ Generic do                            | 02-8-do.Rmd
 Combining Data                        | 02-9-join.Rmd
 
 Tidying Data
-Tidy Data with tidyr                  | 03-1-tidy-data.Rmd
-Managing missing values               | 03-2-missing-data.Rmd
+Tidy Data with tidyr                  | 03-1-tidying-data.Rmd
+Managing missing values               | 03-2-missing-values.Rmd
 
 
 Working with backend engines
 RSQLite                               | 04-1-RSQLite.Rmd
-sparlyr                               | 04-2-sprlyr.Rmd
+sparklyr                              | 04-2-sparklyr.Rmd
 dplyrXdf                              | 04-3-dplyrXdf.Rmd
 datatable                             | 04-4-datatable.Rmd
 
 Managing special formats 
-Managing dates with lubridate         | 05-1-lubridate.Rmd
+Managing dates with lubridate         | 05-1-dates.Rmd
 Managing strings                      | 05-2-strings.Rmd
