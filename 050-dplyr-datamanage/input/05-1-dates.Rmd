@@ -1,5 +1,5 @@
 ---
-title: "Date Manipulation with lubridate"
+title: "Manipulating dates with lubridate"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}

@@ -13,8 +13,6 @@ require(dplyr)
 ```
 
 
-# Pipe operator  
-
 As stated in "R for data science" by Hadley Wickham and Garrett Grolemund, _pipes are powerful tools for clearly expressing a sequence of multiple operations_. The pipe operator (`%>%`) allows us to pipe the output from one function to the input of another function. The idea of piping is to read the functions from left to right. It is particularly useful with nested functions (reading from the inside to the outside) or with multiple operations.
 
 ![<small>Source: www.datacamp.com</small>](./images/pipe.png)

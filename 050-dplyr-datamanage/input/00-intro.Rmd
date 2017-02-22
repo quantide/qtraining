@@ -1,12 +1,11 @@
 ---
-title: "Data Manipulation with tidyverse"
+title: "Introduction to tidyverse"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
 options(width = 108)
 ```
 
-# Introduction to tidyverse
 
 Most of the packages that will be used in the course are part of the so-called "tidyverse". _Packages in the tidyverse are packages that share a common philosophy of data management and that are designed to work well together._ (www.tidyverse.org) 
 
