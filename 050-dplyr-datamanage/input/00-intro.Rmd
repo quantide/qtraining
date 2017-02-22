@@ -8,11 +8,10 @@ options(width = 108)
 
 # Introduction to tidyverse
 
-This course provides an overview of data management with `R`. Most of the packages that will be used in the course are part of the so-called "tidyverse". 
+Most of the packages that will be used in the course are part of the so-called "tidyverse". _Packages in the tidyverse are packages that share a common philosophy of data management and that are designed to work well together._ (www.tidyverse.org) 
+
 
 ![<small>Some of the tidyverse packages. Source: www.tidyverse.org</small>](./images/tidyverse.png)
-
-Packages in the tidyverse are packages that share a common philosophy of data management and that are designed to work well together (tidyverse.org). 
 
 
 Please check out the manifesto for further details on the philosophy underlining tidyiverse:  [the tidy tools manifesto](https://cran.r-project.org/web/packages/tidyverse/vignettes/manifesto.html). 
@@ -36,8 +35,8 @@ This will load the core packages (as listed) that are a set of packages that are
 Among the core packages installed, in this course we will use the following:
 
 * dplyr, for data manipulation
-* tidyr, for data tidying
-* readr, for data import
+* tidyr, for tidying data
+* readr, for importing flat files
 * tibble, for tibbles creation and coercion
 
 `dplyr` is a modern `R` package which provides functions to manage data in a more intuitive and efficient way than base `R`.  
@@ -57,7 +56,7 @@ In addition to the core packages, it also installs other tidyverse packages that
 Tidyverse as well as the packages that compose it are fairly new, thus we should expect that the composition of tidyverse may change as well as the releases of the packages that compose tidyiverse. You can check that all tidyverse packages are up-to-date with the following line command:
 
 ```{r tidyverse_update, eval = FALSE}
-#tidyverse_update()
+tidyverse_update()
 ```
 
 
