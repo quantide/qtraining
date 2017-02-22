@@ -129,14 +129,14 @@ df <- tibble(comune = c('Legnano', 'Parabiago', 'Alpette', 'Andezano'),
 Some provinces are stored using an abbrvation (only the first two letters as it is often the case) and others are stored using the full name of the city. Milano and Mi are the same province as well as Torino is the same as To. However the software reads them as four different values. 
 
 ```{r}
-comuni %>% distinct(provincia) # 4 different values
+df %>% distinct(provincia) # 4 different values
 ```
 
 
 To let `R` know that it is not 4 differenct cities, we may give them the same name by taking the first two letters of each province:
 
 ```{r}
-comuni %>% 
+df %>% 
   mutate_at(vars(provincia), funs(str_sub(provincia, 1, 2)))
 ```
 
@@ -163,7 +163,7 @@ str_to_lower(c("HELLO"))
 Let us make this a bit more interesting and consider again the example with provinces and municipalities. As we often write provinces with the upper first two letters, let us first select the first two letters and secondly change them to uppercase:
 
 ```{r}
-comuni %>% 
+df %>% 
   mutate_at(vars(provincia), funs(str_sub(provincia, 1, 2))) %>%
   mutate_at(vars(provincia), funs(str_to_upper(provincia)))
 ```
