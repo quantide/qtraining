@@ -7,7 +7,7 @@ options(width = 108)
 ```
 
 
-Most of the packages that will be used in the course are part of the so-called "tidyverse". _Packages in the tidyverse are packages that share a common philosophy of data management and that are designed to work well together._ (www.tidyverse.org) 
+Most of the packages used in this course are part of the so-called "tidyverse". _Packages in the tidyverse are packages that share a common philosophy of data management and that are designed to work well together._ (tidyverse.org) 
 
 
 ![<small>Some of the tidyverse packages. Source: www.tidyverse.org</small>](./images/tidyverse.png)
@@ -15,28 +15,27 @@ Most of the packages that will be used in the course are part of the so-called "
 
 Please check out the manifesto for further details on the philosophy underlining tidyiverse:  [the tidy tools manifesto](https://cran.r-project.org/web/packages/tidyverse/vignettes/manifesto.html). 
 
-The whole tidyverse can be installed with the single (yet for long runnning!) line command .
+The whole tidyverse can be installed with the single (but long runnning!) line command.
 
 ```{r tidyverse, message=FALSE, eval = FALSE}
 install.packages("tidyverse")
 ```
 
-The package `tidyverse` is thus just the collection of packages in the tidyverse. 
+In order to start working with the tidyverse, you need to load it:
 
-In order to start using the tidyverse, you need to load them:
-
-```{r tidyverse3}
+```{r}
 require(tidyverse)
 ```
 
-This will load the core packages (as listed) that are a set of packages that are used in basically any analysis. 
+The above command loads the core packages (as listed) that are a set of packages used in basically any analysis. 
 
-Among the core packages installed, in this course we will use the following:
+Among the core packages installed, in this course you will use the following:
 
 * dplyr, for data manipulation
 * tidyr, for tidying data
 * readr, for importing flat files
 * tibble, for tibbles creation and coercion
+
 
 `dplyr` is a modern `R` package which provides functions to manage data in a more intuitive and efficient way than base `R`.  
 The starting point for more information about `dplyr` is the official website providing documentation: [dplyr: A Grammar of Data Manipulation](https://cran.r-project.org/web/packages/dplyr/index.html).  
@@ -50,9 +49,17 @@ The starting point for more information about `readr` is the official website pr
 `tibble` provides a `tbl_df` class that offers better checking and printing capabilities than traditional data frames.  
 The starting point for more information about `tibble` is the official website providing documentation: [tibble: Simple data frames](https://cran.r-project.org/web/packages/tibble/index.html)
 
-In addition to the core packages, it also installs other tidyverse packages that will be used in this course and that are useful, for instance, when working with non-numeric variables or when importing data from external sources. We will not list all these packages here, but for a better overview of the main packages in the tidyverse please check out the following link https://github.com/tidyverse/tidyverse. If you want to load packages that are not in the tidyverse core, you should load them one by one.
+In addition to the core packages, `tidyverse` installs other tidyverse packages some of which will be used in this course and some will not. For instance, there are packages useful for working with non-numeric variables (such as `stringr` and `forcats`), or for importing data from external sources (such as `haven`). In order to list all packages in tidyverse you can use the following command line:
 
-Tidyverse as well as the packages that compose it are fairly new, thus we should expect that the composition of tidyverse may change as well as the releases of the packages that compose tidyiverse. You can check that all tidyverse packages are up-to-date with the following line command:
+
+```{r}
+tidyverse_packages()
+```
+
+
+For more details about packages in the tidyverse please check out the following link https://github.com/tidyverse/tidyverse. Remember that if you want to load packages that are not in the tidyverse core, you should load them explicitely.
+
+Tidyverse as well as the packages that compose it are fairly new, thus we should expect the composition of tidyverse to change as well as the releases of the packages that compose it. You can check that all tidyverse packages are up-to-date with the following line command:
 
 ```{r tidyverse_update, eval = FALSE}
 tidyverse_update()
