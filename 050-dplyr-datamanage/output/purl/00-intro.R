@@ -1,14 +1,11 @@
-## ----tidyverse, message=FALSE--------------------------------------------
-install.packages("tidyverse", repos = "http://cran.us.r-project.org")
-
-## ----tidyverse2, message=FALSE-------------------------------------------
-#session_info(c("tidyverse"))
+## ----tidyverse, message=FALSE, eval = FALSE------------------------------
+## install.packages("tidyverse")
 
 ## ----tidyverse3----------------------------------------------------------
-library(tidyverse)
+require(tidyverse)
 
-## ----tidyverse_update----------------------------------------------------
-#tidyverse_update()
+## ----tidyverse_update, eval = FALSE--------------------------------------
+## tidyverse_update()
 
 ## ----bank, message=FALSE-------------------------------------------------
 require(qdata)

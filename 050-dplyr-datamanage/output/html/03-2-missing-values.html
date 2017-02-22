@@ -326,15 +326,15 @@ $(document).ready(function () {
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
-  <li><a href="03-1-tidy-data.html">Tidy Data with tidyr</a></li>
-  <li><a href="03-2-missing-data.html">Managing missing values</a></li>
+  <li><a href="03-1-tidying-data.html">Tidy Data with tidyr</a></li>
+  <li><a href="03-2-missing-values.html">Handling missing values</a></li>
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
-  <li><a href="04-2-sprlyr.html">sparlyr</a></li>
+  <li><a href="04-2-sparklyr.html">sparklyr</a></li>
   <li><a href="04-3-dplyrXdf.html">dplyrXdf</a></li>
   <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
-  <li><a href="05-1-lubridate.html">Managing dates with lubridate</a></li>
+  <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
   <li><a href="05-2-strings.html">Managing strings</a></li>
 </ul>
     </div>  
@@ -350,11 +350,141 @@ $(document).ready(function () {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#types-of-missing-values">Types of missing values</a><ul>
+<li><a href="#explicit-missing-values">1. Explicit missing values</a></li>
+<li><a href="#implicit-missing-values">2. Implicit missing values</a></li>
+</ul></li>
+<li><a href="#treating-missing-values">Treating missing values</a><ul>
+<li><a href="#drop-the-entire-row">1. Drop the entire row</a></li>
+<li><a href="#ignore-missing-values">2. Ignore missing values</a></li>
+<li><a href="#replace-missing-values">3. Replace missing values</a></li>
+</ul></li>
+</ul>
+</div>
 
+<p>In this chapter you’ll work mainly with the package <code>tidyr</code> which is part of the <code>tidyverse</code> core. As already learned, this means that if we load the package <code>tidyverse</code>, <code>tidyr</code> will be automatically loaded. As we will also use the packages <code>dplyr</code> that is part of the tidyverse core as well, this is reccomendable so that all the packages used are loaded at once.</p>
+<p>Alternatevely, you can load <code>tidyr</code> singularly together with the package <code>dplyr</code>:</p>
 <pre class="r"><code>require(dplyr)
 require(tidyr)
-require(qdata)
-require(ggplot2)</code></pre>
+require(qdata)</code></pre>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In <code>R</code> missing values are represented with <code>NA</code> (“not available”). Missingness in <code>R</code> is “contagious” meaning that any operation involving an unknown value will also be unknown:</p>
+<pre class="r"><code>NA+1</code></pre>
+<pre><code>## [1] NA</code></pre>
+<pre class="r"><code>NA == 1</code></pre>
+<pre><code>## [1] NA</code></pre>
+<pre class="r"><code>x &lt;- c(1, 2, 3, 4, NA); mean(x)</code></pre>
+<pre><code>## [1] NA</code></pre>
+<p>If you want to determine whether a value is missing you may use the function <code>is.na()</code> which returns a logical vector:</p>
+<pre class="r"><code>is.na(x)</code></pre>
+<pre><code>## [1] FALSE FALSE FALSE FALSE  TRUE</code></pre>
+</div>
+<div id="types-of-missing-values" class="section level2">
+<h2>Types of missing values</h2>
+<p>A value can be missing in two ways:</p>
+<ol style="list-style-type: decimal">
+<li><p>Explicitely, i.e. it is represented as <code>NA</code> or with another value labelled as missing</p></li>
+<li><p>Implicitely, i.e. it is absent from your data frame</p></li>
+</ol>
+<div id="explicit-missing-values" class="section level3">
+<h3>1. Explicit missing values</h3>
+<p>Explicit missing values may be already represented as <code>NA</code>. This is the easiest case as they are automatically detected by <code>R</code> and you can then proceed with any of the operations presented in the next section.</p>
+<p>With a very simple example:</p>
+<pre class="r"><code># example with different types of missing data
+df &lt;- tibble(
+  year = c(2013, 2014, 2014, 2015, 2015, 2016, 2016),
+  sem = c(1, 1, 2, 1, 2, 1, 2),
+  unemployment_rate = c(7.1, 6.5, 7.6, 8.2, 7.3, NA, 6.8),
+  lab_force_participation = c(60, 63.5, 61.4, 999.99, 62.7, 61.8, 63.2)
+)</code></pre>
+<p>The variable unemplyment_rate contains explicit missing value. If you calculate any summary statistics on that variable, you will get a “NA”</p>
+<pre class="r"><code>df %&gt;% summarise(mean(unemployment_rate))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   `mean(unemployment_rate)`
+##                       &lt;dbl&gt;
+## 1                        NA</code></pre>
+<p>In the variable “lab_force_participation”, 999.99 does not seem in line with the others. It may be the case that the person that collected the data for you decided to identify a missing value with, for example “999.99”. In this case <code>R</code> does not recognise it as missing value and it includes it in your calculations yielding unusual results:</p>
+<pre class="r"><code>df %&gt;% summarise(mean(lab_force_participation))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##   `mean(lab_force_participation)`
+##                             &lt;dbl&gt;
+## 1                        196.0843</code></pre>
+<p>Another example may be when the missing value is just left blank, where <code>R</code> returns a warning:</p>
+<pre class="r"><code>y &lt;- c(1, 2, 3, &quot;&quot;)</code></pre>
+<p>In all these cases it is better to recode the missing values so that they can easily be treated by <code>R</code>. The function <code>na_if</code> of the package <code>dplyr</code> quickly does it:</p>
+<pre class="r"><code>na_if(y, &quot;&quot;)</code></pre>
+<pre><code>## [1] &quot;1&quot; &quot;2&quot; &quot;3&quot; NA</code></pre>
+<p>and on the data frame <code>df</code>:</p>
+<pre class="r"><code>df_new &lt;- na_if(df, 999.99)</code></pre>
+</div>
+<div id="implicit-missing-values" class="section level3">
+<h3>2. Implicit missing values</h3>
+<p>There is another type of missing value in the data frame df that has not yet been treated: the variables referring to unemployment rate and labour force participation are missing for the second semester of 2013. You can make the missing values explicit with the function <code>complete()</code>:</p>
+<pre class="complete"><code>df %&gt;% complete(year, sem)</code></pre>
+<p>Or on the new data frame</p>
+<pre class="r"><code>df_new &lt;- df_new %&gt;% complete(year, sem)</code></pre>
+</div>
+</div>
+<div id="treating-missing-values" class="section level2">
+<h2>Treating missing values</h2>
+<p>If you encounter missing values in your data frame you have diffent opstions:</p>
+<ol style="list-style-type: decimal">
+<li>Drop the entire row</li>
+<li>Ignore the missing values in the analysis</li>
+<li>Replace the missing values</li>
+</ol>
+<div id="drop-the-entire-row" class="section level3">
+<h3>1. Drop the entire row</h3>
+<p>This is not reccomandable especially if you have many variables and you find missing values only in a small percentage of the variables. If you think this is the way to go, you can easily drop the row by using <code>drop_na()</code>:</p>
+<pre class="r"><code>df_new %&gt;% drop_na()</code></pre>
+<pre><code>## # A tibble: 5 × 4
+##    year   sem unemployment_rate lab_force_participation
+##   &lt;dbl&gt; &lt;dbl&gt;             &lt;dbl&gt;                   &lt;dbl&gt;
+## 1  2013     1               7.1                    60.0
+## 2  2014     1               6.5                    63.5
+## 3  2014     2               7.6                    61.4
+## 4  2015     2               7.3                    62.7
+## 5  2016     2               6.8                    63.2</code></pre>
+</div>
+<div id="ignore-missing-values" class="section level3">
+<h3>2. Ignore missing values</h3>
+<p>Most of the functions you use have the option <code>na.rm</code>. If the argument is TRUE, the function will just ignore them in the calculations. Notice that this works only if the missing values are coded as <code>NA</code>, hence it is important to turn all missing values to <code>NA</code>.</p>
+<pre class="r"><code>df_new %&gt;% 
+summarise_at(vars(unemployment_rate, lab_force_participation), 
+funs(mean), na.rm = TRUE)</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   unemployment_rate lab_force_participation
+##               &lt;dbl&gt;                   &lt;dbl&gt;
+## 1              7.25                    62.1</code></pre>
+<p>Notice that if you encounter unusual values in your data frame. For example, suppose you have a variable called age, and you find a value equals 300. This is not a missing value but an error in tyting was obviously made. Thus you may decide to trasmorm it as missing so that you can ignore it as it was a missing value. Recoding unusual values into <code>NA</code> may come in handy because the unusual values that may mess up your analysis are ignored from them with the simple use of <code>na.rm</code>.</p>
+</div>
+<div id="replace-missing-values" class="section level3">
+<h3>3. Replace missing values</h3>
+<p>If a data source has been used for data entry, missing values may simply indicate that the previous value should be carried forward:</p>
+<pre class="r"><code>df &lt;- tibble(
+  year = c(2014, NA, 2015, NA, 2016, NA),
+  sem = c(1, 2, 1, 2, 1, 2),
+  unemployment_rate = c(6.5, 7.6, 8.2, 7.3, NA, 6.8),
+  lab_force_participation = c(63.5, 61.4, NA, 62.7, 61.8, 63.2)
+)</code></pre>
+<p>The function <code>fill()</code> provided by <code>tidyr</code> helps deailing with this situation by replacing NAs with the previous value:</p>
+<pre class="r"><code>df %&gt;% fill(year)</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##    year   sem unemployment_rate lab_force_participation
+##   &lt;dbl&gt; &lt;dbl&gt;             &lt;dbl&gt;                   &lt;dbl&gt;
+## 1  2014     1               6.5                    63.5
+## 2  2014     2               7.6                    61.4
+## 3  2015     1               8.2                      NA
+## 4  2015     2               7.3                    62.7
+## 5  2016     1                NA                    61.8
+## 6  2016     2               6.8                    63.2</code></pre>
+<p>However, replacing missing values is not always as easy. Replacing the missing values in labour force participation or in unemplyment would have been more difficult requiring a deep knowledge of statistical tecniques.</p>
+</div>
+</div>
 
 
 </div>  

@@ -21,6 +21,10 @@ read_table("tennis.txt", col_names = TRUE)
 ## read_csv2("milano_tourism", col_names= TRUE) # for semi colon separeted variables
 
 ## ----delim---------------------------------------------------------------
-read_delim("solar.txt", col_names = TRUE, delim = ",")
+read_delim("solar.txt", col_names = FALSE, delim = ",")
 read_delim("tuscany.txt", col_names = TRUE, delim = "|")
+
+## ------------------------------------------------------------------------
+read_delim("solar.txt", col_names = FALSE, delim = ",",
+           col_types = cols(X2 = col_double()))
 

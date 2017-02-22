@@ -16,7 +16,7 @@ bank %>% select(-(year:day))
 bank %>% select(ID = id)
 
 ## ------------------------------------------------------------------------
-bank %>% select(contains("at"))
+bank %>% select(contains("d"))
 
 ## ------------------------------------------------------------------------
 bank %>% select(ends_with("tion"))
@@ -49,6 +49,13 @@ bank %>% select(job:balance)
 ## ------------------------------------------------------------------------
 bank %>% select(-job)
 bank %>% select(-starts_with("d"))
+
+## ------------------------------------------------------------------------
+starts_with("b", vars=names(bank))
+
+## ------------------------------------------------------------------------
+select_if(bank, is.factor)    # select only string variables
+select_if(bank, is.numeric)   # select only numeric values
 
 ## ------------------------------------------------------------------------
 # find out unique values of housing variable of bank data frame
