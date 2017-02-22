@@ -26,9 +26,9 @@ require(qdata)
 data(bank) 
 ```
 
-Suppose we want to visualize the first rows of `bank` dataframe, by using `head()` function.   
+Suppose you want to visualize the first rows of `bank` dataframe, by using `head()` function.   
 
-Usually we write:
+Usually you write:
 
 ```{r pipe1}
 head(bank)
@@ -42,7 +42,7 @@ bank %>% head()
 
 Pipe takes the argument on the left (`bank`) and passes it to the function on the right (`head()`). So you don't need to write the first argument of the function. 
 
-Other arguments of the function must be added to the function itself, as usually done. By default `head()` prints the first 6 rows of the dataframe. Suppose we want to print 10 rows, by setting `n` argument to 10:
+Other arguments of the function must be added to the function itself, as usually done. By default `head()` prints the first 6 rows of the dataframe. Suppose you want to print 10 rows, by setting `n` argument to 10:
 
 ```{r pipe3}
 bank %>% head(n=10)
