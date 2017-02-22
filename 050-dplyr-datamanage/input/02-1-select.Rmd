@@ -14,6 +14,36 @@ require(qdata)
 data(bank) 
 ```
 
+# Introduction to `dplyr`
+
+The `dplyr` package for `R` is very powerful for data management since:
+
+* it simplifies how you can think about common data manipulation tasks;
+* it provides simple “verbs”, functions that correspond to the most common data manipulation tasks;
+* it uses efficient data storage backends, so you spend less time waiting for the computer.
+
+## Verb functions
+
+`dplyr` aims to provide a function for each basic verb of data manipulating.
+
+All these functions are very similar:
+
+* the first argument is a data frame;
+* the subsequent arguments describe what to do with it, and you can refer to columns in the data frame directly without using $;
+* the result is a new data frame.
+
+Together these properties make it easy to chain together multiple simple steps to achieve a complex result.
+
+These five functions provide the basis of a language of data manipulation. At the most basic level, you can only alter a tidy data frame in five useful ways: 
+
+1. select variables of interest: `select()`;
+2. filter records of interest: `filter()`;
+3. reorder the rows: `arrange()`;
+4. add new variables that are functions of existing variables: `mutate()`;
+5. collapse many values to a summary: `summarise()`. 
+
+The remainder of the language comes from applying these five functions to different types of data, like grouped data, which will be described after.
+
 
 # `select()`
 
