@@ -1,5 +1,5 @@
 ---
-title: "Introduction to `dplyr`"
+title: "The `pipe` operator"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -12,17 +12,10 @@ options(width = 108)
 require(dplyr)
 ```
 
-The `dplyr` package for `R` is very powerful for data management since:
-
-* it simplifies how you can think about common data manipulation tasks;
-* it provides simple “verbs”, functions that correspond to the most common data manipulation tasks;
-* it uses efficient data storage backends, so you spend less time waiting for the computer.
-
-Let's start by having a look at pipe operator (`%>%`) which is essential for working in the tidyverse.
 
 # Pipe operator  
 
-`dplyr` pipe operator (`%>%`) allows us to pipe the output from one function to the input of another function. The idea of piping is to read the functions from left to right. It is particularly useful with nested functions (reading from the inside to the outside) or with multiple operations.
+As stated in "R for data science" by Hadley Wickham and Garrett Grolemund, _pipes are powerful tools for clearly expressing a sequence of multiple operations_. The pipe operator (`%>%`) allows us to pipe the output from one function to the input of another function. The idea of piping is to read the functions from left to right. It is particularly useful with nested functions (reading from the inside to the outside) or with multiple operations.
 
 ![<small>Source: www.datacamp.com</small>](./images/pipe.png)
 
@@ -57,24 +50,3 @@ Other arguments of the function must be added to the function itself, as usually
 bank %>% head(n=10)
 ```
 
-# Verb functions
-
-`dplyr` aims to provide a function for each basic verb of data manipulating.
-
-All these functions are very similar:
-
-* the first argument is a data frame;
-* the subsequent arguments describe what to do with it, and you can refer to columns in the data frame directly without using $;
-* the result is a new data frame.
-
-Together these properties make it easy to chain together multiple simple steps to achieve a complex result.
-
-These five functions provide the basis of a language of data manipulation. At the most basic level, you can only alter a tidy data frame in five useful ways: 
-
-1. select variables of interest: `select()`;
-2. filter records of interest: `filter()`;
-3. reorder the rows: `arrange()`;
-4. add new variables that are functions of existing variables: `mutate()`;
-5. collapse many values to a summary: `summarise()`. 
-
-The remainder of the language comes from applying these five functions to different types of data, like grouped data, which will be described after.
