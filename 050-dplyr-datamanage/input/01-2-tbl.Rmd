@@ -4,18 +4,30 @@ title: "Tibbles"
 
 ```{r options, include=FALSE, purl=FALSE}
 options(width = 108)
-require(tidyverse)
 ```
 
 
 # Introduction
 
-Sometimes data frames have large dimensions. The package  `tibble`, which is part of the core tidyverse, provides a `tbl_df` class that offers better checking and printing capabilities than traditional data frames. Almost all the functions that we'll use in this course produce tibbles as tibbles are one of the unifying features of the tidyverse.
+Sometimes data frames have large dimensions. The package  `tibble`, which is part of the core tidyverse, provides a `tbl_df` class that offers better checking and printing capabilities than traditional data frames. Almost all the functions that you will use in this course produce tibbles as tibbles are one of the unifying features of the tidyverse.
+
+You can load `tibble` by loading `tidyverse`:
+
+```{r}
+require(tidyverse)
+```
+
+or you can load it explicitely together with `dplyr` that will be useful throughout this chapter:
+
+```{r}
+require(tibble)
+require(dplyr)
+```
 
 
 # `tbl_df`: the `tidyverse` Data Frame Class
 
-`dplyr`, as well as other packages that we'll see in this course, can work with data frames as is but it is worthwhile to convert them to a `tbl_df`, especially if frames have large dimensions. `tbl_df` is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.
+`dplyr`, as well as other packages that you will work with in this course, can work with data frames as is but it is worthwhile to convert them to a `tbl_df`, especially if frames have large dimensions. `tbl_df` is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit in one screen, describing the rest of it as text.
 
 
 When the class of data object is not tibble, you can convert it to a tibble with the function `as_tibble()`.  
@@ -30,7 +42,7 @@ dim(mtcars)
 mtcars
 ```
 
-Now, using the package `tibble`, that you loaded when `tidyverse` package was loaded, you can convert mtcars into a `tbl_df` object:
+Now, using the package `tibble`, you can convert mtcars into a `tbl_df` object:
 
 ```{r tibble, message=FALSE}
 # tibble version of the same data frame 
@@ -60,7 +72,7 @@ tb <- tibble(
 tb
 ```
 
-Notice that it is possibile for a tibble to have column names that are not valid as R variables names, for instance they may be numbers and may contain unsual characters such as spaces.
+Notice that it is possibile for a tibble to have column names that are not valid as `R` variables names, for instance they may be numbers or may contain unsual characters such as spaces.
 
 ```{r tibble3, message=FALSE}
 # tibble version of the data frame mtcars with the function tbl_df()
