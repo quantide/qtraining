@@ -66,7 +66,7 @@ This method does not always work, especially when the file is extremely large. T
 
 In order to solve these problems, you may tweak the type of (some of) the columns:
 
-```{r delim}
+```{r}
 read_delim("solar.txt", col_names = FALSE, delim = ",",
            col_types = cols(X2 = col_double()))
 ```
