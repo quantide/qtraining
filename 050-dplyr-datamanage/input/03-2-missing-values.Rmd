@@ -43,8 +43,7 @@ A value can be missing in two ways:
 2. Implicitely, i.e. it is absent from your data frame
 
 
-
-1. Explicit missing values
+### 1. Explicit missing values
 
 Explicit missing values may be already represented as `NA`. This is the easiest case as they are automatically detected by `R` and you can then proceed with any of the operations presented in the next section. 
 
@@ -94,7 +93,7 @@ df_new <- na_if(df, 999.99)
 
 
 
-2. Implicit missing values
+### 2. Implicit missing values
 
 There is another type of missing value in the data frame df that has not yet been treated: the variables referring to unemployment rate and labour force participation are missing for the second semester of 2013. You can make the missing values explicit with the function `complete()`:
 
@@ -117,7 +116,7 @@ If you encounter missing values in your data frame you have diffent opstions:
 3. Replace the missing values
 
 
-1. Drop the entire row
+### 1. Drop the entire row
 
 This is not reccomandable especially if you have many variables and you find missing values only in a small percentage of the variables. If you think this is the way to go, you can easily drop the row by using `drop_na()`:
 
@@ -126,7 +125,7 @@ df_new %>% drop_na()
 ```
 
 
-2. Ignore missing values
+### 2. Ignore missing values
 
 Most of the functions you use have the option `na.rm`. If the argument is TRUE, the function will just ignore them in the calculations. Notice that this works only if the missing values are coded as `NA`, hence it is important to turn all missing values to `NA`.
 
@@ -140,7 +139,7 @@ funs(mean), na.rm = TRUE)
 Notice that if you encounter unusual values in your data frame. For example, suppose you have a variable called age, and you find a value equals 300. This is not a missing value but an error in tyting was obviously made. Thus you may decide to trasmorm it as missing so that you can ignore it as it was a missing value. Recoding unusual values into `NA` may come in handy because the unusual values that may mess up your analysis are ignored from them with the simple use of `na.rm`.
 
 
-3. Replace missing values
+### 3. Replace missing values
 
 If a data source has been used for data entry, missing values may simply indicate that the previous value should be carried forward:
 
