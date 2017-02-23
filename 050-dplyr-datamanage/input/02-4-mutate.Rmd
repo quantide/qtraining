@@ -149,3 +149,4 @@ time %>% mutate(short_duration = cumany(duration < 100))
 time %>% mutate(mean_duration = cummean(duration))
 ```
 
+Notice that all helpers are proper functions. Use ? to find out more on their usage.

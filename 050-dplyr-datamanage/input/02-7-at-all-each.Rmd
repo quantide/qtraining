@@ -7,7 +7,8 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
+# load packages and data
+require(tidyverse)  # alternatively require(dplyr)
 require(qdata)
 data(mtcars)
 ```
@@ -99,7 +100,7 @@ mtcars %>%
   summarise_each(funs(mean), mean_mpg = mpg)
 ```
 
-You may also use function `summarise_at()`:
+You may also instead use the function `summarise_at()`:
 
 ```{r}
 # without groups
@@ -116,6 +117,8 @@ mtcars %>%
   group_by(cyl, carb) %>% 
   summarise_at(vars(mean_mpg = mpg), funs(mean))
 ```
+
+Notice that, opposite to `summarise_each()`, in `summarise_at()` the first argument refers to the set of selected variables and the second argument refers to the set of functions to be applied.
 
 
 ### Case 2: Apply Many Functions to One Variable
@@ -140,7 +143,7 @@ mtcars %>%
   summarise(min_mpg = min(mpg), max_mpg = max(mpg))
 ```
 
-The names of the output variables can be specified in simple forms like: `max_mpg = max(mpg)`.
+The names of the output variables can be easily specified as follows: `max_mpg = max(mpg)`.
 
 When you apply many functions to one variable, the use of `summarise_each()` provides a more compact and tidy notation:
 
@@ -182,7 +185,7 @@ mtcars %>%
   summarise_each(funs(min_mpg = min, max_mpg = max), mpg)
 ```
 
-Alternatively to function `summarise_each`, you can use `summarise_at`:
+Alternatively to the function `summarise_each`, you can use `summarise_at`:
 
 ```{r}
 # without groups
@@ -320,7 +323,6 @@ mtcars %>%
   summarise_all(mean) %>%
   setNames(c("mean_cyl", "mean_carb", "mean_mpg", "mean_disp"))
 
-
 # with more than one group
 mtcars %>% 
   select_if(is.numeric) %>%
@@ -331,12 +333,11 @@ mtcars %>%
 
 
 
-
 ### Case 4: Apply Many Functions to Many Variables
 
 As in the previous cases functions `summarise()`, `summarise_each()`  and `summarise_at()` provide a valid alternative.
 
-Function `summarise()` has again a more intuitive syntax and the names of output variables can be specified in the usual simple form: `max_mpg = max(mpg)`.
+Function `summarise()` has again a more intuitive syntax and the names of output variables can be specified in the usual simple form: `max_mpg = max(mpg)`. 
 
 ```{r}
 # without groups
@@ -417,7 +418,7 @@ mtcars %>%
 
 As for `summarise_each`, the names of the output variables are given by the notation `variable_function`, i.e. `mpg_min`, `disp_min`, etc.
 
-Again, naming output variables with a different notation has to be achieved with a separate instruction:
+Naming output variables with a different notation has to be achieved with a separate instruction:
 
 ```{r}
 # without groups
@@ -438,7 +439,7 @@ mtcars %>%
   setNames(c("cyl", "carb", "min_mpg", "min_disp", "max_mpg", "max_disp"))
 ```
 
-Last, suppose you want to apply many functions to all of you variables, for example you want to calculate the mean and the standard deviation of the numeric variables in your dataset, a quick way for doing it is to use the function `summarise_all()`:
+Last, suppose you want to apply many functions to all of you variables. For example you may want to calculate the mean and the standard deviation of all the numeric variables in your dataset. A quick way of doing it is to use the function `summarise_all()`:
 
 ```{r}
 # without groups
@@ -459,7 +460,7 @@ mtcars %>%
   summarise_all(c("mean","sd"))
 ```
 
-The default output variables names are `variable_function`. However, if you want to change them, you need to specify the new names with an additional command:
+The default output variables names are `variable_function`. If you want to change them, you need to specify the new names with an additional command:
 
 ```{r}
 # without groups
@@ -467,7 +468,6 @@ mtcars %>%
   select_if(is.numeric) %>%
   summarise_all(c("mean","sd")) %>%
   setNames(c("mean_cyl", "mean_carb", "mean_mpg", "mean_disp", "sdev_cyl", "sdev_carb", "sdev_mpg", "sdev_disp"))
-
 
 # with one group
 mtcars %>% 
@@ -588,7 +588,7 @@ mtcars %>%
   mutate_each(funs(rescale), rescale_mpg = mpg)
 ```
 
-In addition you could use function `mutate_at()` as well, but its usage results again in a loss of clarity:
+In addition you could use function `mutate_at()` as well, but its usage results in a loss of clarity:
 
 ```{r}
 # without groups
@@ -605,6 +605,8 @@ mtcars %>%
   group_by(carb, cyl) %>% 
   mutate_at(vars(rescale_mpg = mpg), funs(rescale))
 ```
+
+Notice that, opposite to `mutate_each()`, in `mutate_at()` the first argument refers to the set of selected variables and the second argument refers to the set of functions to be applied.
 
 
 ### Case 6: Apply Many Functions to One Variable
@@ -672,7 +674,7 @@ mtcars %>%
 ```
 
 
-An alternative to `mutate_each` is `mutate_at`, that provides a compact notation:
+An alternative to `mutate_each` is `mutate_at`, that provides a compact notation as well:
 
 ```{r}
 # without groups
@@ -690,7 +692,7 @@ mtcars %>%
   mutate_at(vars(mpg), funs(rescale, order))
 ```
 
-Again, if you wish to assign a variable name different from the default one, you shall appropriately rename the __functions__ you call within `funs()`:
+As in `mutate_each()`, if you wish to assign a variable name different from the default one, you shall appropriately rename the __functions__ you call within `funs()`:
 
 ```{r}
 # without groups
@@ -959,7 +961,7 @@ mtcars %>%
 ```
 
 
-`mutate_all()` can be used also in the case in which you want to apply many functions to many variables:
+`mutate_all()` can be used also when you want to apply many functions to many variables:
 
 ```{r}
 # without groups
@@ -981,7 +983,7 @@ mtcars %>%
 ```
 
 
-The default name of the new variables are given by `variable_function`. In order to name output variables with a different notation, a separate instruction is needed:
+The default name of the new variables is given by the notation `variable_function`. In order to name output variables with a different notation, a separate instruction is needed:
 
 ```{r}
 # without groups
@@ -1008,15 +1010,15 @@ mtcars %>%
 
 # Conclusions
 
-You have two alternatives to functions `summarise()` and `mutate()`: `summarise_each()` and `summarise_at()`, `mutate_each()` and `mutate_at()` respectively.
+You have two alternatives to functions `summarise()` and `mutate()`: `summarise_each()` and `summarise_at()`, and `mutate_each()` and `mutate_at()`.
 
 Functions `summarise()` and `mutate()` have a simpler syntax while functions `summarise_each()`, `summarise_at()`, `mutate_each()` and `mutate_at()` have a more compact notation. 
 
 As a consequence, `summarise()` and `mutate()`  seem more appropriate when dealing with a single variable or a single function. 
 
-Notice that, in a future release, the functions `summarise_each()` and `mutate_each()` will be depreacted in favour of the families of functions 1) `summarise_all()` and `mutate_all()` that apply a function to all columns and 2) `summarise_at()` and `mutate_at()` that operate on a subset of columns.
+Notice that, in a future release, the functions `summarise_each()` and `mutate_each()` will be depreacted in favour of the families of functions 1) `summarise_all()` and `mutate_all()` that apply a function to all columns of a data frame and 2) `summarise_at()` and `mutate_at()` that operate on a subset of columns.
 
-Functions `summarise_each()` and `mutate_each()` have their own way to assign names to output variables:
+Functions `summarise_each()`, `mutate_each()`, `summarise_at()` and `mutate_at()` have their own way to assign names to output variables:
 
 * apply many functions to one variable: the names of the output variables are given by the name of the __functions__.  In this case you lose the name of the variable the function is applied to;
 

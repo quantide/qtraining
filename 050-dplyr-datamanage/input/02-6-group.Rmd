@@ -7,15 +7,16 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
+# load packages and data
+require(tidyverse)  # alternatively require(dplyr)
 require(qdata)
 data(bank)
 ```
 
 # `group_by()`
 
-The verb functions are useful, but they become really powerful when you combine them with the idea of "group by", repeating the operation individually on groups of observations within the dataset.
-In `dplyr`, you use the `group_by()` function to describe how to break a dataset down into groups of rows. You can then use the resulting object in the verbs functions; they’ll automatically work "by group" when the input is a grouped. Let us see some examples (pay attention to objects class).
+The verb functions are useful, but they increase their power when combined with the idea of "group by", i.e. repeating the operation individually on groups of observations within the dataset.
+In `dplyr`, you use the `group_by()` function to describe how to break a dataset down into groups of rows. You can then use the resulting object in the verbs functions; they’ll automatically work "by group" when the input is grouped. Let us see some examples (pay attention to objects class).
 
 ```{r grouped_df_class}
 # Example data frame
@@ -73,7 +74,7 @@ xtabs(mpg_mean~cyl+carb, data = dm)
 ```
 -->
 
-Then, you search for the number of days covered per year. You report also the number of phone calls per year:
+Then, you search for the number of days covered per year. You also report  the number of phone calls per year:
 
 ```{r}
 summarise(by_year,
@@ -97,8 +98,9 @@ per_year <- summarise(per_month, calls = sum(calls))
 groups(per_year)
 ```
 
+
 ```{r}
-df <- data.frame(year = rep(c(2010, 2011, 2012), each = 3), 
+df <- data.frame(year = rep(c(2014, 2015, 2016), each = 3), 
                  month = rep(1:3, each = 3), 
                  day = rep(20:22, 3), 
                  x = 1:9)
@@ -122,5 +124,57 @@ ungroup(df2) %>% summarise(n())
 
 ```
 
+
+In all the above steps (grouping and the summarising), you saved the intermediate results in a separate data frame. 
+
+Suppose you want to calculate the mean balance grouped by marital status. If you save all the intermediate dataframes:
+
+```{r}
+bank_grouped <- bank %>% 
+  group_by(marital)       # group by marital status
+
+bank_grouped %>% 
+  summarise(mean(balance))   # calculate the group means
+```
+
+If you do not want to save the intermediate results you may choose between one of the two options:
+
+
+```{r}
+# option 1:
+summarise(group_by(bank, marital), mean(balance))
+
+# option 2:
+bank %>% 
+  group_by(marital) %>%       # group by marital status
+  summarise(mean(balance))    # calculate the group means
+```
+
+The two options provide the same results. However, in option 1 you read the operations inside out: first you group (inside) and secondly you summarise. If you use the `%>%` operator, you can easily get around this problem. You can better appreciate it in the following example, where we use three verbs on the grouped data frame:
+
+
+```{r}
+# option 1
+filter(
+  summarise(
+    select(
+      group_by(bank, date), age, balance
+    ),
+    mean_age = mean(age, na.rm = TRUE),
+    mean_balance = mean(balance, na.rm = TRUE)
+  ),
+  mean_age < 40 & mean_balance > 5000
+)
+
+# option 2
+bank %>%
+  group_by(date) %>%
+  select(age, balance) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    mean_balance = mean(balance, na.rm = TRUE)
+  ) %>%
+  filter(mean_age < 40 & mean_balance > 5000)
+```
 
 

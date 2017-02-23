@@ -7,10 +7,10 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
-require(tidyr)
-require(qdata)
+# load packages and data
+require(tidyverse) # alternatively require(dplyr); require(tidyr)
 require(broom)
+require(qdata)
 data(people)
 ```
 
@@ -41,7 +41,7 @@ qq <- function(x, probs = seq(0, 1, 0.25), ...){
 }
 ```
 
-that returns a data frame of quatiles along with the corresponding probabilities
+that returns a data frame of quantiles along with the corresponding probabilities
 
 You can then use function `qq()` with function `do()`:
 
@@ -52,7 +52,7 @@ people %>% group_by(Gender) %>%
 
 
 
-Function `do()` can manage functions that return results of any length. Similarly, the same function can help when applying multile functions to the same variable.  
+Function `do()` can manage functions that return results of any length. Similarly, the same function can help when applying multiple functions to the same variable.  
 
 
 Suppose you want to compute, mean and standard deviation for `Height` grouped by `Area`; in this case you first define a function that returns mean and standard deviation:
@@ -88,7 +88,7 @@ data.frame(id  = 1:3, what = I(list(4:6, 7:9, 10:12)))
 The use of function `I()` forces `R` to treat the list `as.is` without attempting any transformation.
 
 
-By using this propriety of data frames, you can compute a liner model on data frame `people` for any level of factor `Gender`:
+By using this property of data frames, you can compute a liner model on data frame `people` for any level of factor `Gender`:
 
 ```{r}
 models <- people %>% group_by(Gender) %>% 
@@ -119,3 +119,4 @@ Finally, by using function `tidy()` from package `broom`:
 people %>% group_by(Gender) %>% 
   do(tidy(lm(Weight~Area, data = .)))
 ```
+

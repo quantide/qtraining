@@ -7,7 +7,8 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
+# load packages and data
+require(tidyverse)  # alternatively require(dplyr)
 require(qdata)
 data(bank)
 ```
@@ -15,7 +16,7 @@ data(bank)
 
 # `summarise()`
 
-The last verb is `summarise()`, which collapses a data frame to a single row:
+The last key verb is `summarise()` which collapses a data frame to a single row reutrning some descriptive statistics for a specified set of variables:
 
 ```{r}
 # Compute the mean of balance variable of bank data frame
@@ -24,6 +25,7 @@ summarise(bank, mean_balance = mean(balance, na.rm = TRUE))
 bank %>% summarise(max_balance = max(balance, na.rm = TRUE), min_balance = min(balance, na.rm = TRUE))
 ```
 
+`na.rm = TRUE` is to ignore missing values. We will come back to it in a specific chapter.
 
 ## Helper Functions for `summarise()`
 
@@ -57,4 +59,3 @@ bank %>% summarise(n())
 bank %>% summarise(n_distinct(job))
 bank %>% summarise(n_distinct(education))
 ```
-

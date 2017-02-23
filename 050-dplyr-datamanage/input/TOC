@@ -2,18 +2,19 @@ Introduction
 Introduction to tidyverse          | 00-intro.Rmd
 
 Data objects
-Readr                               | 01-1-readr.Rmd
 tbl_df class                        | 01-2-tbl.Rmd
+readr                               | 01-1-readr.Rmd
 The pipe operator                   | 01-3-pipe.Rmd
 
 Data manipulation
+Introduction                          | 02-00-intro-dplyr.Rmd
 Select		                            | 02-1-select.Rmd
 Filter		                            | 02-2-filter.Rmd
 Arrange     		                      | 02-3-arrange.Rmd
 Mutate                                | 02-4-mutate.Rmd
 Summarise                             | 02-5-summarise.Rmd
 Grouping Data	                        | 02-6-group.Rmd
-At, All, Each                         | 02-7-advanced.Rmd
+At, All, Each                         | 02-7-at-all-each.Rmd
 Generic do                            | 02-8-do.Rmd
 Combining Data                        | 02-9-join.Rmd
 
