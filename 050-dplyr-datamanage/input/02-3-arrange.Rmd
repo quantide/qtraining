@@ -7,15 +7,16 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
+# load packages and data
+require(tidyverse) # alternatively require(dplyr)
 require(qdata)
-data(bank)
+data(bank) 
 ```
 
 
 # `arrange()`
 
-`arrange()` works similarly to `filter()` except that instead of filtering or selecting rows, it reorders them. It takes a data frame, and a set of column names (or more complicated expressions) to order by. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns:
+`arrange()` changes the order of the data frame rows. The first argument is the name of the data frame, and the second and subsequent are column names (or more complicated expressions) to order by. If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns:
 
 ![](images/arr.png)
 
@@ -24,14 +25,14 @@ data(bank)
 arrange(bank, date, age)
 ```
 
-Use `desc()` to order a column in descending order:
+Use `desc()` to order by descending order:
 
 ```{r}
 # Order `bank` data frame by age in descending order
 bank %>% arrange(desc(age))
 ```
 
-The previous code is equivalent to:
+Notice that the previous code is equivalent to:
 
 ```{r}
 bank[order(bank$date, bank$age), ]
