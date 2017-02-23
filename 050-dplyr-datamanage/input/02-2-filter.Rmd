@@ -7,9 +7,10 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
-require(qdata)
+# load packages and data
+require(dplyr)    # alternatively require(tidyverse)
 require(lubridate)
+require(qdata)
 data(bank)
 ```
 
@@ -22,7 +23,8 @@ data(bank)
 
 The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.
 
-For example, you can select all calls made to students whit balance above 20,000:
+For example, you can select all calls made to students with balance above 20,000:
+
 ```{r}
 filter(bank, job == "student", balance > 20000)
 ```
@@ -35,7 +37,7 @@ bank %>% filter(job == "student", date == ymd("2008-05-05"))
 ```
 
 
-Note that you'll have to either convert variable `date` to character or the string "2008-05-05" to an object of class `POSIX` as `dplyr` allows comparison between same class objects only.
+Note that you will have to either convert variable `date` to character or the string "2008-05-05" to an object of class `POSIX` as `dplyr` allows comparison between same class objects only.
 
 `filter()` works similarly to `subset()` except that you can give it any number of filtering conditions which are joined together with `&` (not `&&` which is easy to do accidentally!). 
 
