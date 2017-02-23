@@ -8,7 +8,7 @@ options(width = 108)
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 # load packages and data
-require(dplyr)    # alternatively require(tidyverse)
+require(tidyerse)    # alternatively require(dplyr)
 require(lubridate)
 require(qdata)
 data(bank)
