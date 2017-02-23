@@ -7,7 +7,8 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
+# load packages and data
+require(tidyverse)    # alternatively require(dplyr)
 require(qdata)
 data(bank)
 ```
@@ -15,7 +16,7 @@ data(bank)
 
 # `mutate()`
 
-As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing columns. This is the job of `mutate()`:
+In addition to selecting a set of columns, it may often be useful to add new columns that are functions of existing columns. This can be easily done with the function `mutate()`:
 
 ![](images/mut.png) 
 
@@ -61,7 +62,7 @@ bank %>% transform(year_of_birth = year - age, year_of_birth_no_century = year_o
 
 ![](images/tra.png) 
 
-If you only want to keep the new variables, use `transmute()`:
+Once you have created the new variables, you may nomore be interested in the old ones. If you only want to keep the newly created variables, you may use `transmute()`:
 
 ```{r} 
 transmute(bank, year_of_birth = year - age, year_of_birth_no_century = year_of_birth - 1900)
