@@ -1,5 +1,5 @@
 ---
-title: "sparlyr"
+title:  "sparklyr: connect to spark from R"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -7,11 +7,89 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
-require(ggplot2)
-require(DBI)
-require(RSQLite)
+require(tidyverse) # alternatively: require(dplyr)
+```
+
+## Introduction on Spark
+
+
+
+## Data
+
+The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are nearly 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12 gigabytes when uncompressed. You can download the data, year by year in the following link: http://stat-computing.org/dataexpo/2009/the-data.html
+
+
+
+## Installing spark
+
+You can easily install the `sparklyr` package from CRAN:
+
+```{r, eval = FALSE}
+install.packages("sparklyr")
+```
+
+and then load it at the beginning of your R session:
+
+```{r}
+require(sparklyr)
+```
+
+Then you can install a version of Spark for directly from R:
+
+```{r, eval = FALSE}
+# this may take a while
+spark_install(version = "1.6.2")
 ```
 
 
 
+## Connecting to spark
+
+Now that you have the data to work on, you have installed spark and you have loaded the packaged `sparklyr`, you have all the elements to connect to Spark. 
+
+
+You can connect to both local instances of Spark as well as remote Spark clusters. Here we show how to connect to a local instance of Spark. First of all you should set the configuration parameters
+
+```{r}
+# set configuration parameters
+config <- spark_config()
+config$`sparklyr.shell.driver-memory` <- "4G"
+config$`sparklyr.shell.executor-memory` <- "4G"
+config$`spark.yarn.executor.memoryOverhead` <- "1G"
+```
+
+Now you can connect to a local instance of Spark using `spark_connect()`:
+
+```{r}
+sc <- spark_connect(master = "local", config = config)
+```
+
+where `maste = local` means that Spark will work on your local machine.
+
+
+Once you are connected to Spark you can read the csv files. We are reading it from our local hard-drive:
+
+```{r}
+csv_file <- 'file:///home/emanuela/ema/sp-data/*.csv'
+ontime_tbl <- spark_read_csv(sc = sc, 
+                             'ontime_tbl' , 
+                             path = csv_file,
+                             header = TRUE, delimiter = ',')
+
+```
+
+
+## Using dplyr
+
+
+```{r}
+ontime_tbl %>% summarise(n = n())
+```
+
+
+## Disconnecting from spark
+
+
+```{r}
+spark_disconnect(sc)
+```
