@@ -1,0 +1,200 @@
+---
+title:  "sparklyr: connect to spark from R"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(tidyverse) # alternatively: require(dplyr)
+```
+
+# Intoduction
+
+## Introduction to Spark and sparklyr
+
+Spark is a fast and general engine for large-scale data processing. `sparklyr` provides an interface between R and Apache Spark. It enables to connect to Spark and:
+
+
+* provides a complete `dplyr` backend
+* filters and aggregates Spark datasets then bring them into R for 
+analysis and visualization
+* uses Spark’s distributed machine learning library from R
+* allows to create extensions that call the full Spark API and provide interfaces to Spark packages.
+
+
+![<small> Source: http://spark.rstudio.com/index.html</small>](./images/sparklyr-illustration.png)
+
+For a full documentation on Spark, please visit the spark website http://spark.apache.org/
+
+For further details on `sparklyr` visit the `sparklyr` website http://spark.rstudio.com/index.html
+
+
+
+## Getting started with Spark and sparklyr
+
+You can easily install the `sparklyr` package from CRAN:
+
+```{r, eval = FALSE}
+install.packages("sparklyr")
+```
+
+and then load it at the beginning of your R session:
+
+```{r}
+require(sparklyr)
+```
+
+You also need to install a version of Spark. You can do this directly from R:
+
+```{r, eval = FALSE}
+# this may take a while
+spark_install(version = "1.6.2")
+```
+
+
+## Data
+
+You can download the data at the following link:
+
+http://stat-computing.org/dataexpo/2009/the-data.html
+
+The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are over 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12 gigabytes when uncompressed. From the above link you can download the data, year by year. As the whole dataset is extremely large and it may take you a while to download all the years, we suggest you only take the years 2006, 2007 and 2008. The downloaded data should be uzipped and placed in a separate folder
+
+
+```{bash}
+cd ~
+mkdir data			# create data dir
+cd data	  			# enter this dir
+wget http://stat-computing.org/dataexpo/2009/2006.csv.bz2 # download the data in the newly created directory
+wget http://stat-computing.org/dataexpo/2009/2007.csv.bz2 # download the data in the newly created directory
+wget http://stat-computing.org/dataexpo/2009/2008.csv.bz2 # download the data in the newly created directory
+bunzip2 *.csv.bz2 # unzip data on all downloaded years
+ls # shows what's in the folder
+```
+
+# Connecting to Spark and reading the data
+
+Now that you have the data to work on, you have installed spark and you have loaded the packaged `sparklyr`, you have all the elements to connect to Spark. 
+
+
+You can connect to both local instances of Spark as well as remote Spark clusters. Here we show how to connect to a local instance of Spark. First of all you should set the configuration parameters
+
+```{r}
+# set configuration parameters
+config <- spark_config()
+config$`sparklyr.shell.driver-memory` <- "4G"
+config$`sparklyr.shell.executor-memory` <- "4G"
+config$`spark.yarn.executor.memoryOverhead` <- "1G"
+```
+
+Now you can connect to a local instance of Spark using `spark_connect()`:
+
+```{r}
+sc <- spark_connect(master = "local", config = config)
+```
+
+where `master = local` means that Spark will work on your local machine.
+
+## Reading the data
+
+Once you are connected to Spark you can read the csv files. You are reading it from your local hard-drive:
+
+```{r}
+csv_file <- 'file:///home/emanuela/ema/sp-data/*.csv'
+ontime_tbl <- spark_read_csv(sc = sc, 
+                             'ontime_tbl' , 
+                             path = csv_file,
+                             header = TRUE, delimiter = ',')
+
+```
+
+
+## sparklyr compared to `R` 
+
+Where does Spark table differ to dplyr `tbl_df` or `data.frame`? Spark, like databases do, moves the data out of `R`, so the memory management is left to the Spark process. The object `ontime_tbl` in `R` is only a handle to a Spark object.
+
+
+# Using dplyr and ggplot2
+
+You can now use `sparklyr` and `dplyr` functions to deal with this large dataset. 
+
+First of all you may want to know the size the data you are working on:
+
+```{r}
+ontime_tbl %>% summarise(n = n())
+```
+
+and get an overview of the variables in your data frame:
+
+```{r}
+ontime_tbl %>% head()
+```
+
+Let us start by selecting a subset of columns that we are interested in and sort it by year:
+
+```{r}
+ontime_tbl_detail <- ontime_tbl %>%
+  select(Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum ) %>%    # select columns
+  arrange(Year)             # sort by year
+
+ontime_tbl_detail
+```
+
+Now you may be interested in finding whether, there are flights and years in which there is an extremely high mean arrival delay:
+
+```{r}
+ontime_tbl_detail %>%
+  mutate( ArrDelay = as.integer(ArrDelay)) %>%
+  group_by(Year, FlightNum) %>%
+  summarize(avg = mean(ArrDelay), n = n()) %>%
+  arrange(desc(avg))
+```
+
+Flight number 9024 in 2006 registered a very large average delay. However that flight only left once as well as the other flights with large delays. You may want to get more info on that flight: 
+
+```{r}
+ontime_tbl %>% 
+    filter(Year == 2006, FlightNum == 9024) %>%
+    select(Origin, Dest, Distance) 
+```
+
+But you may be more interested in finding out how late are those flights that take off the most often:
+
+```{r}
+ontime_tbl_detail %>%
+    group_by(Year, FlightNum) %>%
+    summarize(avg = mean(ArrDelay), n = n(), quart1 = quantile(ArrDelay, 0.25), quart3 = quantile(ArrDelay, 0.75)) %>%
+    arrange(desc(n))
+```
+
+Indeed, you can do anything you like as if you were working on `dplyr`.
+
+
+As for `dplyr`, you can also work with `ggplot2`:
+
+```{R}
+ ## Collect some data
+delay <-
+    ontime_tbl %>% 
+    group_by(TailNum) %>%
+    summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+    filter(count > 20, dist < 2000, !is.na(delay)) %>%
+    collect()
+
+ ## Plot delays
+require(ggplot2)
+ggplot(delay, aes(dist, delay)) +
+  geom_point(aes(size = count), alpha = 1/2) 
+```
+
+
+
+# Disconnecting from spark
+
+At the end of your `R` session, it is convenient to terminate the spark process disconnecting `R` from Spark. 
+
+```{r}
+spark_disconnect(sc)
+```
