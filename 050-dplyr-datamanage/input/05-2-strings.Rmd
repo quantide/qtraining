@@ -11,20 +11,17 @@ opts_knit$set(root.dir = "../data")
 
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(tidyverse)
+# load packages
+require(tidyverse) # alternatively: require(dplyr), require(tidyr)
 require(stringr)
-require(forcats)
 require(qdata)
 ```
 
 # Introduction
 
-In this chapter you will learn about string manipulation in `R` with the package `stringr`. You don't always work with textual data, hence this package is installed when you install `tidyverse` but you need to load it explicitely.
+In this chapter you will learn about string manipulation in `R` with the package `stringr`. You don't always work with textual data, hence `stringr` is not part part of the tidyverse core.
 
-At the end of this chapter you will also work with factors with the package `forcats` which, just like `stringr`, is part of the tidyiverse but it is not part of the core, hence you need to load it explicitely as well.
-
-
-Strings are textual data and they are created by using either single quotes or double quoutes, as you have already seen at the beginning of this course. You can store strings in a character vector:
+Strings are textual data and they are created by using either single quotes or double quoutes, as you have already seen at the beginning of this course. You store strings in a character vector:
 
 ```{r}
 # character vector
@@ -103,7 +100,7 @@ tennis_new <- tennis %>%
 ```
 
 
-You may want to split the into two strings so that you have one variable for names and one for surnames:
+You may want to have one variable storing names and one storing surnames:
 
 ```{r}
 str_split(tennis_new$Name, " ")
@@ -115,25 +112,26 @@ The function `str_split()` returns a list. This is because different strings may
 str_split(tennis_new$Name, " ", simplify = TRUE)
 ```
 
-You can easily see that there is one tennis player with a double name, but the function `str_split()` does not aggregate the two names as they are devided by a space.
+You can easily see that there is one tennis player with a double name, but the function `str_split()` does not aggregate the two names as they are devided by a space. 
+
 
 ## Subsetting
 
-Another useful manipulation you may need/want to do on strings, is to extract part of it. For instance, suppose you have the following data frame containing some Italian cities and their province:
+Another useful manipulation you may need/want to do on strings, is to extract part of it. For instance, suppose you have the following data frame containing some Italian cities and their "provincia":
 
 ```{r}
 df <- tibble(comune = c('Legnano', 'Parabiago', 'Alpette', 'Andezano'),
                  provincia = c('Milano', 'Mi', 'Torino', 'To'))
 ```
 
-Some provinces are stored using an abbrvation (only the first two letters as it is often the case) and others are stored using the full name of the city. Milano and Mi are the same province as well as Torino is the same as To. However the software reads them as four different values. 
+Some "province" are stored using an abbrvation (only the first two letters as it is often the case) and others are stored using the full name of the city. Milano and Mi are the same province as well as Torino is the same as To. However the software reads them as four different values. 
 
 ```{r}
 df %>% distinct(provincia) # 4 different values
 ```
 
 
-To let `R` know that it is not 4 differenct cities, we may give them the same name by taking the first two letters of each province:
+To let `R` know that it is not 4 differenct cities, you may give them the same name by taking the first two letters of each "provincia":
 
 ```{r}
 df %>% 
@@ -168,7 +166,7 @@ df %>%
   mutate_at(vars(provincia), funs(str_to_upper(provincia)))
 ```
 
-Notice that changing cases may be more complicated than it looks. In fact different languages may have different rules for changing cases. You can choose the language by specifying `locale = `. The suggestion is that if you are working with foreign languages you should check additional documentation on the functions `str_to_upper()` and `str_to lower()`.
+Notice that changing cases may be more complicated than it looks. In fact different languages may have different rules for changing cases. You can choose the language by specifying `locale = `. If you are working with foreign languages you better check additional documentation on the functions `str_to_upper()` and `str_to lower()`.
 
 
 # Identifying string patterns
@@ -176,7 +174,7 @@ Notice that changing cases may be more complicated than it looks. In fact differ
 
 ## Detect matches
 
-To check whether a character vector matches a pattern, you can use the function `str_detect()`, where you need to specify the vector in which to look for and the pattern to be found. Moreover you may specify whether you want to look for the pattern at the beginning or at the end. 
+To check whether a character vector matches a pattern, you can use the function `str_detect()`, where you need to specify the vector in which to look for and the pattern to be found. Moreover you may specify whether you want to look for the pattern at the beginning or at the end of the string. 
 
 
 1. Contains a (set of) letter(s):
@@ -207,7 +205,7 @@ str_detect(province, c("to$"))
 
 ## Extract match
 
-Once you have found a match you may want to extract it so that you can additionally manipulate them:
+Once you have found a match you may want to extract it so that you can additionally manipulate it:
 
 ```{r}
 province <- c("milano", "milan", "mi", "milano", "torino", "to", "agrigento")
@@ -217,48 +215,18 @@ str_extract(province, c("to$"))
 
 ## Replace match
 
-Suppose the match you have found corresponds to a typos hence you just want to find it and replace it with the correct word:
+Suppose the match you have found corresponds to a typo hence you just want to find it and replace it with the correct word:
 
 ```{r}
 colors <- c("gray", "gray", "grey", "white", "white", "white")
 str_replace(colors, c("gray"), "grey")
 ```
 
-
-# Factors with forcats
-
-Suppose you have a variable to record the colors of a car available only in the following five colors:
-
+If you have only a defined set of possible strings, you may also set levels and read strings as factors. This will avoid typos as strings that do not belong to the defined levels will be assigned "NA".
 
 ```{r}
-colors <- c("grey", "blue", "dark blue", "black", "white")
+colors <- c("gray", "gray", "grey", "white", "white", "white")
+colors_levels <- c("gray", "white")
+factor(colors, levels = colors_levels)
 ```
-
-Using a string for this variable may not be the best choice. In fact two problems arise:
-
-* Only five colors are possible and there is nothing saving you from typos (for instance typing "gray" instead of "grey" is often the case!)
-* The values are sorted in alphabetical order, however you may want them from the darkest to the ligthest:
-
-```{r}
-sort(colors)
-```
-
-Both problems may be solved creating a factor that contains all the desired levels:
-
-
-```{r}
-color_levels <- c("black", "dark blue", "blue", "grey", "white")
-```
-
-And you then apply it to your character vector:
-
-```{r}
-colors <- c("gray", "blue", "dark blue", "black", "white", "grey", "white")
-colors2 <- factor(colors, levels = color_levels)
-colors2
-```
-
-Notice that strings that do not match one of the levels are assigned a "NA". This helps you avoid the first of the two problems.
-
-
 
