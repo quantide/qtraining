@@ -6,20 +6,17 @@ title: "Tidy Data with `tidyr`"
 options(width = 108)
 ```
 
-In this chapter you'll work mainly with the package `tidyr` which is part of the `tidyverse` core. As already learned, this means that if we load the package `tidyverse`, `tidyr` will be automatically loaded. As we will also use the packages `dplyr` and `ggplot2` that are part of the tidyverse core, this is reccomendable so that all the packages used are loaded at once.
-
-Alternatevely, you can load `tidyr` singularly together with the pakcages `dplyr` and `ggplot2` that will be of use during this chapter:
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
-require(tidyr)
-require(ggplot2)
+# load packages and data
+require(tidyverse)  # alternatively: require(dplyr); require(tidyr); require(ggplot2)
 require(qdata)
 ```
 
 
-
 # Introduction
+
+In this chapter you'll work mainly with the package `tidyr` which is part of the `tidyverse` core. 
 
 As a data scientist you collect data from different sources and, very often you will have very little control over the original structure of this data.
 
@@ -28,8 +25,6 @@ Such a variety in data structure implies a long time spent on manipulating your 
 On the other hand, you may think about a well defined and standard way of storing your data so that data are ready to be pushed into any next step. 
 
 This _standard_ format has been defined as __tidy__.  Tidy data will allow you to work with all the tools given by `tidyverse`.
-
-At the same time, analysis of visualization procedures require to be ready to accept as input _tidy_ data structure. This is not always the case but it is becoming more and more a standard in the `R` community. 
 
 As a simple example let's consider the `people` data frame from package `qdata`:
 
@@ -245,9 +240,9 @@ EU
 US
 ```
 
-This is often often tha case when you are loading data from different data sources.
+This is often the case when you are loading data from different data sources.
 
-The name of the data frame, in this case, pays a crucial role as it has to be stored into a variable:
+The name of the data frame, in this case, pays a crucial role as it has to be stored into a variable.
 
 Tidying this data requires more than one step:
 
@@ -268,7 +263,7 @@ all
 
 ## Example: Phone Time
 
-In this example about some measurements of how much time people spend on their phones, measured at two locations (work and home), at two times. Each person has been randomly assigned to either treatment or control.
+In this example we work with data on measurements of the time people spend on their phones. The time spent on the phone is measured at two locations (work and home), at two times. Each person has been randomly assigned to either treatment or control.
 
 ```{r}
 messy <- data.frame(
@@ -282,7 +277,7 @@ messy <- data.frame(
 messy
 ```
 
-To tidy this data, before using `gather()` it is necessary to turn columns `work.T1`, `home.T1`, `work.T2` and `home.T2` into a key-value pair of key and time. 
+To tidy this data, before using `gather()` it is necessary to turn columns `work.T1`, `home.T1`, `work.T2` and `home.T2` into a key-value pair composed by key and time. 
 
 ```{r}
 tidier <- gather(messy, key, time, -id, -trt)
@@ -299,7 +294,7 @@ tidy
 
 ## Example: Stock Market data
 
-Supposing you have the following packages, load them into `R`:
+Supposing you have the following packages installed, load them into `R`:
 
 ```{r, message=FALSE}
 require(quantmod)
