@@ -1,5 +1,5 @@
 ---
-title: "DB Interface"
+title: "RSQLite: 'SQLite' Interface for R"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -7,18 +7,16 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
-require(ggplot2)
+# load packages
+require(tidyverse) # alternatively: require(dplyr); require(ggplot2)
 require(DBI)
 require(RSQLite)
 ```
 
 
-# Getting Started with Large Data 
-
 To experimement with large files you may want to use data from http://stat-computing.org/dataexpo/2009/the-data.html.
 
-The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are nearly 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12Gb when uncompressed. Only four of these files will be considered in the next example for a 29 millions records data frame.
+The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are over 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12Gb when uncompressed. Only four of these files will be considered in the next example for a 29 millions records data frame.
 
 This is clearly a case for SQLite: let us load the `RSQLite` package.
 
@@ -119,6 +117,4 @@ pl <- ggplot(ontime_dep_delay , aes(dep_delay, arr_delay))
 pl <- pl + stat_binhex(bins = 30) + facet_wrap(~year, ncol = 2)
 print(pl)
 ```
-
-
 

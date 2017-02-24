@@ -6,28 +6,17 @@ title: "Manipulating dates with lubridate"
 options(width = 108)
 ```
 
-Either:
-
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
+# load packages
+require(tidyverse) # alternatively: require(dplyr); require(ggplot2), require(tidyr)
 require(lubridate)
-require(tidyverse)
-require(qdata)
-```
-
-or:
-
-```{r first2, include=TRUE, purl=TRUE, message=FALSE}
-require(lubridate)
-require(dplyr)
-require(ggplot2)
-require(tidyr)
 require(qdata)
 ```
 
 
 # A First Look to `lubridate`
 
-Among packages that deal with dates and times in R, `lubridate` provides a set of intuitive and coherent functions. Intuitive since each function usually perform a single task described by its name; coherent since `lubridate` is part of tidyverse thus well integrated with the rest of it.
+Among packages that deal with dates and times in R, `lubridate` provides a set of intuitive and coherent functions. Intuitive since each function usually performs a single task described by its name; coherent since `lubridate` is part of tidyverse thus well integrated with the rest of it.
 
 Supposing `lubridate` is currently installed, it must be loaded in order to use its functions (it is not part of the core of tidyverse, thus it is not loaded together with the rest of tidyverse).
 
@@ -47,7 +36,7 @@ The above string is an ambiguous date:
  + in the US, it can be read as January 2, 2012,
  + IT developers write in this way the day 12 February 2001. 
 
-`lubridate` provides a single function for each one of these cases: `dmy()`, `mdy()` and `ymd()`. These functions parse dates according to the order provided, where `y` is the _year_, `m` is the _month_ and `d` is the _day_.
+`lubridate` provides a single function for each of these cases: `dmy()`, `mdy()` and `ymd()`. These functions parse dates according to the order provided, where `y` is the _year_, `m` is the _month_ and `d` is the _day_.
 
 ```{r lubridate_ymd}
 dmy(chr)
@@ -75,7 +64,7 @@ dym(chr)
 ydm(chr)
 ```
 
-Accordingly to the help, `ymd()`-style _functions recognize arbitrary non-digit separators as well as no separator. As long as the order of formats is correct, these functions will parse dates correctly even when the input vectors contain differently formatted dates_.
+According to the help, `ymd()`-style _functions recognize arbitrary non-digit separators as well as no separator. As long as the order of formats is correct, these functions will parse dates correctly even when the input vectors contain differently formatted dates_.
 
 ```{r lubridate_all}
 x <- c(20160101, "2016-01-02", "2016 01 03", "2016-1-4", "2016-1, 5", "Created on 2016 1 6", "201601 !!! 07")
@@ -100,14 +89,14 @@ IBM <- IBM %>% mutate(date = row.names(.)) %>% tbl_df
 IBM
 ```
 
-At this point, the new `date` column is a string and it must be parsed to be interpreted by R as a date.
+At this point, the new `date` column is a string and it must be parsed to be interpreted as a date by `R`.
 
 ```{r lubridate_IBM_mutate}
 IBM <- IBM %>% mutate(date = ymd(date))
 IBM
 ```
 
-The `lubridate` package provide a set of function to extract single components of a date: `month()`, `day()` and `year()`. Using just `lubridate` and `dplyr` the components of a date can be added as new variables to a data frame.
+The `lubridate` package provides a set of functions to extract single components of a date: `month()`, `day()` and `year()`. Using just `lubridate` and `dplyr` the components of a date can be added as new variables to a data frame.
 
 ```{r lubridate_extract}
 IBM <- IBM %>% mutate(month = month(date), day = day(date), year = year(date))
@@ -131,14 +120,14 @@ ggplot(data=IBM, mapping=aes(x=factor(month), y=IBM.Adjusted, group=month)) +
   facet_wrap(~ year)
 ```
 
-The last function shown here is `wday()`: it extracts the week day of a date, returning a number from Sunday (1) to Saturday (7).
+The last function showed here is `wday()`: it extracts the week day of a date, returning a number from Sunday (1) to Saturday (7).
 
 ```{r lubridate_IBM_weekday}
 IBM <- IBM %>% mutate(weekday = wday(date))
 IBM
 ```
 
-Of course, also the new variable can be used as grouping variable for box plots.
+Of course, also the new variable can be used as a grouping variable for box plots.
 
 ```{r lubridate_ggp_weekday}
 ggplot(data=IBM, mapping=aes(
@@ -156,13 +145,13 @@ Since 2016 is a leap year, the difference between March 17, 2016 and March 17, 2
 ymd("2016-03-17") - ymd("2015-03-17")
 ```
 
-By the way, if you add an year to a date may be you expect the same day/month of the following year. The function `years()` add a number of years, ignoring leap years. Notice the spelling difference among this function, `years()` and the function to extract the `year()` component of a date, that have the singular form of the units as a name.
+By the way, if you add a year to a date maybe you expect the same day/month of the following year. The function `years()` add a number of years, ignoring leap years. Notice the spelling difference among this function, `years()` and the function to extract the `year()` component of a date, that have the singular form of the units as a name.
 
 ```{r lubridate_years}
 ymd("2015-03-17") + years(1)
 ```
 
-In some cases, you may be interested in the exact time differences. The function `dyears()` adds an year (i.e. 365 days) according to leap years.
+In some cases, you may be interested in the exact time difference. The function `dyears()` adds a year (i.e. 365 days) according to leap years.
 
 ```{r lubridate_dyears}
 ymd("2015-03-17") + dyears(1)
@@ -203,9 +192,9 @@ ymd("2016-03-26") - days(360)
 
 
 # Time Parsing
-Package `lubridate` allow you to deal with times, too. Times have no mean without dates, so you will parse the whole date-time string.
+Package `lubridate` allows you to deal with times, too. Times have no meaning without dates, so you will parse the whole date-time string.
 
-When data has date and time in two different variables, you can merge it an a single variable with a bit of `tidyr`. The following example requires data frame `diabetes` from `qdata` package.
+When data has date and time in two different variables, you can merge it in a single variable with a bit of `tidyr`. The following example requires data frame `diabetes` from `qdata` package.
 
 ```{r lubridate_diabetes, message=FALSE}
 data(diabetes)
@@ -246,7 +235,7 @@ now()
 
 
 # Time Zones
-Date and times may vary with refer to timezone. When you define a `POSIXct` class object with parsing function seen above, you can refer to a specified timezone.
+Date and times may vary with reference to timezones. When you define a `POSIXct` class object with parsing function seen above, you can refer to a specified timezone.
 
 For example, you can set March 1, 2016 at 2.00 PM in the Central European Time (CET).
 
@@ -298,7 +287,7 @@ for exact time spans.
 
 Relative time spans shift times according to the input (e.g. one hour more), while exact time spans return the exact time after _n_ seconds, being _n_ the function input. Relative and exact time spans are identical, unless there are "external" adjustments of time, like Daylight Saving Time.
 
-As an example, you can substract an hour to October 30, 2016 at 2.00 AM. The `hours()` function returns 1.00 AM, since it just subtract an hour; the `dhours()` function returns 2.00 AM again, because in this night DST ends and clocks are set back, as if to repeat one hour.
+As an example, you can substract an hour to October 30, 2016 at 2.00 AM. The `hours()` function returns 1.00 AM, since it just subtracts an hour; the `dhours()` function returns 2.00 AM again, because in this night DST ends and clocks are set back, as if to repeat one hour.
 
 ```{r lubridate_times}
 ymd_hms("2016-10-30 02:00:00", tz="CET") - hours(1)

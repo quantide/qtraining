@@ -56,7 +56,7 @@ spark_install(version = "1.6.2")
 
 ## Data
 
-You can download the data at the following link:
+The data used is the same as that used for RSQLite chapter. You can download the data at the following link:
 
 http://stat-computing.org/dataexpo/2009/the-data.html
 
