@@ -1,5 +1,5 @@
 ---
-title:  "sparklyr: connect to spark from R"
+title: 'sparklyr: connect to spark from R'
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -63,7 +63,7 @@ http://stat-computing.org/dataexpo/2009/the-data.html
 The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are over 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12 gigabytes when uncompressed. From the above link you can download the data, year by year. As the whole dataset is extremely large and it may take you a while to download all the years, we suggest you only take the years 2006, 2007 and 2008. The downloaded data should be uzipped and placed in a separate folder
 
 
-```{bash}
+```{r, eval = FALSE}
 cd ~
 mkdir data			# create data dir
 cd data	  			# enter this dir
@@ -81,7 +81,7 @@ Now that you have the data to work on, you have installed spark and you have loa
 
 You can connect to both local instances of Spark as well as remote Spark clusters. Here we show how to connect to a local instance of Spark. First of all you should set the configuration parameters
 
-```{r}
+```{r, eval = FALSE}
 # set configuration parameters
 config <- spark_config()
 config$`sparklyr.shell.driver-memory` <- "4G"
@@ -91,7 +91,7 @@ config$`spark.yarn.executor.memoryOverhead` <- "1G"
 
 Now you can connect to a local instance of Spark using `spark_connect()`:
 
-```{r}
+```{r, eval = FALSE}
 sc <- spark_connect(master = "local", config = config)
 ```
 
@@ -101,7 +101,7 @@ where `master = local` means that Spark will work on your local machine.
 
 Once you are connected to Spark you can read the csv files. You are reading it from your local hard-drive:
 
-```{r}
+```{r, eval = FALSE}
 csv_file <- 'file:///home/emanuela/ema/sp-data/*.csv'
 ontime_tbl <- spark_read_csv(sc = sc, 
                              'ontime_tbl' , 
@@ -122,19 +122,19 @@ You can now use `sparklyr` and `dplyr` functions to deal with this large dataset
 
 First of all you may want to know the size the data you are working on:
 
-```{r}
+```{r, eval = FALSE}
 ontime_tbl %>% summarise(n = n())
 ```
 
 and get an overview of the variables in your data frame:
 
-```{r}
+```{r, eval = FALSE}
 ontime_tbl %>% head()
 ```
 
 Let us start by selecting a subset of columns that we are interested in and sort it by year:
 
-```{r}
+```{r, eval = FALSE}
 ontime_tbl_detail <- ontime_tbl %>%
   select(Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum ) %>%    # select columns
   arrange(Year)             # sort by year
@@ -144,7 +144,7 @@ ontime_tbl_detail
 
 Now you may be interested in finding whether, there are flights and years in which there is an extremely high mean arrival delay:
 
-```{r}
+```{r, eval = FALSE}
 ontime_tbl_detail %>%
   mutate( ArrDelay = as.integer(ArrDelay)) %>%
   group_by(Year, FlightNum) %>%
@@ -154,7 +154,7 @@ ontime_tbl_detail %>%
 
 Flight number 9024 in 2006 registered a very large average delay. However that flight only left once as well as the other flights with large delays. You may want to get more info on that flight: 
 
-```{r}
+```{r, eval = FALSE}
 ontime_tbl %>% 
     filter(Year == 2006, FlightNum == 9024) %>%
     select(Origin, Dest, Distance) 
@@ -162,7 +162,7 @@ ontime_tbl %>%
 
 But you may be more interested in finding out how late are those flights that take off the most often:
 
-```{r}
+```{r, eval = FALSE}
 ontime_tbl_detail %>%
     group_by(Year, FlightNum) %>%
     summarize(avg = mean(ArrDelay), n = n(), quart1 = quantile(ArrDelay, 0.25), quart3 = quantile(ArrDelay, 0.75)) %>%
@@ -174,7 +174,7 @@ Indeed, you can do anything you like as if you were working on `dplyr`.
 
 As for `dplyr`, you can also work with `ggplot2`:
 
-```{R}
+```{r, eval = FALSE}
  ## Collect some data
 delay <-
     ontime_tbl %>% 
@@ -195,6 +195,6 @@ ggplot(delay, aes(dist, delay)) +
 
 At the end of your `R` session, it is convenient to terminate the spark process disconnecting `R` from Spark. 
 
-```{r}
+```{r, eval = FALSE}
 spark_disconnect(sc)
 ```
