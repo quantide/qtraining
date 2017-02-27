@@ -1,5 +1,5 @@
 ---
-title: "data.table"
+title: " data.table backend for dplyr: data.table"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -7,9 +7,98 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
+# load packages
+require(tidyverse) # alternatively: require(dplyr); require(ggplot2)
+require(data.table)  
+```
+
+## data.table
+
+`data.table` is a data object for fast aggregation of large data (e.g. 100GB in RAM), fast ordered joins, fast add/modify/delete of columns, a fast friendly file reader and parallel file writer. Its syntax is however a bit complicated and very different from dplyr. For example with data.table:
+
+```{r example data.table}
+
+```
+
+while with dplyr:
+
+```{r example dplyr}
+
+```
+
+
+
+## data.table and dplyr
+
+You may use the `data.table` class with `dplyr` functions. For example
+
+```{r example data.table dplyr}
+
+```
+
+All the `dplyr` functions thus ran on data.frames, data.tables and tibbles. However, as stated at the beginning of the course, tibbles are the `tidyverse` class object as all functions in `tidyverse` easily work with them.
+
+
+## data.table vs. dplyr: speed test
+
+data.table is faster than dplyr. Using the data.table syntax:
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(data.table)
+N=5000000; K=100
+set.seed(1)
+DT <- data.table(
+  id1 = sample(sprintf("id%03d",1:K), N, TRUE),      # large groups (char)
+  id2 = sample(sprintf("id%03d",1:K), N, TRUE),      # large groups (char)
+  id3 = sample(sprintf("id%010d",1:(N/K)), N, TRUE), # small groups (char)
+  id4 = sample(K, N, TRUE),                          # large groups (int)
+  id5 = sample(K, N, TRUE),                          # large groups (int)
+  id6 = sample(N/K, N, TRUE),                        # small groups (int)
+  v1 =  sample(5, N, TRUE),                          # int in range [1,5]
+  v2 =  sample(5, N, TRUE),                          # int in range [1,5]
+  v3 =  sample(round(runif(100,max=100),4), N, TRUE) # numeric e.g. 23.5749
+)
+cat("GB =", round(sum(gc()[,2])/1024, 3), "\n")
+system.time( DT[, sum(v1), keyby=id1] )
+system.time( DT[, sum(v1), keyby=id1] )
+system.time( DT[, sum(v1), keyby="id1,id2"] )
+system.time( DT[, sum(v1), keyby="id1,id2"] )
+system.time( DT[, list(sum(v1),mean(v3)), keyby=id3] )
+system.time( DT[, list(sum(v1),mean(v3)), keyby=id3] )
+system.time( DT[, lapply(.SD, mean), keyby=id4, .SDcols=7:9] )
+system.time( DT[, lapply(.SD, mean), keyby=id4, .SDcols=7:9] )
+system.time( DT[, lapply(.SD, sum), keyby=id6, .SDcols=7:9] )
+system.time( DT[, lapply(.SD, sum), keyby=id6, .SDcols=7:9] )
+```
+
+
+while with dplyr, things go a bit slower:
+
+```{r}
 require(dplyr)
-require(ggplot2)
-require(DBI)
-require(RSQLite)
+N=5000000; K=100
+set.seed(1)
+DF <- data.frame(stringsAsFactors=FALSE,
+                 id1 = sample(sprintf("id%03d",1:K), N, TRUE),
+                 id2 = sample(sprintf("id%03d",1:K), N, TRUE),
+                 id3 = sample(sprintf("id%010d",1:(N/K)), N, TRUE),
+                 id4 = sample(K, N, TRUE),                          
+                 id5 = sample(K, N, TRUE),                         
+                 id6 = sample(N/K, N, TRUE),                       
+                 v1 =  sample(5, N, TRUE),                         
+                 v2 =  sample(5, N, TRUE),                       
+                 v3 =  sample(round(runif(100,max=100),4), N, TRUE)
+)
+cat("GB =", round(sum(gc()[,2])/1024, 3), "\n")
+system.time( DF %>% group_by(id1) %>% summarise(sum(v1)) )
+system.time( DF %>% group_by(id1) %>% summarise(sum(v1)) )
+system.time( DF %>% group_by(id1,id2) %>% summarise(sum(v1)) )
+system.time( DF %>% group_by(id1,id2) %>% summarise(sum(v1)) )
+system.time( DF %>% group_by(id3) %>% summarise(sum(v1),mean(v3)) )
+system.time( DF %>% group_by(id3) %>% summarise(sum(v1),mean(v3)) )
+system.time( DF %>% group_by(id4) %>% summarise_each(funs(mean), 7:9) )
+system.time( DF %>% group_by(id4) %>% summarise_each(funs(mean), 7:9) )
+system.time( DF %>% group_by(id6) %>% summarise_each(funs(sum), 7:9) )
+system.time( DF %>% group_by(id6) %>% summarise_each(funs(sum), 7:9) )
 ```
 
