@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -358,12 +359,13 @@ $(document).ready(function () {
 </ul>
 </div>
 
-<pre class="r"><code>require(dplyr)
+<pre class="r"><code># load packages and data
+require(tidyverse)  # alternatively require(dplyr)
 require(qdata)
 data(bank)</code></pre>
 <div id="summarise" class="section level1">
 <h1><code>summarise()</code></h1>
-<p>The last verb is <code>summarise()</code>, which collapses a data frame to a single row:</p>
+<p>The last key verb is <code>summarise()</code> which collapses a data frame to a single row reutrning some descriptive statistics for a specified set of variables:</p>
 <pre class="r"><code># Compute the mean of balance variable of bank data frame
 summarise(bank, mean_balance = mean(balance, na.rm = TRUE))</code></pre>
 <pre><code>## # A tibble: 1 × 1
@@ -376,6 +378,7 @@ bank %&gt;% summarise(max_balance = max(balance, na.rm = TRUE), min_balance = mi
 ##   max_balance min_balance
 ##         &lt;int&gt;       &lt;int&gt;
 ## 1      102127       -8019</code></pre>
+<p><code>na.rm = TRUE</code> is to ignore missing values. We will come back to it in a specific chapter.</p>
 <div id="helper-functions-for-summarise" class="section level2">
 <h2>Helper Functions for <code>summarise()</code></h2>
 <ul>

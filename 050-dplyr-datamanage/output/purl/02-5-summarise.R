@@ -1,5 +1,6 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
-require(dplyr)
+# load packages and data
+require(tidyverse)  # alternatively require(dplyr)
 require(qdata)
 data(bank)
 

@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -358,9 +359,10 @@ $(document).ready(function () {
 </ul>
 </div>
 
-<pre class="r"><code>require(dplyr)
-require(qdata)
+<pre class="r"><code># load packages and data
+require(tidyverse)    # alternatively require(dplyr)
 require(lubridate)
+require(qdata)
 data(bank)</code></pre>
 <div id="filter" class="section level1">
 <h1><code>filter()</code></h1>
@@ -370,7 +372,7 @@ data(bank)</code></pre>
 
 </div>
 <p>The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.</p>
-<p>For example, you can select all calls made to students whit balance above 20,000:</p>
+<p>For example, you can select all calls made to students with balance above 20,000:</p>
 <pre class="r"><code>filter(bank, job == &quot;student&quot;, balance &gt; 20000)</code></pre>
 <pre><code>## # A tibble: 3 × 20
 ##      id   age     job marital education default balance housing   loan  contact   day  month  year
@@ -403,7 +405,7 @@ data(bank)</code></pre>
 ## 5   298    24 student  single secondary      no      82     yes     no unknown     5    may  2008
 ## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
-<p>Note that you’ll have to either convert variable <code>date</code> to character or the string “2008-05-05” to an object of class <code>POSIX</code> as <code>dplyr</code> allows comparison between same class objects only.</p>
+<p>Note that you will have to either convert variable <code>date</code> to character or the string “2008-05-05” to an object of class <code>POSIX</code> as <code>dplyr</code> allows comparison between same class objects only.</p>
 <p><code>filter()</code> works similarly to <code>subset()</code> except that you can give it any number of filtering conditions which are joined together with <code>&amp;</code> (not <code>&amp;&amp;</code> which is easy to do accidentally!).</p>
 <p>You can use other boolean operators explicitly:</p>
 <pre class="r"><code># Select all calls made to people of 18 or 95 years
@@ -524,38 +526,38 @@ or the last call
 <p>You can use <code>sample_n()</code> and <code>sample_frac()</code> to take a random sample of rows, either a fixed number for <code>sample_n()</code> or a fixed fraction for <code>sample_frac()</code>.</p>
 <pre class="r"><code>sample_n(bank, 3)</code></pre>
 <pre><code>## # A tibble: 3 × 20
-##      id   age         job marital education default balance housing   loan  contact   day  month  year
-##   &lt;int&gt; &lt;int&gt;      &lt;fctr&gt;  &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;   &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
-## 1 13915    30 blue-collar  single secondary      no    1598     yes     no cellular    10    jul  2008
-## 2 11650    50  unemployed married secondary      no      17      no     no  unknown    20    jun  2008
-## 3 24970    39      admin. married secondary      no    3732     yes     no cellular    18    nov  2008
+##      id   age           job  marital education default balance housing   loan  contact   day  month  year
+##   &lt;int&gt; &lt;int&gt;        &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;   &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
+## 1 11650    50    unemployed  married secondary      no      17      no     no  unknown    20    jun  2008
+## 2 24971    39 self-employed  married  tertiary      no     585     yes     no cellular    18    nov  2008
+## 3  2550    51        admin. divorced secondary      no    2195     yes     no  unknown    13    may  2008
 ## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <pre class="r"><code>sample_frac(bank, 0.0001)</code></pre>
 <pre><code>## # A tibble: 5 × 20
 ##      id   age        job  marital education default balance housing   loan  contact   day  month  year
 ##   &lt;int&gt; &lt;int&gt;     &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;   &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
-## 1  2550    51     admin. divorced secondary      no    2195     yes     no  unknown    13    may  2008
-## 2 21184    48   services  married secondary      no     125      no     no cellular    14    aug  2008
-## 3 21871    53 technician  married secondary      no    1357     yes     no cellular    20    aug  2008
-## 4 36728    32     admin. divorced secondary      no    1288     yes     no cellular    12    may  2009
-## 5 16742    50  housemaid  married  tertiary      no    5260     yes     no cellular    24    jul  2008
+## 1 21184    48   services  married secondary      no     125      no     no cellular    14    aug  2008
+## 2 21872    34 technician  married  tertiary      no    2069      no     no cellular    20    aug  2008
+## 3 36728    32     admin. divorced secondary      no    1288     yes     no cellular    12    may  2009
+## 4 16742    50  housemaid  married  tertiary      no    5260     yes     no cellular    24    jul  2008
+## 5 24709    51   services divorced secondary      no      12     yes     no cellular    17    nov  2008
 ## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <pre class="r"><code>sample_frac(bank, 1.5, replace = TRUE)</code></pre>
 <pre><code>## # A tibble: 67,816 × 20
 ##       id   age           job  marital education default balance housing   loan   contact   day  month  year
 ##    &lt;int&gt; &lt;int&gt;        &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;    &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
-## 1  24711    40    management   single secondary      no   10378     yes     no  cellular    17    nov  2008
-## 2   7698    58 self-employed  married secondary      no    1407     yes     no   unknown    30    may  2008
-## 3  28257    30        admin.   single secondary      no      19      no     no  cellular    29    jan  2009
-## 4  39884    56      services divorced secondary      no     935      no     no  cellular     2    jun  2009
-## 5  12676    33    technician   single secondary      no     555      no    yes  cellular     4    jul  2008
-## 6  18017    50   blue-collar  married secondary      no       0      no     no  cellular    30    jul  2008
-## 7  34476    35       student   single secondary      no     188     yes     no  cellular     5    may  2009
-## 8  30248    31    unemployed   single secondary      no    3528      no     no  cellular     5    feb  2009
-## 9   9251    44    unemployed  married   primary      no     280     yes     no   unknown     5    jun  2008
-## 10 16165    43   blue-collar   single   primary      no     189      no    yes telephone    22    jul  2008
+## 1   7698    58 self-employed  married secondary      no    1407     yes     no   unknown    30    may  2008
+## 2  28257    30        admin.   single secondary      no      19      no     no  cellular    29    jan  2009
+## 3  39884    56      services divorced secondary      no     935      no     no  cellular     2    jun  2009
+## 4  12676    33    technician   single secondary      no     555      no    yes  cellular     4    jul  2008
+## 5  18017    50   blue-collar  married secondary      no       0      no     no  cellular    30    jul  2008
+## 6  34476    35       student   single secondary      no     188     yes     no  cellular     5    may  2009
+## 7  30248    31    unemployed   single secondary      no    3528      no     no  cellular     5    feb  2009
+## 8   9251    44    unemployed  married   primary      no     280     yes     no   unknown     5    jun  2008
+## 9  16165    43   blue-collar   single   primary      no     189      no    yes telephone    22    jul  2008
+## 10 16253    40       retired  married   primary      no     630     yes     no  cellular    23    jul  2008
 ## # ... with 67,806 more rows, and 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;,
 ## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>Use <code>replace = TRUE</code> to perform a bootstrap sample, and optionally weight the sample with the weight argument.</p>

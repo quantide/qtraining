@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -360,8 +361,8 @@ $(document).ready(function () {
 <p>Let us consider <code>bank</code> data set, included in <code>qdata</code> package, which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls.</p>
 <pre class="r"><code>require(qdata)
 data(bank) </code></pre>
-<p>Suppose we want to visualize the first rows of <code>bank</code> dataframe, by using <code>head()</code> function.</p>
-<p>Usually we write:</p>
+<p>Suppose you want to visualize the first rows of <code>bank</code> dataframe, by using <code>head()</code> function.</p>
+<p>Usually you write:</p>
 <pre class="r"><code>head(bank)</code></pre>
 <pre><code>## # A tibble: 6 × 20
 ##      id   age          job marital education default balance housing   loan contact   day  month  year
@@ -388,7 +389,7 @@ data(bank) </code></pre>
 ## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <p>Pipe takes the argument on the left (<code>bank</code>) and passes it to the function on the right (<code>head()</code>). So you don’t need to write the first argument of the function.</p>
-<p>Other arguments of the function must be added to the function itself, as usually done. By default <code>head()</code> prints the first 6 rows of the dataframe. Suppose we want to print 10 rows, by setting <code>n</code> argument to 10:</p>
+<p>Other arguments of the function must be added to the function itself, as usually done. By default <code>head()</code> prints the first 6 rows of the dataframe. Suppose you want to print 10 rows, by setting <code>n</code> argument to 10:</p>
 <pre class="r"><code>bank %&gt;% head(n=10)</code></pre>
 <pre><code>## # A tibble: 10 × 20
 ##       id   age          job  marital education default balance housing   loan contact   day  month  year

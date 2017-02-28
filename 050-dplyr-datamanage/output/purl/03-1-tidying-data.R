@@ -1,7 +1,6 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
-require(dplyr)
-require(tidyr)
-require(ggplot2)
+# load packages and data
+require(tidyverse)  # alternatively: require(dplyr); require(tidyr); require(ggplot2)
 require(qdata)
 
 ## ------------------------------------------------------------------------

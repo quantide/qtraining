@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -365,7 +366,7 @@ $(document).ready(function () {
 </ul>
 </div>
 
-<pre class="r"><code>require(dplyr)
+<pre class="r"><code>require(tidyverse) # alternatively: require(dplyr)
 require(qdata)
 data(comuni)
 data(province)
@@ -375,7 +376,7 @@ data(wimbledon)</code></pre>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>Very often you will have to deal with many tables that contribute to the analysis you are performing and you need flexible tools to combine them.</p>
-<p>Supposing that the two tables are already in a tidy form: the rows are observations and the columns are variables, <code>dplyr</code> provides three families of verbs that work with two tables at a time:</p>
+<p>Supposing that the two tables are already in a tidy form (= the rows are observations and the columns are variables), <code>dplyr</code> provides three families of verbs that work with two tables at a time:</p>
 <ul>
 <li><strong>mutating joins</strong>, which add new variables to one table from matching rows in another;</li>
 <li><strong>filtering joins</strong>, which filter observations from one table based on whether or not they match an observation in the other table;</li>
@@ -392,7 +393,7 @@ data(wimbledon)</code></pre>
 <li><code>right_join(x, y)</code></li>
 <li><code>outer_join(x, y)</code></li>
 </ul>
-<p>For the next examples I will consider these two small data frames:</p>
+<p>For the next examples we will consider these two small data frames:</p>
 <pre class="r"><code>df1 &lt;- data.frame(id = 1:4, x1 = letters[1:4])
 df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <ul>

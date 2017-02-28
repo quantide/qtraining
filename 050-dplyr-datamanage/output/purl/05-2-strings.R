@@ -1,7 +1,7 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
-require(tidyverse)
+# load packages
+require(tidyverse) # alternatively: require(dplyr), require(tidyr)
 require(stringr)
-require(forcats)
 require(qdata)
 
 ## ------------------------------------------------------------------------
@@ -96,16 +96,7 @@ colors <- c("gray", "gray", "grey", "white", "white", "white")
 str_replace(colors, c("gray"), "grey")
 
 ## ------------------------------------------------------------------------
-colors <- c("grey", "blue", "dark blue", "black", "white")
-
-## ------------------------------------------------------------------------
-sort(colors)
-
-## ------------------------------------------------------------------------
-color_levels <- c("black", "dark blue", "blue", "grey", "white")
-
-## ------------------------------------------------------------------------
-colors <- c("gray", "blue", "dark blue", "black", "white", "grey", "white")
-colors2 <- factor(colors, levels = color_levels)
-colors2
+colors <- c("gray", "gray", "grey", "white", "white", "white")
+colors_levels <- c("gray", "white")
+factor(colors, levels = colors_levels)
 

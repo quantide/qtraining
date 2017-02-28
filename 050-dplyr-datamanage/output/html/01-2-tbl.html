@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -359,11 +360,26 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Sometimes data frames have large dimensions. The package <code>tibble</code>, which is part of the core tidyverse, provides a <code>tbl_df</code> class that offers better checking and printing capabilities than traditional data frames. Almost all the functions that we’ll use in this course produce tibbles as tibbles are one of the unifying features of the tidyverse.</p>
+<p>Sometimes data frames have large dimensions. The package <code>tibble</code>, which is part of the core tidyverse, provides a <code>tbl_df</code> class that offers better checking and printing capabilities than traditional data frames. Almost all the functions that you will use in this course produce tibbles as tibbles are one of the unifying features of the tidyverse.</p>
+<p>You can load <code>tibble</code> by loading <code>tidyverse</code>:</p>
+<pre class="r"><code>require(tidyverse)</code></pre>
+<pre><code>## Loading required package: tidyverse</code></pre>
+<pre><code>## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr</code></pre>
+<pre><code>## Conflicts with tidy packages -------------------------------------------------------------------------------</code></pre>
+<pre><code>## filter(): dplyr, stats
+## lag():    dplyr, stats</code></pre>
+<p>or you can load it explicitely together with <code>dplyr</code> that will be useful throughout this chapter:</p>
+<pre class="r"><code>require(tibble)
+require(dplyr)</code></pre>
 </div>
 <div id="tbl_df-the-tidyverse-data-frame-class" class="section level1">
 <h1><code>tbl_df</code>: the <code>tidyverse</code> Data Frame Class</h1>
-<p><code>dplyr</code>, as well as other packages that we’ll see in this course, can work with data frames as is but it is worthwhile to convert them to a <code>tbl_df</code>, especially if frames have large dimensions. <code>tbl_df</code> is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.</p>
+<p><code>dplyr</code>, as well as other packages that you will work with in this course, can work with data frames as is but it is worthwhile to convert them to a <code>tbl_df</code>, especially if frames have large dimensions. <code>tbl_df</code> is a wrapper around a data frame that will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit in one screen, describing the rest of it as text.</p>
 <p>When the class of data object is not tibble, you can convert it to a tibble with the function <code>as_tibble()</code>.<br />
 Let us consider <code>mtcars</code>, a dataset included in <code>datasets</code> package (automatically loaded at the start of an R session):</p>
 <pre class="r"><code># Example of data frame
@@ -406,7 +422,7 @@ dim(mtcars)</code></pre>
 ## Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
 ## Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
 ## Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
-<p>Now, using the package <code>tibble</code>, that you loaded when <code>tidyverse</code> package was loaded, you can convert mtcars into a <code>tbl_df</code> object:</p>
+<p>Now, using the package <code>tibble</code>, you can convert mtcars into a <code>tbl_df</code> object:</p>
 <pre class="r"><code># tibble version of the same data frame 
 mtcars_tbl &lt;- as_tibble(mtcars)
 mtcars_tbl</code></pre>
@@ -461,7 +477,7 @@ tb</code></pre>
 ## 3     3   1.60     52 20.31250
 ## 4     4   1.75     82 26.77551
 ## 5     5   1.73     75 25.05931</code></pre>
-<p>Notice that it is possibile for a tibble to have column names that are not valid as R variables names, for instance they may be numbers and may contain unsual characters such as spaces.</p>
+<p>Notice that it is possibile for a tibble to have column names that are not valid as <code>R</code> variables names, for instance they may be numbers or may contain unsual characters such as spaces.</p>
 <pre class="r"><code># tibble version of the data frame mtcars with the function tbl_df()
 tb &lt;- tibble(
   &quot;:)&quot; = &quot;happy&quot;,

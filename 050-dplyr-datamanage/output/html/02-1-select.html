@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -352,50 +353,20 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction-to-dplyr">Introduction to <code>dplyr</code></a><ul>
-<li><a href="#verb-functions">Verb functions</a></li>
-</ul></li>
 <li><a href="#select"><code>select()</code></a><ul>
-<li><a href="#helper-functions-for-select">Helper Functions for <code>select()</code></a></li>
+<li><a href="#helper-functions-for-select">Helper Functions for <code>select()</code></a><ul>
 <li><a href="#select_if"><code>select_if()</code></a></li>
+</ul></li>
 </ul></li>
 <li><a href="#distinct"><code>distinct()</code></a></li>
 <li><a href="#rename"><code>rename()</code></a></li>
 </ul>
 </div>
 
-<pre class="r"><code>require(dplyr)
+<pre class="r"><code># load packages and data
+require(tidyverse) # alternatively require(dplyr)
 require(qdata)
 data(bank) </code></pre>
-<div id="introduction-to-dplyr" class="section level1">
-<h1>Introduction to <code>dplyr</code></h1>
-<p>The <code>dplyr</code> package for <code>R</code> is very powerful for data management since:</p>
-<ul>
-<li>it simplifies how you can think about common data manipulation tasks;</li>
-<li>it provides simple “verbs”, functions that correspond to the most common data manipulation tasks;</li>
-<li>it uses efficient data storage backends, so you spend less time waiting for the computer.</li>
-</ul>
-<div id="verb-functions" class="section level2">
-<h2>Verb functions</h2>
-<p><code>dplyr</code> aims to provide a function for each basic verb of data manipulating.</p>
-<p>All these functions are very similar:</p>
-<ul>
-<li>the first argument is a data frame;</li>
-<li>the subsequent arguments describe what to do with it, and you can refer to columns in the data frame directly without using $;</li>
-<li>the result is a new data frame.</li>
-</ul>
-<p>Together these properties make it easy to chain together multiple simple steps to achieve a complex result.</p>
-<p>These five functions provide the basis of a language of data manipulation. At the most basic level, you can only alter a tidy data frame in five useful ways:</p>
-<ol style="list-style-type: decimal">
-<li>select variables of interest: <code>select()</code>;</li>
-<li>filter records of interest: <code>filter()</code>;</li>
-<li>reorder the rows: <code>arrange()</code>;</li>
-<li>add new variables that are functions of existing variables: <code>mutate()</code>;</li>
-<li>collapse many values to a summary: <code>summarise()</code>.</li>
-</ol>
-<p>The remainder of the language comes from applying these five functions to different types of data, like grouped data, which will be described after.</p>
-</div>
-</div>
 <div id="select" class="section level1">
 <h1><code>select()</code></h1>
 <p>Often you work with large datasets with many columns where only a few are of actual interest to you.</p>
@@ -453,7 +424,7 @@ bank %&gt;% select(-(year:day))</code></pre>
 ## 10    10    43   technician   single secondary      no     593     yes     no unknown 2008-05-05       55
 ## # ... with 45,201 more rows, and 5 more variables: campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
 ## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
-<p>This function works similarly to the select argument of the <code>base::subset()</code>. It has its own function in <code>dplyr</code>, because the <code>dplyr</code> philosophy is to have small functions that each do one thing well.</p>
+<p>This function works similarly to the select argument of the <code>base::subset()</code>. It has its own function in <code>dplyr</code>, because the <code>dplyr</code> philosophy is to have small functions each doing one thing well.</p>
 <p>You can also rename variables with <code>select()</code> by using named arguments:</p>
 <pre class="r"><code># Rename id variable as ID
 bank %&gt;% select(ID = id)</code></pre>
@@ -715,9 +686,8 @@ bank %&gt;% select(one_of(vars))</code></pre>
 <p>Notice that all helpers functions are also real exported functions, that means that you can use them also outside the ‘select()’ function:</p>
 <pre class="r"><code>starts_with(&quot;b&quot;, vars=names(bank))</code></pre>
 <pre><code>## [1] 7</code></pre>
-</div>
-<div id="select_if" class="section level2">
-<h2><code>select_if()</code></h2>
+<div id="select_if" class="section level3">
+<h3><code>select_if()</code></h3>
 <p>This verb allows you to use a predicate on the columns of a data frame. Only those columns for which the predicate returns TRUE will be selected:</p>
 <pre class="r"><code>select_if(bank, is.factor)    # select only string variables</code></pre>
 <pre><code>## # A tibble: 45,211 × 10
@@ -751,6 +721,7 @@ bank %&gt;% select(one_of(vars))</code></pre>
 ## # ... with 45,201 more rows</code></pre>
 </div>
 </div>
+</div>
 <div id="distinct" class="section level1">
 <h1><code>distinct()</code></h1>
 <p>A common use of <code>select()</code> is to find out which values a set of variables takes. This is particularly useful in conjunction with the <code>distinct()</code> verb which only returns the unique values in a table.</p>
@@ -774,7 +745,7 @@ distinct(select(bank, housing, loan))</code></pre>
 </div>
 <div id="rename" class="section level1">
 <h1><code>rename()</code></h1>
-<p>As seen previously, you can rename the variables using <code>select()</code>, however it drops all the variables not explicitly mentioned so it’s not that useful. Instead, use <code>rename()</code>:</p>
+<p>As previously mentioned, you can rename the variables using <code>select()</code>, however it drops all the variables not explicitly mentioned so it’s not that useful. Instead, use <code>rename()</code>:</p>
 <pre class="r"><code># Rename id variable as ID
 bank %&gt;% rename(ID = id)</code></pre>
 <pre><code>## # A tibble: 45,211 × 20

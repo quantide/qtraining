@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -363,19 +364,17 @@ $(document).ready(function () {
 <li><a href="#extract-match">Extract match</a></li>
 <li><a href="#replace-match">Replace match</a></li>
 </ul></li>
-<li><a href="#factors-with-forcats">Factors with forcats</a></li>
 </ul>
 </div>
 
-<pre class="r"><code>require(tidyverse)
+<pre class="r"><code># load packages
+require(tidyverse) # alternatively: require(dplyr), require(tidyr)
 require(stringr)
-require(forcats)
 require(qdata)</code></pre>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>In this chapter you will learn about string manipulation in <code>R</code> with the package <code>stringr</code>. You don’t always work with textual data, hence this package is installed when you install <code>tidyverse</code> but you need to load it explicitely.</p>
-<p>At the end of this chapter you will also work with factors with the package <code>forcats</code> which, just like <code>stringr</code>, is part of the tidyiverse but it is not part of the core, hence you need to load it explicitely as well.</p>
-<p>Strings are textual data and they are created by using either single quotes or double quoutes, as you have already seen at the beginning of this course. You can store strings in a character vector:</p>
+<p>In this chapter you will learn about string manipulation in <code>R</code> with the package <code>stringr</code>. You don’t always work with textual data, hence <code>stringr</code> is not part part of the tidyverse core.</p>
+<p>Strings are textual data and they are created by using either single quotes or double quoutes, as you have already seen at the beginning of this course. You store strings in a character vector:</p>
 <pre class="r"><code># character vector
 char_vector &lt;- c(&quot;Hello&quot;, &quot;Andrea&quot;, &quot;Spanò&quot;)</code></pre>
 <p>With the function <code>str_length()</code> you can see the length of each string:</p>
@@ -440,7 +439,7 @@ str_split(char_vector, &quot; &quot; )</code></pre>
 <pre class="r"><code>tennis_new &lt;- tennis %&gt;% 
   mutate_at(vars(Name), funs(str_c(First.Name, Name, sep = &quot; &quot;))) %&gt;%
   select(-First.Name)   # drop the column &quot;First.Name&quot;</code></pre>
-<p>You may want to split the into two strings so that you have one variable for names and one for surnames:</p>
+<p>You may want to have one variable storing names and one storing surnames:</p>
 <pre class="r"><code>str_split(tennis_new$Name, &quot; &quot;)</code></pre>
 <pre><code>## [[1]]
 ## [1] &quot;Pete&quot;    &quot;Sampras&quot;
@@ -488,10 +487,10 @@ str_split(char_vector, &quot; &quot; )</code></pre>
 </div>
 <div id="subsetting" class="section level2">
 <h2>Subsetting</h2>
-<p>Another useful manipulation you may need/want to do on strings, is to extract part of it. For instance, suppose you have the following data frame containing some Italian cities and their province:</p>
+<p>Another useful manipulation you may need/want to do on strings, is to extract part of it. For instance, suppose you have the following data frame containing some Italian cities and their “provincia”:</p>
 <pre class="r"><code>df &lt;- tibble(comune = c('Legnano', 'Parabiago', 'Alpette', 'Andezano'),
                  provincia = c('Milano', 'Mi', 'Torino', 'To'))</code></pre>
-<p>Some provinces are stored using an abbrvation (only the first two letters as it is often the case) and others are stored using the full name of the city. Milano and Mi are the same province as well as Torino is the same as To. However the software reads them as four different values.</p>
+<p>Some “province” are stored using an abbrvation (only the first two letters as it is often the case) and others are stored using the full name of the city. Milano and Mi are the same province as well as Torino is the same as To. However the software reads them as four different values.</p>
 <pre class="r"><code>df %&gt;% distinct(provincia) # 4 different values</code></pre>
 <pre><code>## # A tibble: 4 × 1
 ##   provincia
@@ -500,7 +499,7 @@ str_split(char_vector, &quot; &quot; )</code></pre>
 ## 2        Mi
 ## 3    Torino
 ## 4        To</code></pre>
-<p>To let <code>R</code> know that it is not 4 differenct cities, we may give them the same name by taking the first two letters of each province:</p>
+<p>To let <code>R</code> know that it is not 4 differenct cities, you may give them the same name by taking the first two letters of each “provincia”:</p>
 <pre class="r"><code>df %&gt;% 
   mutate_at(vars(provincia), funs(str_sub(provincia, 1, 2)))</code></pre>
 <pre><code>## # A tibble: 4 × 2
@@ -535,14 +534,14 @@ str_split(char_vector, &quot; &quot; )</code></pre>
 ## 2 Parabiago        MI
 ## 3   Alpette        TO
 ## 4  Andezano        TO</code></pre>
-<p>Notice that changing cases may be more complicated than it looks. In fact different languages may have different rules for changing cases. You can choose the language by specifying <code>locale =</code>. The suggestion is that if you are working with foreign languages you should check additional documentation on the functions <code>str_to_upper()</code> and <code>str_to lower()</code>.</p>
+<p>Notice that changing cases may be more complicated than it looks. In fact different languages may have different rules for changing cases. You can choose the language by specifying <code>locale =</code>. If you are working with foreign languages you better check additional documentation on the functions <code>str_to_upper()</code> and <code>str_to lower()</code>.</p>
 </div>
 </div>
 <div id="identifying-string-patterns" class="section level1">
 <h1>Identifying string patterns</h1>
 <div id="detect-matches" class="section level2">
 <h2>Detect matches</h2>
-<p>To check whether a character vector matches a pattern, you can use the function <code>str_detect()</code>, where you need to specify the vector in which to look for and the pattern to be found. Moreover you may specify whether you want to look for the pattern at the beginning or at the end.</p>
+<p>To check whether a character vector matches a pattern, you can use the function <code>str_detect()</code>, where you need to specify the vector in which to look for and the pattern to be found. Moreover you may specify whether you want to look for the pattern at the beginning or at the end of the string.</p>
 <ol style="list-style-type: decimal">
 <li>Contains a (set of) letter(s):</li>
 </ol>
@@ -564,39 +563,24 @@ str_detect(province, c(&quot;to$&quot;))</code></pre>
 </div>
 <div id="extract-match" class="section level2">
 <h2>Extract match</h2>
-<p>Once you have found a match you may want to extract it so that you can additionally manipulate them:</p>
+<p>Once you have found a match you may want to extract it so that you can additionally manipulate it:</p>
 <pre class="r"><code>province &lt;- c(&quot;milano&quot;, &quot;milan&quot;, &quot;mi&quot;, &quot;milano&quot;, &quot;torino&quot;, &quot;to&quot;, &quot;agrigento&quot;)
 str_extract(province, c(&quot;to$&quot;))</code></pre>
 <pre><code>## [1] NA   NA   NA   NA   NA   &quot;to&quot; &quot;to&quot;</code></pre>
 </div>
 <div id="replace-match" class="section level2">
 <h2>Replace match</h2>
-<p>Suppose the match you have found corresponds to a typos hence you just want to find it and replace it with the correct word:</p>
+<p>Suppose the match you have found corresponds to a typo hence you just want to find it and replace it with the correct word:</p>
 <pre class="r"><code>colors &lt;- c(&quot;gray&quot;, &quot;gray&quot;, &quot;grey&quot;, &quot;white&quot;, &quot;white&quot;, &quot;white&quot;)
 str_replace(colors, c(&quot;gray&quot;), &quot;grey&quot;)</code></pre>
 <pre><code>## [1] &quot;grey&quot;  &quot;grey&quot;  &quot;grey&quot;  &quot;white&quot; &quot;white&quot; &quot;white&quot;</code></pre>
+<p>If you have only a defined set of possible strings, you may also set levels and read strings as factors. This will avoid typos as strings that do not belong to the defined levels will be assigned “NA”.</p>
+<pre class="r"><code>colors &lt;- c(&quot;gray&quot;, &quot;gray&quot;, &quot;grey&quot;, &quot;white&quot;, &quot;white&quot;, &quot;white&quot;)
+colors_levels &lt;- c(&quot;gray&quot;, &quot;white&quot;)
+factor(colors, levels = colors_levels)</code></pre>
+<pre><code>## [1] gray  gray  &lt;NA&gt;  white white white
+## Levels: gray white</code></pre>
 </div>
-</div>
-<div id="factors-with-forcats" class="section level1">
-<h1>Factors with forcats</h1>
-<p>Suppose you have a variable to record the colors of a car available only in the following five colors:</p>
-<pre class="r"><code>colors &lt;- c(&quot;grey&quot;, &quot;blue&quot;, &quot;dark blue&quot;, &quot;black&quot;, &quot;white&quot;)</code></pre>
-<p>Using a string for this variable may not be the best choice. In fact two problems arise:</p>
-<ul>
-<li>Only five colors are possible and there is nothing saving you from typos (for instance typing “gray” instead of “grey” is often the case!)</li>
-<li>The values are sorted in alphabetical order, however you may want them from the darkest to the ligthest:</li>
-</ul>
-<pre class="r"><code>sort(colors)</code></pre>
-<pre><code>## [1] &quot;black&quot;     &quot;blue&quot;      &quot;dark blue&quot; &quot;grey&quot;      &quot;white&quot;</code></pre>
-<p>Both problems may be solved creating a factor that contains all the desired levels:</p>
-<pre class="r"><code>color_levels &lt;- c(&quot;black&quot;, &quot;dark blue&quot;, &quot;blue&quot;, &quot;grey&quot;, &quot;white&quot;)</code></pre>
-<p>And you then apply it to your character vector:</p>
-<pre class="r"><code>colors &lt;- c(&quot;gray&quot;, &quot;blue&quot;, &quot;dark blue&quot;, &quot;black&quot;, &quot;white&quot;, &quot;grey&quot;, &quot;white&quot;)
-colors2 &lt;- factor(colors, levels = color_levels)
-colors2</code></pre>
-<pre><code>## [1] &lt;NA&gt;      blue      dark blue black     white     grey      white    
-## Levels: black dark blue blue grey white</code></pre>
-<p>Notice that strings that do not match one of the levels are assigned a “NA”. This helps you avoid the first of the two problems.</p>
 </div>
 
 

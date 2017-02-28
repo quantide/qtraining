@@ -1,13 +1,7 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
+# load packages
+require(tidyverse) # alternatively: require(dplyr); require(ggplot2), require(tidyr)
 require(lubridate)
-require(tidyverse)
-require(qdata)
-
-## ----first2, include=TRUE, purl=TRUE, message=FALSE----------------------
-require(lubridate)
-require(dplyr)
-require(ggplot2)
-require(tidyr)
 require(qdata)
 
 ## ----lubridate_require, message=FALSE------------------------------------

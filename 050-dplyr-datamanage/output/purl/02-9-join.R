@@ -1,5 +1,5 @@
 ## ----first, include=TRUE, message=FALSE----------------------------------
-require(dplyr)
+require(tidyverse) # alternatively: require(dplyr)
 require(qdata)
 data(comuni)
 data(province)

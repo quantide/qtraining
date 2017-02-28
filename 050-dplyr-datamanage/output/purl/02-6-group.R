@@ -1,5 +1,6 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
-require(dplyr)
+# load packages and data
+require(tidyverse)  # alternatively require(dplyr)
 require(qdata)
 data(bank)
 
@@ -69,7 +70,7 @@ per_year <- summarise(per_month, calls = sum(calls))
 groups(per_year)
 
 ## ------------------------------------------------------------------------
-df <- data.frame(year = rep(c(2010, 2011, 2012), each = 3), 
+df <- data.frame(year = rep(c(2014, 2015, 2016), each = 3), 
                  month = rep(1:3, each = 3), 
                  day = rep(20:22, 3), 
                  x = 1:9)
@@ -91,4 +92,43 @@ summarise(df2, n())
 
 ungroup(df2) %>% summarise(n())
 
+
+## ------------------------------------------------------------------------
+bank_grouped <- bank %>% 
+  group_by(marital)       # group by marital status
+
+bank_grouped %>% 
+  summarise(mean(balance))   # calculate the group means
+
+## ------------------------------------------------------------------------
+# option 1:
+summarise(group_by(bank, marital), mean(balance))
+
+# option 2:
+bank %>% 
+  group_by(marital) %>%       # group by marital status
+  summarise(mean(balance))    # calculate the group means
+
+## ------------------------------------------------------------------------
+# option 1
+filter(
+  summarise(
+    select(
+      group_by(bank, date), age, balance
+    ),
+    mean_age = mean(age, na.rm = TRUE),
+    mean_balance = mean(balance, na.rm = TRUE)
+  ),
+  mean_age < 40 & mean_balance > 5000
+)
+
+# option 2
+bank %>%
+  group_by(date) %>%
+  select(age, balance) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    mean_balance = mean(balance, na.rm = TRUE)
+  ) %>%
+  filter(mean_age < 40 & mean_balance > 5000)
 

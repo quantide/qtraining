@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -350,8 +351,16 @@ $(document).ready(function () {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#reading-flat-files">Reading flat files</a></li>
+</ul>
+</div>
 
-<p>In this chapter you’ll learn how to import flat files in R. We will do this with the use of <code>readr</code> package which is part of the <code>tidyverse</code> core. As already learned, this means that if you load the package <code>tidyverse</code>, <code>readr</code> will be automatically loaded:</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In this chapter you’ll learn how to import flat files in R. You will do this with the use of <code>readr</code> package which is part of the <code>tidyverse</code> core. As already learned, this means that if you load the package <code>tidyverse</code>, <code>readr</code> will be automatically loaded:</p>
 <pre class="r"><code>require(tidyverse)</code></pre>
 <pre><code>## Loading required package: tidyverse</code></pre>
 <pre><code>## Loading tidyverse: ggplot2
@@ -363,13 +372,19 @@ $(document).ready(function () {
 <pre><code>## Conflicts with tidy packages -------------------------------------------------------------------------------</code></pre>
 <pre><code>## filter(): dplyr, stats
 ## lag():    dplyr, stats</code></pre>
-<p>Alternatively, one may load explictely the package <code>readr</code>, together with the package <code>dplyr</code> and <code>tibble</code> that will be useful throughout this chapter:</p>
+<p>Alternatively, one may explictely load the package <code>readr</code>, together with <code>dplyr</code> and <code>tibble</code> that are the other packages used in this chapter:</p>
 <pre class="r"><code>require(readr)
 require(dplyr)
 require(tibble)</code></pre>
-<p>Suppose you want to import data from tennis.txt (available in the data folder). If you open the file itself you notice that 1) variables are separated by many columns of space and 2) variable names are at the top of the file. The function <code>read_r_table</code> comes in handy as it is designed to read the type of text data where each column is separate by one (or more) columns of space. In order to import the text file, first of all you need to give the coordinates of the folder in which the text file is stored. First of all, let us view what is the directory where we are currently working:</p>
+<p>Notice that base R offers many functions for importing flat files. The reasons why you will learn <code>readr</code> is that its functions are typically faster and they produce tibbles which is a common feature of tidyverse packages.</p>
+</div>
+<div id="reading-flat-files" class="section level1">
+<h1>Reading flat files</h1>
+<p>Suppose you want to import data from tennis.txt (available in the data folder).</p>
+<p>If you open the tennis.txt file you notice that 1) variables are delimited by many columns of space and 2) variable names are at the top of the file. In this case the function <code>read_r_table</code> comes in handy. <code>read_r_table</code> is designed to read the type of text data where each column is separated by one (or more) columns of space. With regards to 2) you just have to keep it in mind so that you indicate it in the function <code>read_r_table</code>.</p>
+<p>In order to import the text file, you first need to “give the coordinates” of the folder in which the text file is stored. You are currently working in the directory given by the following command:</p>
 <pre class="r"><code>getwd()</code></pre>
-<p>and secondly let us use the <code>set.wd()</code> function that allows you to set the working directory on the folder containing the data:</p>
+<p>that may not be the folder in which your text file is stored. If that is the case, you need to set the working directory on the folder containing the data:</p>
 <pre class="r"><code>setwd(&quot;./data&quot;)</code></pre>
 <p>Now, the text file can be imported just providing its filename:</p>
 <pre class="r"><code>read_table(&quot;tennis.txt&quot;, col_names = TRUE)</code></pre>
@@ -386,11 +401,12 @@ require(tibble)</code></pre>
 ## 8           Martinez   Conchita    22     F     3     1    55    15 1540.167            Spain
 ## 9            Novotna       Jana    26     F     4     0    43    11  876.119 &quot;Czech Republic&quot;
 ## 10            Pierce       Mary    20     F     5     0    45    18  768.614           France</code></pre>
-<p>Besides space, common delimiters for variable names are tab, commas and semi colons. Hence there are specific functions that do all these actions.</p>
-<pre class="r"><code>read_csv(&quot;solar.txt&quot;, col_names = TRUE) # for comma separeted variables
+<p>Notice that <code>col_names = TRUE</code> indicates that the variables names are at the begininning of the file.</p>
+<p>Besides space, common delimiters for variable names are tab, comma and semi colon. Hence there are specific functions that automatically deal with these separators.</p>
+<pre class="r"><code>read_csv(&quot;solar.txt&quot;, col_names = FALSE) # for comma separeted variables
 read_tsv(&quot;aire_milano.txt&quot;, col_names = TRUE) # for tab separeted variables
 read_csv2(&quot;milano_tourism&quot;, col_names= TRUE) # for semi colon separeted variables</code></pre>
-<p>These are special cases of the more general function <code>read_delim</code>. The latter reads file with any delimiter, which is specified in the argument <code>delim</code>.</p>
+<p>These are special cases of the more general function <code>read_delim</code>. <code>read_delim</code> reads file with any delimiter as specified in the argument <code>delim</code>.</p>
 <pre class="r"><code>read_delim(&quot;solar.txt&quot;, col_names = FALSE, delim = &quot;,&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
@@ -441,13 +457,13 @@ read_csv2(&quot;milano_tourism&quot;, col_names= TRUE) # for semi colon separete
 ## 9      9     F          1978        married 19051.0       6947.0       Forte dei Marmi    Lucca
 ## 10    10     F          1964        married 28893.0       9635.0               Fauglia     Pisa
 ## # ... with 20 more rows, and 1 more variables: provincial_acronym &lt;chr&gt;</code></pre>
-<p>Notice that all these functions import data in the dplyr format, that is the tibble. Moreover it identifies the variables type without the need of any further specification. In order to do so <code>R</code> reads the first 1000 rows and uses some heuristics to figure out the type of ech column. If you are curious about it you may explore the functions “guess_parser” and “parse_guess” that are the functions used to guess the column type and parse the column.</p>
-<p>This method does not always work, especially when the file is extremely large. There are two basic problems:</p>
+<p>Notice that all these functions import data in the dplyr format, that is tibble. Moreover it identifies the variables type without the need of any further specification. In order to do so <code>R</code> reads the first 1000 rows and uses some heuristics to figure out each columns’ type. If you are curious about it you may explore the functions “guess_parser” and “parse_guess” that are the functions used to guess the column type and parse the column.</p>
+<p>However, this method does not always work, especially when the file is very large. More specifically, two basic problems may arise:</p>
 <ul>
-<li>The first thousand rows might be special cases hence R classifies the variable as that special case. For instance, suppose the first 1000 columns are integer, but the others are not, R will assign the integer although the variable is not.</li>
-<li>The column might contain a lot of missing values: if the first 1000 rows are only missing values (NAs), readr will guess that it’s a character although the remaining rows are, for example, integers.</li>
+<li><p>suppose the first 1000 rows are an integer, but the others are not. <code>R</code> will classify that variable as an integer although integer is a special case of a numeric variable. Thus is general, if the first thousand rows are special cases, <code>R</code> will classify the variable as that special case.</p></li>
+<li><p>if the first 1000 rows are only missing values (NAs), readr will guess that it’s a character although the remaining rows may be anything.</p></li>
 </ul>
-<p>In order to solve these problems, you may tweak the type of (some of) the columns:</p>
+<p>In order to solve these problems, you may tweak the type of (some of) the columns with the argument <code>col_types = cols()</code>:</p>
 <pre class="r"><code>read_delim(&quot;solar.txt&quot;, col_names = FALSE, delim = &quot;,&quot;,
            col_types = cols(X2 = col_double()))</code></pre>
 <pre><code>## # A tibble: 12 × 4
@@ -472,7 +488,8 @@ read_csv2(&quot;milano_tourism&quot;, col_names= TRUE) # for semi colon separete
 <li>strings: textual data</li>
 <li>date and times</li>
 </ul>
-<p>A specific section is dedicated to stringsm factors and dates as they are not as straightforward to manipulate and specific packages are avaiable in tidyverse.</p>
+<p>A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in tidyverse.</p>
+</div>
 
 
 </div>  

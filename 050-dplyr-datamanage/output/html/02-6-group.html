@@ -312,17 +312,18 @@ $(document).ready(function () {
   <li class="nav-header">Introduction</li>
   <li><a href="00-intro.html">Introduction to tidyverse</a></li>
   <li class="nav-header">Data objects</li>
-  <li><a href="01-1-readr.html">Readr</a></li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
+  <li><a href="01-1-readr.html">readr</a></li>
   <li><a href="01-3-pipe.html">The pipe operator</a></li>
   <li class="nav-header">Data manipulation</li>
+  <li><a href="02-00-intro-dplyr.html">Introduction</a></li>
   <li><a href="02-1-select.html">Select</a></li>
   <li><a href="02-2-filter.html">Filter</a></li>
   <li><a href="02-3-arrange.html">Arrange</a></li>
   <li><a href="02-4-mutate.html">Mutate</a></li>
   <li><a href="02-5-summarise.html">Summarise</a></li>
   <li><a href="02-6-group.html">Grouping Data</a></li>
-  <li><a href="02-7-advanced.html">At, All, Each</a></li>
+  <li><a href="02-7-at-all-each.html">At, All, Each</a></li>
   <li><a href="02-8-do.html">Generic do</a></li>
   <li><a href="02-9-join.html">Combining Data</a></li>
   <li class="nav-header">Tidying Data</li>
@@ -356,12 +357,13 @@ $(document).ready(function () {
 </ul>
 </div>
 
-<pre class="r"><code>require(dplyr)
+<pre class="r"><code># load packages and data
+require(tidyverse)  # alternatively require(dplyr)
 require(qdata)
 data(bank)</code></pre>
 <div id="group_by" class="section level1">
 <h1><code>group_by()</code></h1>
-<p>The verb functions are useful, but they become really powerful when you combine them with the idea of “group by”, repeating the operation individually on groups of observations within the dataset. In <code>dplyr</code>, you use the <code>group_by()</code> function to describe how to break a dataset down into groups of rows. You can then use the resulting object in the verbs functions; they’ll automatically work “by group” when the input is a grouped. Let us see some examples (pay attention to objects class).</p>
+<p>The verb functions are useful, but they increase their power when combined with the idea of “group by”, i.e. repeating the operation individually on groups of observations within the dataset. In <code>dplyr</code>, you use the <code>group_by()</code> function to describe how to break a dataset down into groups of rows. You can then use the resulting object in the verbs functions; they’ll automatically work “by group” when the input is grouped. Let us see some examples (pay attention to objects class).</p>
 <pre class="r"><code># Example data frame
 df &lt;- data.frame(x = 1:6, f = rep(1:2, each = 3))
 
@@ -490,7 +492,7 @@ xtabs(mpg_mean~cyl+carb, data = dm)
 ##   8  0.00 17.15 16.30 13.15  0.00 15.00
 ```
 -->
-<p>Then, you search for the number of days covered per year. You report also the number of phone calls per year:</p>
+<p>Then, you search for the number of days covered per year. You also report the number of phone calls per year:</p>
 <pre class="r"><code>summarise(by_year,
           days = n_distinct(date),
           count = n())</code></pre>
@@ -525,22 +527,22 @@ groups(per_month)</code></pre>
 <pre class="r"><code>per_year &lt;- summarise(per_month, calls = sum(calls))
 groups(per_year)</code></pre>
 <pre><code>## NULL</code></pre>
-<pre class="r"><code>df &lt;- data.frame(year = rep(c(2010, 2011, 2012), each = 3), 
+<pre class="r"><code>df &lt;- data.frame(year = rep(c(2014, 2015, 2016), each = 3), 
                  month = rep(1:3, each = 3), 
                  day = rep(20:22, 3), 
                  x = 1:9)
 
 df</code></pre>
 <pre><code>##   year month day x
-## 1 2010     1  20 1
-## 2 2010     1  21 2
-## 3 2010     1  22 3
-## 4 2011     2  20 4
-## 5 2011     2  21 5
-## 6 2011     2  22 6
-## 7 2012     3  20 7
-## 8 2012     3  21 8
-## 9 2012     3  22 9</code></pre>
+## 1 2014     1  20 1
+## 2 2014     1  21 2
+## 3 2014     1  22 3
+## 4 2015     2  20 4
+## 5 2015     2  21 5
+## 6 2015     2  22 6
+## 7 2016     3  20 7
+## 8 2016     3  21 8
+## 9 2016     3  22 9</code></pre>
 <pre class="r"><code>df1 &lt;- df %&gt;% group_by(year, month, day) 
 
 groups(df1)</code></pre>
@@ -561,15 +563,15 @@ df2</code></pre>
 ## 
 ##    year month   day x_avg     n
 ##   &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;int&gt;
-## 1  2010     1    20     1     1
-## 2  2010     1    21     2     1
-## 3  2010     1    22     3     1
-## 4  2011     2    20     4     1
-## 5  2011     2    21     5     1
-## 6  2011     2    22     6     1
-## 7  2012     3    20     7     1
-## 8  2012     3    21     8     1
-## 9  2012     3    22     9     1</code></pre>
+## 1  2014     1    20     1     1
+## 2  2014     1    21     2     1
+## 3  2014     1    22     3     1
+## 4  2015     2    20     4     1
+## 5  2015     2    21     5     1
+## 6  2015     2    22     6     1
+## 7  2016     3    20     7     1
+## 8  2016     3    21     8     1
+## 9  2016     3    22     9     1</code></pre>
 <pre class="r"><code>groups(df2)</code></pre>
 <pre><code>## [[1]]
 ## year
@@ -582,14 +584,85 @@ df2</code></pre>
 ## 
 ##    year month `n()`
 ##   &lt;dbl&gt; &lt;int&gt; &lt;int&gt;
-## 1  2010     1     3
-## 2  2011     2     3
-## 3  2012     3     3</code></pre>
+## 1  2014     1     3
+## 2  2015     2     3
+## 3  2016     3     3</code></pre>
 <pre class="r"><code>ungroup(df2) %&gt;% summarise(n())</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   `n()`
 ##   &lt;int&gt;
 ## 1     9</code></pre>
+<p>In all the above steps (grouping and the summarising), you saved the intermediate results in a separate data frame.</p>
+<p>Suppose you want to calculate the mean balance grouped by marital status. If you save all the intermediate dataframes:</p>
+<pre class="r"><code>bank_grouped &lt;- bank %&gt;% 
+  group_by(marital)       # group by marital status
+
+bank_grouped %&gt;% 
+  summarise(mean(balance))   # calculate the group means</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##    marital `mean(balance)`
+##     &lt;fctr&gt;           &lt;dbl&gt;
+## 1 divorced        1178.872
+## 2  married        1425.926
+## 3   single        1301.498</code></pre>
+<p>If you do not want to save the intermediate results you may choose between one of the two options:</p>
+<pre class="r"><code># option 1:
+summarise(group_by(bank, marital), mean(balance))</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##    marital `mean(balance)`
+##     &lt;fctr&gt;           &lt;dbl&gt;
+## 1 divorced        1178.872
+## 2  married        1425.926
+## 3   single        1301.498</code></pre>
+<pre class="r"><code># option 2:
+bank %&gt;% 
+  group_by(marital) %&gt;%       # group by marital status
+  summarise(mean(balance))    # calculate the group means</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##    marital `mean(balance)`
+##     &lt;fctr&gt;           &lt;dbl&gt;
+## 1 divorced        1178.872
+## 2  married        1425.926
+## 3   single        1301.498</code></pre>
+<p>The two options provide the same results. However, in option 1 you read the operations inside out: first you group (inside) and secondly you summarise. If you use the <code>%&gt;%</code> operator, you can easily get around this problem. You can better appreciate it in the following example, where we use three verbs on the grouped data frame:</p>
+<pre class="r"><code># option 1
+filter(
+  summarise(
+    select(
+      group_by(bank, date), age, balance
+    ),
+    mean_age = mean(age, na.rm = TRUE),
+    mean_balance = mean(balance, na.rm = TRUE)
+  ),
+  mean_age &lt; 40 &amp; mean_balance &gt; 5000
+)</code></pre>
+<pre><code>## Adding missing grouping variables: `date`</code></pre>
+<pre><code>## # A tibble: 5 × 3
+##         date mean_age mean_balance
+##       &lt;dttm&gt;    &lt;dbl&gt;        &lt;dbl&gt;
+## 1 2008-10-18   37.500      5502.75
+## 2 2008-12-27   28.000      6100.00
+## 3 2009-03-20   28.000      5916.00
+## 4 2009-10-02   39.875      5088.00
+## 5 2009-12-31   32.000     14533.00</code></pre>
+<pre class="r"><code># option 2
+bank %&gt;%
+  group_by(date) %&gt;%
+  select(age, balance) %&gt;%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    mean_balance = mean(balance, na.rm = TRUE)
+  ) %&gt;%
+  filter(mean_age &lt; 40 &amp; mean_balance &gt; 5000)</code></pre>
+<pre><code>## Adding missing grouping variables: `date`</code></pre>
+<pre><code>## # A tibble: 5 × 3
+##         date mean_age mean_balance
+##       &lt;dttm&gt;    &lt;dbl&gt;        &lt;dbl&gt;
+## 1 2008-10-18   37.500      5502.75
+## 2 2008-12-27   28.000      6100.00
+## 3 2009-03-20   28.000      5916.00
+## 4 2009-10-02   39.875      5088.00
+## 5 2009-12-31   32.000     14533.00</code></pre>
 </div>
 
 

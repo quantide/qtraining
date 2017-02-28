@@ -1,8 +1,8 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
-require(dplyr)
-require(tidyr)
-require(qdata)
+# load packages and data
+require(tidyverse) # alternatively require(dplyr); require(tidyr)
 require(broom)
+require(qdata)
 data(people)
 
 ## ------------------------------------------------------------------------
