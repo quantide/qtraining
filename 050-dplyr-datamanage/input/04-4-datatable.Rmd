@@ -14,91 +14,76 @@ require(data.table)
 
 ## data.table
 
-`data.table` is a data object for fast aggregation of large data (e.g. 100GB in RAM), fast ordered joins, fast add/modify/delete of columns, a fast friendly file reader and parallel file writer. Its syntax is however a bit complicated and very different from dplyr. For example with data.table:
+`data.table` is a data object for fast aggregation of large data (e.g. 100GB in RAM), fast ordered joins, fast add/modify/delete of columns, a fast file reader and parallel file writer. Its syntax is however a bit complicated and very different from dplyr. 
 
-```{r example data.table}
-
-```
-
-while with dplyr:
-
-```{r example dplyr}
-
-```
-
-
-
-## data.table and dplyr
-
-You may use the `data.table` class with `dplyr` functions. For example
-
-```{r example data.table dplyr}
-
-```
-
-All the `dplyr` functions thus ran on data.frames, data.tables and tibbles. However, as stated at the beginning of the course, tibbles are the `tidyverse` class object as all functions in `tidyverse` easily work with them.
-
-
-## data.table vs. dplyr: speed test
-
-data.table is faster than dplyr. Using the data.table syntax:
-
-```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(data.table)
-N=5000000; K=100
-set.seed(1)
-DT <- data.table(
-  id1 = sample(sprintf("id%03d",1:K), N, TRUE),      # large groups (char)
-  id2 = sample(sprintf("id%03d",1:K), N, TRUE),      # large groups (char)
-  id3 = sample(sprintf("id%010d",1:(N/K)), N, TRUE), # small groups (char)
-  id4 = sample(K, N, TRUE),                          # large groups (int)
-  id5 = sample(K, N, TRUE),                          # large groups (int)
-  id6 = sample(N/K, N, TRUE),                        # small groups (int)
-  v1 =  sample(5, N, TRUE),                          # int in range [1,5]
-  v2 =  sample(5, N, TRUE),                          # int in range [1,5]
-  v3 =  sample(round(runif(100,max=100),4), N, TRUE) # numeric e.g. 23.5749
-)
-cat("GB =", round(sum(gc()[,2])/1024, 3), "\n")
-system.time( DT[, sum(v1), keyby=id1] )
-system.time( DT[, sum(v1), keyby=id1] )
-system.time( DT[, sum(v1), keyby="id1,id2"] )
-system.time( DT[, sum(v1), keyby="id1,id2"] )
-system.time( DT[, list(sum(v1),mean(v3)), keyby=id3] )
-system.time( DT[, list(sum(v1),mean(v3)), keyby=id3] )
-system.time( DT[, lapply(.SD, mean), keyby=id4, .SDcols=7:9] )
-system.time( DT[, lapply(.SD, mean), keyby=id4, .SDcols=7:9] )
-system.time( DT[, lapply(.SD, sum), keyby=id6, .SDcols=7:9] )
-system.time( DT[, lapply(.SD, sum), keyby=id6, .SDcols=7:9] )
-```
-
-
-while with dplyr, things go a bit slower:
+Suppose you want to import a quite large data file (for example, consider one of the .csv files on flights data). Using the data.table format:
 
 ```{r}
-require(dplyr)
-N=5000000; K=100
-set.seed(1)
-DF <- data.frame(stringsAsFactors=FALSE,
-                 id1 = sample(sprintf("id%03d",1:K), N, TRUE),
-                 id2 = sample(sprintf("id%03d",1:K), N, TRUE),
-                 id3 = sample(sprintf("id%010d",1:(N/K)), N, TRUE),
-                 id4 = sample(K, N, TRUE),                          
-                 id5 = sample(K, N, TRUE),                         
-                 id6 = sample(N/K, N, TRUE),                       
-                 v1 =  sample(5, N, TRUE),                         
-                 v2 =  sample(5, N, TRUE),                       
-                 v3 =  sample(round(runif(100,max=100),4), N, TRUE)
-)
-cat("GB =", round(sum(gc()[,2])/1024, 3), "\n")
-system.time( DF %>% group_by(id1) %>% summarise(sum(v1)) )
-system.time( DF %>% group_by(id1) %>% summarise(sum(v1)) )
-system.time( DF %>% group_by(id1,id2) %>% summarise(sum(v1)) )
-system.time( DF %>% group_by(id1,id2) %>% summarise(sum(v1)) )
-system.time( DF %>% group_by(id3) %>% summarise(sum(v1),mean(v3)) )
-system.time( DF %>% group_by(id3) %>% summarise(sum(v1),mean(v3)) )
-system.time( DF %>% group_by(id4) %>% summarise_each(funs(mean), 7:9) )
-system.time( DF %>% group_by(id4) %>% summarise_each(funs(mean), 7:9) )
-system.time( DF %>% group_by(id6) %>% summarise_each(funs(sum), 7:9) )
-system.time( DF %>% group_by(id6) %>% summarise_each(funs(sum), 7:9) )
+data2006 <- fread("file:///home/emanuela/ema/sp-data/2006.csv")
+is.data.table(data2006)    # imports in data.table format
+data2006     # prints first 5 and last 5 rows
 ```
 
+which is quite fast
+
+```{r}
+system.time(fread("file:///home/emanuela/ema/sp-data/2006.csv"))
+```
+
+compared to the functions in `readr`:
+
+```{r example dplyr}
+system.time(read_csv("/home/emanuela/ema/sp-data/2006.csv"))
+```
+
+
+So far the syntax in data.table is not that much different as compared to the dplyr syntax. However, let us make this slightly more complicated:
+
+
+```{r}
+# with data.table
+system.time(data2006[, mean(ArrDelay, na.rm = TRUE), keyby = Month])
+
+# with dplyr
+system.time(data2006 %>% 
+              group_by(Month) %>% 
+              summarise(mean(ArrDelay, na.rm = TRUE)))
+```
+
+
+Notice that `dplyr` functions run on data.tables (data2006 was imported as a data.table) as well as on tibbles and data frames as previously discussed.
+
+The data.table syntax quickly gets more and more complicated. Suppose you want to apply two functions (for instance mean and standard deviation) to one variable:
+
+```{r}
+# with data.table
+system.time(
+  data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month]
+  )
+
+# with dplyr
+system.time( 
+  data2006 %>% 
+    group_by(Month) %>% 
+    summarise_each(funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)), ArrDelay)
+  )
+```
+
+and now two functions on two variables:
+
+```{r}
+# with data.table
+system.time(
+  data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE),
+                  mean(Distance, na.rm = TRUE), sd(Distance, na.rm=TRUE)), keyby = Month]
+  )
+
+# with dplyr
+system.time( 
+data2006 %>% 
+    group_by(Month) %>% 
+    summarise_at(vars(ArrDelay, Distance), funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)))
+  )
+```
+
+ 
