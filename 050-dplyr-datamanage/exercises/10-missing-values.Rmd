@@ -7,9 +7,18 @@ output:
     self_contained: no
 ---
 
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="./data")
+show_solution <- FALSE
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
 
 
-Handling Missing data
+Handling Missing values
 ================================
 
 ```r
@@ -33,7 +42,7 @@ heartrate <- data.frame(
 It represents the heart rate measured on three patients in the morning, in the afternoon and in the evening. Make explicit any implicit missing value. How many missing values do you see?
 
 
-```{r echo=show_solution, eval=show_solution}
+```{r, echo = show_solution, eval = show_solution}
 heartrate %>% complete(surname, when, fill=list(name="Aldo"))
 # one missing value
 # alternatively:
@@ -44,9 +53,9 @@ heartrate %>% complete(surname, when, fill=list(name="Aldo"))
 ```
 
 ### Exercise 2
-Import data in the file `marks.Rdta`. Missing values have been recorded as ".". What's the percentage of missing values in the data? Replace them with `NA` and drop them.
+Import data in the file `marks.Rdta`. Missing values have been recorded as `.`. What's the percentage of missing values in the data? Replace them with `NA` and drop them.
 
-```{r echo=show_solution, eval=show_solution}
+```{r, echo=show_solution, eval=show_solution}
 marks_NA <- na_if(marks, ".")
 marks_NA %>% 
   filter(is.na(marks)) %>% 
@@ -57,8 +66,8 @@ marks_NA %>% drop_na()
 
 
 ### Exercise 3
-Import the data "heartrate_NA.Rdata". Consider all the missing values you find and replace them using the function `fill()` when possible.
+Import the data `heartrate_NA.Rdta` . Consider all the missing values you find and replace them using the function `fill()` when possible.
 
-```{r echo=show_solution, eval=show_solution}
+```{r, echo=show_solution, eval = show_solution}
 heartrate_NA %>% fill(name, surname)
 ```
