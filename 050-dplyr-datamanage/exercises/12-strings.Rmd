@@ -1,0 +1,74 @@
+---
+title:
+author:
+date:
+output:
+  html_document:
+    self_contained: no
+---
+
+
+
+Manipulating strings with `stringr`
+================================
+
+
+```r
+library(tidyverse)
+library(stringr)
+```
+
+
+### Exercise 1
+
+Import the data `aire_milano_strings.txt` which is a tab delimited file. Find how China has been codified (notice that the file is in Italian) and manipulate that string as you find more confortable for you. Save the results in a new tibble.
+
+
+```{r, echo = show_solution, eval = show_solution}
+aire <- read_delim("/home/emanuela/dev/qtraining/050-dplyr-datamanage/exercises/data/aire_milano_srings.txt", delim = "\t")
+aire %>% filter(str_detect(Residenza, c("Cina")))
+aire %>% filter(str_detect(Residenza, c("cina")))
+aire %>% filter(str_detect(Residenza, c("Cin")))
+aire_cina <- aire %>% mutate(Residenza, Residenza = str_replace(Residenza, c("Cinese, Rep. Popolare"), "Cina"))
+```
+
+
+### Exercise 2
+
+Find all the countries that contain "�" and replace it with the correct value.
+
+
+```{r, echo = show_solution, eval = show_solution}
+aire_clean <- aire_cina %>% 
+  filter(str_detect(aire_cina$Residenza, "�")) %>%
+  mutate(Residenza, Residenza = str_replace(Residenza, "Citt�", "Città")) %>%
+  mutate(Residenza, Residenza = str_replace(Residenza, "Per�", "Perù"))
+```
+
+
+
+### Exercise 3
+
+Using the data modified in exercise 1, find all the countries whose names contain non-alphanumeric characters. Identify what kind of characters they contain.
+
+
+```{r, echo = show_solution, eval = show_solution}
+str_extract(aire_clean$Residenza, "[[:punct:]]")
+```
+
+
+
+### Exercise 4
+
+Consider now the column on the reason for emigrating. Count how many different reasons there are and notice that citizenship was recorded in two slightly different ways: "acquisto cittadinanza" and "per acquisto cittadinanza". Replace one of them so that they are the same.
+
+
+```{r, echo = show_solution, eval = show_solution}
+aire_clean %>% distinct(MotivoIscrizioneEstero)
+str_extract(aire_clean$MotivoIscrizioneEstero, c(" acquisto cittadinanza"))
+aire_clean <- aire_clean %>% mutate(MotivoIscrizioneEstero = str_replace(MotivoIscrizioneEstero, c("acquisto cittadinanza"), "per acquisto cittadinanza"))
+```
+
+
+
+
