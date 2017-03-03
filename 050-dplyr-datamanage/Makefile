@@ -57,7 +57,7 @@ html: $(HTML_FILES)
     	
 ### List of source files (without extension: it will be used for .Rmd, .html and .R)
 LIST = \
-  00-intro \
+  1-intro \
 	2-0-verbs \
 	2-1-select \
 	2-2-filter \
@@ -65,10 +65,11 @@ LIST = \
 	2-4-mutate \
 	2-5-summarise \
 	3-group \
-	4-chain \
 	5-do \
 	6-combining \
 	9-tidyr \
+	10-missing-values \
+	12-strings \
 
 # Pandoc Path (RSTUDIO VERSION)
 PANDOC_PATH = /usr/lib/rstudio/bin/pandoc/pandoc
