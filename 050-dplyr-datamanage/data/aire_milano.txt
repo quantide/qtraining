@@ -1,4 +1,4 @@
-Nazione di residenza	Motivo iscrizione all'estero	Num
+Residenza	MotivoIscrizioneEstero	Num
 Afghanistan	all'emigrazione	1
 Albania	all'emigrazione	19
 Albania	per nascita	2
