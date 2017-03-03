@@ -1,0 +1,64 @@
+---
+title:
+author:
+date:
+output:
+  html_document:
+    self_contained: no
+---
+
+
+
+Handling Missing data
+================================
+
+```r
+library(tidyverse)
+```
+
+
+### Exercise 1
+Consider the following dataset:
+
+
+```{r echo=TRUE, eval=TRUE}
+heartrate <- data.frame(
+  name = c("Aldo", "Giovanni", "Giacomo", "Aldo", "Giovanni", "Giacomo", "Giovanni", "Giacomo"),
+  surname = c("Baglio", "Storti", "Poretti", "Baglio", "Storti", "Poretti", "Storti", "Poretti"),
+  when = c("morning", "morning", "morning", "afternoon", "afternoon", "afternoon", "evening", "evening"),
+  morning = c(67, 80, 64, 56, 90, 50, 60, 85)
+)
+```
+
+It represents the heart rate measured on three patients in the morning, in the afternoon and in the evening. Make explicit any implicit missing value. How many missing values do you see?
+
+
+```{r echo=show_solution, eval=show_solution}
+heartrate %>% complete(surname, when, fill=list(name="Aldo"))
+# one missing value
+# alternatively:
+# heartrate %>% 
+#  complete(surname, when) %>% 
+#  fill(name)
+
+```
+
+### Exercise 2
+Import data in the file `marks.Rdta`. Missing values have been recorded as ".". What's the percentage of missing values in the data? Replace them with `NA` and drop them.
+
+```{r echo=show_solution, eval=show_solution}
+marks_NA <- na_if(marks, ".")
+marks_NA %>% 
+  filter(is.na(marks)) %>% 
+  summarise(n())/30
+# 0.067% missing, only one variable, we may drop missing obs
+marks_NA %>% drop_na()
+```
+
+
+### Exercise 3
+Import the data "heartrate_NA.Rdata". Consider all the missing values you find and replace them using the function `fill()` when possible.
+
+```{r echo=show_solution, eval=show_solution}
+heartrate_NA %>% fill(name, surname)
+```
