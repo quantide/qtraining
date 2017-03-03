@@ -366,14 +366,15 @@ require(data.table)  </code></pre>
 <p>Suppose you want to import a quite large data file (for example, consider one of the .csv files on flights data). Using the data.table format:</p>
 <pre class="r"><code>data2006 &lt;- fread(&quot;file:///home/emanuela/ema/sp-data/2006.csv&quot;)</code></pre>
 <pre><code>## 
-Read 4.9% of 7141922 rows
-Read 20.3% of 7141922 rows
-Read 35.3% of 7141922 rows
-Read 50.5% of 7141922 rows
-Read 64.1% of 7141922 rows
-Read 77.7% of 7141922 rows
-Read 92.0% of 7141922 rows
-Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:09</code></pre>
+Read 0.8% of 7141922 rows
+Read 13.6% of 7141922 rows
+Read 27.7% of 7141922 rows
+Read 42.1% of 7141922 rows
+Read 54.5% of 7141922 rows
+Read 66.6% of 7141922 rows
+Read 82.8% of 7141922 rows
+Read 94.0% of 7141922 rows
+Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:10</code></pre>
 <pre class="r"><code>is.data.table(data2006)    # imports in data.table format</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>data2006     # prints first 5 and last 5 rows</code></pre>
@@ -428,16 +429,14 @@ Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:09</code></
 <p>which is quite fast</p>
 <pre class="r"><code>system.time(fread(&quot;file:///home/emanuela/ema/sp-data/2006.csv&quot;))</code></pre>
 <pre><code>## 
-Read 5.0% of 7141922 rows
-Read 20.3% of 7141922 rows
-Read 34.9% of 7141922 rows
-Read 50.1% of 7141922 rows
-Read 65.0% of 7141922 rows
-Read 81.4% of 7141922 rows
-Read 99.1% of 7141922 rows
-Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:09</code></pre>
+Read 14.7% of 7141922 rows
+Read 32.6% of 7141922 rows
+Read 50.7% of 7141922 rows
+Read 68.7% of 7141922 rows
+Read 86.4% of 7141922 rows
+Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:07</code></pre>
 <pre><code>##    user  system elapsed 
-##   7.996   0.844   9.093</code></pre>
+##   6.712   0.616   7.327</code></pre>
 <p>compared to the functions in <code>readr</code>:</p>
 <pre class="r"><code>system.time(read_csv(&quot;/home/emanuela/ema/sp-data/2006.csv&quot;))</code></pre>
 <pre><code>## Parsed with column specification:
@@ -451,18 +450,18 @@ Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:09</code></
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
 <pre><code>##    user  system elapsed 
-##  15.084   0.276  15.366</code></pre>
+##  15.768   0.344  16.111</code></pre>
 <p>So far the syntax in data.table is not that much different as compared to the dplyr syntax. However, let us make this slightly more complicated:</p>
 <pre class="r"><code># with data.table
 system.time(data2006[, mean(ArrDelay, na.rm = TRUE), keyby = Month])</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.064   0.004   0.065</code></pre>
+##   0.052   0.008   0.064</code></pre>
 <pre class="r"><code># with dplyr
 system.time(data2006 %&gt;% 
               group_by(Month) %&gt;% 
               summarise(mean(ArrDelay, na.rm = TRUE)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.188   0.000   0.187</code></pre>
+##   0.180   0.008   0.187</code></pre>
 <p>Notice that <code>dplyr</code> functions run on data.tables (data2006 was imported as a data.table) as well as on tibbles and data frames as previously discussed.</p>
 <p>The data.table syntax quickly gets more and more complicated. Suppose you want to apply two functions (for instance mean and standard deviation) to one variable:</p>
 <pre class="r"><code># with data.table
@@ -470,7 +469,7 @@ system.time(
   data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month]
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.084   0.012   0.097</code></pre>
+##   0.088   0.008   0.098</code></pre>
 <pre class="r"><code># with dplyr
 system.time( 
   data2006 %&gt;% 
@@ -478,7 +477,7 @@ system.time(
     summarise_each(funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)), ArrDelay)
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.212   0.016   0.228</code></pre>
+##   0.204   0.024   0.224</code></pre>
 <p>and now two functions on two variables:</p>
 <pre class="r"><code># with data.table
 system.time(
@@ -486,7 +485,7 @@ system.time(
                   mean(Distance, na.rm = TRUE), sd(Distance, na.rm=TRUE)), keyby = Month]
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.212   0.008   0.200</code></pre>
+##   0.204   0.012   0.199</code></pre>
 <pre class="r"><code># with dplyr
 system.time( 
 data2006 %&gt;% 
@@ -494,7 +493,7 @@ data2006 %&gt;%
     summarise_at(vars(ArrDelay, Distance), funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)))
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.260   0.012   0.274</code></pre>
+##   0.256   0.016   0.271</code></pre>
 </div>
 
 
