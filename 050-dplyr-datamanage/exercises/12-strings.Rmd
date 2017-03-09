@@ -8,12 +8,29 @@ output:
 ---
 
 
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(tidyverse) 
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="./data")
+show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+
+
 
 Manipulating strings with `stringr`
 ================================
 
 
-```r
+```{r}
 library(tidyverse)
 library(stringr)
 ```
@@ -23,9 +40,12 @@ library(stringr)
 
 Import the data `aire_milano_strings.txt` which is a tab delimited file. Find how China has been codified (notice that the file is in Italian) and manipulate that string as you find more confortable for you. Save the results in a new tibble.
 
+```{r, echo = FALSE, eval = TRUE}
+aire <- read_delim("/home/emanuela/dev/qtraining/050-dplyr-datamanage/exercises/data/aire_milano_strings.txt", delim = "\t")
+```
+
 
 ```{r, echo = show_solution, eval = show_solution}
-aire <- read_delim("/home/emanuela/dev/qtraining/050-dplyr-datamanage/exercises/data/aire_milano_strings.txt", delim = "\t")
 aire %>% filter(str_detect(Residenza, c("Cina"))) # not recorded as Cina
 aire %>% filter(str_detect(Residenza, c("cina"))) # not recorded as cina
 aire %>% filter(str_detect(Residenza, c("Cin"))) 
@@ -33,26 +53,8 @@ aire_cina <- aire %>% mutate(Residenza, Residenza = str_replace(Residenza, c("Ci
 ```
 
 
+
 ### Exercise 2
-
-Find all the countries that contain "�" and replace it with the correct value.
-
-
-```{r, echo = show_solution, eval = show_solution}
-# select only rows that contain the vlue of interest in country name
-
-aire_cina %>% 
-  filter(str_detect(aire_cina$Residenza, "�"))
-
-# modify and save in new dataset
-aire_clean <- aire_cina %>% 
-  mutate(Residenza, Residenza = str_replace(Residenza, "Citt�", "Città")) %>%
-  mutate(Residenza, Residenza = str_replace(Residenza, "Per�", "Perù"))
-```
-
-
-
-### Exercise 3
 
 Using the data modified in exercise 1, find all the countries whose names contain non-alphanumeric characters. Identify what kind of characters they contain.
 
@@ -63,7 +65,7 @@ str_extract(aire_clean$Residenza, "[[:punct:]]")
 
 
 
-### Exercise 4
+### Exercise 3
 
 Consider now the column with information on the reason for migrating. Count how many different reasons there are and notice that citizenship was recorded in two slightly different ways: "acquisto cittadinanza" and "per acquisto cittadinanza". Replace one of them so that they are the same.
 
