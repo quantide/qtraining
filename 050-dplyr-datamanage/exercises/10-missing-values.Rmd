@@ -84,5 +84,7 @@ load("~/dev/qtraining/050-dplyr-datamanage/exercises/data/heartrate_NA.Rdata")
 
 
 ```{r, echo=show_solution, eval = show_solution}
-heartrate_NA %>% fill(name, surname)
+heartrate_NA %>% 
+  na_if( "") %>% 
+  fill(name, surname)
 ```
