@@ -41,7 +41,7 @@ heartrate <- data.frame(
   name = c("Aldo", "Giovanni", "Giacomo", "Aldo", "Giovanni", "Giacomo", "Giovanni", "Giacomo"),
   surname = c("Baglio", "Storti", "Poretti", "Baglio", "Storti", "Poretti", "Storti", "Poretti"),
   when = c("morning", "morning", "morning", "afternoon", "afternoon", "afternoon", "evening", "evening"),
-  morning = c(67, 80, 64, 56, 90, 50, 60, 85)
+  heartrate = c(67, 80, 64, 56, 90, 50, 60, 85)
 )
 ```
 
