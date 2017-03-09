@@ -57,7 +57,7 @@ html: $(HTML_FILES)
     	
 ### List of source files (without extension: it will be used for .Rmd, .html and .R)
 LIST = \
-  1-intro \
+  	1-intro \
 	2-0-verbs \
 	2-1-select \
 	2-2-filter \
@@ -80,12 +80,13 @@ OUTPUT_PDF_DIR = output/pdf
 
 # Output file name
 PDF_OUT = dplyr-exercises-questions.pdf
-#PDF_OUT = dplyr-exercises-solutions.pdf
+PDF_OUT_SOLUTION = dplyr-exercises-solutions.pdf
 
 # List of md files to build pdf 
 MD_PATH = $(addprefix exercises/,$(LIST))
-MD = $(addsuffix .md,$(MD_PATH))
-MD_LIST = $(addsuffix .md,$(MD_PATH))
+MD =      $(addsuffix .md, $(MD_PATH))
+MD_SOLUTION = $(addsuffix .solution.md, $(MD_PATH))
+MD_LIST = $(addsuffix .md, $(MD_PATH))
 
 # Pandoc pdf options
 PANDOC_PDF_OPTIONS = \
@@ -108,6 +109,8 @@ all: knitr pdf clean
 %.md: %.Rmd
 	Rscript -e "require(knitr); knit('$<', output= '$@', quiet=FALSE)"
 
+%.solution.md: %.Rmd
+	Rscript -e "require(knitr); show_solution_mk <- TRUE; knit('$<', output= '$@', quiet=FALSE)"
 
 # build html files from md and upload
 #%.html: %.md
@@ -124,16 +127,20 @@ all: knitr pdf clean
 $(PDF_OUT): $(MD_LIST)
 	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $(MD_LIST) --output $(OUTPUT_PDF_DIR)/$(PDF_OUT)
 
+$(PDF_OUT_SOLUTION): $(MD_SOLUTION)	
+	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $(MD_SOLUTION) --output $(OUTPUT_PDF_DIR)/$(PDF_OUT_SOLUTION)
+
+
 # single actions
-knitr: $(MD)
+knitr: $(MD) $(MD_SOLUTION)
 #html: $(addsuffix .html,$(MD_PATH))
 #purl: $(addsuffix .R,$(MD_PATH))
-pdf: $(PDF_OUT)
+pdf: $(PDF_OUT) $(PDF_OUT_SOLUTION)
 
 
 .PHONY: clean
 clean: 
-	rm -f $(MD_LIST)	
+	rm -f $(MD_LIST) $(MD_SOLUTION)
 ###################################################################
 
 
