@@ -15,7 +15,7 @@ output:
 Introduction
 ===========================================
 
-In this document you will find some exercises with R packages `dplyr` and `tidyr`. They are mainly based on the `nycflights13` data, taken from the `nycflights13` package.
+In this document you will find some exercises with the `tidyverse` R packages. They are mainly based on the `nycflights13` data, taken from the `nycflights13` package.
 
 
 ## Introduction to `nycflights13` data
