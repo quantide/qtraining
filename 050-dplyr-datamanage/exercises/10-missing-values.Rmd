@@ -1,18 +1,24 @@
 ---
-title:
-author:
-date:
+title: 'null'
+author: 'null'
+date: 'null'
 output:
   html_document:
     self_contained: no
+  pdf_document: default
 ---
 
 ```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(tidyverse) 
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
 opts_knit$set(root.dir="./data")
-show_solution <- FALSE
+show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
 
 # ATTENZIONE: leggere nota dentro show-solution.R
 ```
@@ -53,7 +59,11 @@ heartrate %>% complete(surname, when, fill=list(name="Aldo"))
 ```
 
 ### Exercise 2
-Import data in the file `marks.Rdta`. Missing values have been recorded as `.`. What's the percentage of missing values in the data? Replace them with `NA` and drop them.
+Import data in the file `marks.Rdta`. Missing values have been recorded as ".". What's the percentage of missing values in the data? Replace them with `NA` and drop them.
+
+```{r, echo=FALSE, eval=TRUE}
+load("~/dev/qtraining/050-dplyr-datamanage/exercises/data/marks.Rdata")
+```
 
 ```{r, echo=show_solution, eval=show_solution}
 marks_NA <- na_if(marks, ".")
@@ -67,6 +77,11 @@ marks_NA %>% drop_na()
 
 ### Exercise 3
 Import the data `heartrate_NA.Rdta` . Consider all the missing values you find and replace them using the function `fill()` when possible.
+
+```{r, echo=FALSE, eval=TRUE}
+load("~/dev/qtraining/050-dplyr-datamanage/exercises/data/heartrate_NA.Rdata")
+```
+
 
 ```{r, echo=show_solution, eval = show_solution}
 heartrate_NA %>% fill(name, surname)
