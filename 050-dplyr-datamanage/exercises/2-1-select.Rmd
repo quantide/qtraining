@@ -7,6 +7,21 @@ output:
     self_contained: no
 ---
 
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(tidyverse) 
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="./data")
+show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
 
 
 
@@ -14,10 +29,11 @@ output:
 Note: all the exercises of this section are based on the `flights` dataset.
 
 
-```r
-library(dplyr)
-library(nycflights13)
+```{r}
+require(tidyverse)
+require(nycflights13)
 ```
+
 
 
 ### Exercise 1
@@ -29,11 +45,22 @@ Extract the following information about flights:
 * distance.
 
 
+```{r, echo = show_solution, eval = show_solution}
+# require(nycflights13)
+data(flights)
+
+flights %>% select(month, day, air_time, distance)
+```
+
+
 
 
 ### Exercise 2
 Extract all information about flights except hour and minute.
 
+```{r, echo = show_solution, eval = show_solution}
+flights %>% select(-hour, -minute)
+```
 
 
 
@@ -41,22 +68,35 @@ Extract all information about flights except hour and minute.
 Select all variables whose name ends in "time".
 
 
+```{r, echo = show_solution, eval = show_solution}
+flights %>% select(ends_with("time"))
+```
+
 
 
 ### Exercise 4
 Select all variables whose name contains the word “delay”.
 
 
+```{r, echo = show_solution, eval = show_solution}
+flights %>% select(matches("delay"))
+```
+
 
 
 ### Exercise 5
 Select the `tailnum` variable and rename it into `tail_num`.  
 
+```{r, echo = show_solution, eval = show_solution}
+flights %>% select(tail_num = tailnum)
+```
 
 
 
 ### Exercise 6
 Select all the variables and rename the `tailnum` variable into `tail_num`.  
-
+```{r, echo = show_solution, eval = show_solution}
+flights %>% rename(tail_num = tailnum)
+```
 
 
