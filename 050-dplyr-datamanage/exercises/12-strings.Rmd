@@ -49,7 +49,7 @@ aire <- read_delim("/home/emanuela/dev/qtraining/050-dplyr-datamanage/exercises/
 aire %>% filter(str_detect(Residenza, c("Cina"))) # not recorded as Cina
 aire %>% filter(str_detect(Residenza, c("cina"))) # not recorded as cina
 aire %>% filter(str_detect(Residenza, c("Cin"))) 
-aire_cina <- aire %>% mutate(Residenza, Residenza = str_replace(Residenza, c("Cinese, Rep. Popolare"), "Cina"))
+aire_clean <- aire %>% mutate(Residenza, Residenza = str_replace(Residenza, c("Cinese, Rep. Popolare"), "Cina"))
 ```
 
 
@@ -62,7 +62,6 @@ Using the data modified in exercise 1, find all the countries whose names contai
 ```{r, echo = show_solution, eval = show_solution}
 str_extract(aire_clean$Residenza, "[[:punct:]]")
 ```
-
 
 
 ### Exercise 3
