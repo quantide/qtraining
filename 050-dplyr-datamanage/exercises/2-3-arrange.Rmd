@@ -8,14 +8,30 @@ output:
 ---
 
 
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(tidyverse) 
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="./data")
+show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+
 
 ## `arrange()`
 Note: all the exercises of this section are based on the `flights` dataset.
 
 
-```r
-library(dplyr)
-library(nycflights13)
+```{r}
+require(tidyverse)
+require(nycflights13)
 ```
 
 
@@ -23,16 +39,28 @@ library(nycflights13)
 Sort the flights in chronological order.
 
 
+```{r, echo = show_solution, eval = show_solution}
+flights %>% arrange(year, month, day)
+```
+
 
 
 ### Exercise 2
 Sort the flights by decreasing arrival delay.
 
 
+```{r, echo = show_solution, eval = show_solution}
+flights %>% arrange(desc(arr_delay))
+```
+
 
 
 ### Exercise 3
 Sort the flights by origin (in alphabetical order) and decreasing arrival delay.
 
+
+```{r, echo = show_solution, eval = show_solution}
+flights %>% arrange(origin, desc(arr_delay))
+```
 
 
