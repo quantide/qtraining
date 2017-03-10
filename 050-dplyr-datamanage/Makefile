@@ -69,6 +69,7 @@ LIST = \
 	6-combining \
 	9-tidyr \
 	10-missing-values \
+	11-dates \
 	12-strings \
 
 # Pandoc Path (RSTUDIO VERSION)
