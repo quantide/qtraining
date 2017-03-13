@@ -365,12 +365,12 @@ require(data.table)  </code></pre>
 <p>Suppose you want to import a quite large data file (for example, consider one of the .csv files on flights data). Using the data.table format:</p>
 <pre class="r"><code>data2006 &lt;- fread(&quot;file:///home/emanuela/ema/sp-data/2006.csv&quot;)</code></pre>
 <pre><code>## 
-Read 6.6% of 7141922 rows
-Read 24.1% of 7141922 rows
-Read 41.6% of 7141922 rows
-Read 59.1% of 7141922 rows
-Read 76.7% of 7141922 rows
-Read 94.2% of 7141922 rows
+Read 3.1% of 7141922 rows
+Read 16.7% of 7141922 rows
+Read 33.2% of 7141922 rows
+Read 50.8% of 7141922 rows
+Read 68.7% of 7141922 rows
+Read 86.5% of 7141922 rows
 Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:08</code></pre>
 <pre class="r"><code>is.data.table(data2006)    # imports in data.table format</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -426,14 +426,14 @@ Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:08</code></
 <p>which is quite fast</p>
 <pre class="r"><code>system.time(fread(&quot;file:///home/emanuela/ema/sp-data/2006.csv&quot;))</code></pre>
 <pre><code>## 
-Read 14.4% of 7141922 rows
-Read 32.5% of 7141922 rows
-Read 50.4% of 7141922 rows
-Read 68.3% of 7141922 rows
-Read 86.4% of 7141922 rows
+Read 13.7% of 7141922 rows
+Read 28.1% of 7141922 rows
+Read 46.2% of 7141922 rows
+Read 64.3% of 7141922 rows
+Read 82.5% of 7141922 rows
 Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:07</code></pre>
 <pre><code>##    user  system elapsed 
-##   6.688   0.628   7.314</code></pre>
+##   6.916   0.608   7.524</code></pre>
 <p>compared to the functions in <code>readr</code>:</p>
 <pre class="r"><code>system.time(read_csv(&quot;/home/emanuela/ema/sp-data/2006.csv&quot;))</code></pre>
 <pre><code>## Parsed with column specification:
@@ -447,18 +447,18 @@ Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:07</code></
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
 <pre><code>##    user  system elapsed 
-##  14.548   0.244  14.790</code></pre>
+##  14.568   0.256  14.827</code></pre>
 <p>So far the syntax in data.table is not that much different as compared to the dplyr syntax. However, let us make this slightly more complicated:</p>
 <pre class="r"><code># with data.table
 system.time(data2006[, mean(ArrDelay, na.rm = TRUE), keyby = Month])</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.060   0.008   0.067</code></pre>
+##   0.060   0.004   0.064</code></pre>
 <pre class="r"><code># with dplyr
 system.time(data2006 %&gt;% 
               group_by(Month) %&gt;% 
               summarise(mean(ArrDelay, na.rm = TRUE)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.180   0.004   0.187</code></pre>
+##   0.216   0.004   0.222</code></pre>
 <p>Notice that <code>dplyr</code> functions run on data.tables (data2006 was imported as a data.table) as well as on tibbles and data frames as previously discussed.</p>
 <p>The data.table syntax quickly gets more and more complicated. Suppose you want to apply two functions (for instance mean and standard deviation) to one variable:</p>
 <pre class="r"><code># with data.table
@@ -466,7 +466,7 @@ system.time(
   data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month]
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.084   0.008   0.094</code></pre>
+##   0.112   0.016   0.126</code></pre>
 <pre class="r"><code># with dplyr
 system.time( 
   data2006 %&gt;% 
@@ -474,7 +474,7 @@ system.time(
     summarise_each(funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)), ArrDelay)
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.212   0.016   0.226</code></pre>
+##   0.232   0.016   0.246</code></pre>
 <p>and now two functions on two variables:</p>
 <pre class="r"><code># with data.table
 system.time(
@@ -482,7 +482,7 @@ system.time(
                   mean(Distance, na.rm = TRUE), sd(Distance, na.rm=TRUE)), keyby = Month]
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.212   0.004   0.196</code></pre>
+##   0.212   0.008   0.198</code></pre>
 <pre class="r"><code># with dplyr
 system.time( 
 data2006 %&gt;% 
@@ -490,7 +490,7 @@ data2006 %&gt;%
     summarise_at(vars(ArrDelay, Distance), funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)))
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.260   0.016   0.272</code></pre>
+##   0.252   0.016   0.270</code></pre>
 <p><code>data.table</code> is thus faster than <code>dplyr</code>, but its syntax is much more complicated.</p>
 </div>
 
