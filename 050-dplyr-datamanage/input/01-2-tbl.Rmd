@@ -9,9 +9,9 @@ options(width = 108)
 
 # Introduction
 
-Instead of the traditional R's data frames, throughout this course you will work mainly with "tibbles". "Tibbles" are similar to data frames but offer better checking and printing capabilities than traditional data frames. Almost all of the functions that you will use in this course produce and take as input tibbles as tibbles are one of the unifying features of the tidyverse. 
+Instead of the traditional R's data frames, throughout this course you will work mainly with "tibbles". "Tibbles" are similar to data frames but offer better checking and printing capabilities than traditional data frames. Almost all of the functions that you will use in this course produce, and take as input, tibbles. In fact tibbles are one of the unifying features of the tidyverse. 
 
-In thic chapter you will work with the `tibble` package which provides functions for tibbles coercion and creation.
+In this chapter you will work with the `tibble` package which provides functions for tibbles coercion and creation.
 
 You can load `tibble` by loading `tidyverse`:
 

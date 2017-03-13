@@ -11,7 +11,7 @@ opts_knit$set(root.dir = "../data")
 
 # Introduction
 
-In this chapter you'll learn how to import flat files in R. You will do this with the use of `readr` package which is part of the `tidyverse` core. As already learned, this means that if you load the package `tidyverse`, `readr` will be automatically loaded:
+In this chapter you'll learn how to import flat files in R. You will do this with the use of `readr` package which is part of the `tidyverse` core. As already learned, if you load the package `tidyverse`, `readr` will be automatically loaded:
 
 ```{r readr}
 require(tidyverse)
