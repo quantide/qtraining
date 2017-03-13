@@ -1,5 +1,5 @@
 Introduction
-Introduction to tidyverse          | 00-intro.Rmd
+Introduction and data used          | 00-intro.Rmd
 
 Data objects
 tbl_df class                        | 01-2-tbl.Rmd
