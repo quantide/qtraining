@@ -310,7 +310,7 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Introduction</li>
-  <li><a href="00-intro.html">Introduction to tidyverse</a></li>
+  <li><a href="00-intro.html">Introduction and data used</a></li>
   <li class="nav-header">Data objects</li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
   <li><a href="01-1-readr.html">readr</a></li>
@@ -332,7 +332,6 @@ $(document).ready(function () {
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
   <li><a href="04-2-sparklyr.html">sparklyr</a></li>
-  <li><a href="04-3-dplyrXdf.html">dplyrXdf</a></li>
   <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
   <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
@@ -373,7 +372,7 @@ require(stringr)
 require(qdata)</code></pre>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>In this chapter you will learn about string manipulation in <code>R</code> with the package <code>stringr</code>. You don’t always work with textual data, hence <code>stringr</code> is not part part of the tidyverse core.</p>
+<p>In this chapter you will learn about string manipulation in <code>R</code> with the package <code>stringr</code>. As you don’t always work with textual data, <code>stringr</code> is not part part of the tidyverse core. Thus you need to lead it explicitely.</p>
 <p>Strings are textual data and they are created by using either single quotes or double quoutes, as you have already seen at the beginning of this course. You store strings in a character vector:</p>
 <pre class="r"><code># character vector
 char_vector &lt;- c(&quot;Hello&quot;, &quot;Andrea&quot;, &quot;Spanò&quot;)</code></pre>
@@ -574,7 +573,7 @@ str_extract(province, c(&quot;to$&quot;))</code></pre>
 <pre class="r"><code>colors &lt;- c(&quot;gray&quot;, &quot;gray&quot;, &quot;grey&quot;, &quot;white&quot;, &quot;white&quot;, &quot;white&quot;)
 str_replace(colors, c(&quot;gray&quot;), &quot;grey&quot;)</code></pre>
 <pre><code>## [1] &quot;grey&quot;  &quot;grey&quot;  &quot;grey&quot;  &quot;white&quot; &quot;white&quot; &quot;white&quot;</code></pre>
-<p>If you have only a defined set of possible strings, you may also set levels and read strings as factors. This will avoid typos as strings that do not belong to the defined levels will be assigned “NA”.</p>
+<p>If you have only a defined set of possible strings, you may also set levels and read strings as factors. This will avoid typos as strings that do not belong to the defined levels will be assigned <code>NA</code>.</p>
 <pre class="r"><code>colors &lt;- c(&quot;gray&quot;, &quot;gray&quot;, &quot;grey&quot;, &quot;white&quot;, &quot;white&quot;, &quot;white&quot;)
 colors_levels &lt;- c(&quot;gray&quot;, &quot;white&quot;)
 factor(colors, levels = colors_levels)</code></pre>

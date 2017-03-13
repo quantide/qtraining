@@ -310,7 +310,7 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Introduction</li>
-  <li><a href="00-intro.html">Introduction to tidyverse</a></li>
+  <li><a href="00-intro.html">Introduction and data used</a></li>
   <li class="nav-header">Data objects</li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
   <li><a href="01-1-readr.html">readr</a></li>
@@ -332,7 +332,6 @@ $(document).ready(function () {
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
   <li><a href="04-2-sparklyr.html">sparklyr</a></li>
-  <li><a href="04-3-dplyrXdf.html">dplyrXdf</a></li>
   <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
   <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
@@ -392,7 +391,7 @@ require(qdata)</code></pre>
 </ol>
 <div id="explicit-missing-values" class="section level3">
 <h3>1. Explicit missing values</h3>
-<p>Explicit missing values may already be represented as <code>NA</code> in your data frame. This is the easiest case as they are automatically detected by <code>R</code> and you can then proceed with any of the operations presented in the next section.</p>
+<p>Explicit missing values may already be represented as <code>NA</code> in your data frame. This is the easiest case as they are automatically detected by <code>R</code> and you can then proceed with any of the operations presented in the next section (drop, ignore or replace).</p>
 <p>With a very simple example:</p>
 <pre class="r"><code>setwd(&quot;./data&quot;)</code></pre>
 <pre class="r"><code># example of different types of missing data
@@ -403,27 +402,50 @@ load(&quot;unemployment.Rda&quot;)</code></pre>
 ##   `mean(unemployment_rate)`
 ##                       &lt;dbl&gt;
 ## 1                        NA</code></pre>
-<p>In the variable <code>lab_force_participation</code>, 999.99 does not seem in line with the others. It may be the case that the person that collected the data for you decided to identify a missing value with, for example <code>999.99</code>. In this case <code>R</code> does not recognise it as missing value and it includes it in your calculations yielding unusual results:</p>
+<p>In the variable <code>lab_force_participation</code>, 999.99 does not seem in line with the other values. It may be the case that the person that collected data for you decided to identify a missing value with, for example <code>999.99</code>. In this case <code>R</code> does not recognise it as missing value and it includes it in your calculations yielding unusual results:</p>
 <pre class="r"><code>unemployment %&gt;% summarise(mean(lab_force_participation))</code></pre>
 <pre><code>## # A tibble: 1 × 1
 ##   `mean(lab_force_participation)`
 ##                             &lt;dbl&gt;
 ## 1                        196.0843</code></pre>
-<p>Another example may be when the missing value is just left blank, where <code>R</code> returns a warning:</p>
+<p>Another example may be when the missing value is just left blank. In this case <code>R</code> returns a warning:</p>
 <pre class="r"><code>y &lt;- c(1, 2, 3, &quot;&quot;)
 mean(y)</code></pre>
 <pre><code>## Warning in mean.default(y): argument is not numeric or logical: returning NA</code></pre>
 <pre><code>## [1] NA</code></pre>
-<p>In all these cases where you have an explicit missing value not represented by NA, it is better to recode the missing values so that they can easily be treated by <code>R</code>. The function <code>na_if</code> of the package <code>dplyr</code> quickly does it:</p>
+<p>In the two above cases where you have an explicit missing value but it is not represented by <code>NA</code>, it is better to recode them into <code>NA</code>. By doing so they can easily be treated by <code>R</code>. The function <code>na_if</code> of the package <code>dplyr</code> quickly does it:</p>
 <pre class="r"><code>na_if(y, &quot;&quot;)</code></pre>
 <pre><code>## [1] &quot;1&quot; &quot;2&quot; &quot;3&quot; NA</code></pre>
 <p>and on the data frame <code>unemployment</code>:</p>
-<pre class="r"><code>unemployment_new &lt;- na_if(unemployment, 999.99)</code></pre>
+<pre class="r"><code>unemployment_new &lt;- na_if(unemployment, 999.99)
+
+unemployment_new</code></pre>
+<pre><code>## # A tibble: 7 × 4
+##    year   sem unemployment_rate lab_force_participation
+##   &lt;dbl&gt; &lt;dbl&gt;             &lt;dbl&gt;                   &lt;dbl&gt;
+## 1  2013     1               7.1                    60.0
+## 2  2014     1               6.5                    63.5
+## 3  2014     2               7.6                    61.4
+## 4  2015     1               8.2                      NA
+## 5  2015     2               7.3                    62.7
+## 6  2016     1                NA                    61.8
+## 7  2016     2               6.8                    63.2</code></pre>
 </div>
 <div id="implicit-missing-values" class="section level3">
 <h3>2. Implicit missing values</h3>
 <p>There is another type of missing value in the data frame <code>unemployment</code> that has not yet been treated: the variables referring to unemployment rate and labour force participation are missing for the second semester of 2013. This is an implicit missing value. You can make it explicit with the function <code>complete()</code>:</p>
-<pre class="complete"><code>unemployment %&gt;% complete(year, sem)</code></pre>
+<pre class="r"><code>unemployment %&gt;% complete(year, sem)</code></pre>
+<pre><code>## # A tibble: 8 × 4
+##    year   sem unemployment_rate lab_force_participation
+##   &lt;dbl&gt; &lt;dbl&gt;             &lt;dbl&gt;                   &lt;dbl&gt;
+## 1  2013     1               7.1                   60.00
+## 2  2013     2                NA                      NA
+## 3  2014     1               6.5                   63.50
+## 4  2014     2               7.6                   61.40
+## 5  2015     1               8.2                  999.99
+## 6  2015     2               7.3                   62.70
+## 7  2016     1                NA                   61.80
+## 8  2016     2               6.8                   63.20</code></pre>
 <p>Or in the data frame <code>unemployment_new</code>:</p>
 <pre class="r"><code>unemployment_new &lt;- unemployment_new %&gt;% complete(year, sem)</code></pre>
 </div>
@@ -438,7 +460,7 @@ mean(y)</code></pre>
 </ol>
 <div id="drop-the-entire-row" class="section level3">
 <h3>1. Drop the entire row</h3>
-<p>This is not reccomandable especially if you have many variables and missing values are only a small percentage of the variables. If you think this is the way to go, you can easily drop the row by using <code>drop_na()</code>:</p>
+<p>This is not reccomandable especially if you have many variables and missing values are only a small percentage of the variables. However, if you think this is the way to go, you can easily drop the row by using <code>drop_na()</code>:</p>
 <pre class="r"><code>unemployment_new %&gt;% drop_na()</code></pre>
 <pre><code>## # A tibble: 5 × 4
 ##    year   sem unemployment_rate lab_force_participation
@@ -480,7 +502,8 @@ mean(y)</code></pre>
 ## 4  2015     2               7.3                    62.7
 ## 5  2016     1                NA                    61.8
 ## 6  2016     2               6.8                    63.2</code></pre>
-<p>However, replacing missing values is not always as easy. For example, considering the data frame <code>unemployment</code>, missing values in labour force participation or in unemployment rate would have been more difficult to replace requiring a deep knowledge of statistical tecniques. There are many <code>R</code> packages for missing data imputation, such as <code>mice</code> and <code>Amelia</code>, that are not part of tidyverse.</p>
+<p>However, replacing missing values is not always as easy. For example, considering the data frame <code>unemployment</code>, missing values in labour force participation or in unemployment rate would be more difficult to replace requiring a deep knowledge of statistical tecniques.</p>
+<p>There are many <code>R</code> packages for missing data imputation, such as <code>mice</code> and <code>Amelia</code>, but they will not be explored in this course.</p>
 </div>
 </div>
 

@@ -310,7 +310,7 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Introduction</li>
-  <li><a href="00-intro.html">Introduction to tidyverse</a></li>
+  <li><a href="00-intro.html">Introduction and data used</a></li>
   <li class="nav-header">Data objects</li>
   <li><a href="01-2-tbl.html">tbl_df class</a></li>
   <li><a href="01-1-readr.html">readr</a></li>
@@ -332,7 +332,6 @@ $(document).ready(function () {
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
   <li><a href="04-2-sparklyr.html">sparklyr</a></li>
-  <li><a href="04-3-dplyrXdf.html">dplyrXdf</a></li>
   <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
   <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
@@ -380,8 +379,13 @@ require(tibble)</code></pre>
 </div>
 <div id="reading-flat-files" class="section level1">
 <h1>Reading flat files</h1>
-<p>Suppose you want to import data from tennis.txt (available in the data folder).</p>
-<p>If you open the tennis.txt file you notice that 1) variables are delimited by many columns of space and 2) variable names are at the top of the file. In this case the function <code>read_r_table</code> comes in handy. <code>read_r_table</code> is designed to read the type of text data where each column is separated by one (or more) columns of space. With regards to 2) you just have to keep it in mind so that you indicate it in the function <code>read_r_table</code>.</p>
+<p>Suppose you want to import data from <code>tennis.txt</code> (available in the data folder).</p>
+<p>If you open the <code>tennis.txt</code> file you may observe that:</p>
+<ol style="list-style-type: decimal">
+<li>variables are delimited by many columns of space</li>
+<li>variable names are at the top of the file</li>
+</ol>
+<p>For dealing with 1), the function <code>read_r_table</code> comes in handy. <code>read_r_table</code> is designed to read the type of text data where each column is separated by one (or more) columns of space.</p>
 <p>In order to import the text file, you first need to “give the coordinates” of the folder in which the text file is stored. You are currently working in the directory given by the following command:</p>
 <pre class="r"><code>getwd()</code></pre>
 <p>that may not be the folder in which your text file is stored. If that is the case, you need to set the working directory on the folder containing the data:</p>
@@ -401,7 +405,7 @@ require(tibble)</code></pre>
 ## 8           Martinez   Conchita    22     F     3     1    55    15 1540.167            Spain
 ## 9            Novotna       Jana    26     F     4     0    43    11  876.119 &quot;Czech Republic&quot;
 ## 10            Pierce       Mary    20     F     5     0    45    18  768.614           France</code></pre>
-<p>Notice that <code>col_names = TRUE</code> indicates that the variables names are at the begininning of the file.</p>
+<p>Notice that <code>col_names = TRUE</code> indicates that the variables names are at the begininning of the file (to deal with observation 2).</p>
 <p>Besides space, common delimiters for variable names are tab, comma and semi colon. Hence there are specific functions that automatically deal with these separators.</p>
 <pre class="r"><code>read_csv(&quot;solar.txt&quot;, col_names = FALSE) # for comma separeted variables
 read_tsv(&quot;aire_milano.txt&quot;, col_names = TRUE) # for tab separeted variables
@@ -457,7 +461,7 @@ read_csv2(&quot;milano_tourism&quot;, col_names= TRUE) # for semi colon separete
 ## 9      9     F          1978        married 19051.0       6947.0       Forte dei Marmi    Lucca
 ## 10    10     F          1964        married 28893.0       9635.0               Fauglia     Pisa
 ## # ... with 20 more rows, and 1 more variables: provincial_acronym &lt;chr&gt;</code></pre>
-<p>Notice that all these functions import data in the dplyr format, that is tibble. Moreover it identifies the variables type without the need of any further specification. In order to do so <code>R</code> reads the first 1000 rows and uses some heuristics to figure out each columns’ type. If you are curious about it you may explore the functions “guess_parser” and “parse_guess” that are the functions used to guess the column type and parse the column.</p>
+<p>Notice that all these functions import data in the <code>dplyr</code> format, that is tibble. Moreover it identifies the variables type without the need of any further specification. In order to do so <code>R</code> reads the first 1000 rows and uses some heuristics to figure out each columns’ type. If you are curious about it you may explore the functions <code>guess_parser</code> and <code>parse_guess</code> that are the functions used to guess the column type and parse the column.</p>
 <p>However, this method does not always work, especially when the file is very large. More specifically, two basic problems may arise:</p>
 <ul>
 <li><p>suppose the first 1000 rows are an integer, but the others are not. <code>R</code> will classify that variable as an integer although integer is a special case of a numeric variable. Thus is general, if the first thousand rows are special cases, <code>R</code> will classify the variable as that special case.</p></li>
@@ -483,12 +487,12 @@ read_csv2(&quot;milano_tourism&quot;, col_names= TRUE) # for semi colon separete
 ## 12   dic 20998 21375 22665</code></pre>
 <p>Let us quickly go through the variable types available in <code>R</code>:</p>
 <ul>
-<li>numbers: double (decimals) or integer, i.e. for numeric variables</li>
-<li>factors: categorical variables that have a known set of possible values</li>
-<li>strings: textual data</li>
-<li>date and times</li>
+<li>numbers: for numeric variables you may choose between <strong>double</strong> (for decimals) and <strong>integer</strong></li>
+<li><strong>factor</strong> : categorical variables that have a known set of possible values</li>
+<li><strong>string</strong>: textual data</li>
+<li><strong>date</strong> and <strong>time</strong> : for dates and times</li>
 </ul>
-<p>A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in tidyverse.</p>
+<p>A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in the tidyverse.</p>
 </div>
 
 
