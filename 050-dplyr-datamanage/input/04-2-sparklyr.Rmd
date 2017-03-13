@@ -21,7 +21,7 @@ Spark is a fast and general engine for large-scale data processing. `sparklyr` p
 * filters and aggregates Spark datasets then bring them into R for 
 analysis and visualization
 * uses Spark’s distributed machine learning library from R
-* allows to create extensions that call the full Spark API and provide interfaces to Spark packages.
+* allows to create extensions that call the full Spark API and provide interfaces to Spark packages (Source: http://spark.rstudio.com/index.html).
 
 
 ![<small> Source: http://spark.rstudio.com/index.html</small>](./images/sparklyr-illustration.png)
@@ -56,11 +56,11 @@ spark_install(version = "1.6.2")
 
 ## Data
 
-The data used is the same as that used for RSQLite chapter. You can download the data at the following link:
+The data you will work with in this chapter, is the same as that used for RSQLite chapter. You can download the data at the following link:
 
 http://stat-computing.org/dataexpo/2009/the-data.html
 
-The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are over 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12 gigabytes when uncompressed. From the above link you can download the data, year by year. As the whole dataset is extremely large and it may take you a while to download all the years, we suggest you only take the years 2006, 2007 and 2008. The downloaded data should be uzipped and placed in a separate folder
+The data consists of flight arrival and departure details for all commercial flights within the USA, from October 1987 to April 2008. This is a large dataset: there are over 120 million records in total, and takes up 1.6 gigabytes of space compressed and 12 gigabytes when uncompressed. From the above link you can download the data, year by year. As the whole dataset is extremely large and it may take you a while to download all the years, we suggest you only take the years 2006, 2007 and 2008. The downloaded data should be unzipped and placed in a separate folder
 
 
 ```{r, eval = FALSE}
@@ -76,7 +76,7 @@ ls # shows what's in the folder
 
 # Connecting to Spark and reading the data
 
-Now that you have the data to work on, you have installed spark and you have loaded the packaged `sparklyr`, you have all the elements to connect to Spark. 
+Now that you have the data to work on, you have installed spark and you have loaded `sparklyr`, you have all the elements to connect to Spark. 
 
 
 You can connect to both local instances of Spark as well as remote Spark clusters. Here we show how to connect to a local instance of Spark. First of all you should set the configuration parameters
@@ -120,7 +120,7 @@ Where does Spark table differ to dplyr `tbl_df` or `data.frame`? Spark, like dat
 
 You can now use `sparklyr` and `dplyr` functions to deal with this large dataset. 
 
-First of all you may want to know the size the data you are working on:
+First of all, for example, you may want to know the size the data you are working on:
 
 ```{r, eval = FALSE}
 ontime_tbl %>% summarise(n = n())

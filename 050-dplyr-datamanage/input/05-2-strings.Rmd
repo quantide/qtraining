@@ -19,7 +19,7 @@ require(qdata)
 
 # Introduction
 
-In this chapter you will learn about string manipulation in `R` with the package `stringr`. You don't always work with textual data, hence `stringr` is not part part of the tidyverse core.
+In this chapter you will learn about string manipulation in `R` with the package `stringr`. As you don't always work with textual data, `stringr` is not part part of the tidyverse core. Thus you need to lead it explicitely.
 
 Strings are textual data and they are created by using either single quotes or double quoutes, as you have already seen at the beginning of this course. You store strings in a character vector:
 
@@ -222,7 +222,7 @@ colors <- c("gray", "gray", "grey", "white", "white", "white")
 str_replace(colors, c("gray"), "grey")
 ```
 
-If you have only a defined set of possible strings, you may also set levels and read strings as factors. This will avoid typos as strings that do not belong to the defined levels will be assigned "NA".
+If you have only a defined set of possible strings, you may also set levels and read strings as factors. This will avoid typos as strings that do not belong to the defined levels will be assigned `NA`.
 
 ```{r}
 colors <- c("gray", "gray", "grey", "white", "white", "white")

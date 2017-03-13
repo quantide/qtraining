@@ -87,3 +87,5 @@ data2006 %>%
 ```
 
  
+`data.table` is thus faster than `dplyr`, but its syntax is much more complicated.
+

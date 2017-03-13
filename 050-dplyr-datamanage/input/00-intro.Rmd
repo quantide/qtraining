@@ -1,13 +1,16 @@
 ---
-title: "Introduction to tidyverse"
+title: "Introduction and data used"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
 options(width = 108)
 ```
 
+# Introduction to the course and to tidyverse
 
-Most of the packages used in this course are part of the so-called "tidyverse". _Packages in the tidyverse are packages that share a common philosophy of data management and that are designed to work well together._ (tidyverse.org) 
+This course will provide an overview of data management with R.
+
+Most of the packages used in this course are part of the so-called "tidyverse". __Packages in the tidyverse are packages that share a common philosophy of data management and that are designed to work well together.__ (source: www.tidyverse.org) 
 
 
 ![<small>Some of the tidyverse packages. Source: www.tidyverse.org</small>](./images/tidyverse.png)
@@ -15,7 +18,7 @@ Most of the packages used in this course are part of the so-called "tidyverse". 
 
 Please check out the manifesto for further details on the philosophy underlining tidyiverse:  [the tidy tools manifesto](https://cran.r-project.org/web/packages/tidyverse/vignettes/manifesto.html). 
 
-The whole tidyverse can be installed with the single (but long runnning!) line command.
+The whole tidyverse can be installed with a single (but long runnning!) line command:
 
 ```{r tidyverse, message=FALSE, eval = FALSE}
 install.packages("tidyverse")
@@ -49,7 +52,9 @@ The starting point for more information about `readr` is the official website pr
 `tibble` provides a `tbl_df` class that offers better checking and printing capabilities than traditional data frames.  
 The starting point for more information about `tibble` is the official website providing documentation: [tibble: Simple data frames](https://cran.r-project.org/web/packages/tibble/index.html)
 
-In addition to the core packages, `tidyverse` installs other tidyverse packages some of which will be used in this course and some will not. For instance, there are packages useful for working with non-numeric variables (such as `stringr` and `forcats`), or for importing data from external sources (such as `haven`). In order to list all packages in tidyverse you can use the following command line:
+In addition to the core packages, `tidyverse` installs other tidyverse packages some of which will be used in this course and some will not. For instance, there are packages useful for working with non-numeric variables (such as `stringr` and `forcats`), or for importing data from external sources (such as `haven`). For more details about packages in the tidyverse please check out the following link https://github.com/tidyverse/tidyverse. 
+
+In order to list all packages in tidyverse you can use the following command:
 
 
 ```{r}
@@ -57,7 +62,7 @@ tidyverse_packages()
 ```
 
 
-For more details about packages in the tidyverse please check out the following link https://github.com/tidyverse/tidyverse. Remember that if you want to load packages that are not in the tidyverse core, you should load them explicitely.
+If you want to load packages that are not in the tidyverse core, you have to load them explicitely.
 
 Tidyverse as well as the packages that compose it are fairly new, thus we should expect the composition of tidyverse to change as well as the releases of the packages that compose it. You can check that all tidyverse packages are up-to-date with the following line command:
 

@@ -7,6 +7,8 @@ title: "Introduction to dplyr"
 options(width = 108)
 ```
 
+In this section of the course, you will work with functions contained in the `dplyr` package which is part of the tidyverse.
+
 The `dplyr` package for `R` is very powerful for data management since:
 
 * it simplifies how you can think about common data manipulation tasks;
