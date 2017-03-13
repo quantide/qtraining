@@ -30,6 +30,8 @@ Manipulating strings with `stringr`
 ================================
 
 
+## 
+
 ```{r}
 library(tidyverse)
 library(stringr)
@@ -59,7 +61,7 @@ aire_clean <- aire %>% mutate(Residenza, Residenza = str_replace(Residenza, c("C
 Using the data modified in exercise 1, find all the countries whose names contain non-alphanumeric characters. Identify what kind of characters they contain.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = FALSE}
 str_extract(aire_clean$Residenza, "[[:punct:]]")
 ```
 
