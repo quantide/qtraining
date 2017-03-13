@@ -71,6 +71,7 @@ LIST = \
 	10-missing-values \
 	11-dates \
 	12-strings \
+	13-case-study \
 
 # Pandoc Path (RSTUDIO VERSION)
 PANDOC_PATH = /usr/lib/rstudio/bin/pandoc/pandoc
