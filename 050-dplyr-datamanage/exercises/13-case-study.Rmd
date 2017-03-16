@@ -1,0 +1,166 @@
+---
+title: 
+author:
+date: 
+output:
+  html_document:
+    self_contained: no
+---
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(tidyverse) 
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="./data")
+show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+
+
+Case study
+================================
+
+## Recap exercise
+In this section you will work on a real data set. Using all the tools provided throughout the course, you will manipulate data for better analysing it. In the data folder you find the following three files:
+
+1. rating_final.csv
+2. chefmezcuisine.csv
+3. userprofile.csv
+
+These are the files you will work on in this chapter.
+
+
+### Exercise 1
+
+1. First of all you need to import the three files into `R` using the correct `readr` function. In order to find the correct function and to set the right options, you'd better explore the files by opening them in csv (check which is the separator, if there are column names, etc). 
+
+```{r, echo = show_solution, eval = show_solution}
+require(tidyverse)
+
+# chefmozcuisine
+chefmozcuisine <- read_delim("/home/emanuela/dev/qtraining/050-dplyr-datamanage/exercises/data/chefmozcuisine.csv", delim = ",", col_names = T)
+
+# userprofile
+userprofile <- read_delim("/home/emanuela/dev/qtraining/050-dplyr-datamanage/exercises/data/userprofile.csv", delim = ",", col_names = T)
+
+# rating_final
+rating_final <- read_delim("/home/emanuela/dev/qtraining/050-dplyr-datamanage/exercises/data/rating_final.csv", delim = ",", col_names = T)
+```
+
+
+2. In order to understand what you are working on, check how many columns and rows each data frame is composed of, and check what type of variables you are working with. If the variables type has not correctly been parsed, parse it manually. If you find many variables, focus on those that you think may be interesting for understanding different people's tastes (for example age of the users, job, etc).
+
+```{r, echo = show_solution, eval = show_solution}
+
+# chefmozcuisine
+# how many rows? how many variables?
+chefmozcuisine
+
+# how many different types of cuisine?
+chefmozcuisine %>% distinct(Rcuisine)
+
+# userprofile
+# how many rows? how many variables?
+userprofile
+
+# let us explore some interesting variables that may be interesting in future analysis
+userprofile %>% distinct(activity)
+userprofile %>% distinct(ambience)
+userprofile %>% distinct(smoker)
+
+# rating_final
+# how many rows?
+rating_final
+rating_final %>% distinct(rating)
+rating_final %>% distinct(food_rating)
+rating_final %>% distinct(service_rating)
+
+# ratings are either 0, 1 or 2
+
+# notice that placeID is an integer value. However, it is the ID hence you will calculate no statistics on it. You may as well force it to a character vector.
+
+rating_final <- rating_final %>% 
+  mutate(placeID = as.character(placeID))
+
+chefmozcuisine <- chefmozcuisine %>% 
+  mutate(placeID = as.character(placeID))
+
+```
+
+
+3. Based on the userprofile data frame, create a new data frame with only relevant variables. Among these, keep the variables: userID, birth_year, budget, marital_status,  personality, smoker and activty. If you think there are other relevant variables, you may include them in the new data frame as well. Call the new data frame "userprofile_reduced".
+
+```{r, echo = show_solution, eval = show_solution}
+userprofile_reduced <- userprofile %>% 
+  select(userID, birth_year, budget, marital_status, personality, smoker, activity)
+
+userprofile_reduced
+```
+
+
+4. Focus on the data frame userprofile_reduced. By exploring the different values recorded for `budget`, you may notice there are missing values. What are they recorded by? Replace all missing values with `NA`.  Do the same for all the variables in userprofile_reduced.
+
+
+```{r, echo = show_solution, eval = show_solution}
+userprofile_reduced %>% 
+  distinct(budget)
+
+# "?" is for missing values
+userprofile_final <- userprofile_reduced %>% na_if("?")
+
+```
+
+
+5. Note that for all users we have the year of birth but we do not have the age. Replce the year of birth with a variable called age.
+
+```{r, echo = show_solution, eval = show_solution}
+require(lubridate)
+
+userprofile_final <- userprofile_final %>% 
+  mutate(age = year(today())-birth_year) %>% 
+  select(-birth_year)
+```
+
+
+6. All three data frames are now ready to use. Merge the three data frames so that you keep all rows and columns of rating and you add all the variables of chefmezcuisine.csv and userprofile.csv. Call the new data frame rating_all.
+
+```{r, echo = show_solution, eval = show_solution}
+rating_all <- rating_final %>% 
+  left_join(userprofile_final) %>% 
+  left_join(chefmozcuisine)
+```
+
+
+7. Find the mean of all rating variables. Group data by placeID and then sort the tibble so that places with the highest average rating are at the top. Show id of such places and type of cuisine.
+
+
+```{r, echo = show_solution, eval = show_solution}
+rating_all %>% 
+  group_by(placeID) %>%
+  summarise_at(vars(rating_mean = rating, food_rating_mean = food_rating, 
+                    service_rating_mean = service_rating), funs(mean)) %>%
+  arrange(desc(rating_mean), desc(food_rating_mean), desc(service_rating_mean)) %>%
+  left_join(chefmozcuisine) %>%
+  select(c(placeID, rating_mean, food_rating_mean, service_rating_mean, Rcuisine))
+```
+
+
+8. Find mean and standard deviation of all rating variables. Do you notice differences with regards to ratings of students as compared to people that are employed? Do you find differences in smokers and non smokers? Do you notice large differences in any other group of users?
+
+
+```{r, echo = show_solution, eval = show_solution}
+rating_all %>% 
+  group_by(activity) %>%
+  summarise_at(vars(rating, food_rating, service_rating), funs(n(), mean, sd))
+
+rating_all %>% 
+  group_by(smoker) %>%
+  summarise_at(vars(rating, food_rating, service_rating), funs(n(), mean, sd))
+```
+
