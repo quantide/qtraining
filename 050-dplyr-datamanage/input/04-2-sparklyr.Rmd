@@ -102,7 +102,7 @@ where `master = local` means that Spark will work on your local machine.
 Once you are connected to Spark you can read the csv files. You are reading it from your local hard-drive:
 
 ```{r, eval = FALSE}
-csv_file <- 'file:///home/emanuela/ema/sp-data/*.csv'
+csv_file <- '~/data/*.csv'
 ontime_tbl <- spark_read_csv(sc = sc, 
                              'ontime_tbl' , 
                              path = csv_file,
