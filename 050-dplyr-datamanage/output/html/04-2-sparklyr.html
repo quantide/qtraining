@@ -431,7 +431,7 @@ config$`spark.yarn.executor.memoryOverhead` &lt;- &quot;1G&quot;</code></pre>
 <div id="reading-the-data" class="section level2">
 <h2>Reading the data</h2>
 <p>Once you are connected to Spark you can read the csv files. You are reading it from your local hard-drive:</p>
-<pre class="r"><code>csv_file &lt;- 'file:///home/emanuela/ema/sp-data/*.csv'
+<pre class="r"><code>csv_file &lt;- '~/data/*.csv'
 ontime_tbl &lt;- spark_read_csv(sc = sc, 
                              'ontime_tbl' , 
                              path = csv_file,

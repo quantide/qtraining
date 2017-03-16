@@ -367,7 +367,7 @@ $(document).ready(function () {
 </div>
 
 <pre class="r"><code># load packages
-require(tidyverse) # alternatively: require(dplyr), require(tidyr)
+require(tidyverse)
 require(stringr)
 require(qdata)</code></pre>
 <div id="introduction" class="section level1">
@@ -375,26 +375,26 @@ require(qdata)</code></pre>
 <p>In this chapter you will learn about string manipulation in <code>R</code> with the package <code>stringr</code>. As you don’t always work with textual data, <code>stringr</code> is not part part of the tidyverse core. Thus you need to lead it explicitely.</p>
 <p>Strings are textual data and they are created by using either single quotes or double quoutes, as you have already seen at the beginning of this course. You store strings in a character vector:</p>
 <pre class="r"><code># character vector
-char_vector &lt;- c(&quot;Hello&quot;, &quot;Andrea&quot;, &quot;Spanò&quot;)</code></pre>
+char_vector &lt;- c(&quot;Hello&quot;, &quot;world&quot;, &quot;!&quot;)</code></pre>
 <p>With the function <code>str_length()</code> you can see the length of each string:</p>
 <pre class="r"><code># character vector
 str_length(char_vector)</code></pre>
-<pre><code>## [1] 5 6 5</code></pre>
+<pre><code>## [1] 5 5 1</code></pre>
 <div id="combining-strings" class="section level2">
 <h2>Combining strings</h2>
-<p>Suppose you do not need to store separately name and surname. Hence you would like to “combine” name and surname into the same string:</p>
+<p>Suppose you do not need to have each word stored separately. Hence you would like to “combine” them into the same string:</p>
 <pre class="r"><code># character vector
 str_c(&quot;Andrea&quot;, &quot;Spanò&quot;, sep = &quot; &quot;)</code></pre>
 <pre><code>## [1] &quot;Andrea Spanò&quot;</code></pre>
 <p>The argument <code>sep</code> tells the software if and how you should separate the two parts of the new string. You can also add more words and your string gets longer:</p>
 <pre class="r"><code># character vector
-str_c(&quot;Hello&quot;, &quot;Andrea&quot;, &quot;Spanò&quot;, sep = &quot; &quot;)</code></pre>
-<pre><code>## [1] &quot;Hello Andrea Spanò&quot;</code></pre>
-<pre class="r"><code>str_length(str_c(&quot;Hello&quot;, &quot;Andrea&quot;, &quot;Spanò&quot;, sep = &quot; &quot;))</code></pre>
-<pre><code>## [1] 18</code></pre>
+str_c(&quot;Hello&quot;, &quot;world&quot;, &quot;!&quot;, sep = &quot; &quot;)</code></pre>
+<pre><code>## [1] &quot;Hello world !&quot;</code></pre>
+<pre class="r"><code>str_length(str_c(&quot;Hello&quot;, &quot;world&quot;, &quot;!&quot;, sep = &quot; &quot;))</code></pre>
+<pre><code>## [1] 13</code></pre>
 <p>In the above code, you have collapsed the whole character vector into one string. In these cases you may want to use the argument <code>collapse</code> that collapses all the strings in the character vector:</p>
 <pre class="r"><code>str_c(char_vector, collapse = &quot; &quot;)</code></pre>
-<pre><code>## [1] &quot;Hello Andrea Spanò&quot;</code></pre>
+<pre><code>## [1] &quot;Hello world !&quot;</code></pre>
 <p>Now let us make this a bit more interesting. Let us import the file <code>tennis.txt</code>:</p>
 <pre class="r"><code>setwd(&quot;./data&quot;)</code></pre>
 <pre class="r"><code>tennis &lt;- read_table(&quot;tennis.txt&quot;, col_names = TRUE)
@@ -430,10 +430,10 @@ head(tennis)</code></pre>
 <div id="splitting" class="section level2">
 <h2>Splitting</h2>
 <p>Similarly, you may want to go the other way around: you have a string containing different parts separated by, for instance, a space, and you want to divide it into many strings:</p>
-<pre class="r"><code>char_vector &lt;- c(&quot;Hello Andrea !&quot;)
+<pre class="r"><code>char_vector &lt;- c(&quot;Hello world !&quot;)
 str_split(char_vector, &quot; &quot; )</code></pre>
 <pre><code>## [[1]]
-## [1] &quot;Hello&quot;  &quot;Andrea&quot; &quot;!&quot;</code></pre>
+## [1] &quot;Hello&quot; &quot;world&quot; &quot;!&quot;</code></pre>
 <p>Let us make it a bit more interesting and suppose you have the tennis data with name and surnames of each tennis player in the same variable.</p>
 <pre class="r"><code>tennis_new &lt;- tennis %&gt;% 
   mutate_at(vars(Name), funs(str_c(First.Name, Name, sep = &quot; &quot;))) %&gt;%
@@ -498,7 +498,7 @@ str_split(char_vector, &quot; &quot; )</code></pre>
 ## 2        Mi
 ## 3    Torino
 ## 4        To</code></pre>
-<p>To let <code>R</code> know that it is not 4 differenct cities, you may give them the same name by taking the first two letters of each “provincia”:</p>
+<p>To let <code>R</code> know that it is not 4 different cities, you may give them the same name by taking the first two letters of each “provincia”:</p>
 <pre class="r"><code>df %&gt;% 
   mutate_at(vars(provincia), funs(str_sub(provincia, 1, 2)))</code></pre>
 <pre><code>## # A tibble: 4 × 2

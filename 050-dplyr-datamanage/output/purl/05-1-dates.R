@@ -1,6 +1,6 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 # load packages
-require(tidyverse) # alternatively: require(dplyr); require(ggplot2), require(tidyr)
+require(tidyverse) # alternatively: require(dplyr); require(ggplot2); require(tidyr)
 require(lubridate)
 require(qdata)
 

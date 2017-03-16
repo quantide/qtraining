@@ -34,7 +34,9 @@ na_if(y, "")
 ## ---- include=TRUE, purl=TRUE--------------------------------------------
 unemployment_new <- na_if(unemployment, 999.99)
 
-## ----missing, include=TRUE, purl=TRUE, engine="complete"-----------------
+unemployment_new
+
+## ---- include=TRUE, purl=TRUE--------------------------------------------
 unemployment %>% complete(year, sem)
 
 ## ---- include=TRUE, purl=TRUE--------------------------------------------

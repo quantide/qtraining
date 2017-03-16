@@ -357,22 +357,22 @@ $(document).ready(function () {
 </div>
 
 <pre class="r"><code># load packages
-require(tidyverse) # alternatively: require(dplyr); require(ggplot2)
+require(tidyverse) 
 require(data.table)  </code></pre>
 <div id="data.table" class="section level2">
 <h2>data.table</h2>
 <p><code>data.table</code> is a data object for fast aggregation of large data (e.g. 100GB in RAM), fast ordered joins, fast add/modify/delete of columns, a fast file reader and parallel file writer. Its syntax is however a bit complicated and very different from dplyr.</p>
 <p>Suppose you want to import a quite large data file (for example, consider one of the .csv files on flights data). Using the data.table format:</p>
-<pre class="r"><code>data2006 &lt;- fread(&quot;file:///home/emanuela/ema/sp-data/2006.csv&quot;)</code></pre>
+<pre class="r"><code>data2006 &lt;- fread(&quot;~/data/2006.csv&quot;)</code></pre>
 <pre><code>## 
-Read 3.1% of 7141922 rows
-Read 16.7% of 7141922 rows
-Read 33.2% of 7141922 rows
-Read 50.8% of 7141922 rows
-Read 68.7% of 7141922 rows
-Read 86.5% of 7141922 rows
+Read 6.3% of 7141922 rows
+Read 23.5% of 7141922 rows
+Read 40.5% of 7141922 rows
+Read 58.0% of 7141922 rows
+Read 75.6% of 7141922 rows
+Read 93.4% of 7141922 rows
 Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:08</code></pre>
-<pre class="r"><code>is.data.table(data2006)    # imports in data.table format</code></pre>
+<pre class="r"><code>is.data.table(data2006)    </code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>data2006     # prints first 5 and last 5 rows</code></pre>
 <pre><code>##          Year Month DayofMonth DayOfWeek DepTime CRSDepTime ArrTime CRSArrTime UniqueCarrier FlightNum
@@ -424,18 +424,18 @@ Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:08</code></
 ## 7141921:                 0
 ## 7141922:                 0</code></pre>
 <p>which is quite fast</p>
-<pre class="r"><code>system.time(fread(&quot;file:///home/emanuela/ema/sp-data/2006.csv&quot;))</code></pre>
+<pre class="r"><code>system.time(fread(&quot;~/data/2006.csv&quot;))</code></pre>
 <pre><code>## 
-Read 13.7% of 7141922 rows
-Read 28.1% of 7141922 rows
-Read 46.2% of 7141922 rows
-Read 64.3% of 7141922 rows
-Read 82.5% of 7141922 rows
+Read 14.6% of 7141922 rows
+Read 32.5% of 7141922 rows
+Read 50.4% of 7141922 rows
+Read 68.3% of 7141922 rows
+Read 86.1% of 7141922 rows
 Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:07</code></pre>
 <pre><code>##    user  system elapsed 
-##   6.916   0.608   7.524</code></pre>
+##   6.728   0.112   6.839</code></pre>
 <p>compared to the functions in <code>readr</code>:</p>
-<pre class="r"><code>system.time(read_csv(&quot;/home/emanuela/ema/sp-data/2006.csv&quot;))</code></pre>
+<pre class="r"><code>data2006_tbl &lt;- read_csv(&quot;~/data/2006.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   .default = col_integer(),
@@ -446,19 +446,30 @@ Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:07</code></
 ##   CancellationCode = col_character()
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>system.time(read_csv(&quot;~/data/2006.csv&quot;))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_integer(),
+##   UniqueCarrier = col_character(),
+##   TailNum = col_character(),
+##   Origin = col_character(),
+##   Dest = col_character(),
+##   CancellationCode = col_character()
+## )
+## See spec(...) for full column specifications.</code></pre>
 <pre><code>##    user  system elapsed 
-##  14.568   0.256  14.827</code></pre>
+##  16.868   0.292  17.226</code></pre>
 <p>So far the syntax in data.table is not that much different as compared to the dplyr syntax. However, let us make this slightly more complicated:</p>
 <pre class="r"><code># with data.table
 system.time(data2006[, mean(ArrDelay, na.rm = TRUE), keyby = Month])</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.060   0.004   0.064</code></pre>
+##   0.056   0.004   0.060</code></pre>
 <pre class="r"><code># with dplyr
 system.time(data2006 %&gt;% 
               group_by(Month) %&gt;% 
               summarise(mean(ArrDelay, na.rm = TRUE)))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.216   0.004   0.222</code></pre>
+##   0.192   0.004   0.194</code></pre>
 <p>Notice that <code>dplyr</code> functions run on data.tables (data2006 was imported as a data.table) as well as on tibbles and data frames as previously discussed.</p>
 <p>The data.table syntax quickly gets more and more complicated. Suppose you want to apply two functions (for instance mean and standard deviation) to one variable:</p>
 <pre class="r"><code># with data.table
@@ -466,7 +477,7 @@ system.time(
   data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month]
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.112   0.016   0.126</code></pre>
+##   0.088   0.008   0.095</code></pre>
 <pre class="r"><code># with dplyr
 system.time( 
   data2006 %&gt;% 
@@ -474,7 +485,7 @@ system.time(
     summarise_each(funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)), ArrDelay)
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.232   0.016   0.246</code></pre>
+##   0.236   0.004   0.240</code></pre>
 <p>and now two functions on two variables:</p>
 <pre class="r"><code># with data.table
 system.time(
@@ -482,7 +493,7 @@ system.time(
                   mean(Distance, na.rm = TRUE), sd(Distance, na.rm=TRUE)), keyby = Month]
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.212   0.008   0.198</code></pre>
+##    0.30    0.02    0.30</code></pre>
 <pre class="r"><code># with dplyr
 system.time( 
 data2006 %&gt;% 
@@ -490,7 +501,7 @@ data2006 %&gt;%
     summarise_at(vars(ArrDelay, Distance), funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)))
   )</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.252   0.016   0.270</code></pre>
+##   0.280   0.008   0.287</code></pre>
 <p><code>data.table</code> is thus faster than <code>dplyr</code>, but its syntax is much more complicated.</p>
 </div>
 
