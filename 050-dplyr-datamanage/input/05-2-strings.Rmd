@@ -12,7 +12,7 @@ opts_knit$set(root.dir = "../data")
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 # load packages
-require(tidyverse) # alternatively: require(dplyr), require(tidyr)
+require(tidyverse)
 require(stringr)
 require(qdata)
 ```
@@ -25,7 +25,7 @@ Strings are textual data and they are created by using either single quotes or d
 
 ```{r}
 # character vector
-char_vector <- c("Hello", "Andrea", "Spanò")
+char_vector <- c("Hello", "world", "!")
 ```
 
 With the function `str_length()` you can see the length of each string:
@@ -38,7 +38,7 @@ str_length(char_vector)
 
 ## Combining strings
 
-Suppose you do not need to store separately name and surname. Hence you would like to "combine" name and surname into the same string:
+Suppose you do not need to have each word stored separately. Hence you would like to "combine" them into the same string:
 
 ```{r}
 # character vector
@@ -49,8 +49,8 @@ The argument `sep` tells the software if and how you should separate the two par
 
 ```{r}
 # character vector
-str_c("Hello", "Andrea", "Spanò", sep = " ")
-str_length(str_c("Hello", "Andrea", "Spanò", sep = " "))
+str_c("Hello", "world", "!", sep = " ")
+str_length(str_c("Hello", "world", "!", sep = " "))
 ```
 
 In the above code, you have collapsed the whole character vector into one string. In these cases you may want to use the argument `collapse` that collapses all the strings in the character vector:
@@ -87,7 +87,7 @@ You have obtained a tibble with only one column containing the name and surname 
 Similarly, you may want to go the other way around: you have a string containing different parts separated by, for instance, a space, and you want to divide it into many strings:
 
 ```{r}
-char_vector <- c("Hello Andrea !")
+char_vector <- c("Hello world !")
 str_split(char_vector, " " )
 ```
 
@@ -131,7 +131,7 @@ df %>% distinct(provincia) # 4 different values
 ```
 
 
-To let `R` know that it is not 4 differenct cities, you may give them the same name by taking the first two letters of each "provincia":
+To let `R` know that it is not 4 different cities, you may give them the same name by taking the first two letters of each "provincia":
 
 ```{r}
 df %>% 
