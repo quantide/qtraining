@@ -187,7 +187,7 @@ all: knitr pdf clean
 %.md: %.Rmd
 	Rscript -e "require(knitr); knit('$<', output= '$@', quiet=FALSE)"
 
-#%.solution.md: %.Rmd
+%.solution.md: %.Rmd
 	Rscript -e "require(knitr); show_solution_mk <- TRUE; knit('$<', output= '$@', quiet=FALSE)"
 
 # build html files from md and upload
