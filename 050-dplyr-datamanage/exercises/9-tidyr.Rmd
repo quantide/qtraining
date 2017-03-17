@@ -12,7 +12,7 @@ require(tidyverse)
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-opts_knit$set(root.dir="./data")
+opts_knit$set(root.dir="./exercises/data")
 show_solution <- if (exists("show_solution_mk")){
   show_solution_mk
 } else {
@@ -39,7 +39,7 @@ library(tidyverse)
 Consider the following dataset:
 
 
-```r
+```{r}
 heartrate_wide <- data.frame(
   name = c("Aldo", "Giovanni", "Giacomo"),
   surname = c("Baglio", "Storti", "Poretti"),
@@ -49,16 +49,10 @@ heartrate_wide <- data.frame(
 heartrate_wide
 ```
 
-```
-##       name surname morning afternoon
-## 1     Aldo  Baglio      67        56
-## 2 Giovanni  Storti      80        90
-## 3  Giacomo Poretti      64        50
-```
 
 It represents the heart rate measured on three patients in the morning and in the afternoon. The dataset is in the wide format: change it to the long format through a proper `tidyr` function. Save the result in a data frame and call it `heartrate_long`.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 heartrate_long <- gather(heartrate_wide, key = "when", value = "value" , 3:4)          
 ```
 
@@ -67,7 +61,7 @@ heartrate_long <- gather(heartrate_wide, key = "when", value = "value" , 3:4)
 ### Exercise 2
 Starting from `heartrate_long`, come back to a dataset in a wide format through a proper `tidyr` function. The result should be obviously equal to `heartrate_wide`.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 spread(heartrate_long, key = when, value = "value")          
 ```
 
@@ -75,7 +69,7 @@ spread(heartrate_long, key = when, value = "value")
 ### Exercise 3
 Consider the dataset `heartrate_wide` and unite name and surname of the patients in a unique column through a proper `tidyr` function. Save the result in a new data frame called `heartrate_united`.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 heartrate_united <- heartrate_wide %>% 
   unite(name_surname, name, surname)          
 ```
@@ -86,7 +80,7 @@ heartrate_united <- heartrate_wide %>%
 Starting from `heartrate_united`, come back to a dataset where name and surname are in two different columns through a proper `tidyr` function. The result should be obviously equal to `heartrate_wide`.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 heartrate_united %>% 
   separate(name_surname, c("name", "surname"))          
 ```

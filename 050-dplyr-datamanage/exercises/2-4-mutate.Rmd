@@ -44,7 +44,7 @@ Add the following new variables to the `flights` dataset:
 
 Show only the following variables: delay at departure, delay at arrival, distance, air time and the two new variables (gained time and speed).
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% mutate(gained_time = arr_delay - dep_delay, speed = distance/air_time*60)
 ```
 
@@ -53,7 +53,7 @@ flights %>% mutate(gained_time = arr_delay - dep_delay, speed = distance/air_tim
 ### Exercise 2
 Redo the previous calculations keeping only the new variables.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% 
   transmute(gained_time = arr_delay - dep_delay, speed = distance/air_time*60) 
 ```
@@ -64,7 +64,7 @@ flights %>%
 After sorting flights in chronological order, for each flight calculate the difference between its delay at arrival and the delay at arrival of the immediately previous flight. Have R to show only the delay variables (delay at departure, delay at arrival and the new variable).
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% 
   arrange(year, month, day) %>%
   mutate(lead_arr_delay = lead(arr_delay), delta_delay = lead_arr_delay - arr_delay) %>%
@@ -76,7 +76,7 @@ flights %>%
 ### Exercise 4
 For each flight calculate the 'min ranking' in terms of delay at arrival.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% 
   mutate(min_rank_arr_delay = min_rank(arr_delay)) 
 ```
@@ -86,7 +86,7 @@ flights %>%
 ### Exercise 5
 For each flight calculate the 'first ranking' in terms of delay at arrival.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% 
   mutate(first_rank_arr_delay = row_number(arr_delay)) 
 ```
@@ -97,7 +97,7 @@ flights %>%
 ### Exercise 6
 Create a variable which indicates if a flight took off on time, i.e. departure delay is more than -4 and less than 4 minutes late.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% 
   filter (arr_delay > -4 & arr_delay <4) %>%
   mutate(dep_on_time = 1) 

@@ -39,7 +39,7 @@ require(nycflights13)
 Sort the flights in chronological order.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% arrange(year, month, day)
 ```
 
@@ -49,7 +49,7 @@ flights %>% arrange(year, month, day)
 Sort the flights by decreasing arrival delay.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% arrange(desc(arr_delay))
 ```
 
@@ -59,7 +59,7 @@ flights %>% arrange(desc(arr_delay))
 Sort the flights by origin (in alphabetical order) and decreasing arrival delay.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% arrange(origin, desc(arr_delay))
 ```
 

@@ -45,7 +45,7 @@ Extract the following information about flights:
 * distance.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 # require(nycflights13)
 data(flights)
 
@@ -58,7 +58,7 @@ flights %>% select(month, day, air_time, distance)
 ### Exercise 2
 Extract all information about flights except hour and minute.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% select(-hour, -minute)
 ```
 
@@ -68,7 +68,7 @@ flights %>% select(-hour, -minute)
 Select all variables whose name ends in "time".
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% select(ends_with("time"))
 ```
 
@@ -78,7 +78,7 @@ flights %>% select(ends_with("time"))
 Select all variables whose name contains the word “delay”.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% select(matches("delay"))
 ```
 
@@ -87,7 +87,7 @@ flights %>% select(matches("delay"))
 ### Exercise 5
 Select the `tailnum` variable and rename it into `tail_num`.  
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% select(tail_num = tailnum)
 ```
 
@@ -95,8 +95,9 @@ flights %>% select(tail_num = tailnum)
 
 ### Exercise 6
 Select all the variables and rename the `tailnum` variable into `tail_num`.  
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% rename(tail_num = tailnum)
 ```
 
 
+  

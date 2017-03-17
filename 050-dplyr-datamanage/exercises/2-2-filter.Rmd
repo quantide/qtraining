@@ -30,7 +30,7 @@ Note: all the exercises of this section are based on the `flights` dataset.
 
 
 ```{r}
-require(tidiyverse)
+require(tidyverse)
 require(nycflights13)
 ```
 

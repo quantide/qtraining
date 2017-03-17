@@ -40,7 +40,7 @@ library(nycflights13)
 ### Exercise 1
 Calculate number of flights, minimum, mean and maximum delay at arrival for flights by month.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% 
   group_by(month) %>%
   summarise(n_flights = n(),
@@ -55,7 +55,7 @@ flights %>%
 ### Exercise 2
 Calculate number of flights, mean delay at departure and arrival for flights by origin.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% 
   group_by(origin) %>%
   summarise(n_flights = n(),
@@ -70,7 +70,7 @@ flights %>%
 ### Exercise 3
 Calculate the number of flights that go to each possible destination.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights %>% 
   group_by(dest) %>%
   summarise(n_flights = n())
@@ -82,7 +82,7 @@ flights %>%
 ### Exercise 4
 Calculate the number of flights for each day. Save the result in a data frame called `per_day`.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 per_day <- flights %>% 
   group_by(year, day, month) %>%
   summarise(n_flights = n())
@@ -93,7 +93,7 @@ per_day <- flights %>%
 ### Exercise 5
 By exploiting `per_day`, calculate the number of flights for each month. Save the result in a data frame called `per_month`.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 per_month <- flights %>% 
   group_by(month) %>%
   summarise(n_flights = n())
@@ -104,7 +104,7 @@ per_month <- flights %>%
 ### Exercise 6
 Calculate the mean daily number of flights per month.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 per_month %>% 
   group_by(month) %>%
   summarise(mean_n_flights = mean(n_flights))

@@ -43,7 +43,7 @@ library(nycflights13)
 Keep only the following variables of the `flights` dataset: month, day, hour, origin, destination and carrier. Save this dataset in a data frame and call it `flights_red`. Through a proper join command, add the carrier name to `flights_red` (this piece of information is available in `airlines`).
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_red <- flights %>% 
   select(month, day, hour, origin, dest, carrier)
 
@@ -56,11 +56,11 @@ right_join(flights_red, airlines)
 Through a proper join command, add name, latitude, longitude and altitude of the origin airport to `flights_red` (these pieces of information are available in `airports`). Do the same also for the destination airport. (If you are able to, try to keep variables about both origin and destination airports in the same final dataset).
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_red %>% left_join(airports, c("origin" = "faa"))                     
 ```
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_red %>% left_join(airports, c("dest" = "faa"))                      
 ```
 
@@ -69,7 +69,7 @@ flights_red %>% left_join(airports, c("dest" = "faa"))
 Through the `inner_join()` function, redo the same for the destination airport but keep only the flights whose information is available in both datasets (`flights` and `airports`).
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_red %>% inner_join(airports, c("dest" = "faa"))                     
 ```
 
@@ -77,10 +77,11 @@ flights_red %>% inner_join(airports, c("dest" = "faa"))
 ### Exercise 4
 Redo the exercise 3 by using `full_join()` instead of `inner_join()`. What is the difference in the result?
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_red %>% full_join(airports, c("dest" = "faa"))
 
-# there are a few more rows due to the fact that full_join keeps all rows even those with no matches
+# there are a few more rows due to the fact that full_join keeps all 
+# rows even those with no matches
 ```
 
 
@@ -89,7 +90,7 @@ flights_red %>% full_join(airports, c("dest" = "faa"))
 Through the `anti_join()` function, extract all the flights from `flights` whose information about destination airport is not available in `airports`.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_red %>% anti_join(airports, c("dest" = "faa"))
 ```
 
@@ -98,7 +99,7 @@ flights_red %>% anti_join(airports, c("dest" = "faa"))
 ### Exercise 6
 Sort the `planes` dataset by increasing year. Then create two datasets: the first will deal with planes older than 2000; the second will deal with planes of 2000 or newer. Finally create a unique dataset where the first rows will deal with the newest planes, whereas the last rows will deal with the oldest planes.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 
 planes_old <- planes %>% 
   arrange(year) %>%

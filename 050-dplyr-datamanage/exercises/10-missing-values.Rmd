@@ -12,7 +12,7 @@ require(tidyverse)
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-opts_knit$set(root.dir="./data")
+opts_knit$set(root.dir="./exercises/data")
 show_solution <- if (exists("show_solution_mk")){
   show_solution_mk
 } else {
@@ -26,7 +26,15 @@ show_solution <- if (exists("show_solution_mk")){
 Handling Missing values
 ================================
 
-## 
+## Data import: set working directory
+
+Some of the data that will be used in this exercises are contained in the data folder. Hence you should set your working directory in the _data_ folder, using `setwd()` function, like in this example:
+
+```{r setwd_fake, eval=FALSE}
+setwd("C:/Users/Emanuela/Documents/datamanage/exercises/data)
+```
+
+You will work inside this folder.
 
 ```{r}
 library(tidyverse)
@@ -39,9 +47,12 @@ Consider the following dataset:
 
 ```{r echo=TRUE, eval=TRUE}
 heartrate <- data.frame(
-  name = c("Aldo", "Giovanni", "Giacomo", "Aldo", "Giovanni", "Giacomo", "Giovanni", "Giacomo"),
-  surname = c("Baglio", "Storti", "Poretti", "Baglio", "Storti", "Poretti", "Storti", "Poretti"),
-  when = c("morning", "morning", "morning", "afternoon", "afternoon", "afternoon", "evening", "evening"),
+  name = c("Aldo", "Giovanni", "Giacomo", "Aldo", "Giovanni", "Giacomo",
+           "Giovanni", "Giacomo"),
+  surname = c("Baglio", "Storti", "Poretti", "Baglio", "Storti", "Poretti",
+              "Storti", "Poretti"),
+  when = c("morning", "morning", "morning", "afternoon", "afternoon", "afternoon",
+           "evening", "evening"),
   heartrate = c(67, 80, 64, 56, 90, 50, 60, 85)
 )
 ```
@@ -49,9 +60,10 @@ heartrate <- data.frame(
 It represents the heart rate measured on three patients in the morning, in the afternoon and in the evening. Make explicit any implicit missing value. How many missing values do you see?
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 heartrate %>% complete(surname, when, fill=list(name="Aldo"))
 # one missing value
+
 # alternatively:
 # heartrate %>% 
 #  complete(surname, when) %>% 
@@ -62,16 +74,18 @@ heartrate %>% complete(surname, when, fill=list(name="Aldo"))
 ### Exercise 2
 Import data in the file `marks.Rdta`. Missing values have been recorded as ".". What's the percentage of missing values in the data? Replace them with `NA` and drop them.
 
-```{r, echo=FALSE, eval=TRUE}
-load("~/dev/qtraining/050-dplyr-datamanage/exercises/data/marks.Rdata")
+```{r, echo=show_solution, eval=TRUE}
+load("marks.Rdata")
 ```
 
-```{r, echo=show_solution, eval=show_solution}
+```{r, echo=show_solution, eval=show_solution, cache=FALSE}
 marks_NA <- na_if(marks, ".")
 marks_NA %>% 
   filter(is.na(marks)) %>% 
   summarise(n())/30
-# 0.067% missing, only one variable, we may drop missing obs
+
+# 6.7% of missing values
+
 marks_NA %>% drop_na()
 ```
 
@@ -79,12 +93,12 @@ marks_NA %>% drop_na()
 ### Exercise 3
 Import the data `heartrate_NA.Rdta` . Consider all the missing values you find and replace them using the function `fill()` when possible.
 
-```{r, echo=FALSE, eval=TRUE}
-load("~/dev/qtraining/050-dplyr-datamanage/exercises/data/heartrate_NA.Rdata")
+```{r, echo=show_solution, eval=TRUE}
+load("heartrate_NA.Rdata")
 ```
 
 
-```{r, echo=show_solution, eval = show_solution}
+```{r, echo=show_solution, eval = show_solution, cache=FALSE}
 heartrate_NA %>% 
   na_if( "") %>% 
   fill(name, surname)

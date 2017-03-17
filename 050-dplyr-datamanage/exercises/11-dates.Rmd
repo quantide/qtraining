@@ -43,7 +43,7 @@ require(nycflights13)
 Using the flights data, build the variable `dep_date` based on the variables `year`, `month` and `day`. First use the function `unite()` and then the  parsing function `ydm()`. Select only the new variable and save the new data frame called `flights_date`.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_date <- flights %>% 
     unite(date, year, month, day) %>% 
     mutate(date = ymd(date)) %>%
@@ -55,7 +55,7 @@ flights_date <- flights %>%
 ### Exercise 2
 Using the dataset, shift all flights by two months. Save it in a separate data frame called `flights_date_2`.
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_date_2 <- flights_date %>% mutate(date2 = date + months(2)) 
 ```
 
@@ -65,7 +65,7 @@ flights_date_2 <- flights_date %>% mutate(date2 = date + months(2))
 Take the new date (2 months ahead) and substruct the orginal variable `date`. `flights_date_2`.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 flights_date_2 %>% mutate(date2-date)
 ```
 

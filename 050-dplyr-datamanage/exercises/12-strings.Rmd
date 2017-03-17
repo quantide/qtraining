@@ -13,7 +13,7 @@ require(tidyverse)
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
-opts_knit$set(root.dir="./data")
+opts_knit$set(root.dir="./exercises/data")
 show_solution <- if (exists("show_solution_mk")){
   show_solution_mk
 } else {
@@ -30,7 +30,15 @@ Manipulating strings with `stringr`
 ================================
 
 
-## 
+## Data import: set working directory
+
+In this section you will work with data are contained in the data folder. Hence you should set your working directory in the _data_ folder, using `setwd()` function, like in this example:
+
+```{r setwd_fake, eval=FALSE}
+setwd("C:/Users/Emanuela/Documents/datamanage/exercises/data)
+```
+
+You will work inside this folder.
 
 ```{r}
 library(tidyverse)
@@ -43,15 +51,17 @@ library(stringr)
 Import the data `aire_milano_strings.txt` which is a tab delimited file. Find how China has been codified (notice that the file is in Italian) and manipulate that string as you find more confortable for you. Save the results in a new tibble.
 
 ```{r, echo = FALSE, eval = TRUE}
-aire <- read_delim("/home/emanuela/dev/qtraining/050-dplyr-datamanage/exercises/data/aire_milano_strings.txt", delim = "\t")
+aire <- read_delim("aire_milano_strings.txt", delim = "\t")
 ```
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 aire %>% filter(str_detect(Residenza, c("Cina"))) # not recorded as Cina
 aire %>% filter(str_detect(Residenza, c("cina"))) # not recorded as cina
 aire %>% filter(str_detect(Residenza, c("Cin"))) 
-aire_clean <- aire %>% mutate(Residenza, Residenza = str_replace(Residenza, c("Cinese, Rep. Popolare"), "Cina"))
+aire_clean <- aire %>% mutate(Residenza, 
+                              Residenza = str_replace(Residenza, c("Cinese, Rep. Popolare"), 
+                                                      "Cina"))
 ```
 
 
@@ -71,12 +81,15 @@ str_extract(aire_clean$Residenza, "[[:punct:]]")
 Consider now the column with information on the reason for migrating. Count how many different reasons there are and notice that citizenship was recorded in two slightly different ways: "acquisto cittadinanza" and "per acquisto cittadinanza". Replace one of them so that they are the same.
 
 
-```{r, echo = show_solution, eval = show_solution}
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 # find all distinct reasons
 aire_clean %>% distinct(MotivoIscrizioneEstero)
 
 
-aire_clean <- aire_clean %>% mutate(MotivoIscrizioneEstero = str_replace(MotivoIscrizioneEstero, c("^acquisto cittadinanza"), "per acquisto cittadinanza")) # if you do not add "^" it also replaces "acquisto cittadinanza" when detected in "per acquisto cittadinanza"
+aire_clean <- aire_clean %>% 
+  mutate(MotivoIscrizioneEstero = str_replace(MotivoIscrizioneEstero, 
+                                              c("^acquisto cittadinanza"), "per acquisto cittadinanza")) 
+
 
 # now you only have 7 different levels
 aire_clean %>% distinct(MotivoIscrizioneEstero)
