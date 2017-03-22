@@ -82,7 +82,7 @@ Most of the examples of this course require the dataset `bank` which is included
 ```{r bank, message=FALSE}
 require(qdata)
 data(bank)
-bank
+head(bank)
 str(bank)
 ```
 
@@ -99,7 +99,7 @@ Some single sections of this course contain examples also refered to other datas
 
 ```{r people, message=FALSE}
 data(people)
-people
+head(people)
 str(people)
 ```
 
@@ -107,7 +107,7 @@ str(people)
 
 ```{r mtcars, message=FALSE}
 data(mtcars)
-mtcars
+head(mtcars)
 str(mtcars)
 ```
 
@@ -115,7 +115,7 @@ str(mtcars)
 
 ```{r italia, message=FALSE}
 data(italia)
-italia
+head(italia)
 str(italia)
 ```
 
@@ -123,10 +123,10 @@ str(italia)
 
 ```{r tennis, message=FALSE}
 data(usopen)
-usopen
+head(usopen)
 str(usopen)
 data(wimbledon)
-wimbledon
+head(wimbledon)
 str(wimbledon)
 ```
 
