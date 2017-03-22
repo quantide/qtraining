@@ -357,7 +357,8 @@ $(document).ready(function () {
 </div>
 
 <pre class="r"><code># load packages
-require(tidyverse) 
+require(tidyverse)
+require(rbenchmark)
 require(data.table)  </code></pre>
 <div id="data.table" class="section level2">
 <h2>data.table</h2>
@@ -365,75 +366,28 @@ require(data.table)  </code></pre>
 <p>Suppose you want to import a quite large data file (for example, consider one of the .csv files on flights data). Using the data.table format:</p>
 <pre class="r"><code>data2006 &lt;- fread(&quot;~/data/2006.csv&quot;)</code></pre>
 <pre><code>## 
-Read 6.3% of 7141922 rows
-Read 23.5% of 7141922 rows
-Read 40.5% of 7141922 rows
-Read 58.0% of 7141922 rows
-Read 75.6% of 7141922 rows
-Read 93.4% of 7141922 rows
-Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:08</code></pre>
+Read 1.5% of 7141922 rows
+Read 17.6% of 7141922 rows
+Read 33.6% of 7141922 rows
+Read 50.0% of 7141922 rows
+Read 66.2% of 7141922 rows
+Read 80.0% of 7141922 rows
+Read 95.8% of 7141922 rows
+Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:09</code></pre>
 <pre class="r"><code>is.data.table(data2006)    </code></pre>
 <pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>data2006     # prints first 5 and last 5 rows</code></pre>
-<pre><code>##          Year Month DayofMonth DayOfWeek DepTime CRSDepTime ArrTime CRSArrTime UniqueCarrier FlightNum
-##       1: 2006     1         11         3     743        745    1024       1018            US       343
-##       2: 2006     1         11         3    1053       1053    1313       1318            US       613
-##       3: 2006     1         11         3    1915       1915    2110       2133            US       617
-##       4: 2006     1         11         3    1753       1755    1925       1933            US       300
-##       5: 2006     1         11         3     824        832    1015       1015            US       765
-##      ---                                                                                              
-## 7141918: 2006    12         29         5    1246       1249    1452       1459            DL      1675
-## 7141919: 2006    12         29         5    1225       1155    2033       1931            DL      1676
-## 7141920: 2006    12         29         5    2118       2115    2254       2241            DL      1676
-## 7141921: 2006    12         29         5    2122       2127    2209       2223            DL      1677
-## 7141922: 2006    12         29         5    2042       2045    2213       2235            DL      1678
-##          TailNum ActualElapsedTime CRSElapsedTime AirTime ArrDelay DepDelay Origin Dest Distance TaxiIn
-##       1:  N657AW               281            273     223        6       -2    ATL  PHX     1587     45
-##       2:  N834AW               260            265     214       -5        0    ATL  PHX     1587     27
-##       3:  N605AW               235            258     220      -23        0    ATL  PHX     1587      4
-##       4:  N312AW               152            158     126       -8       -2    AUS  PHX      872     16
-##       5:  N309AW               171            163     132        0       -8    AUS  PHX      872     27
-##      ---                                                                                               
-## 7141918:  N905DE               126            130     108       -7       -3    ATL  EWR      745      6
-## 7141919:  N651DL               308            276     261       62       30    SEA  ATL     2182     12
-## 7141920:  N143DA                96             86      60       13        3    ATL  MCO      403      9
-## 7141921:  N904DA               107            116      81      -14       -5    SLC  SJC      585      5
-## 7141922:  N914DN               211            230     191      -22       -3    CVG  SLC     1449      5
-##          TaxiOut Cancelled CancellationCode Diverted CarrierDelay WeatherDelay NASDelay SecurityDelay
-##       1:      13         0                         0            0            0        0             0
-##       2:      19         0                         0            0            0        0             0
-##       3:      11         0                         0            0            0        0             0
-##       4:      10         0                         0            0            0        0             0
-##       5:      12         0                         0            0            0        0             0
-##      ---                                                                                             
-## 7141918:      12         0                         0            0            0        0             0
-## 7141919:      35         0                         0           30            0       32             0
-## 7141920:      27         0                         0            0            0        0             0
-## 7141921:      21         0                         0            0            0        0             0
-## 7141922:      15         0                         0            0            0        0             0
-##          LateAircraftDelay
-##       1:                 0
-##       2:                 0
-##       3:                 0
-##       4:                 0
-##       5:                 0
-##      ---                  
-## 7141918:                 0
-## 7141919:                 0
-## 7141920:                 0
-## 7141921:                 0
-## 7141922:                 0</code></pre>
-<p>which is quite fast</p>
+<p>which is quite fast:</p>
 <pre class="r"><code>system.time(fread(&quot;~/data/2006.csv&quot;))</code></pre>
 <pre><code>## 
-Read 14.6% of 7141922 rows
-Read 32.5% of 7141922 rows
-Read 50.4% of 7141922 rows
-Read 68.3% of 7141922 rows
-Read 86.1% of 7141922 rows
-Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:07</code></pre>
+Read 8.7% of 7141922 rows
+Read 24.8% of 7141922 rows
+Read 42.4% of 7141922 rows
+Read 58.7% of 7141922 rows
+Read 74.8% of 7141922 rows
+Read 91.6% of 7141922 rows
+Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:08</code></pre>
 <pre><code>##    user  system elapsed 
-##   6.728   0.112   6.839</code></pre>
+##   7.400   0.164   7.563</code></pre>
 <p>compared to the functions in <code>readr</code>:</p>
 <pre class="r"><code>data2006_tbl &lt;- read_csv(&quot;~/data/2006.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
@@ -458,50 +412,51 @@ Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:07</code></
 ## )
 ## See spec(...) for full column specifications.</code></pre>
 <pre><code>##    user  system elapsed 
-##  16.868   0.292  17.226</code></pre>
+##  18.072   0.284  18.399</code></pre>
 <p>So far the syntax in data.table is not that much different as compared to the dplyr syntax. However, let us make this slightly more complicated:</p>
 <pre class="r"><code># with data.table
-system.time(data2006[, mean(ArrDelay, na.rm = TRUE), keyby = Month])</code></pre>
-<pre><code>##    user  system elapsed 
-##   0.056   0.004   0.060</code></pre>
+benchmark(replications= 10, columns = c(&quot;elapsed&quot;), 
+          data2006[, mean(ArrDelay, na.rm = TRUE), keyby = Month])</code></pre>
+<pre><code>##   elapsed
+## 1   0.621</code></pre>
 <pre class="r"><code># with dplyr
-system.time(data2006 %&gt;% 
-              group_by(Month) %&gt;% 
-              summarise(mean(ArrDelay, na.rm = TRUE)))</code></pre>
-<pre><code>##    user  system elapsed 
-##   0.192   0.004   0.194</code></pre>
-<p>Notice that <code>dplyr</code> functions run on data.tables (data2006 was imported as a data.table) as well as on tibbles and data frames as previously discussed.</p>
-<p>The data.table syntax quickly gets more and more complicated. Suppose you want to apply two functions (for instance mean and standard deviation) to one variable:</p>
+benchmark(replications= 10, columns = c(&quot;elapsed&quot;), data2006 %&gt;%
+            group_by(Month) %&gt;% 
+            summarise(mean(ArrDelay, na.rm = TRUE)))</code></pre>
+<pre><code>##   elapsed
+## 1   1.989</code></pre>
+<p>Notice that <code>dplyr</code> functions run on data.tables, as well as on tibbles and data frames.</p>
+<p>The data.table syntax quickly gets more and more complicated. Suppose you want to apply two functions, for instance mean and standard deviation, to one variable:</p>
 <pre class="r"><code># with data.table
-system.time(
-  data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month]
+benchmark(replications= 10, columns = c(&quot;elapsed&quot;), 
+          data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month]
   )</code></pre>
-<pre><code>##    user  system elapsed 
-##   0.088   0.008   0.095</code></pre>
+<pre><code>##   elapsed
+## 1   0.999</code></pre>
 <pre class="r"><code># with dplyr
-system.time( 
-  data2006 %&gt;% 
-    group_by(Month) %&gt;% 
-    summarise_each(funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)), ArrDelay)
+benchmark(replications= 10, columns = c(&quot;elapsed&quot;), 
+          data2006 %&gt;% 
+            group_by(Month) %&gt;% 
+            summarise_each(funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)), ArrDelay)
   )</code></pre>
-<pre><code>##    user  system elapsed 
-##   0.236   0.004   0.240</code></pre>
+<pre><code>##   elapsed
+## 1   2.343</code></pre>
 <p>and now two functions on two variables:</p>
 <pre class="r"><code># with data.table
-system.time(
-  data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE),
+benchmark(replications= 10, columns = c(&quot;elapsed&quot;),
+          data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE),
                   mean(Distance, na.rm = TRUE), sd(Distance, na.rm=TRUE)), keyby = Month]
   )</code></pre>
-<pre><code>##    user  system elapsed 
-##    0.30    0.02    0.30</code></pre>
+<pre><code>##   elapsed
+## 1   1.947</code></pre>
 <pre class="r"><code># with dplyr
-system.time( 
-data2006 %&gt;% 
-    group_by(Month) %&gt;% 
-    summarise_at(vars(ArrDelay, Distance), funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)))
+benchmark(replications= 10, columns = c(&quot;elapsed&quot;),
+          data2006 %&gt;% 
+            group_by(Month) %&gt;% 
+            summarise_at(vars(ArrDelay, Distance), funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)))
   )</code></pre>
-<pre><code>##    user  system elapsed 
-##   0.280   0.008   0.287</code></pre>
+<pre><code>##   elapsed
+## 1   2.834</code></pre>
 <p><code>data.table</code> is thus faster than <code>dplyr</code>, but its syntax is much more complicated.</p>
 </div>
 

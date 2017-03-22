@@ -417,22 +417,18 @@ The starting point for more information about <code>tibble</code> is the officia
 <p>Most of the examples of this course require the dataset <code>bank</code> which is included in the <code>qdata</code> package.</p>
 <pre class="r"><code>require(qdata)
 data(bank)
-bank</code></pre>
-<pre><code>## # A tibble: 45,211 × 20
-##       id   age          job  marital education default balance housing   loan contact   day  month  year
-##    &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;   &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
-## 1      1    58   management  married  tertiary      no    2143     yes     no unknown     5    may  2008
-## 2      2    44   technician   single secondary      no      29     yes     no unknown     5    may  2008
-## 3      3    33 entrepreneur  married secondary      no       2     yes    yes unknown     5    may  2008
-## 4      4    47  blue-collar  married   unknown      no    1506     yes     no unknown     5    may  2008
-## 5      5    33      unknown   single   unknown      no       1      no     no unknown     5    may  2008
-## 6      6    35   management  married  tertiary      no     231     yes     no unknown     5    may  2008
-## 7      7    28   management   single  tertiary      no     447     yes    yes unknown     5    may  2008
-## 8      8    42 entrepreneur divorced  tertiary     yes       2     yes     no unknown     5    may  2008
-## 9      9    58      retired  married   primary      no     121     yes     no unknown     5    may  2008
-## 10    10    43   technician   single secondary      no     593     yes     no unknown     5    may  2008
-## # ... with 45,201 more rows, and 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;,
-## #   pdays &lt;int&gt;, previous &lt;int&gt;, poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
+head(bank)</code></pre>
+<pre><code>## # A tibble: 6 × 20
+##      id   age          job marital education default balance housing   loan contact   day  month  year
+##   &lt;int&gt; &lt;int&gt;       &lt;fctr&gt;  &lt;fctr&gt;    &lt;fctr&gt;  &lt;fctr&gt;   &lt;int&gt;  &lt;fctr&gt; &lt;fctr&gt;  &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt; &lt;int&gt;
+## 1     1    58   management married  tertiary      no    2143     yes     no unknown     5    may  2008
+## 2     2    44   technician  single secondary      no      29     yes     no unknown     5    may  2008
+## 3     3    33 entrepreneur married secondary      no       2     yes    yes unknown     5    may  2008
+## 4     4    47  blue-collar married   unknown      no    1506     yes     no unknown     5    may  2008
+## 5     5    33      unknown  single   unknown      no       1      no     no unknown     5    may  2008
+## 6     6    35   management married  tertiary      no     231     yes     no unknown     5    may  2008
+## # ... with 7 more variables: date &lt;dttm&gt;, duration &lt;int&gt;, campaign &lt;int&gt;, pdays &lt;int&gt;, previous &lt;int&gt;,
+## #   poutcome &lt;fctr&gt;, y &lt;fctr&gt;</code></pre>
 <pre class="r"><code>str(bank)</code></pre>
 <pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    45211 obs. of  20 variables:
 ##  $ id       : int  1 2 3 4 5 6 7 8 9 10 ...
@@ -465,21 +461,16 @@ bank</code></pre>
 <li><code>people</code>, which is related with information on gender, area, weight and height of 1806 Italian people:</li>
 </ul>
 <pre class="r"><code>data(people)
-people</code></pre>
-<pre><code>## # A tibble: 300 × 4
-##    Gender   Area Weight Height
-##    &lt;fctr&gt; &lt;fctr&gt;  &lt;int&gt;  &lt;int&gt;
-## 1  Female  Isole     54    168
-## 2  Female   Nord     61    171
-## 3    Male    Sud     68    170
-## 4  Female   Nord     52    164
-## 5    Male   Nord     75    181
-## 6    Male   Nord     77    178
-## 7    Male    Sud     67    167
-## 8  Female   Nord     54    167
-## 9  Female   Nord     69    169
-## 10   Male   Nord     70    186
-## # ... with 290 more rows</code></pre>
+head(people)</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##   Gender   Area Weight Height
+##   &lt;fctr&gt; &lt;fctr&gt;  &lt;int&gt;  &lt;int&gt;
+## 1 Female  Isole     54    168
+## 2 Female   Nord     61    171
+## 3   Male    Sud     68    170
+## 4 Female   Nord     52    164
+## 5   Male   Nord     75    181
+## 6   Male   Nord     77    178</code></pre>
 <pre class="r"><code>str(people)</code></pre>
 <pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    300 obs. of  4 variables:
 ##  $ Gender: Factor w/ 2 levels &quot;Female&quot;,&quot;Male&quot;: 1 1 2 1 2 2 2 1 1 2 ...
@@ -490,21 +481,16 @@ people</code></pre>
 <li><code>mtcars</code>, which was extracted from the analogous data frame of package <code>datasets</code>; it contains information on 32 cars:</li>
 </ul>
 <pre class="r"><code>data(mtcars)
-mtcars</code></pre>
-<pre><code>## # A tibble: 32 × 5
-##               car  carb   cyl   mpg  disp
-##             &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1   Toyota Corona     1     4  21.5 120.1
-## 2      Datsun 710     1     4  22.8 108.0
-## 3       Fiat X1-9     1     4  27.3  79.0
-## 4        Fiat 128     1     4  32.4  78.7
-## 5  Toyota Corolla     1     4  33.9  71.1
-## 6         Valiant     1     6  18.1 225.0
-## 7  Hornet 4 Drive     1     6  21.4 258.0
-## 8      Volvo 142E     2     4  21.4 121.0
-## 9        Merc 230     2     4  22.8 140.8
-## 10      Merc 240D     2     4  24.4 146.7
-## # ... with 22 more rows</code></pre>
+head(mtcars)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##              car  carb   cyl   mpg  disp
+##            &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  Toyota Corona     1     4  21.5 120.1
+## 2     Datsun 710     1     4  22.8 108.0
+## 3      Fiat X1-9     1     4  27.3  79.0
+## 4       Fiat 128     1     4  32.4  78.7
+## 5 Toyota Corolla     1     4  33.9  71.1
+## 6        Valiant     1     6  18.1 225.0</code></pre>
 <pre class="r"><code>str(mtcars)</code></pre>
 <pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    32 obs. of  5 variables:
 ##  $ car : chr  &quot;Toyota Corona&quot; &quot;Datsun 710&quot; &quot;Fiat X1-9&quot; &quot;Fiat 128&quot; ...
@@ -516,22 +502,18 @@ mtcars</code></pre>
 <li><code>comuni</code>, <code>province</code>, <code>regioni</code> and <code>ripartizioni</code>, which contain information on the Italian districts (8003 “comuni”, 110 “province”, 20 “regioni” and 5 “ripartizioni”). They were all obtained as subsets or by summarizing the <code>italia</code> data frame:</li>
 </ul>
 <pre class="r"><code>data(italia)
-italia</code></pre>
-<pre><code>## # A tibble: 8,003 × 14
-##    cod_comune          comune comune_cap_prov pop_legale progr_comune cod_provincia provincia sigla_auto
-##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;        &lt;dbl&gt;         &lt;int&gt;     &lt;chr&gt;      &lt;chr&gt;
-## 1        1001           Agliè           FALSE          2            1             1    Torino         TO
-## 2        1002         Airasca           FALSE          3            2             1    Torino         TO
-## 3        1003    Ala di Stura           FALSE        462            3             1    Torino         TO
-## 4        1004 Albiano d'Ivrea           FALSE          1            4             1    Torino         TO
-## 5        1005 Alice Superiore           FALSE        701            5             1    Torino         TO
-## 6        1006          Almese           FALSE          6            6             1    Torino         TO
-## 7        1007         Alpette           FALSE        277            7             1    Torino         TO
-## 8        1008       Alpignano           FALSE         16            8             1    Torino         TO
-## 9        1009        Andezeno           FALSE          1            9             1    Torino         TO
-## 10       1010         Andrate           FALSE        512           10             1    Torino         TO
-## # ... with 7,993 more rows, and 6 more variables: cod_citta_metro &lt;chr&gt;, citta_metro &lt;chr&gt;,
-## #   cod_regione &lt;int&gt;, regione &lt;chr&gt;, cod_rip_geo &lt;chr&gt;, rip_geo &lt;chr&gt;</code></pre>
+head(italia)</code></pre>
+<pre><code>## # A tibble: 6 × 14
+##   cod_comune          comune comune_cap_prov pop_legale progr_comune cod_provincia provincia sigla_auto
+##        &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;        &lt;dbl&gt;         &lt;int&gt;     &lt;chr&gt;      &lt;chr&gt;
+## 1       1001           Agliè           FALSE          2            1             1    Torino         TO
+## 2       1002         Airasca           FALSE          3            2             1    Torino         TO
+## 3       1003    Ala di Stura           FALSE        462            3             1    Torino         TO
+## 4       1004 Albiano d'Ivrea           FALSE          1            4             1    Torino         TO
+## 5       1005 Alice Superiore           FALSE        701            5             1    Torino         TO
+## 6       1006          Almese           FALSE          6            6             1    Torino         TO
+## # ... with 6 more variables: cod_citta_metro &lt;chr&gt;, citta_metro &lt;chr&gt;, cod_regione &lt;int&gt;, regione &lt;chr&gt;,
+## #   cod_rip_geo &lt;chr&gt;, rip_geo &lt;chr&gt;</code></pre>
 <pre class="r"><code>str(italia)</code></pre>
 <pre><code>## Classes 'tbl_df', 'tbl' and 'data.frame':    8003 obs. of  14 variables:
 ##  $ cod_comune     : int  1001 1002 1003 1004 1005 1006 1007 1008 1009 1010 ...
@@ -552,105 +534,14 @@ italia</code></pre>
 <li><code>usopen</code> and <code>wimbledon</code>, which contain information about the gentlemen U.S. Open nd Wimbledon finals from 1968 to 2015:</li>
 </ul>
 <pre class="r"><code>data(usopen)
-usopen</code></pre>
-<pre><code>##    year champion_country              champion runner_up_country           runner_up         s1       s2
-## 1  1968              USA        Arthur Ashe[b]               NED           Tom Okker      14–12      5–7
-## 2  1969              AUS             Rod Laver               AUS          Tony Roche        7–9      6–1
-## 3  1970              AUS          Ken Rosewall               AUS          Tony Roche        2–6      6–4
-## 4  1971              USA            Stan Smith               TCH           Jan Kodeš        3–6      6–3
-## 5  1972              ROU          Ilie Năstase               USA         Arthur Ashe        3–6      6–3
-## 6  1973              AUS         John Newcombe               TCH           Jan Kodeš        6–4      1–6
-## 7  1974              USA         Jimmy Connors               AUS        Ken Rosewall        6–1      6–0
-## 8  1975              ESP        Manuel Orantes               USA       Jimmy Connors        6–4      6–3
-## 9  1976              USA         Jimmy Connors               SWE          Björn Borg        6–4      3–6
-## 10 1977              ARG       Guillermo Vilas               USA       Jimmy Connors        2–6      6–3
-## 11 1978              USA         Jimmy Connors               SWE          Björn Borg        6–4      6–2
-## 12 1979              USA          John McEnroe               USA    Vitas Gerulaitis        7–5      6–3
-## 13 1980              USA          John McEnroe               SWE          Björn Borg   7–6(7–4)      6–1
-## 14 1981              USA          John McEnroe               SWE          Björn Borg        4–6      6–2
-## 15 1982              USA         Jimmy Connors               TCH          Ivan Lendl        6–3      6–2
-## 16 1983              USA         Jimmy Connors               TCH          Ivan Lendl        6–3 6–7(2–7)
-## 17 1984              USA          John McEnroe               TCH          Ivan Lendl        6–3      6–4
-## 18 1985              TCH            Ivan Lendl               USA        John McEnroe   7–6(7–1)      6–3
-## 19 1986              TCH            Ivan Lendl               TCH      Miloslav Mečíř        6–4      6–2
-## 20 1987              TCH            Ivan Lendl               SWE       Mats Wilander   6–7(7–9)      6–0
-## 21 1988              SWE         Mats Wilander               TCH          Ivan Lendl        6–4      4–6
-## 22 1989              FRG          Boris Becker               TCH          Ivan Lendl   7–6(7–2)      1–6
-## 23 1990              USA          Pete Sampras               USA        Andre Agassi        6–4      6–3
-## 24 1991              SWE         Stefan Edberg               USA         Jim Courier        6–2      6–4
-## 25 1992              SWE         Stefan Edberg               USA        Pete Sampras        3–6      6–4
-## 26 1993              USA          Pete Sampras               FRA      Cédric Pioline        6–4      6–4
-## 27 1994              USA          Andre Agassi               GER       Michael Stich        6–1 7–6(7–5)
-## 28 1995              USA          Pete Sampras               USA        Andre Agassi        6–4      6–3
-## 29 1996              USA          Pete Sampras               USA       Michael Chang        6–1      6–4
-## 30 1997              AUS        Patrick Rafter               GBR       Greg Rusedski        6–3      6–2
-## 31 1998              AUS        Patrick Rafter               AUS  Mark Philippoussis        6–3      3–6
-## 32 1999              USA          Andre Agassi               USA         Todd Martin        6–4 6–7(5–7)
-## 33 2000              RUS           Marat Safin               USA        Pete Sampras        6–4      6–3
-## 34 2001              AUS        Lleyton Hewitt               USA        Pete Sampras   7–6(7–4)      6–1
-## 35 2002              USA          Pete Sampras               USA        Andre Agassi        6–3      6–4
-## 36 2003              USA          Andy Roddick               ESP Juan Carlos Ferrero        6–3 7–6(7–2)
-## 37 2004              SUI         Roger Federer               AUS      Lleyton Hewitt        6–0 7–6(7–3)
-## 38 2005              SUI         Roger Federer               USA        Andre Agassi        6–3      2–6
-## 39 2006              SUI         Roger Federer               USA        Andy Roddick        6–2      4–6
-## 40 2007              SUI         Roger Federer               SRB      Novak Djokovic   7–6(7–4) 7–6(7–2)
-## 41 2008              SUI         Roger Federer               GBR         Andy Murray        6–2      7–5
-## 42 2009              ARG Juan Martín del Potro               SUI       Roger Federer        3–6 7–6(7–5)
-## 43 2010              ESP          Rafael Nadal               SRB      Novak Djokovic        6–4      5–7
-## 44 2011              SRB        Novak Djokovic               ESP        Rafael Nadal        6–2      6–4
-## 45 2012              GBR           Andy Murray               SRB      Novak Djokovic 7–6(12–10)      7–5
-## 46 2013              ESP          Rafael Nadal               SRB      Novak Djokovic        6–2      3–6
-## 47 2014              CRO           Marin Čilić               JPN       Kei Nishikori        6–3      6–3
-## 48 2015              SRB        Novak Djokovic               SUI       Roger Federer        6–4      5–7
-##           s3       s4   s5
-## 1        6–3      3–6  6–3
-## 2        6–2      6–2     
-## 3   7–6(5–2)   6–3[f]     
-## 4        6–2 7–6(5–3)     
-## 5   6–7(1–5)      6–4  6–3
-## 6        4–6      6–2  6–3
-## 7        6–1              
-## 8        6–3              
-## 9  7–6(11–9)      6–4     
-## 10  7–6(7–4)      6–0     
-## 11       6–2              
-## 12       6–3              
-## 13  6–7(5–7)      5–7  6–4
-## 14       6–4      6–3     
-## 15       4–6      6–4     
-## 16       7–5      6–0     
-## 17       6–1              
-## 18       6–4              
-## 19       6–0              
-## 20  7–6(7–4)      6–4     
-## 21       6–3      5–7  6–4
-## 22       6–3 7–6(7–4)     
-## 23       6–2              
-## 24       6–0              
-## 25  7–6(7–5)      6–2     
-## 26       6–3              
-## 27       7–5              
-## 28       4–6      7–5     
-## 29  7–6(7–3)              
-## 30       4–6      7–5     
-## 31       6–2      6–0     
-## 32  6–7(2–7)      6–3  6–2
-## 33       6–3              
-## 34       6–1              
-## 35       5–7      6–4     
-## 36       6–3              
-## 37       6–0              
-## 38  7–6(7–1)      6–1     
-## 39       7–5      6–1     
-## 40       6–4              
-## 41       6–2              
-## 42       4–6 7–6(7–4)  6–2
-## 43       6–4      6–2     
-## 44  6–7(3–7)      6–1     
-## 45       2–6      3–6  6–2
-## 46       6–4      6–1     
-## 47       6–3              
-## 48       6–4      6–4</code></pre>
+head(usopen)</code></pre>
+<pre><code>##   year champion_country       champion runner_up_country   runner_up    s1   s2       s3       s4  s5
+## 1 1968              USA Arthur Ashe[b]               NED   Tom Okker 14–12  5–7      6–3      3–6 6–3
+## 2 1969              AUS      Rod Laver               AUS  Tony Roche   7–9  6–1      6–2      6–2    
+## 3 1970              AUS   Ken Rosewall               AUS  Tony Roche   2–6  6–4 7–6(5–2)   6–3[f]    
+## 4 1971              USA     Stan Smith               TCH   Jan Kodeš   3–6  6–3      6–2 7–6(5–3)    
+## 5 1972              ROU   Ilie Năstase               USA Arthur Ashe   3–6  6–3 6–7(1–5)      6–4 6–3
+## 6 1973              AUS  John Newcombe               TCH   Jan Kodeš   6–4  1–6      4–6      6–2 6–3</code></pre>
 <pre class="r"><code>str(usopen)</code></pre>
 <pre><code>## 'data.frame':    48 obs. of  10 variables:
 ##  $ year             : int  1968 1969 1970 1971 1972 1973 1974 1975 1976 1977 ...
@@ -664,105 +555,14 @@ usopen</code></pre>
 ##  $ s4               : Factor w/ 14 levels &quot;&quot;,&quot;3–6&quot;,&quot; 5–7&quot;,..: 2 8 10 13 11 8 1 1 11 5 ...
 ##  $ s5               : Factor w/ 5 levels &quot;&quot;,&quot;6–2&quot;,&quot;6–3&quot;,..: 3 1 1 1 3 3 1 1 1 1 ...</code></pre>
 <pre class="r"><code>data(wimbledon)
-wimbledon</code></pre>
-<pre><code>##    year champion_country         champion runner_up_country          runner_up         s1         s2
-## 1  1968              AUS        Rod Laver               AUS         Tony Roche        6–3        6-4
-## 2  1969              AUS        Rod Laver               AUS      John Newcombe        6–4        5–7
-## 3  1970              AUS    John Newcombe               AUS       Ken Rosewall        5–7        6–3
-## 4  1971              AUS    John Newcombe               USA         Stan Smith        6–3        5–7
-## 5  1972              USA       Stan Smith               ROU       Ilie Năstase        4–6        6–3
-## 6  1973              TCH        Jan Kodeš               URS     Alex Metreveli        6–1   9–8(7–5)
-## 7  1974              USA    Jimmy Connors               AUS       Ken Rosewall        6–1        6–1
-## 8  1975              USA      Arthur Ashe               USA      Jimmy Connors        6–1        6–1
-## 9  1976              SWE       Björn Borg               ROU       Ilie Năstase        6–4        6–2
-## 10 1977              SWE       Björn Borg               USA      Jimmy Connors        3–6        6–2
-## 11 1978              SWE       Björn Borg               USA      Jimmy Connors        6–2        6–2
-## 12 1979              SWE       Björn Borg               USA      Roscoe Tanner   6–7(4–7)        6–1
-## 13 1980              SWE       Björn Borg               USA       John McEnroe        1–6        7–5
-## 14 1981              USA     John McEnroe               SWE         Björn Borg        4–6   7–6(7–1)
-## 15 1982              USA    Jimmy Connors               USA       John McEnroe        3–6        6–3
-## 16 1983              USA     John McEnroe               NZL        Chris Lewis        6–2        6–2
-## 17 1984              USA     John McEnroe               USA      Jimmy Connors        6–1        6–1
-## 18 1985              FRG     Boris Becker               USA       Kevin Curren        6–3   6–7(4–7)
-## 19 1986              FRG     Boris Becker               TCH         Ivan Lendl        6–4        6–3
-## 20 1987              AUS         Pat Cash               TCH         Ivan Lendl   7–6(7–5)        6–2
-## 21 1988              SWE    Stefan Edberg               FRG       Boris Becker        4–6   7–6(7–2)
-## 22 1989              FRG     Boris Becker               SWE      Stefan Edberg        6–0   7–6(7–1)
-## 23 1990              SWE    Stefan Edberg               GER       Boris Becker        6–2        6–2
-## 24 1991              GER    Michael Stich               GER       Boris Becker        6–4   7–6(7–4)
-## 25 1992              USA     Andre Agassi               CRO   Goran Ivanišević  6–7(8–10)        6–4
-## 26 1993              USA     Pete Sampras               USA        Jim Courier   7–6(7–3)   7–6(8–6)
-## 27 1994              USA     Pete Sampras               CRO   Goran Ivanišević   7–6(7–2)   7–6(7–5)
-## 28 1995              USA     Pete Sampras               GER       Boris Becker   6–7(5–7)        6–2
-## 29 1996              NED Richard Krajicek               USA MaliVai Washington        6–3        6–4
-## 30 1997              USA     Pete Sampras               FRA     Cédric Pioline        6–4        6–2
-## 31 1998              USA     Pete Sampras               CRO   Goran Ivanišević   6–7(2–7)  7–6(11–9)
-## 32 1999              USA     Pete Sampras               USA       Andre Agassi        6–3        6–4
-## 33 2000              USA     Pete Sampras               AUS     Patrick Rafter 6–7(10–12)   7–6(7–5)
-## 34 2001              CRO Goran Ivanišević               AUS     Patrick Rafter        6–3        3–6
-## 35 2002              AUS   Lleyton Hewitt               ARG   David Nalbandian        6–1        6–3
-## 36 2003              SUI    Roger Federer               AUS Mark Philippoussis   7–6(7–5)        6–2
-## 37 2004              SUI    Roger Federer               USA       Andy Roddick        4–6        7–5
-## 38 2005              SUI    Roger Federer               USA       Andy Roddick        6–2   7–6(7–2)
-## 39 2006              SUI    Roger Federer               ESP       Rafael Nadal        6–0   7–6(7–5)
-## 40 2007              SUI    Roger Federer               ESP       Rafael Nadal   7–6(9–7)        4–6
-## 41 2008              ESP     Rafael Nadal               SUI      Roger Federer        6–4        6–4
-## 42 2009              SUI    Roger Federer               USA       Andy Roddick        5–7   7–6(8–6)
-## 43 2010              ESP     Rafael Nadal               CZE      Tomáš Berdych        6–3        7–5
-## 44 2011              SRB   Novak Djokovic               ESP       Rafael Nadal        6–4        6–1
-## 45 2012              SUI    Roger Federer               GBR        Andy Murray        4–6        7–5
-## 46 2013              GBR      Andy Murray               SRB     Novak Djokovic        6–4        7–5
-## 47 2014              SRB   Novak Djokovic               SUI      Roger Federer   6–7(7–9)        6–4
-## 48 2015              SRB   Novak Djokovic               SUI      Roger Federer   7–6(7–1) 6–7(10–12)
-##          s3         s4    s5
-## 1       6–2                 
-## 2       6–4        6–4      
-## 3       6–2        3–6   6–1
-## 4       2–6        6–4   6–4
-## 5       6–3        4–6   7–5
-## 6       6–3                 
-## 7       6–4                 
-## 8       5–7        6–4      
-## 9       9–7                 
-## 10      6–1        5–7   6–4
-## 11      6–3                 
-## 12      3–6        6–3   6–4
-## 13      6–3 6–7(16–18)   8–6
-## 14 7–6(7–4)        6–4      
-## 15 6–7(2–7)   7–6(7–5)   6–4
-## 16      6–2                 
-## 17      6–2                 
-## 18 7–6(7–3)        6–4      
-## 19      7–5                 
-## 20      7–5                 
-## 21      6–4        6–2      
-## 22      6–4                 
-## 23      3–6        3–6   6–4
-## 24      6–4                 
-## 25      6–4        1–6   6–4
-## 26      3–6        6–3      
-## 27      6–0                 
-## 28      6–4        6–2      
-## 29      6–3                 
-## 30      6–4                 
-## 31      6–4        3–6   6–2
-## 32      7–5                 
-## 33      6–4        6–2      
-## 34      6–3        2–6   9–7
-## 35      6–2                 
-## 36 7–6(7–3)                 
-## 37 7–6(7–3)        6–4      
-## 38      6–4                 
-## 39 6–7(2–7)        6–3      
-## 40 7–6(7–3)        2–6   6–2
-## 41 6–7(5–7)  6–7(8–10)   9–7
-## 42 7–6(7–5)        3–6 16–14
-## 43      6–4                 
-## 44      1–6        6–3      
-## 45      6–3        6–4      
-## 46      6–4                 
-## 47 7–6(7–4)        5–7   6–4
-## 48      6–4        6–3</code></pre>
+head(wimbledon)</code></pre>
+<pre><code>##   year champion_country      champion runner_up_country      runner_up  s1       s2   s3  s4  s5
+## 1 1968              AUS     Rod Laver               AUS     Tony Roche 6–3      6-4  6–2        
+## 2 1969              AUS     Rod Laver               AUS  John Newcombe 6–4      5–7  6–4 6–4    
+## 3 1970              AUS John Newcombe               AUS   Ken Rosewall 5–7      6–3  6–2 3–6 6–1
+## 4 1971              AUS John Newcombe               USA     Stan Smith 6–3      5–7  2–6 6–4 6–4
+## 5 1972              USA    Stan Smith               ROU   Ilie Năstase 4–6      6–3  6–3 4–6 7–5
+## 6 1973              TCH     Jan Kodeš               URS Alex Metreveli 6–1 9–8(7–5)  6–3</code></pre>
 <pre class="r"><code>str(wimbledon)</code></pre>
 <pre><code>## 'data.frame':    48 obs. of  10 variables:
 ##  $ year             : int  1968 1969 1970 1971 1972 1973 1974 1975 1976 1977 ...
