@@ -7,7 +7,7 @@ options(width = 108)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(tidyverse) # alternatively: require(dplyr)
+require(tidyverse)
 ```
 
 # Intoduction

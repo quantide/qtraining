@@ -11,7 +11,7 @@ opts_knit$set(root.dir = "./../data")
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
 # load packages and data
-require(tidyverse) # alternatively: require(dplyr); require(tidyr)
+require(tidyverse) 
 require(qdata)
 ```
 
