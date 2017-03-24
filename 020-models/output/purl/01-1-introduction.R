@@ -31,7 +31,7 @@ print(ggp)
 
 ## ----fig.cap="Relation between Weight and Height in 200 young people with best straight line model", fig.show='hold'----
 ds1 <- ds %>% arrange(height)
-md <- lm(weight~height*gender,data=ds1)
+md <- lm(weight~height,data=ds1)
 ds2 <- ds2 %>% mutate(y1=predict(md,newdata=ds2))
 
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
@@ -44,12 +44,15 @@ ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight)) +
 print(ggp)
 
 ## ----fig.cap="Relation between Weight and Height in 100 male and 100 female young people"----
+md <- lm(weight~height*gender,data=ds1)
+ds2 <- ds2 %>% mutate(y1=predict(md,newdata=ds2))
+
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight, colour=gender)) +
   geom_point() +
   geom_smooth(mapping = aes(colour=gender), method = "lm",se = FALSE ) + 
   geom_segment(data=ds2,mapping = aes(x=x0, xend=x1, y=y0, yend=y1), colour="green", linetype=2) +
   xlab("Height") + ylab("Weight") + 
-  ggtitle("Plot of Weight Vs. Height in 200 young people")+
+  ggtitle("Plot of Weight Vs. Height in 100 male and 100 female young people")+
   theme(legend.position="top")
 
 print(ggp)
