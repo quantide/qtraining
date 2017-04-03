@@ -50,7 +50,7 @@ ds2 <- ds2 %>% mutate(y1=predict(md,newdata=ds2))
 ggp <- ggplot(data=ds,mapping = aes(x=height, y=weight, colour=gender)) +
   geom_point() +
   geom_smooth(mapping = aes(colour=gender), method = "lm",se = FALSE ) + 
-  geom_segment(data=ds2,mapping = aes(x=x0, xend=x1, y=y0, yend=y1), colour="green", linetype=2) +
+  geom_segment(data=ds2,mapping = aes(x=x0, xend=x1, y=y0, yend=y1, colour=gender), linetype=2) +
   xlab("Height") + ylab("Weight") + 
   ggtitle("Plot of Weight Vs. Height in 100 male and 100 female young people")+
   theme(legend.position="top")

@@ -156,7 +156,7 @@ ggp2 <- ggplot(data = plot_df, mapping = aes(x=d, y=exp(h))) +
   geom_line(mapping=aes(x=d, y=exp(fit)), col = "mediumvioletred") +
   geom_line(mapping=aes(x=d, y=exp(lwr)), col = "mediumorchid1", linetype=4) +
   geom_line(mapping=aes(x=d, y=exp(upr)), col = "mediumorchid1", linetype=4) +
-  xlab("Normalized Density") + ylab("log (Hardness)")
+  xlab("Normalized Density") + ylab("Hardness")
 
 grid.arrange(ggp1, ggp2, ncol=2)  
 
