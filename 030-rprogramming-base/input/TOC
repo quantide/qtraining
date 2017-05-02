@@ -1,9 +1,14 @@
 Base Programming
-Functions structure					      	| 01-programming-functions.Rmd
-Functions writing					        | 02-function-writing.Rmd
-Conditionals 					    	      	| 03-programming-conditionals.Rmd
-Loops 				        			| 04-programming-loops.Rmd
-Functionals                        				| 05-functionals.Rmd
+Environments                                    | 01-environments.Rmd
+Functions                                       | 02-programming-functions.Rmd
+Writing Functions                               | 03-function-writing.Rmd
+Loops                                           | 04-loops.Rmd
 
-Advanced Topics
-Reporting with R Markdown					| 06-rmarkdown.Rmd
+Replacing loops with functionals
+Conditionals                                    | 05-conditionals.Rmd
+Functionals                                     | 06-functionals.Rmd
+Map and mapply                                  | 07-map-mapply.Rmd
+Introduction to purrr                           | 08-purrr.Rmd
+
+Parallel computation
+The parallel package                            | 09-parallel.Rmd

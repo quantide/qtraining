@@ -1,0 +1,69 @@
+---
+title: "`mapply` and `Map` "
+---
+
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+## `mapply` and `Map`  
+
+An alternative to `lapply()`, along with the index strategy, is represented by `mapply()`:
+
+```{r functionals-025}
+mapply(mean ,trees, trim = c(0.1 , 0.2, 0.3), 
+  MoreArgs = list(na.rm = TRUE),
+  SIMPLIFY = FALSE) 
+```
+
+The structure of `mapply()` is:
+
+```{r functionals-, eval = FALSE}
+mapply(FUN, ..., MoreArgs=NULL, SIMPLIFY = TRUE) 
+```
+
+
+where, as opposite to `lapply()`, the `FUN` argument takes the first position and the ''`...`'' argument specifies any list of arguments to be passed to `FUN` during the iteration.
+
+The `MoreArgs` argument takes a list of parameters to be kept as fixed during the iteration. Note that this breaks R's usual lazy evaluation semantics, and is inconsistent with other functions.
+
+The `SIMPLIFY` as set to `TRUE` by default, allows output simplification in the `sapply()` fashion. Clearly, this options gives as little control over the output as `sapply()` does. 
+
+
+An alternative to `mapply()` is represented by `Map()` that returns identical results to `mapply()` with `SIMPLIFY` set to `FALSE` and uses anonymous or external function to pass fixed parameters to `FUN`.
+
+```{r functionals-026}
+Map(function(...) mean(..., na.rm = TRUE), 
+  x = trees , trim = c(0.1 , 0.2, 0.3))
+```
+
+The choice between using `mapply()` or `Map()` is surely a personal one. 
+
+Both `Map()` and `mapply()` can be used to substitute nested loops.
+
+We can consider the previous nested loop and, with a little help from `expand.grid()` and function `f()`
+
+
+```{r functionals-027}
+f = function(i , j) {
+  result = 99
+  if( j %% 2 == 0){
+  result <- ifelse(i %% 2 == 0 , i+j , i-j)
+  }
+  result
+}
+
+grid <- expand.grid(i = 1:4, j = 1:2)
+```
+
+And, similarly to the `lappy()` case, we could write:
+
+```{r functionals-028}
+with(grid , mapply(f, i=i , j=j, SIMPLIFY = TRUE))
+```
+
+or:
+```{r functionals-029}
+unlist(with(grid , Map(f, i=i , j=j)))
+```

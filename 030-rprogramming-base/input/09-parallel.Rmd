@@ -1,0 +1,449 @@
+---
+title: "Parallel computation"
+---
+
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+
+## Introduction
+
+The R community has developed several packages to take advantage of parallelism.
+
+Many of these packages are simply wrappers around one or multiple other parallelism packages forming a complex and sometimes confusing web of packages. 
+
+Package `parallel` attempts to eliminate some of this by wrapping `snow` and `multicore` into a nice bundle.
+
+Parallel computation is especially suited to "embarrassingly parallel" problems like large-scale simulations and by-group analyses. 
+
+## Package Parallel
+
+Parallel computation can be divided into explicit and implicit parallelism.
+
+### Multicore parallelism
+
+The `multicore` package, bundled within `parallel` provides a way of running parallel computations in `R` on machines with multiple cores or CPUs by making use of operating system facilities.
+
+At present time, `multocore`, as based on process splitting, seems to work only on Unix like computers.
+
+Function `mclapply`, works just like the regular `lapply` function to iterate across the elements of a list, but iterations automatically run in parallel to speed up the computations. 
+
+### Example: : 2-dimensional function
+<!-- 
+Taken From:
+The multicore package
+Script
+Manuel J. A. Eugster
+\Parallel Computing with R" Tutorial,
+Statistical Computing 2009
+http://www.informatik.uni-ulm.de/ni/staff/HKestler/Reisensburg2009/PDF/multicore.pdf
+--->
+
+We want to calculate the 2-dimensional `f()` function on a grid between `[-10, 10]` consisting of `1,000` points where `f()` is defined as:
+
+
+```{r parallel-001}
+f <- function(x) {
+r <- sqrt(x[1]^2 + x[2]^2)
+10 * sin(r) / r
+}
+```
+
+We simulate some test data:
+
+```{r parallel-002}
+x <- seq(-10, 10, length.out=1000)
+grid <- expand.grid(x=x, y=x)
+head(grid, n = 3)
+```
+
+The sequential calculation simply calls function `f()`  for each row of the grid:
+
+```{r parallel-003}
+system.time({z <- apply(grid, 1, f)})
+```
+
+The calculation needs about `20` seconds. To assure the correctness of the calculation we plot the function:
+
+```{r parallel-004}
+par(mfrow = c(1,1))
+dim(z) <- c(length(x), length(x))
+persp(x, x, z, theta=30, phi=30, expand=0.5, col='white', border=NA, shade=0.3, box=FALSE)
+```
+
+A strategy for a parallel computation of function `f()` is to split the grid into subgrids and calculate the function for these subgrids in parallel. 
+
+Here two cores are given, therefore the grid is split into two parts along `y = 0`:
+
+```{r parallel-005}
+grid_list <- split(grid, grid[,'y'] > 0)
+```
+
+Now, `apply()` from the sequential calculation is executed for each element of the list. A sequential execution is done using `lapply()`:
+
+```{r parallel-006}
+system.time({z_list <- lapply(grid_list, apply, 1, f)})
+```
+
+The parallel execution is done using the parallel analogon, `mclapply()`:
+
+```{r parallel-007}
+library(parallel)
+system.time({z_list <- mclapply(grid_list, apply, 1, f, mc.cores = 2L, mc.preschedule=TRUE)})
+```
+
+The parallel execution needs about half of the time. In background the `mclapply()` has forked two child processes and each of the them has calculated the result for one list element. In principle, `mclapply()` produces the following results:
+
+```{r parallel-008}
+par(mfrow=c(1,2))
+# First half:
+x1 <- x[x > 0]
+z1 <- z_list[[1]]
+dim(z1) <- c(length(x), length(x1))
+persp(x, x1, z1, theta=90, phi=30, expand=0.5, col='white',border=NA, shade=0.3, box=FALSE)
+
+# Second half:
+x2 <- x[x <= 0]
+z2 <- z_list[[2]]
+dim(z2) <- c(length(x), length(x2))
+persp(x, x2, z2, theta=90, phi=30, expand=0.5, col='white', border=NA, shade=0.3, box=FALSE)
+```
+
+For the final result the elements of the list must be put together:
+
+```{r parallel-009}
+z <- Reduce(c, z_list)
+```
+
+### Example: Cross Validation
+
+We can define a simple cross validation function for `lm` type objects as follows:
+
+```{r parallel-009, label="crossValFunction"}
+cross_val <- function(i, fm){
+  data <- fm$model
+  formula <- formula(fm)
+  response <- as.character(terms(fm)[[2]])
+  fm <- lm(formula, data = data[-i,])
+  newdata <- data[i,]
+  predicted <- predict (fm, newdata)
+  sqrt((predicted - data[i,response] )^2)
+}
+```
+
+We create a `1,000` rows dataframe and a linear regression model applied to it.
+
+```{r parallel-010, label="dataframeDf"}
+n <-5*10^3
+df <-  data.frame(x = 1:n,y = 2+3*c(1:n)+rnorm(n, 0, 1500))
+df$y[800] <-  2*10^4
+plot(y~x , data = df, pch = 16, cex = .5)
+fm <-  lm(y~x, data = df)
+```
+
+The previously created `cross_val()` function can be iterated trough `lapply()`  using a single core: 
+
+```{r parallel-012, label="crossValsingleCore"}
+system.time({single <- lapply(1:n, cross_val, fm)})[3]
+op <- par(mfrow = c(1, 2))
+plot(y~x , df, pch = 16, col = "red", cex = .6)
+plot(unlist(single), type = "s", ylab = "Cross Validation", col = "darkgreen")
+par(op)
+```
+
+By using `mclapply()`, parallelism is achieved straightforwardly without the need of setting an explicit cluster environment:
+
+```{r parallel-013, label="parallel1"}
+system.time({
+  quad <- mclapply(1:n, cross_val, fm,
+  mc.cores = 4L, mc.preschedule = TRUE)})[3]
+```
+
+Clearly, both methods lead to the same results:
+
+```{r parallel-014, label="parallel12"}
+identical(single, quad)
+```
+
+### Summary statistics revisited
+
+We can revisit the previous example about a generic summary function:
+
+```{r parallel-015}
+my_summary <- function(x, flist){
+  f <- function(f,...)f(...)
+  g <- function(x, flist){vapply(flist, f , x, FUN.VALUE = numeric(1))}
+  df <- as.data.frame(lapply(x, g , flist))
+  row.names(df) <- names(flist)
+  df
+}
+```
+
+Suppose we have a dataframe of about `0.4 Gb`
+
+```{r parallel-016}
+n <- 10^7
+df <- data.frame(x1 = rnorm(n, 10, 1), x2 = rweibull(n, 1, 2), x3 = rpois(n, 100),
+x4 = rnorm(n, 10, 1), x5 = rweibull(n, 1, 2), x6 = rpois(n, 100))
+print(object.size(df), units = "Gb")
+```
+We may use `my_summary()` 
+
+```{r parallel-017}
+system.time({
+my_summary(df, 
+  flist = list(mean = mean, stdev = sd, range =  function(x,...){sd(x,...)/mean(x,...)})
+)})
+```
+ 
+or write a parallel version of this function with minor modifications to teh original `my_summary()`:
+
+```{r parallel-018}
+my_mc_summary <- function(x, flist, mc.cores = 1L){
+  f <- function(f,...)f(...)
+  g <- function(x, flist){vapply(flist, f , x, FUN.VALUE = numeric(1))}
+  df <- as.data.frame(mclapply(x, g , flist, mc.cores = mc.cores))
+  row.names(df) <- names(flist)
+  df
+}
+```
+
+and use it as
+
+```{r parallel-019}
+system.time({
+my_mc_summary(df, 
+  flist = list(mean = mean, stdev = sd, range =  function(x,...){sd(x,...)/mean(x,...)}),
+  mc.cores = 2L
+)})
+```
+
+The reduction in computing time is appreciable at very little coding effort. 
+
+Finally, `my_mc_summary(..., mc.cores = 1L)`  will run the `mc` function on a single core as `my_summary()`.
+
+
+### Prescheduling
+
+argument `mc.preschedule()`  of `mclapply()` controls how data are allocated to processes and is set to `TRUE` by default.
+
+If `mc.preschedule` is `TRUE`, then the data is divided into `n` sections a priori and passed to `mc.cores` processes. 
+
+If `mc.preschedule` is  `FALSE`, then a job is constructed for each data value sequentially, up to `mc.cores` at a time.
+
+`mc.preschedule` set to `TRUE` is better for short computations or large number of values in `X` while `mc.preschedule` set to `FALSE` is better for jobs that have high variance of completion time and not too many values of `X`.
+
+A convolution is good example where `mc.preschedule`  surely needs to be set at `TRUE`. We need to pass `X = n = 10^4` data to  functional `mclapply()`.
+
+
+```{r parallel-020, tidy = FALSE}
+# mc.preschedule = TRUE
+lambda <- 1000
+n <- 10^4
+
+f <- function(i, np, lambda, meanlog, sdlog){
+  sum(rlnorm(np[i], meanlog, sdlog))
+}
+
+# mc.preschedule = FALSE
+system.time({
+  np <- rpois(n, lambda)
+  out <- mclapply(X = 1:n, FUN = f,
+    np = np, meanlog = 9,  sdlog = 2, 
+    mc.preschedule = FALSE)
+}) 
+
+```
+
+
+
+Explicit parallelism has the programmer responsible for dividing the problem to be solved into independent chunks, to be run in parallel, and also responsible for aggregating the results from each chunk. 
+
+
+### Cluster parallelism
+
+While `mclaplly()` works on the basis of process forking abstactiong the user for the need of managing the underneath parallel backend, `R` offers other functionality for creating a set of copies of R running in parallel and communicating over sockets.
+
+This method require the user to set up the cluster prior using it but, on the other hand, allows parallel computation to be extended over several machines.
+
+
+We can asily define `nc` "workers" on a single computer by calling `makeCluster(nc)`:
+
+```{r parallel-021, label="clusterCall1"}
+library(parallel)
+nc <- detectCores()
+cluster <- makeCluster(nc)
+cbind(clusterCall(cluster, function() {Sys.info()["nodename"]}))
+stopCluster(cluster)
+```
+
+`clusterCall()` calls a function on each node, whereas `stopCluster(cluster)` closes the cluster parallel environment previously created.
+
+Notice that actually, when a parallel computation environment is created with `makeCluster()`, a "master" process with a number of _workers_ or _slaves_ processes are run. The role of master process is to _manage_ worker processes and _join_ the results, while slave processes actually perform the computations. 
+
+Then, after `makeCluster(nc)` call in previous script, `nc + 1` R processes shall run: a master process, and `nc` workers processes. 
+
+```{r parallel-022, label="clusterCall2"}
+fx <- function(x){x+1}
+cluster <- makeCluster(2)
+clusterCall(cluster, fx, x = 5)
+stopCluster(cluster)
+```
+
+Variables defined at master level are not directly available to all slaves. Therefore, if this example works
+
+```{r parallel-023, label="fxx1"}
+fxx <- function(x){x + xx}
+xx <- 3
+fxx(1)
+```
+
+the following will fail
+
+```{r parallel-024, label="fxx2", eval = FALSE}
+cluster <-  makeCluster(2)
+clusterCall(cluster, fxx, x = 2)
+stopCluster(cluster)
+```
+
+Whenever required we'll have to export master variables to all slaves 
+
+```{r parallel-025, label="fxx2a"}
+xx <-  1
+cluster = makeCluster(2)
+clusterExport(cluster, "xx")
+clusterCall(cluster, fxx, x = 2)
+stopCluster(cluster)
+```
+
+Similarly, we have to attach or required libraries at slave level. The function `clusterEvalQ()`, as it  evaluates an expression at each cluster node, is the ideal candidate to achieve this task:
+
+```{r parallel-026, label="MASS"}
+cluster <-  makeCluster(2)
+clusterEvalQ(cluster, library(MASS))
+stopCluster(cluster)
+```
+
+When calling `makeCluster()`, if no type argument is supplied, it defaults to `type = "PSOCK"` that calls `makePSOCKcluster`. 
+
+`makePSOCKcluster` is very similar to `makeSOCKcluster` in package `snow`. It runs `Rscript` on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results.
+
+A simple convolution based on `lapply()`  represents a good example for cluster parallelism. We can test the the _standalone_ convolution by:
+
+```{r parallel-027}
+lambda <- 1000
+n <- 10^5
+
+f <- function(i, np, lambda, meanlog, sdlog){
+  sum(rlnorm(np[i], meanlog, sdlog))
+}
+
+system.time({
+  np <- rpois(n, lambda)
+  out <- sapply(X = 1:n, FUN = f,
+    np = np, meanlog = 9,  sdlog = 2)
+  cat ("95th quantile = " , quantile(out , .95), "\n")
+}) 
+```
+
+We just need to replace the `sapply` function with the corresponding `parSapply` to make use of `R` parallel capabilities.
+
+
+```{r parallel-028, label="conv1"}
+nc <- detectCores()
+cluster  <- makeCluster(nc)
+
+f <- function(i, np, lambda, meanlog, sdlog){
+  sum(rlnorm(np[i], meanlog, sdlog))
+}
+
+system.time({
+  np <- rpois(n, lambda)
+  out <- parSapply(cl = cluster , X = 1:n, FUN = f,
+    np = np, meanlog = 9,  sdlog = 2)
+  cat ("95th quantile = " , quantile(out , .95), "\n")
+}) 
+
+stopCluster(cluster)
+```
+### Setting up a cluster
+
+To run the same procedure in parallel on several machines, a proper network environment must be set up with public keys and hosts files. 
+
+The following procedure has to be executed only once in order to configure the network environment and set up all necessary permissions.
+
+1. All computers require `ssh server` and `ssh-client` installed
+2. Master being able of comunicatng with slaves via `ssh keys` 
+3. Master being able of comunicatng with itself via `ssh keys` 
+4. Master being able to comunicate to slaves over a given port  in the range 11000:11999
+5. Hosts names are properly setup in `/etc/hosts`
+
+Note that we can generate a `ssh key` with `ssh-keygen -t rsa` and copy the `key` to the remote machine by `ssh-copy-id user@remote`
+
+<!--- good reference
+http://stackoverflow.com/questions/17923256/r-making-cluster-in-doparallel-snowfall-hangs/17925618#17925618
+---->
+
+Unfortunately, when creating a snow (or parallel) cluster object many things can go wrong, and the most common failure mode is to hang indefinitely. In addition to `ssh` issues, the problem could be:
+
+* `R` not installed on a worker machine
+* `snow` not installed on a the worker machine
+* `R` or `snow` not installed in the same location as the local machine
+* current user doesn't exist on a worker machine
+* networking problem
+* firewall problem
+
+and there are no doubt more possibilities.
+
+In our experience, the single most useful troubleshooting technique is manual mode. Just set "manual" to TRUE when creating the cluster object. It's also a good idea to set "outfile" to the empty string so that you're more likely to see useful error messages:
+
+```
+cl <- makeSOCKcluster(ip_slave, manual=TRUE, outfile="")
+```
+
+`makeSOCKcluster()` will display an Rscript command to execute in a terminal on the specified machine. Obviously, this bypasses any ssh issues, and you will quickly learn if `R` or `snow` is not installed in the expected location. If we are lucky, we will get an error message and that will lead us to the solution
+
+
+### Example: Cluster convolution
+<!---
+require(snow)
+makeSOCKcluster("192.168.0.99", manual = TRUE)
+--->
+
+```{r parallel-029}
+ip_master <- "localhost"
+ip_slave <- "localhost"
+
+biCluster  <- makeCluster(spec = c(rep(ip_master, 2) , rep(ip_slave, 2)), port = 11001)
+cbind(clusterCall(biCluster, function() {Sys.info()["nodename"]}))
+stopCluster(biCluster)
+```
+
+As the results show, the above instructions created a parallel computational environment with four slave processes at `master` and four slave processes `slave`
+
+Now the convolution exercise can be easily divided among eight cores on two networked machines.
+
+
+```{r parallel-030, label="localVaio", tidy=TRUE}
+biCluster  <- makeCluster(spec = c(rep(ip_master, 2) , rep(ip_slave, 2)))
+
+lambda <- 1000
+n <- 10^6
+
+f <- function(i , np , lambda, meanlog, sdlog){
+  sum(rlnorm(np[i], meanlog, sdlog))
+}
+
+system.time({
+  np <- rpois(n, lambda)
+  out <- parSapply(cl = biCluster , X = 1:n, FUN = f,
+    np = np, meanlog = 9,  sdlog = 2)
+  cat ("95th quantile = " , quantile(out , .95), "\n")
+}) 
+
+stopCluster(biCluster)
+```
+
+Finally, working across public networks, especially with little bandwidth, may easily kill the extra benefits of having multiple cores available

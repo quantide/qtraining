@@ -42,7 +42,7 @@ Suppose you do not need to have each word stored separately. Hence you would lik
 
 ```{r}
 # character vector
-str_c("Andrea", "Spanò", sep = " ")
+str_c("Hello", "World", sep = " ")
 ```
 
 The argument `sep` tells the software if and how you should separate the two parts of the new string. You can also add more words and your string gets longer:

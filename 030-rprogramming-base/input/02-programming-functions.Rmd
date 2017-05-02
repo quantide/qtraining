@@ -1,0 +1,237 @@
+---
+title: "Functions structure"
+---
+
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+
+When working with R we all make constant use of functions and, when developing, we create new functions so that functions look like very familiar R objects. Nevertheless, understanding the theory and the rationals underlying R functions may help to create much more efficient and possibly elegant coding.
+
+We can create and assign functions to a variable name as we do with any other object:
+
+```{r functions-create}
+f <- function(x, y = 0) {
+  z <- x + y
+  z
+}
+```
+
+Eventually, we can delete any function  with the usual call to `rm()` or `remove()`
+
+Functions are objects with three basic components: 
+
+* a formal arguments list
+* a body
+* an environment. 
+
+```{r functions-002}
+formals(f)
+body(f)
+environment(f)
+```
+
+
+## Formals
+
+Formals are the formal arguments of a function returned as an object of class `pairlist` where a `pairlist` can be thought as something similar to a list with an important difference:
+
+```{r functions-formals-pairlist}
+is.null(pairlist())
+is.null(list())
+```
+
+that is: a `pairlist` of length zero is `NULL` while a `list` is not.
+
+When we call a function, formals arguments can be specified by position or by name and we can mix positional matching with matching by name so that the following are equivalent:
+
+```{r functions-formals-argument}
+
+mean(x = 1:5, trim = 0.1)
+mean(1:5, trim = 0.1)
+mean(x = 1:5, 0.1)
+mean(1:5, 0.1)
+mean(trim = 0.1, x = 1:5)
+```
+
+Along with position and name, we can also specify formals by partial matching so that:
+
+```{r functions-formals-argument2}
+mean(1:5, tr = 0.1)
+mean(tr = 0.1, x = 1:5)
+```
+
+would work anyway.
+
+Functions formals may also have the construct `symbol = default`, that unless differently specified, forces any argument to be used with its default value.
+
+Specifically, function `mean()` also have a third argument `na.rm` that defaults to `FALSE` and, as a result passing vectors with `NA` values to `mean()` returns `NA`
+
+```{r functions-formals-arguments3}
+mean(c(1, 2, NA))
+```
+
+While, by specifying `na.rm=TRUE` we get the mean of all non missing elements of vector `x`.
+
+```{r functions-formals-arguments4}
+mean(c(1, 2, NA), na.rm = TRUE)
+```
+
+The order `R` uses for matching formals against value is:
+
+1. Check for exact match for a named argument
+2. Check for a partial match
+3. Check for a positional match
+
+Formals of a function are normally used within functions by the internal `R` evaluator but, we can use function `formals()` to expose formals explicitly. 
+
+```{r functions-formals-f}
+formals(f)
+```
+
+`args()` is another function that displays the formals in a more user friendly fashion. Actually, `args(fun)` returns a function with the same arguments as `fun` but with an empty body.  
+
+```{r functions-formals-args}
+args(f)
+```
+
+Surely, for programming purposes,  `formals()` is a better choice as it returns a simple `pairlist` that can be handled as a list:
+
+
+```{r functions-formals-list}
+is.list(formals(mean))
+```
+
+The "`...`" argument of a function is a special argument and can contain any number of `symbol=value` arguments .  The "`...`" argument is transformed by `R` into a list that is simply added to the `formals` list:
+
+```{r functions-dots}
+h <- function (x, ...) {0}
+formals(h)
+```
+
+The "`...`" argument can be used if the number of arguments is unknown. Suppose we want to define a function that counts the number of rows of any given number of data frames we could write:
+
+```{r functions-dots2}
+count_rows <- function(...) {
+  list <- list(...)
+  lapply(list, nrow)
+}
+
+count_rows(airquality, cars)
+```
+
+
+Similarly, the "`...`" arguments becomes very handy when the "`...`" arguments will be passed on to another function as it often happened when calling `ggplot2` functions from within another function. The following example shows a function which draws a line plot, where additional graphics parameters are passed via "`...`":
+
+```{r functions-dots3, fig.height=7, fig.width=7, message=FALSE}
+require(ggplot2)
+
+# Function
+plot_depth <-  function(df, time_var_name, depth_var_name, ...){
+  ggp <- ggplot(data=df, mapping=aes_string(x=time_var_name, y= depth_var_name)) +
+          geom_line(...)
+  return(ggp)
+}
+
+# Example
+time <-  1:13
+depth <-  c(0,-9,-18,-21,-21,-21,-21,-18,-9,-3,-3,-3,0)
+df <- data.frame(time=time, depth=depth)
+
+ggp1 <- plot_depth(df, time_var_name = "time", depth_var_name = "depth", linetype = 2)
+ggp2 <- plot_depth(df, time_var_name = "time", depth_var_name = "depth", size = 4, col = "red")
+
+gridExtra::grid.arrange(ggp1, ggp2, ncol=2)
+```
+
+## Body of a function
+
+The body of a function is a parsed R statement. In practice, this implies that the body of a function needs to be correct from a formal point of view but no evaluation of the body of a function occurred yet. 
+
+As a result, this function would return an error:
+
+```{r functions-body-wrong, eval=FALSE}
+wrong <- function(x) {x =}
+```
+
+as its body is not a correct `R` statement.
+
+While this function:
+
+```{r functions-body-right}
+right <- function(x){x+y}
+```
+
+is accepted by `R` as is formally correct even thought, except under specific circumstances, will always return an error:
+
+```{r functions-body-right-error, error=TRUE}
+right(x = 2)
+```
+The body of a function, is usually a collection of statements in braces but it can be a single statement, a symbol or even a constant.
+
+## Environment of a function
+
+The environment of a function is the environment that was active at the time that the function was created. Generally, for user defined function, the Global environment:
+
+    ```{r functions-environment-userdefined}
+    f <- function(x){x+1}
+    environment(f)
+    ```
+
+When a function is defined within a package, the environment associated to that package:
+
+    ```{r functions-environment-package}
+    environment(mean)
+    ```
+
+Morover objects defined within a function, exists in the environment of the function itself.
+ 
+```{r functions-environment-global, error=TRUE}
+    f <- function(x){x+1}
+    x
+```
+
+The environment of a function is a structural component of the function and belongs to the function itself.
+
+As an example, we can define a function `f()` that simply returns zero
+
+
+```{r}
+f <- function() 0
+```
+
+the environment of `f()` is clearly the `globalenv()`
+
+
+```{r}
+environment(f)
+```
+
+
+we can modify the environment of a function and assign to `f()` a newly created environment
+
+
+```{r}
+env <- new.env()
+environment(f) <- env
+environment(f)
+```
+
+
+in case we delete environment `env`
+
+
+```{r}
+rm(env)
+```
+
+`f()` will keep working
+
+``````{r}
+f()
+```
+
+
+For more details on the environment of a function, please see the web book Ramarro by Andrea Spanò.

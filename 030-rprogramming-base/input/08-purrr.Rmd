@@ -1,0 +1,261 @@
+---
+title: "The `purrr` package "
+---
+
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+## Introduction
+
+As you have learned in the previous chapters, doing something to each element of a vactor/matrix and saving the results is very common. Base `R` provides functions for doing it such as apply, vapply, etc. 
+
+The `purrr` package provides a complete and consistent set of tools to work in these situations. 
+
+```{r, purl=TRUE}
+require(tidyverse)
+require(qdata)
+```
+
+Notice that `purrr` is part of the `tidyverse` core, together with `ggplot2` and `dplyr`. If you have not learned about tidyverse yet, you can find a brief overview on the  [dedicated website](http://tidyverse.org/)
+
+For additional material on `purrr`, please visit the following webpage (https://cran.r-project.org/web/packages/purrr/index.html)
+
+
+
+## The `map()` family
+
+The funtions that allows to loop over the vectors of an element in purrr are part of the map() family. There is a specific function for each type of output:
+
+1. map() makes a list
+2. map_lgl() makes a logical vector
+3. map_int() makes an integer vector
+4. map_dbl() makes a double vector
+5. map_chr() makes a character vector
+
+
+The above 5 functions work the same way: they take a vector as input, apply a given function to each part, and then return a new vector that is the same length (and has the same names) as the input. Notice that differently from vapply() that can produce matrices, map() family only produces vectors.
+
+Let us see a few examples:
+
+```{r}
+df <- tibble(
+  "savings" = rnorm(10, 10, 1),
+  "salary" = rnorm(10, 20, 1),
+  "spending" = rnorm(10, 10, 1)
+)
+
+# returns a list of 3
+map(df, mean)
+
+# returns a vector of 3
+map_dbl(df, mean)
+```
+
+
+Notice that, consistently with the tidyverse philosophy, `map()` functions work with the %>%:
+
+```{r}
+df %>% map_dbl(is.numeric)
+```
+
+
+As you may be wondering, most functions on `purrr` do things that are already implemented in base R. In paragraph __Similarities with base functions___ you will find the main differences and the main reasons why it is worth to get a quick overview of the functions in `purrr`.
+
+
+#### Similarities with base functions
+
+As mentioned there are similarities with the base functions for functional programming.
+
+`lapply()` does basically the same as `map()`.
+
+```{r}
+all.equal(lapply(df, mean), map(df, mean))
+```
+
+However `map()` has the advantage of being consistent with all the other functions in `purrr` and it allows you to use shortcuts, for example:
+
+```{r}
+mtcars %>% 
+  split(.$cyl) %>% 
+  map(~lm(mpg ~ wt, data = .))
+```
+
+instead of
+
+```{r}
+mtcars %>% 
+  split(.$cyl) %>% 
+  map(function(df) lm(mpg ~ wt, data = df))
+```
+
+
+`sapply()` is a wrapper around `lapply()` and it simplifies the output. 
+
+```{r}
+# the output is a numeric (double) vector 
+sapply(df, mean)
+
+all.equal(lapply(df, mean), map(df, mean))
+```
+
+However if you are using it in a function you may want to know the type of vector in advance. This is something you can easily do with `purrr` functions.
+
+
+`vapply()` is an alternative to `sapply()` because you supply an additional argument that defines the type. It does however have a more complex syntax than the `purrr` functions.
+
+
+Thus, in general the functions in the `map()` family have the following advantages:
+
+1. you have more consistent names and arguments 
+2. you always know the output
+3. in the future will provide easy parallelism and progress bars
+4. you can ue shortcuts
+
+
+
+### Conditional map
+
+A slight modification of `map()` is represented by `map_if()` and `map_at()`. 
+
+`map_if()` maps a function over the elements of .x that satisfy a predicate. 
+
+For example:
+
+```{r}
+# turns factors into character
+data(banknotes)
+banknotes %>%
+    map_if(is.factor, as.character) %>%
+    str()
+```
+
+applys the function `as.character` to only factor variables.
+
+`map_at()` modifies elements corresponding to a specific vector identified by its name or position.
+
+
+```{r}
+# turns factors into character
+banknotes %>%
+    map_at("type", as.character) %>%
+    str()
+```
+
+
+
+### Multiple arguments
+
+What if you have multiple related inputs that you need to iterate along in parallel? You can do this by using `map2()` and `pmap()` functions. 
+
+For example, imagine you want to simulate some random normals with different means and standard deviations. One way to do it is by using the `map()` function:
+
+```{r}
+mu <- list(5, 10, -3)
+sigma <- list(1, 5, 10)
+seq_along(mu) %>% 
+  map(~rnorm(5, mu[[.]], sigma[[.]])) 
+```
+
+Or you can use `map2()`:
+
+```{r}
+map2(mu, sigma, rnorm, n = 5) 
+```
+
+However if it gets more complicated and you are using more argumenets, it may be better to use the function `pmap()` that takes a list of arguments:
+
+
+```{r}
+n_size <- list(5,10,15)
+args <- list(n_size, mu, sigma)
+args %>% 
+  pmap(rnorm) %>%
+  str()
+```
+
+Similarly to `map()`, there are `pmap()` functions that allows you to specify the output vector type such as `pmap_int()` and `pmap_lgl`.
+
+
+
+### More functions
+
+You may want to vary the arguments as well as the functions themselves. The `invoke_map` function allows you to do it:
+
+```{r}
+
+f <- c("runif", "rnorm", "rpois")
+param <- list(
+  list(min = -1, max = 1), 
+  list(sd = 5), 
+  list(lambda = 10)
+)
+
+invoke_map(f, param, n = 5) 
+```
+
+Again, as for `map()`, there are versions of `invoke_map()` that allow to specify the type of output, such as `invoke_map_dbl` and `invoke_map_lgl`.
+
+
+## `dmap()`
+
+The function `dmap()` is just like `map()` but it always returns a data frame. Moreover it can work on sliced data frames:
+
+```{r}
+banknotes %>%
+  slice_rows("type") %>% 
+  dmap(mean)
+```
+
+or grouped data frames:
+
+```{r}
+banknotes %>%
+    group_by(type) %>% 
+    dmap(mean)
+```
+
+
+
+## Other types of loops
+
+In addition to the above functions that are nice and elegant alternatives to some base `R` functions, `purrr` provides a number of other functions that abstract over other types of loops. They may be useful when manipulating and working with data frames.
+
+Here is a quick non-extensive overview of some of these functions
+
+* `keep()`: keep all elements that satisfy a predicate
+
+```{r}
+data("banknotes")
+banknotes %>% keep(is.numeric)
+```
+
+* `discard()`: discard all elements for which a predicate is satisfied
+
+```{r}
+banknotes %>% discard(is.numeric)
+```
+
+
+* `every()`: returns TRUE if all elements satisfy a predicate
+
+```{r}
+banknotes %>% keep(is.numeric)
+```
+
+* `some()`: returns TRUE if some elements satsfy a predicate
+
+```{r}
+banknotes %>% some(is.numeric)
+```
+
+
+* `by_row` and `by_slice`: apply a function over all the rows of a data frame or over a specific parts of data frame
+
+```{r}
+banknotes %>%
+    slice_rows("type") %>%
+    by_row(dmap, mean) %>%
+    View()
+````

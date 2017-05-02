@@ -1,0 +1,57 @@
+---
+title: "Functions writing"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+```
+
+One of the great strengths of R is the user's ability to add functions. Indeed, each one of us can write his/her own functions following simple rules.  
+A function in R can be defined with the `function()` function. Its use can be summed up as follows:
+  
+```{r functions-writing2}
+my_function <- function(a, b, c) {
+  statements
+  return(object)
+  }
+```
+
+* `my_function` is the name of the customised function 
+* `a`, `b` and `c` are the arguments of `my_function()` 
+* the part in curly brackets contains the definition of the function, that is a body of code that does one or more operations
+
+It is good practice to end the function specifying its output with the `return()` or `invisible()` functions (inside curly brackets). The function output ought to be made of a single object. If there are multiple objects, they can be inserted in a list. 
+
+Let us see some examples.  
+
+The following function, `compute_square`, squares an incoming argument. It takes the argument `x` and multiplies it by itself. It saves this value into the object called `square`, and then it returns the value of the object `square`.
+
+```{r functions-writing-example1, tidy=FALSE}
+# Function definition
+compute_square <- function(x) {
+    square <- x * x
+    return(square)
+}
+
+
+compute_square(2)
+squared_num <- compute_square(24)
+squared_num
+```
+
+
+The following function, `vat`,  calculates taxable income and taxes, given the total and the VAT percentage.
+
+```{r functions-writing-example2, tidy=FALSE}
+# Function definition
+vat <- function(amount, rate = 0.21) {
+  taxable = amount / (1 + rate)
+  tax = amount - taxable
+  return(list(tax = tax, taxable = taxable))
+}
+
+vat(121)
+vat(104, rate = 0.04)
+```
+
+You can also specify a default value for function arguments, as for `rate` argument of the previous function. This value will be always used for the argument itself unless than different specification. 
