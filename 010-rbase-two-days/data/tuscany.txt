@@ -5,7 +5,7 @@ id|sex|year_of_birth|marital_status|income|house_number|city_name|province|provi
 4|F|1968|single|25964|11133.7|Cascina|Pisa|PI
 5|M|1975|married|16522.5|5078|Quarrata|Pistoia|PT
 6|M|1977|married|18124|5115|Castiglion Fiorentino|Arezzo|AR
-7|M|1972|single|25145|9801|Castel San Niccolò|Arezzo|AR
+7|M|1972|single|25145|9801|Castel San NiccolÃ²|Arezzo|AR
 8|F|1974|married|12741|5752|Barberino Val d Elsa|Firenze|FI
 9|F|1978|married|19051|6947|Forte dei Marmi|Lucca|LU
 10|F|1964|married|28893|9635|Fauglia|Pisa|PI
