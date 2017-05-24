@@ -12,3 +12,9 @@ Introduction to purrr                           | 08-purrr.Rmd
 
 Parallel computation
 The parallel package                            | 09-parallel.Rmd
+
+Documenting and sharing code
+Rmarkdown					| 10-rmarkdown.Rmd
+R packages					| 11-rpackages.Rmd
+Sharing your code				| 12-git.Rmd
+

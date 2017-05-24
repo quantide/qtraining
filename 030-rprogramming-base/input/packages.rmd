@@ -1,0 +1,604 @@
+## The package structure behind R
+Packages provide a mechanism for loading optional code, data and documentation as needed. 
+
+An R package can be thought of as the software equivalent of a scientific article: articles are the de facto standard to communicate scientific results, and readers expect them to be in a certain format. R packages are a comfortable way to maintain collections of R functions and data sets (Leisch, 2009)[^3].
+
+The R distribution itself includes about 30 packages. With regard to the ``importance'' of a package, packages can be split into three categories.
+
+* **Base** packages: part of the R source tree, maintained by R Core.
+* **Recommended** packages: part of every R installation, but not necessarily maintained by R
+Core.
+* **Contributed** packages: all the rest. This does not mean that these packages are necessarily of lesser quality than the above, e.g., many contributed packages on CRAN are written and maintained by R Core members. The goal is simply to try to keep the base distribution as lean as possible.
+
+The ```installed.packages()``` function returns a matrix with several information about installed packages. The ``Priority'' column reports the category (base, reccomended or contributed) which each package belong to.
+
+Terms about R packages are often confused. This may help to clarify:
+
+* **Package**: a collection of R functions, data, and compiled code in a well-defined format.
+* **Library**: the directory where packages are installed.
+* **Repository**: A website providing packages for installation.
+* **Source**: The original version of a package with human-readable text and code.
+* **Binary**: A compiled version of a package with computer-readable text and code, may work only on a specific platform.
+
+
+## Why create an R package?
+
+According to Rossi[^4], there are at least three good reasons to create an R package.
+
+1.  Creating an R package forces the user to document the code and provide test examples to insure that it actually works. It will also be much easier to use the code as documentation will only be a `?` command away and all of functions and shared libraries will be available for use. This is a good reason to create a package, also for its own use.
+
+2.  If the goal is disseminate a research, this is an ideal way of making sure others have access to the work. It will also increase the probability that eventually the work will be correct. This is a good reason to create a package for a team (private) use.
+
+3.  Giving back something to this amazing community of volunteers! This is a good reason to make the package available for the whole world (e.g. through CRAN).  
+
+
+
+## Packages Environments 
+
+Every R package has 3 associated environments:
+
+1. package environment 
+2. namespace environment 
+3. imports environment 
+
+The package environment contains all functions of the package exposed to the end user 
+
+The namespace environment contains all functions the package including those functions included in the package environment. This is not a duplication of the functions contained in both environments as two equal functions in the two environment share the same memory address. 
+
+As a simple proof of concept, consider a first environment `env1` with a simple object `x` in it:
+
+```{r packages-000A}
+env1 <- new.env()
+env1$x <- 1
+```
+
+and a second environment `env2` with an other object `x` that is a copy of object `x` from `env1`:
+
+```{r packages-000B}
+env2 <- new.env()
+env2$x <- env1$x
+```
+
+with the help of function `mem_add()`, we can see that `env1$x` and `env2$x` share the same memory address:
+
+```{r packages-000C}
+identical(mem_add(env1$x) , mem_add(env2$x))
+```
+
+Similarly, with the help of function `getAnywhere()` we can see that function `mean()` is located both in the package environment and in the namespace environment of package `base`.
+
+```{r packages-000D}
+getAnywhere(mean)$where
+```
+
+Having functions within namespaces rather than packages allows the developer to expose to the end user only those functions that are supposed to be called directly and hide all those functions that are to be internally called from exposed function.
+
+When we load a package, with a call either to `library()` or `require()` these four actions occur: 
+
+1. The namespace environment is loaded 
+2. A new environment is created: the package environment
+3. Only _exported_ functions are _copied_ from the namespace to the package environment
+4. Package environment is that included in the search list  
+
+
+<!--- 
+Cosa succede ai data.frame
+Questi stanno nel package ma non nel namespace
+E non penso siano caricati fin dall'inizio
+--->
+
+As the package environment is included in the search path, when we call a function from a package we call it from the package environment. Nevertheless, if we ask to a function from a package environment for the environment it belongs to, we have a little surprise:
+
+```{r packages-000E}
+sd_fun <- get( "sd" , envir = as.environment("package:stats" )) 
+environment( sd_fun) 
+```
+That is, the environment of function `sd()` that we call from `stats` package environment refers to the `stats` namespace environment as its environment.
+
+As a consequence, when function `sd()` runs, a new environment is created whose enclosure is the `stats` namespace environment and all _hidden_ functions within the namespace become available to function `sd()`.
+
+Note that, as a common practice, namespace environments may hold a quite large number of functions. Package `stat` contains `r length(as.environment("package:stats"))` objects while the corresponding namespace has `r length(as.environment(.getNamespace("stats")))` functions:
+
+```{r packages-000F}
+length(as.environment(.getNamespace("stats")))
+length(as.environment("package:stats"))
+```
+
+<!-- 
+spiegare la differenza fra import e suggested packages 
+--->
+
+The namespace environment of any package, as any environment has a parent. We can query `R` for the parent of any namespace:
+
+```{r packages-000G}
+parent.env(as.environment(.getNamespace("stats")))
+```
+
+As we can see the parent environment of a namespace is a new environment: `imports:packagename`,
+
+environmentName(parent.env(parent.env(as.environment("package:ggplot2"))))
+ls(parent.env(as.environment(.getNamespace("ggplot2"))))
+getAnywhere("strip_splits")
+getAnywhere("melt")
+
+search()
+XXX edit till here
+length(as.environment(.getNamespace("stats")))
+length(as.environment("package:stats"))
+```
+
+
+Finally, the `imports` environment contains objects from other packages that are required for a package to work properly.
+
+
+<!---
+## Ref
+
+Ref: http://obeautifulcode.com/R/How-R-Searches-And-Finds-Stuff/
+Ref: http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-scope.pdf
+Ref: http://stackoverflow.com/questions/12698700/r-functions-display-of-environment-name-instead-of-memory-address-of-that-en
+Ref: http://digitheadslabnotebook.blogspot.it/2011/06/environments-in-r.html
+Ref: https://stat.ethz.ch/pipermail/r-help/2010-July/245646.html
+--->
+## How to create a package
+
+### Starting a new package
+In order to create an R package, a computing environment including a number of tools is assumed. Under UNIX and UNIX-alike systems most of the tools are likely to be present by default, but Microsoft Windows will require careful setup.
+
+The following Sections show the creation of an R package under Linux. The creation of an R package under Microsoft Windows will be introduced in the Section \ref{sec:windows}.
+
+As a package is a collection of R functions, data, and compiled code in a well-defined format, a new package can be started in two ways.
+
+1. The R function `package.skeleton()` makes the structure for a new package. This function requires that all functions and data sets for the new package should be loaded into a clean R session, then the function is called. The function organizes R function and data sets, skeleton help files are created and a DESCRIPTION file is created. The function then prints out a list of things for you to do next.
+
+2. Functions, data set, help files etc. can be organized manually. Usually this is faster for experienced users.
+
+### Structure of a package
+The sources of a R package consists of a subdirectory containing some files and directories in a well organized structure.
+
+Files ‘DESCRIPTION’ and ‘NAMESPACE’ and subdirectories ‘R’, ‘man’, and ‘data’ are required for every package and are created by `package.skeleton()` function.
+
+The ‘DESCRIPTION’ file contains basic information about the package. The ‘Package’, ‘Version’, ‘License’, ‘Description’, ‘Title’, ‘Author’, and
+‘Maintainer’ fields are mandatory, all other fields are optional. It is strongly suggested to provide information about the package, but the
+package building run also with default information contained in the skeleton file.
+
+R has a namespace management system for code in packages. This system allows the package writer to specify which variables in the package
+should be exported to make them available to package users, and which variables should be imported from other packages. The mechanism for
+specifying a namespace for a package is through the ‘NAMESPACE’ file in the top level package directory.
+
+The ‘R’ subdirectory contains R code files, only. The `package.skeleton()` function returns a .R file for each function.
+
+The ‘man’ subdirectory should contains only documentation files for the objects in the package in R documentation (Rd) format. It is strongly suggested to provide help for each function and for the whole package, however the package building require only the ‘Title’ field for each Rd file to work.
+
+The ‘data’ subdirectory contains data files.
+
+A package may also contain files ‘INDEX’, ‘configure’, ‘cleanup’, ‘LICENSE’, ‘LICENCE’, ‘COPYING’ and ‘NEWS’ and directories ‘data’, ‘exec’, ‘inst’, ‘po’, ‘src’, and ‘tests’. These subdirectories can be missing, but which should not be empty. 
+
+The sources and headers for the compiled code are in ‘src’. The ‘demo’ subdirectory is for R scripts (for running via `demo()`) that demonstrate some of the functionality of the package. The contents of the ‘inst’ subdirectory will be copied recursively to the installation directory. Subdirectories of ‘inst’ should not interfere with those used by R. Subdirectory ‘exec’ could contain additional executables the package needs, typically scripts for interpreters such as the shell, Perl, or Tcl. This mechanism is currently used only by a very few packages, and still experimental. Subdirectory ‘tests’ is for additional package-specific test code, similar to the specific tests that come with the R distribution. Subdirectory ‘po’ is used for files related to localization.
+
+### Creating a package
+When all is well organized, the following steps are required:
+
+1.  the ‘DESCRIPTION’ file ought be filled in with required information,
+2.  the ‘NAMESPACE’ file ought be filled in with required information,
+3.  the R documentation files ought be written,
+4.  the sources and headers for the compiled code, if any, ought be contained in the ‘src’ directory.
+
+Then, a package can be created. This requires three steps:
+
+1. **build**: the shell command ``R CMD BUILD`` builds an R source tarball. This means that temporary files are removed from the source tree of the package and everything is packed into a single file.
+2. **check**: the shell command ``R CMD CHECK`` runs a wide variety of diagnostic checks on the package. Checks may be run before or after the build step.
+3. **install**: the shell command ``R CMD INSTALL`` installs the package into a library and makes it available for usage in R. The R function ```install.packages()``` can be used instead.
+
+## The first package
+
+### Build the package skeleton
+
+The current R workspace contains two functions and a data frame.
+
+```{r packages-001}
+rm(list = ls())
+itself = function(x) print(x)
+paste2 = function(x, y) print(paste(x, y)) 
+set.seed(2012) 
+df = data.frame(x = rnorm(100), y = rnorm(100))
+ls()
+```
+
+The R function `package.skeleton()` makes the structure for a new package.
+
+```{r packages-002, eval=FALSE}
+package.skeleton(name = "simpleExample")
+```
+
+The `name` argument of the `package.skeleton()` function contains the name of the package. The package directory should be given the same name
+as the package. Because some file systems (e.g., those on Windows and by default on Mac OS X) are not case-sensitive, to maintain portability it
+is strongly recommended that case distinctions not be used to distinguish different packages. For example, if there is a package named ‘foo’, do not also create a package named ‘Foo’.
+
+The function returns a directory ‘simpleExample’ containing:
+
+-   the ‘DESCRIPTION’ file to be fill in;
+
+-   the ‘NAMESPACE’ file to be fill in, if needed;
+
+-   the ‘R’ directory with the R code, a file for each function;
+
+-   the ‘man’ directory with the R documentation file to be fill in;
+
+-   the ‘data’ directory with the R data, a file for each data object;
+
+-   the file ‘Read-and-delete-me’ with basic instructions about package creation.
+
+#### The ‘DESCRIPTION’ file
+An appropriate `DESCRIPTION' file for the package is:
+
+    Package: simpleExample
+    Title: A simple example of package building
+    Version: 1.0
+    Date: 2014-01-30
+    Author: Nicola Sturaro
+    Maintainer: Nicola Sturaro <nicola.sturaro@quantide.com>
+    Description: This is the first package that "Programming with R"
+                 attendees will create
+    License: GPL-2
+
+#### The ‘NAMESPACE’ file
+An appropriate `NAMESPACE' file for the package is:
+
+     exportPattern("^[[:alpha:]]+")
+     
+that simply exports all functions whose name begin with a character or a number (and not with a dot). This is the default behaviour and it can be changed using regular expressions. Alternatively, an `export(...)` statement for each function to be exported can be created.
+
+If the package requires external dependencies, they should be stated as follow:
+
+    import(dependencies1, dependencies2)
+
+If the package requires compiled code, it should be stated as follow:
+
+    useDynLib(opVar2)
+
+
+### Writing R documentation files
+
+R objects are documented in files written in “R documentation” (Rd) format, a simple markup language much of which closely resembles Latex,
+which can be processed into a variety of formats, including Latex, HTML and plain text.
+
+An ‘Rd’ file consists of three parts. The header gives basic information about the name of the file, the topics documented, a title, a short textual description and R usage information for the objects documented. The body gives further information; for example, on the function’s arguments and return value, as in the example. Finally, there is an optional footer with keyword information. The header is mandatory. Information is given within a series of sections with standard names (and user-defined sections are also allowed). Unless otherwise specified these should occur only once in an ‘Rd’ file (in any order).
+
+The structure of the documentation file for the `itself()` function is:
+
+    \name{itself}
+    \alias{itself}
+    %- Also NEED an '\alias' for EACH other topic documented here.
+    \title{
+    %%  ~~function to do ... ~~
+    }
+    \description{
+    %%  ~~ A concise (1-5 lines) description of what the function does. ~~
+    }
+    \usage{
+    itself(x)
+    }
+    %- maybe also 'usage' for other objects documented here.
+    \arguments{
+      \item{x}{
+    %%     ~~Describe \code{x} here~~
+    }
+    }
+    \details{
+    %%  ~~ If necessary, more details than the description above ~~
+    }
+    \value{
+    %%  ~Describe the value returned
+    %%  If it is a LIST, use
+    %%  \item{comp1 }{Description of 'comp1'}
+    %%  \item{comp2 }{Description of 'comp2'}
+    %% ...
+    }
+    \references{
+    %% ~put references to the literature/web site here ~
+    }
+    \author{
+    %%  ~~who you are~~
+    }
+    \note{
+    %%  ~~further notes~~
+    }
+
+    %% ~Make other sections like Warning with \section{Warning }{....} ~
+
+    \seealso{
+    %% ~~objects to See Also as \code{\link{help}}, ~~~
+    }
+    \examples{
+    ##---- Should be DIRECTLY executable !! ----
+    ##-- ==>  Define data, use random,
+    ##--  or do  help(data=index)  for the standard data sets.
+
+    ## The function is currently defined as
+    function (x) 
+    {
+        print(itself)
+      }
+    }
+    % Add one or more standard keywords, see file 'KEYWORDS' in the
+    % R documentation directory.
+    \keyword{ ~kwd1 }
+    \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+
+The above skeleton structure can be filled as follow:
+
+    \name{itself}
+    \alias{itself}
+    \title{Print the input value}
+    \description{This elementary function prints the input value}
+    \usage{
+    itself(x)
+    }
+
+    \arguments{
+      \item{x}{input value}
+    }
+    \details{
+    The input value can be both a numeric or a character string.
+    }
+    \value{
+    The input value is printed
+    }
+    \references{
+    No references for a so basic function!
+    }
+    \author{
+    Andrea
+    }
+
+    \seealso{
+    \code{\link{paste2}} for the help of the functionpaste2
+    }
+
+    \examples{
+    itself(5)
+    itself("Diego")
+    }
+
+
+
+### Build the package
+
+At this point:
+
+1.  the package skeleton is created,
+
+2.  the ‘DESCRIPTION’ file contains the required information,
+
+3.  the ‘NAMESPACE’ file contains the required information,
+
+4.  the R documentation files are written,
+
+5.  the sources and headers for the compiled code, if any, are contained  in the ‘src’ directory.
+
+The package can be build typing (in the shell):
+
+    $ R CMD BUILD simpleExample/
+
+The command returns the following output:
+
+    * checking for file `simpleExample/DESCRIPTION' ... OK
+    * preparing `simpleExample':
+    * checking DESCRIPTION meta-information ... OK
+    * checking for LF line-endings in source and make files
+    * checking for empty or unneeded directories
+    * looking to see if a `data/datalist' file should be added
+    * building `simpleExample_1.0.tar.gz'
+
+The R package has been created. The source file is a .tar.gz file. The file name contains the package name and the version number. The package
+version number were provided in the ‘DESCRIPTION’ file.
+
+### Check the package
+
+When a package is built[^note-check], it must be checked to detect errors and warnings. The package check can be run typing, in the directory containing the source file:
+
+    $ R CMD CHECK simpleExample_1.0.tar.gz
+
+[^note-check]: as seen above, a package can be checked also before it is built, e.g. `R CMD CHECK simpleExample/`
+
+The following output refers to a not working package.
+
+    * using log directory `/path/simpleExample.Rcheck'
+    * using R version 2.15.0 (2012-03-30)
+    * using platform: x86_64-pc-linux-gnu (64-bit)
+    * using session charset: UTF-8
+    * checking for file `simpleExample/DESCRIPTION' ... OK
+    * checking extension type ... Package
+    * this is package `simpleExample' version `1.0'
+    * checking package namespace information ... OK
+    * checking package dependencies ... OK
+    * checking if this is a source package ... OK
+    * checking if there is a namespace ... OK
+    * checking for executable files ... OK
+    * checking whether package `simpleExample' can be installed ... ERROR
+    Installation failed.
+    See `/path/00install.out' for details.
+
+The ‘00install.out’ file reports the trouble:
+
+    *** installing help indices
+    Error in Rd_info(db[[i]]) : 
+      missing/empty \title field in 
+        '/path/simpleExample.Rcheck/00_pkg_src/simpleExample/man/df.Rd'
+    Rd files must have a non-empty \title.
+
+The ‘Title’ field of the R documentation files were not filled in, as required. In fact, the above error refer to a package in which the
+skeleton file of the R documentation was not filled in. After the ‘DESCRIPTION’ file is filled in and the documentation is written, the
+check command returns:
+
+    * using log directory `/path/simpleExample.Rcheck'
+    * using R version 2.15.0 (2012-03-30)
+    * using platform: x86_64-pc-linux-gnu (64-bit)
+    * using session charset: UTF-8
+    * checking for file `simpleExample/DESCRIPTION' ... OK
+    * checking extension type ... Package
+    * this is package `simpleExample' version `1.0'
+    * checking package namespace information ... OK
+    * checking package dependencies ... OK
+    * checking if this is a source package ... OK
+    * checking if there is a namespace ... OK
+    * checking for executable files ... OK
+    * checking whether package `simpleExample' can be installed ... OK
+    * checking installed package size ... OK
+    * checking package directory ... OK
+    * checking for portable file names ... OK
+    * checking for sufficient/correct file permissions ... OK
+    * checking DESCRIPTION meta-information ... OK
+    * checking top-level files ... OK
+    * checking index information ... OK
+    * checking package subdirectories ... OK
+    * checking R files for non-ASCII characters ... OK
+    * checking R files for syntax errors ... OK
+    * checking whether the package can be loaded ... OK
+    * checking whether the package can be loaded with stated dependencies ... OK
+    * checking whether the package can be unloaded cleanly ... OK
+    * checking whether the namespace can be loaded with stated dependencies ... OK
+    * checking whether the namespace can be unloaded cleanly ... OK
+    * checking for unstated dependencies in R code ... OK
+    * checking S3 generic/method consistency ... OK
+    * checking replacement functions ... OK
+    * checking foreign function calls ... OK
+    * checking R code for possible problems ... OK
+    * checking Rd files ... OK
+    * checking Rd metadata ... OK
+    * checking Rd cross-references ... OK
+    * checking for missing documentation entries ... OK
+    * checking for code/documentation mismatches ... OK
+    * checking Rd \usage sections ... OK
+    * checking Rd contents ... OK
+    * checking for unstated dependencies in examples ... OK
+    * checking examples ... OK
+    * checking PDF version of manual ... OK
+
+Now, all works!
+
+### Install the package
+
+Finally, the package can be installed by the command
+
+    $ R CMD INSTALL simpleExample_1.0.tar.gz
+
+At last, the package can be used:
+
+```{r packages-003, eval=FALSE}
+library(simpleExample)
+```
+```{r packages-004}
+itself(5)
+paste2("Score", 23)
+```
+
+## Further deepenings
+
+### Submit a package to CRAN
+
+To distribute a package through the Comprehensive R Archive Network (CRAN) repository, just follow the instructions in [CRAN website](http://cran.r-project.org/). Binaries for Windows and Max OS X are created by CRAN.
+
+### Get the Windows binary
+
+Sometimes, packages are created for personal or business team purposes and may not be avalaible through CRAN.
+
+If the package cannot be submitted through the CRAN repository, the tool provided by the [R-project](http://win-builder.r-project.org/) can be used to get the Windows binary.
+
+
+### Some terminology about R packages
+
+The following notes[^1] will help understand some terminology.
+
+-   A *package* is a directory of files which extend R, either a source
+    package (the master files of a package), or a tarball containing the
+    files of a source package, or an installed package, the result of
+    running `R CMD INSTALL` on a source package. On some platforms there
+    are also binary packages, a zip or tarball containing the files of
+    an installed package which can be unpacked rather than installing
+    from sources.
+
+-   A package *is not* a library. The latter is used in two senses in R
+    documentation.
+
+    1.  The first is a directory into which packages are installed: in that sense it is sometimes referred to as a library
+        directory or library tree (since the library is a directory
+        which contains packages as directories, which themselves contain
+        directories).
+
+    2.  The second sense is that used by the operating system, as a
+        shared library or static library or (especially on Windows) a
+        DLL, where the second L stands for “library”. Installed packages
+        may contain compiled code in what is known on most Unix-alikes
+        as a shared object and on Windows as a DLL (and used to be
+        called a shared library on some Unix-alikes). The concept of a
+        shared library (dynamic library on Mac OS X) as a collection of
+        compiled code to which a package might link is also used,
+        especially for R itself on some platforms.
+
+-   There are a number of well-defined operations on source packages.
+    The most common is *installation* which takes a source package and
+    installs it in a library using `R CMD INSTALL` or
+    `install.packages()`. Source packages can be *built*, a distinct
+    concept. This involves taking a source directory and creating a
+    tarball ready for distribution, including cleaning it up and
+    creating PDF documentation from any vignettes it may contain. Source
+    packages (and most often tarballs) can be checked, when a test
+    installation is done and tested (including running its examples);
+    also, the contents of the package are tested in various ways for
+    consistency and portability.
+
+-   *Compilation* is not a correct term for a package. Installing a
+    source package which contains C, C++ or Fortran code will involve
+    compiling that code.
+
+-   The option of *lazy loading* of code or data is mentioned at several
+    points. This is an optional part of the installation, selected by
+    default for R code (and not using it is deprecated). When used the R
+    objects of the package are created at installation time, and stored
+    in a database in the ‘R’ directory of the installed package, being
+    loaded into the session at first use. This makes the R session run
+    faster and used less (virtual) memory.
+
+### \label{sec:windows} Create a package under Windows
+
+R was designed in a UNIX environment which includes a rather complete set of compilers, programming utilities, and text-formatting routines. Windows lacks these components. This means that we have to download the free-ware equivalents of the subset of UNIX
+needed to build a package.
+
+The following components are required:
+
+1.  a minimal set of UNIX utilities;
+
+2.  the GNU compiler set (only if the package contains C/C++ /Fortran
+    code);
+
+3.  a version of TeX (eg., fpTeX).
+
+Fortunately, UNIX utilities and GNU compiler are available and easy to
+obtain thanks to the work of Brian Ripley and Duncan Murdoch. These
+utilities are known as [R-tools](http://www.murdoch-sutherland.com/Rtools/).
+
+TeX is required only if the package will be submitted to the CRAN. TeX
+is used to format the LaTeX version of documentation pages. If TeX is
+not avalaible, TeX errors generated in the creation of the documentation
+cannot be checked. MiKTeX is not recommended: it will not work with the
+R package installer/builder without some tinkering (not for the
+un-initiated!). [fpTeX](http://www.ctan.org/pkg/fptex), is a freeware version of TeX which works well
+with R.
+
+A decent text editor, like [VIM](http://www.vim.org/), is required. Microsoft Word is not
+designed to be a text editor: avoid it. Notepad will save files with the
+.txt extension by default which can cause confusion. There is a Windows
+version of VIM, which is an “improved” version of the ubiquitous Unix
+editor, vi.
+
+This manual cannot provide a step-by-step guide about the configuration
+of tools.
+
+
+[^1]: Notes are taken from “*Writing R Extensions*” by the R Core Team.
+
+[^3]: Leisch F., Creating R packages, http://cran.r-project.org/doc/contrib/Leisch-CreatingPackages.pdf
+
+[^4]: RossiP., Making R Packages Under Windows: A Tutorial, http://www1.appstate.edu/\~arnholta/Software/MakingPackagesUnderWindows.pdf

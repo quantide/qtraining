@@ -1,5 +1,5 @@
 ---
-title: "The `purrr` package "
+title: 'The `purrr` package'
 ---
 
 
@@ -22,6 +22,7 @@ Notice that `purrr` is part of the `tidyverse` core, together with `ggplot2` and
 
 For additional material on `purrr`, please visit the following webpage (https://cran.r-project.org/web/packages/purrr/index.html)
 
+Recently, some of `purrr`'s functions were moved to a newly developed package called `purrrlyr`. `purrrlyr` contains functions that are a bridge between `purrr` and `dplyr`. 
 
 
 ## The `map()` family
@@ -200,9 +201,10 @@ Again, as for `map()`, there are versions of `invoke_map()` that allow to specif
 
 ## `dmap()`
 
-The function `dmap()` is just like `map()` but it always returns a data frame. Moreover it can work on sliced data frames:
+The function `dmap()` is now included in the package `purrrly`. It is just like `map()` but it always returns a data frame. Moreover it can work on sliced data frames:
 
 ```{r}
+require(purrrlyr)
 banknotes %>%
   slice_rows("type") %>% 
   dmap(mean)
@@ -255,7 +257,8 @@ banknotes %>% some(is.numeric)
 
 ```{r}
 banknotes %>%
-    slice_rows("type") %>%
-    by_row(dmap, mean) %>%
-    View()
+  slice_rows("type") %>% 
+  by_slice(dmap, mean, na.rm = TRUE) %>%
+  apply(1, unlist) %>%
+  View()
 ````
