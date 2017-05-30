@@ -1,5 +1,5 @@
 ---
-title: 'The `purrr` package'
+title: "The `purrr` package"
 ---
 
 
@@ -259,6 +259,5 @@ banknotes %>% some(is.numeric)
 banknotes %>%
   slice_rows("type") %>% 
   by_slice(dmap, mean, na.rm = TRUE) %>%
-  apply(1, unlist) %>%
-  View()
+  apply(1, unlist)
 ````

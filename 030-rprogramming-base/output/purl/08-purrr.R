@@ -78,6 +78,7 @@ param <- list(
 invoke_map(f, param, n = 5) 
 
 ## ------------------------------------------------------------------------
+require(purrrlyr)
 banknotes %>%
   slice_rows("type") %>% 
   dmap(mean)
@@ -102,7 +103,7 @@ banknotes %>% some(is.numeric)
 
 ## ------------------------------------------------------------------------
 banknotes %>%
-    slice_rows("type") %>%
-    by_row(dmap, mean) %>%
-    View()
+  slice_rows("type") %>% 
+  by_slice(dmap, mean, na.rm = TRUE) %>%
+  apply(1, unlist)
 

@@ -10,6 +10,7 @@ Functionals                                     | 06-functionals.Rmd
 Map and mapply                                  | 07-map-mapply.Rmd
 Introduction to purrr                           | 08-purrr.Rmd
 
+
 Parallel computation
 The parallel package                            | 09-parallel.Rmd
 
