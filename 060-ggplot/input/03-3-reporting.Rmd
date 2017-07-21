@@ -64,6 +64,7 @@ You may also add colourful text:
 
 `This is <span style="color:red"> coloured </span>`
 
+However, if you are compiling a pdf, the above sintax will not produced a coloured text. You will need to use a slightly different syntax.
 
 ******************
 #### Headers
@@ -217,15 +218,14 @@ knitr::kable(head(mtcars))
 
 If you are taking notes or you are writing a manual for other R users, you may want to show the code along with the output and some other times you may want to show just the code. Some other times, for examples if you are just creating a report, you may want to hide the code and only show the output. These sorts of actions can be changed for all code chunks by adding some options to each code chunk.
 
-* __Hide code__: for hiding code, you just need to add to your code chunk ``{r, echo = FALSE}``
+* _Hide code_: for hiding code, you just need to add to your code chunk ``{r, echo = FALSE}``
 
-* __Hide output__: if you want to show the outuput but not the code, add the option ``{r, echo = FALSE}``
+* _Hide output_: if you want to show the outuput but not the code, add the option ``{r, echo = FALSE}``
 
-* __Hide messages__: messages regarding for example packages loading can be hidden by using the option ``{r, message = FALSE}``
+* _Hide messages_: messages, for example packages loading meessages, may be hidden by using the option ``{r, message = FALSE}``
 
-* __Hide warnings__: the printing of warnings can be can be hidden by using the option ``{r, warning = FALSE}``
+* _Hide warnings_: the printing of warnings can be hidden by using the option ``{r, warning = FALSE}``
 
-* __Hide code and results__: if you want to hide both code and results, you may use ``{r, include = FALSE}``
-
+* _Hide code and results_: if you want to hide both code and results, you may use ``{r, include = FALSE}``
 
 
