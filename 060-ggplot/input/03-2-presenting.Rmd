@@ -23,7 +23,7 @@ Winston Chang wrote on his book:
 
 > Broadly speaking, visualizations of data serve two purposes: discovery and communication. In the discovery phase, you’ll create exploratory graphics, and when you do this, it’s important to be able try out different things quickly. In the communication phase, you’ll present your graphics to others. When you do that, you’ll need to tweak the appearance of the graphics, and you’ll usually need to put them somewhere other than on your computer screen.
 
-This chapter show how to output your plots for presentation.
+This chapter shows how to output your plots for printing.
 
 
 ## Reassembling Plots for Printing
