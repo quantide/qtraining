@@ -1,0 +1,231 @@
+---
+title: "Reports with R Markdown"
+---
+
+```{r, echo=FALSE, message=FALSE, include=FALSE, purl=FALSE}  
+options(width = 108)
+show_chunk <- function(x){
+  cat(x)
+}
+require(knitr)
+```  
+
+```{r g0, echo=FALSE, purl=FALSE}
+include_graphics("./images/flow-info.png", dpi=150)
+```
+
+
+## Introduction
+
+R Markdown provides an authoring framework for data science. R Markdown allows us to turn our analysis into high quality documents, reports, presentations and dashboards. We can use a single R Markdown file to both:
+
+* save and execute code
+* generate high quality reports that can be shared with an audience
+
+R Markdown documents are fully reproducible and support multiple programming languages like: R, Python, and SQL. It support also dozens of static and dynamic output formats, including HTML, PDF, MS Word, Beamer, HTML5 slides, Tufte-style handouts, books, dashboards, shiny applications, scientific articles, websites, and more. 
+
+## Installation
+
+You can install the R Markdown package from CRAN as follows:
+
+```{r, eval=FALSE}
+install.packages("rmarkdown")
+```
+
+## Markdown Basics
+
+This is an R Markdown file, a plain text file that has the extension `.Rmd`:
+
+![<small>R Markdown File</small>](./images/rmd-1.png)
+
+Notice that the file contains three types of content:
+
+* An (optional) YAML header surrounded by `---`
+* R code chunks surrounded by ` ``` `
+* text mixed with simple text formatting
+
+Markdown is a simple formatting language designed to make authoring content easy for everyone. Rather than writing complex markup code (e.g. HTML or LaTeX), Markdown enables the use of a syntax much more like plain-text email.
+
+### Basic rules for text 
+
+This section provides quick references to the most commonly used R Markdown syntax.
+
+#### Emphasis
+
+If you want to write words in bold or italic, you have to follow the syntax:
+
+`*italic*`  `**bold**`  
+*italic*   **bold**
+
+`_italic_`   `__bold__ `  
+_italic_   __bold__ 
+
+You may also add colourful text:
+
+`This is <span style="color:red"> coloured </span>`
+
+
+******************
+#### Headers
+
+To indicate titles of sections according to their hierarchy:
+
+`# Header 1`       
+
+# Header
+
+`## Header 2`      
+
+## Header
+
+`### Header 3`     
+
+### Header
+
+******************
+
+#### Lists
+
+To create a list of items:
+
+* Unordered List:
+  
+`* Item 1`  
+`* Item 2`  
+    `+ Item 2a`  
+    `+ Item 2b`    
+  
+  
+* Item 1
+* Item 2
+    + Item 2a
+    + Item 2b  
+
+******************
+      
+* Ordered List:
+
+`1. Item 1`  
+`2. Item 2`  
+`3. Item 3`  
+    `+ Item 3a`  
+    `+ Item 3b`  
+
+1. Item 1
+2. Item 2
+3. Item 3
+    + Item 3a
+    + Item 3b   
+    
+******************
+
+#### Links
+
+To add an http address or a link to a phrase:
+
+`http://example.com`  
+http://example.com  
+
+`[linked phrase](http://example.com)`  
+[linked phrase](http://example.com)  
+
+******************
+
+#### Images
+
+To add an images on the web or local files in the same directory:
+
+`![alt text](http://example.com/logo.png)`
+
+`![alt text](figures/img.png)`
+
+`[alt text]` specifies the text to be inserted if the image is not displayed.
+
+******************
+
+#### Inline Code
+
+To include code out of the chunk, you have to enclose it in back-ticks:  
+
+We defined the \` add \` function to  compute the sum of two numbers.  
+
+We defined the ` add ` function to  compute the sum of two numbers. 
+
+******************
+
+#### Tables
+If you want to create a table, you have to follow the the syntax:
+
+`First Header  | Second Header`    
+`------------- | -------------`    
+`Content Cell  | Content Cell`    
+`Content Cell  | Content Cell`    
+    
+
+First Header  | Second Header  
+------------- | -------------  
+Content Cell  | Content Cell  
+Content Cell  | Content Cell
+
+******************
+
+
+#### Manual Line Breaks
+
+To create a line breaks, you have to end a line with two or more spaces:
+
+Roses are red,  
+Violets are blue.
+
+
+## Rendering Output
+
+To generate a report from the file, run the `render` command:
+
+```{r eval=FALSE}
+require(rmarkdown)
+render("example.Rmd")
+```
+
+Otherwise, use the "Knit" button in the RStudio IDE to render the file and preview the output with a single click or the keyboard shortcut _Ctrl + Shift + K_.
+
+![<small>R Markdown Output</small>](./images/rmd-3.png)
+
+R Markdown generates a new file that contains selected text, code, and results from the .Rmd file. The new file can be a finished web page, PDF, MS Word document, slide show, notebook, handout, book, dashboard, package vignette or other format.
+
+
+### Rendering tables with `knitr`
+
+The `knitr` package provides a general-purpose tool for dynamic report generation in `R`.
+
+Among its many functions, it can also help you to nicely render outputs. If you wish to show a table you may simply print the table as you commonly do in `R`:
+
+```{r print table}
+data(mtcars)
+head(mtcars)
+```
+
+However, you may want your table to look nicer. The `knitr` package allows you to easily do so with the function `kable`:
+
+
+```{r kable}
+knitr::kable(head(mtcars))
+```
+
+
+### Code chunk options
+
+If you are taking notes or you are writing a manual for other R users, you may want to show the code along with the output and some other times you may want to show just the code. Some other times, for examples if you are just creating a report, you may want to hide the code and only show the output. These sorts of actions can be changed for all code chunks by adding some options to each code chunk.
+
+* __Hide code__: for hiding code, you just need to add to your code chunk ``{r, echo = FALSE}``
+
+* __Hide output__: if you want to show the outuput but not the code, add the option ``{r, echo = FALSE}``
+
+* __Hide messages__: messages regarding for example packages loading can be hidden by using the option ``{r, message = FALSE}``
+
+* __Hide warnings__: the printing of warnings can be can be hidden by using the option ``{r, warning = FALSE}``
+
+* __Hide code and results__: if you want to hide both code and results, you may use ``{r, include = FALSE}``
+
+
+
