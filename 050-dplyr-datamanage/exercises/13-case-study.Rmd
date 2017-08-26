@@ -50,7 +50,6 @@ You will work in this folder.
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 require(tidyverse)
-getwd()
 
 # chefmozcuisine
 chefmozcuisine <- read_delim("chefmozcuisine.csv", delim = ",", col_names = T)
