@@ -1,11 +1,11 @@
-## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
-# load packages
-require(tidyverse) # alternatively: require(dplyr); require(ggplot2)
-require(DBI)
-require(RSQLite)
+## ----first, include=TRUE, purl=TRUE, message=FALSE, eval = FALSE---------
+## # load packages
+## require(tidyverse)
+## require(DBI)
+## require(RSQLite)
 
-## ----message=FALSE-------------------------------------------------------
-require(RSQLite)
+## ----message=FALSE, eval = FALSE-----------------------------------------
+## require(RSQLite)
 
 ## ----eval=FALSE----------------------------------------------------------
 ## charset <- function (file){

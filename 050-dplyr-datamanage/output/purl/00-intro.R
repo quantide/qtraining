@@ -13,30 +13,30 @@ tidyverse_packages()
 ## ----bank, message=FALSE-------------------------------------------------
 require(qdata)
 data(bank)
-bank
+head(bank)
 str(bank)
 
 ## ----people, message=FALSE-----------------------------------------------
 data(people)
-people
+head(people)
 str(people)
 
 ## ----mtcars, message=FALSE-----------------------------------------------
 data(mtcars)
-mtcars
+head(mtcars)
 str(mtcars)
 
 ## ----italia, message=FALSE-----------------------------------------------
 data(italia)
-italia
+head(italia)
 str(italia)
 
 ## ----tennis, message=FALSE-----------------------------------------------
 data(usopen)
-usopen
+head(usopen)
 str(usopen)
 data(wimbledon)
-wimbledon
+head(wimbledon)
 str(wimbledon)
 
 ## ----help, eval=FALSE----------------------------------------------------

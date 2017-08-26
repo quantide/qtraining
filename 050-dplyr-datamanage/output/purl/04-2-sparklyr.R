@@ -1,5 +1,5 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
-require(tidyverse) # alternatively: require(dplyr)
+require(tidyverse)
 
 ## ---- eval = FALSE-------------------------------------------------------
 ## install.packages("sparklyr")
@@ -32,7 +32,7 @@ require(sparklyr)
 ## sc <- spark_connect(master = "local", config = config)
 
 ## ---- eval = FALSE-------------------------------------------------------
-## csv_file <- 'file:///home/emanuela/ema/sp-data/*.csv'
+## csv_file <- '~/data/*.csv'
 ## ontime_tbl <- spark_read_csv(sc = sc,
 ##                              'ontime_tbl' ,
 ##                              path = csv_file,

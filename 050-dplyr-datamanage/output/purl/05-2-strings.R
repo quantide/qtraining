@@ -1,12 +1,12 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 # load packages
-require(tidyverse) # alternatively: require(dplyr), require(tidyr)
+require(tidyverse)
 require(stringr)
 require(qdata)
 
 ## ------------------------------------------------------------------------
 # character vector
-char_vector <- c("Hello", "Andrea", "Spanò")
+char_vector <- c("Hello", "world", "!")
 
 ## ------------------------------------------------------------------------
 # character vector
@@ -14,12 +14,12 @@ str_length(char_vector)
 
 ## ------------------------------------------------------------------------
 # character vector
-str_c("Andrea", "Spanò", sep = " ")
+str_c("Hello", "World", sep = " ")
 
 ## ------------------------------------------------------------------------
 # character vector
-str_c("Hello", "Andrea", "Spanò", sep = " ")
-str_length(str_c("Hello", "Andrea", "Spanò", sep = " "))
+str_c("Hello", "world", "!", sep = " ")
+str_length(str_c("Hello", "world", "!", sep = " "))
 
 ## ------------------------------------------------------------------------
 str_c(char_vector, collapse = " ")
@@ -37,7 +37,7 @@ tennis %>%
   select(-First.Name)   # drop the column "First.Name"
 
 ## ------------------------------------------------------------------------
-char_vector <- c("Hello Andrea !")
+char_vector <- c("Hello world !")
 str_split(char_vector, " " )
 
 ## ------------------------------------------------------------------------

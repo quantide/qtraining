@@ -1,6 +1,6 @@
 ## ----first, include=TRUE, purl=TRUE, message=FALSE-----------------------
 # load packages and data
-require(tidyverse) # alternatively require(dplyr); require(tidyr)
+require(tidyverse)
 require(broom)
 require(qdata)
 data(people)
