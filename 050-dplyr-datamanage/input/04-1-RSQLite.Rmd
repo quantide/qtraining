@@ -6,9 +6,9 @@ title: "RSQLite: 'SQLite' Interface for R"
 options(width = 108)
 ```
 
-```{r first, include=TRUE, purl=TRUE, message=FALSE}
+```{r first, include=TRUE, purl=TRUE, message=FALSE, eval = FALSE}
 # load packages
-require(tidyverse) # alternatively: require(dplyr); require(ggplot2)
+require(tidyverse) 
 require(DBI)
 require(RSQLite)
 ```
@@ -20,7 +20,7 @@ The data consists of flight arrival and departure details for all commercial fli
 
 This is clearly a case for SQLite: let us load the `RSQLite` package.
 
-```{r message=FALSE}
+```{r message=FALSE, eval = FALSE}
 require(RSQLite)
 ```
 
