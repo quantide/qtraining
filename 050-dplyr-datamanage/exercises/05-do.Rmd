@@ -1,0 +1,86 @@
+---
+title: 
+author:
+date: 
+output:
+  html_document:
+    self_contained: no
+---
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(tidyverse) 
+require(knitr) 
+opts_knit$set(message=FALSE)
+opts_knit$set(warning=FALSE)
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="./data")
+show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+
+
+
+Do
+================================
+
+## `do`
+Note: all the exercises of this section are based on the `flights` dataset.
+
+
+```{r, message = FALSE}
+library(dplyr)
+library(nycflights13)
+```
+
+
+### Exercise 1
+Calculate quartiles (25-, 50- and 75-percentiles) of delay at arrival per origin. Put all three quartiles in a unique column.
+
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
+flights  %>% group_by(origin) %>%
+  do(data.frame(p = (1:3)/4, 
+                quantile = quantile(.$arr_delay, probs = (1:3)/4, na.rm = TRUE)))            
+```
+
+### Exercise 2
+Redo the previous exercise putting the three quartiles in three different columns (hint: use `summarise()`).
+
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
+flights  %>% group_by(origin) %>%
+  do(data.frame(p1 = quantile(.$arr_delay, probs = 1/4, na.rm = TRUE),
+     p2 = quantile(.$arr_delay, probs = 2/4, na.rm = TRUE),
+p3 = quantile(.$arr_delay, probs = 3/4, na.rm = TRUE)))
+```
+
+
+
+### Exercise 3
+Calculate mean and standard deviation of delay at arrival per origin. Put both statistics in a unique column.
+
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
+fun <- function(x, ...)  c(mean = mean(x, ...), sd = sd(x, ...))
+
+flights %>% group_by(origin) %>%
+  do(data.frame(stats = c("mean", "sd") , 
+                value = fun(.$arr_delay, na.rm = TRUE)))
+```
+
+
+
+### Exercise 4
+Redo the previous exercise putting mean and standard deviation in two different columns (hint: use `summarise()`).
+
+
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
+flights %>% group_by(origin) %>%
+  do(data.frame(arr_delay_mean = mean(.$arr_delay, na.rm = TRUE),
+                arr_delay_sd = sd(.$arr_delay, na.rm = TRUE)))
+```
+

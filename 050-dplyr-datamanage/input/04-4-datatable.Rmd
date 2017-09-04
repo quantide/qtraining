@@ -1,0 +1,77 @@
+---
+title: ' data.table backend for dplyr: data.table'
+---
+
+```{r options, include=FALSE, purl=FALSE}
+require(knitr)
+options(width = 108)
+opts_chunk$set(message = FALSE)
+opts_chunk$set(warning = FALSE)
+```
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+# load packages
+require(tidyverse)
+require(data.table) 
+```
+
+## What is data.table?
+
+`data.table` is a data object for fast aggregation of large data (e.g. 100GB in RAM), fast ordered joins, fast add/modify/delete of columns, a fast file reader and parallel file writer. 
+
+Its syntax is very different and less intuitive than dplyr's. 
+
+Suppose you want to import a quite large data file. Using the data.table format:
+
+```{r}
+data2006 <- fread("~/data/2006.csv")
+is.data.table(data2006)    
+```
+
+And then you want to calculate the average delay for data grouped per month:
+
+
+```{r}
+data2006[, mean(ArrDelay, na.rm = TRUE), keyby = Month]
+```
+
+
+The `data.table` syntax quickly gets more and more complicated. Suppose you want to apply find mean and standard deviation for the delay, again on data grouped by month:
+
+
+```{r}
+data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month]
+```
+
+and now, suppose you want to apply two functions to two variables:
+
+```{r}
+data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE),
+                  mean(Distance, na.rm = TRUE), sd(Distance, na.rm=TRUE)), keyby = Month]
+
+```
+
+## `datatable` backend for `dplyr`
+
+`dtplyr` is the `data.table` backend for `dplyr`. It provides S3 methods for `data.table` objects so that dplyr works the way you expect.
+
+`dtplyr` is slower than `data.table` because it creates copies of objects rather than mutating in place.
+
+```{r, message = FALSE}
+require(dtplyr)
+data2006_tbl_dt <- tbl_dt(data2006)
+
+microbenchmark::microbenchmark(
+datatable_dplyr = data2006_tbl_dt %>% 
+    group_by(Month) %>% 
+    summarise(m_Arrdelay = mean(ArrDelay, na.rm = TRUE), 
+              m_Distance = mean(Distance, na.rm = TRUE), 
+              sd_ArrDelay = sd(ArrDelay, na.rm = TRUE), 
+              sd_Distance = sd(Distance, na.rm = TRUE)),
+datatable = data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE),
+                  mean(Distance, na.rm = TRUE), sd(Distance, na.rm=TRUE)), keyby = Month],
+times = 20
+)
+
+```
+

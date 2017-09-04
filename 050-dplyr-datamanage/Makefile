@@ -20,8 +20,8 @@ OUTPUT_PURL_FILES = $(patsubst $(INPUT_DIR)/%, $(OUTPUT_PURL_DIR)/%, $(PURL_FILE
 
 TMP_MD_FILES = tmp_md
 EXERCISES_FILES = $(EXERCISES_DIR)
-EXERCISES_MD = $(patsubst %.Rmd, %.md, $(wildcard $(EXERCISES_FILES)/*.Rmd))
-EXERCISES_SOLUTIONS = $(patsubst %.Rmd, %.solution.md, $(wildcard $(EXERCISES_FILES)/*.Rmd))
+EXERCISES_MD = $(patsubst %.Rmd, %.md, $(sort $(wildcard $(EXERCISES_FILES)/*.Rmd)))
+EXERCISES_SOLUTIONS = $(patsubst %.Rmd, %.solution.md, $(sort $(wildcard $(EXERCISES_FILES)/*.Rmd)))
 
 
 # Pandoc Path (RSTUDIO VERSION)
@@ -41,7 +41,11 @@ PANDOC_PDF_OPTIONS = \
 all: manual exercise
 
 .PHONY: manual
-manual: $(OUTPUT_HTML_FILES) purl
+manual: $(OUTPUT_HTML_FILES) purl toc
+
+.PHONY: toc
+toc:
+	R --slave -e "source('../include/r/build-toc-html.R'); build_toc_html(path='$(INPUT_DIR)/',download_file='$(PROJECT).zip')"
 
 .PHONY: purl
 purl: $(OUTPUT_PURL_FILES)
@@ -91,7 +95,7 @@ $(EXERCISES_DIR)/%.solution.md: $(EXERCISES_DIR)/%.Rmd
 .PHONY: clean_md
 clean_md:
 	rm -rf $(EXERCISES_DIR)/*.md $(EXERCISES_DIR)/*.solution.md
-
+	
 .PHONY: clean
 clean:
 	rm -rf $(OUTPUT_HTML_DIR)/*

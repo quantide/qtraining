@@ -12,6 +12,8 @@ require(tidyverse)
 require(knitr) 
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(message=FALSE)
+opts_knit$set(warning=FALSE)
 opts_knit$set(root.dir="./exercises/data")
 show_solution <- if (exists("show_solution_mk")){
   show_solution_mk
@@ -27,26 +29,33 @@ Case study
 ================================
 
 ## Recap exercise
-In this section you will work on a real data set. Using all the tools provided throughout the course, you will manipulate data for better analysing it. In the data folder you find the following three files:
 
-1. rating_final.csv
-2. chefmezcuisine.csv
-3. userprofile.csv
+In this section you will use all the tools provided throughout the course. It is a simple example on real data that shows you the overall usage of the tools you were given during this course. 
 
-These are the files you will work on in this chapter.
+In the data folder you find the following three files:
+
+1. `rating_final.csv`
+2. `chefmezcuisine.csv`
+3. `userprofile.csv`
+
+These are the files you will work on in this section. 
+
+The files contain data on the rating of some restaurants in the US, their characteristics and the characteristics of the users rating them. 
+
+This exercise will guide you to first clean and combine data, and then answer questions on people's restaurant preferences. 
 
 Before starting th exercise, you should set your working directory in the _data_ folder, using `setwd()` function, like in this example:
 
 ```{r fake dir, eval = FALSE}
-setwd("C:/Users/Emanuela/Documents/datamanage/exercises/data)
+setwd("/data")
 ```
 
 You will work in this folder.
 
 
-### Exercise 1
+## Exercise 
 
-1. First of all you need to import the three files into `R` using the correct `readr` function. In order to find the correct function and to set the right options, you'd better explore the files by opening them in csv (check which is the separator, if there are column names, etc). 
+1. First of all you need to import the three files into `R` using the correct `readr` function. In order to find the correct function and to set the right options, you may explore the files by opening them in csv (check which is the separator, if there are column names, etc). 
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 require(tidyverse)
@@ -65,7 +74,7 @@ rating_final <-
 ```
 
 
-2. In order to understand what you are working on, check how many columns and rows each data frame is composed of, and check what type of variables you are working with. If the variables type has not correctly been parsed, parse it manually. If you find many variables, focus on those that you think may be interesting for understanding different people's tastes (for example age of the users, job, etc).
+2. In order to understand what you are working on, check how many columns and rows each data frame is composed of, and check the type of the variables you are working with. If the variables type has not correctly been parsed, parse it manually. Further explore those variables that you think may be interesting for understanding different people's tastes, by for example checking how many levels they have, etc etc.
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 
@@ -106,7 +115,7 @@ chefmozcuisine <- chefmozcuisine %>%
 ```
 
 
-3. Based on the userprofile data frame, create a new data frame with only relevant variables. Among these, keep the variables: userID, birth_year, budget, marital_status,  personality, smoker and activty. If you think there are other relevant variables, you may include them in the new data frame as well. Call the new data frame "userprofile_reduced".
+3. Consider `userprofile` data frame. Create a new data frame containing only relevant variables for users profile. Among these, keep the variables: `userID`, `birth_year`, `budget`, `marital_status`,  `personality`, `smoker` and `activity`. If you think there are other relevant variables, you may include them in the new data frame as well. Call the new data frame `userprofile_reduced`.
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 userprofile_reduced <- userprofile %>% 
@@ -116,7 +125,7 @@ userprofile_reduced
 ```
 
 
-4. Focus on the data frame userprofile_reduced. By exploring the different values recorded for `budget`, you may notice there are missing values. What are they recorded by? Replace all missing values with `NA`.  Do the same for all the variables in userprofile_reduced.
+4. Focus on the data frame `userprofile_reduced`. By exploring the different values recorded for `budget`, you may notice there are missing values. What are they recorded by? Replace all missing values with `NA`.  Do the same for all the variables in `userprofile_reduced`.
 
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
@@ -125,32 +134,32 @@ userprofile_reduced %>%
 
 # "?" is for missing values
 
-userprofile_final <- userprofile_reduced %>% na_if("?")
+userprofile_reduced <- userprofile_reduced %>% na_if("?")
 
 ```
 
 
-5. Note that for all users we have the year of birth but we do not have the age. Replce the year of birth with a variable called age.
+5. Note that for all users we have the year of birth but we do not have the age. As it may be easier to deal with their age, build a variable called `age` and drop `birth_year`.
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 require(lubridate)
 
-userprofile_final <- userprofile_final %>% 
+userprofile_reduced <- userprofile_reduced %>% 
   mutate(age = year(today())-birth_year) %>% 
   select(-birth_year)
 ```
 
 
-6. All three data frames are now ready to use. Merge the three data frames so that you keep all rows and columns of rating and you add all the variables of chefmezcuisine.csv and userprofile.csv. Call the new data frame rating_all.
+6. All three data frames are now ready to use. Merge the three data frames (`rating_final`, `userprofile_reduced` and `chefmoicuisine`) so that you keep all rows and columns of rating and you add all the variables of `chefmezcuisine` and `userprofile_reduced`. Call the new data frame `rating_all`.
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
 rating_all <- rating_final %>% 
-  left_join(userprofile_final) %>% 
+  left_join(userprofile_reduced) %>% 
   left_join(chefmozcuisine)
 ```
 
 
-7. Find the mean of all rating variables. Group data by placeID and then sort the tibble so that places with the highest average rating are at the top. Show id of such places and type of cuisine.
+7. Group data by `placeID` and find the average rating (`rating`, `food_rating` and `service_rating`). Sort the results so that places with the highest average rating are at the top. Show id of such places and type of cuisine. What is the cuisine type of users' favourite restaurants?
 
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
@@ -160,12 +169,11 @@ rating_all %>%
                     service_rating_mean = service_rating), 
                funs(mean)) %>%
   arrange(desc(rating_mean), desc(food_rating_mean), desc(service_rating_mean)) %>%
-  left_join(chefmozcuisine) %>%
-  select(c(placeID, rating_mean, food_rating_mean, service_rating_mean, Rcuisine))
+  left_join(chefmozcuisine) 
 ```
 
 
-8. Find mean and standard deviation of all rating variables. Do you notice differences with regards to ratings of students as compared to people that are employed? Do you find differences in smokers and non smokers? Do you notice large differences in any other group of users?
+8. Find mean and standard deviation of all rating variables. Do you notice differences with regards to ratings of students as compared to people that are employed? Do you find differences in smokers and non smokers? Think of other groups of users to compare. 
 
 
 ```{r, echo = show_solution, eval = show_solution, cache=FALSE}
@@ -178,5 +186,48 @@ rating_all %>%
   group_by(smoker) %>%
   summarise_at(vars(rating, food_rating, service_rating), 
                funs(n(), mean, sd))
+
+rating_all %>% 
+  group_by(budget) %>%
+  summarise_at(vars(rating, food_rating, service_rating), 
+               funs(n(), mean, sd))
 ```
+
+
+9. What are the best restaurant for smokers? What are the best restaurant for those that are on a budget?
+
+```{r, echo = show_solution, eval = show_solution, cache=FALSE}
+rating_all %>% 
+  filter(smoker == "true") %>%
+  group_by(placeID) %>%
+  summarise_at(vars(rating_mean = rating, food_rating_mean = food_rating, 
+                    service_rating_mean = service_rating), 
+               funs(mean, n())) %>%
+  arrange(desc(rating_mean), desc(food_rating_mean), desc(service_rating_mean)) %>%
+  left_join(chefmozcuisine) 
+
+rating_all %>% 
+  filter(budget == "low") %>%
+  group_by(placeID) %>%
+  summarise_at(vars(rating_mean = rating, food_rating_mean = food_rating, 
+                    service_rating_mean = service_rating), 
+               funs(mean, n())) %>%
+  arrange(desc(rating_mean), desc(food_rating_mean), desc(service_rating_mean)) %>%
+  left_join(chefmozcuisine) 
+
+rating_all %>% 
+  filter(budget == "high") %>%
+  group_by(placeID) %>%
+  summarise_at(vars(rating_mean = rating, food_rating_mean = food_rating, 
+                    service_rating_mean = service_rating), 
+               funs(mean, n())) %>%
+  arrange(desc(rating_mean), desc(food_rating_mean), desc(service_rating_mean)) %>%
+  left_join(chefmozcuisine) 
+
+# notice however that each restaurant has only few ratings (often just 1!)
+
+```
+
+
+10. Think of other analysis that you may perform with these data and use the tidyverse toolbox to answer your questions!
 

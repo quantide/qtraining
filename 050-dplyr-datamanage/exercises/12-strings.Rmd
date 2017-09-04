@@ -11,6 +11,8 @@ output:
 ```{r setup, echo=FALSE, message=FALSE, results='hide'}
 require(tidyverse) 
 require(knitr) 
+opts_knit$set(message=FALSE)
+opts_knit$set(warning=FALSE)
 options(width=80)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
 opts_knit$set(root.dir="./exercises/data")
@@ -35,12 +37,12 @@ Manipulating strings with `stringr`
 In this section you will work with data are contained in the data folder. Hence you should set your working directory in the _data_ folder, using `setwd()` function, like in this example:
 
 ```{r setwd_fake, eval=FALSE}
-setwd("C:/Users/Emanuela/Documents/datamanage/exercises/data)
+setwd("~/Documents/datamanage/exercises/data)
 ```
 
 You will work inside this folder.
 
-```{r}
+```{r, message = FALSE}
 library(tidyverse)
 library(stringr)
 ```

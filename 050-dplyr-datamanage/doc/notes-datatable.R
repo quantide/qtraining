@@ -5,7 +5,9 @@
 
 # load packages
 require(tidyverse) 
-require(data.table)  
+require(data.table) 
+require(microbenchmark)
+require(dtplyr)
 
 # data.table
 data2006 <- fread("~/data/2006.csv")
@@ -18,18 +20,30 @@ system.time(fread("~/data/2006.csv"))
 data2006_tbl <- read_csv("~/data/2006.csv")
 system.time(read_csv("~/data/2006.csv"))
 
+# tbl_dt
+data2006_tbl_dt <- tbl_dt(data2006)
+
+
 # with data.table
 system.time(data2006[, mean(ArrDelay, na.rm = TRUE), keyby = Month])
 
 # with dplyr
-system.time(data2006 %>% 
+microbenchmark(system.time(data2006 %>% 
               group_by(Month) %>% 
-              summarise(mean(ArrDelay, na.rm = TRUE)))
+              summarise(mean(ArrDelay, na.rm = TRUE))), times= 10)
+
+microbenchmark(system.time(data2006_tbl %>% 
+                             group_by(Month) %>% 
+                             summarise(mean(ArrDelay, na.rm = TRUE))), times= 10)
+
+microbenchmark(system.time(data2006_tbl_dt %>% 
+                             group_by(Month) %>% 
+                             summarise(mean(ArrDelay, na.rm = TRUE))), times= 10)
 
 # with data.table
-system.time(
+microbenchmark(system.time(
   data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month]
-)
+), times = 10)
 
 # with dplyr
 system.time( 
@@ -81,3 +95,30 @@ benchmark(replications= 10, columns = c("elapsed"), data2006_dt %>%
             summarise(mean(ArrDelay, na.rm = TRUE)))
 
 # it seems that tibbles are faster than data.table!
+
+
+
+##############################################
+
+
+data2006 <- fread("~/data/2006.csv")
+
+data2006 %>% select(Year)
+
+library(dplyr, warn.conflicts = FALSE)
+
+require("nycflights13")
+require("microbenchmark")
+
+microbenchmark(data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRUE)), keyby = Month],
+    times = 20)
+
+data2006 <- tbl_dt(data2006)
+microbenchmark(data2006 %>% 
+                   group_by(Month) %>% 
+                   summarise_each(funs(mean(., na.rm = TRUE), sd(., na.rm = TRUE)), ArrDelay),
+               times = 20
+)
+
+
+

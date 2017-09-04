@@ -4,6 +4,7 @@ title: "Each, At, All"
 
 ```{r options, include=FALSE, purl=FALSE}
 options(width = 108)
+knitr::opts_chunk$set(message = FALSE)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}
@@ -50,7 +51,7 @@ There are four cases:
 We will test them by using three `dplyr` verbs:
 
 1. `summarise()`
-2. `summarise_each()`
+2. `summarise_each()` -- Notice that `summarise_each()` will be deprecated in favour of `summarise_at()` and `summarise_all()`
 3. `summarise_at()`
 
 We will also test them under the three options provided by the `group_by()` verb: 
@@ -100,7 +101,7 @@ mtcars %>%
   summarise_each(funs(mean), mean_mpg = mpg)
 ```
 
-You may also instead use the function `summarise_at()`:
+`summarise_each` will be deprecated in favour of `summarise_at()`:
 
 ```{r}
 # without groups
@@ -185,7 +186,7 @@ mtcars %>%
   summarise_each(funs(min_mpg = min, max_mpg = max), mpg)
 ```
 
-Alternatively to the function `summarise_each`, you can use `summarise_at`:
+As `summarise_each` will be deprecated, you may use `summarise_at()`:
 
 ```{r}
 # without groups
@@ -398,7 +399,7 @@ mtcars %>%
   setNames(c("cyl", "carb", "min_mpg", "min_disp", "max_mpg", "max_disp"))
 ```
 
-An alternative to `summarise_each()` is  `summarise_at()`.
+A modern alternative to `summarise_each()` is  `summarise_at()`.
 
 ```{r}
 # without groups
@@ -501,8 +502,8 @@ Also here there are four cases:
 We will test them by using two `dplyr` verbs:
 
 1. `mutate()`
-2. `mutate_each()`
-3. `mutate_all()`
+2. `mutate_each()` -- Notice that `mutate_each` will soon be deprecated in favour of `mutate_at` and `mutate_all`
+3. `mutate_at()`
 
 Each of them tested under the three options provided by the `group_by()` verb: 
 
@@ -588,7 +589,7 @@ mtcars %>%
   mutate_each(funs(rescale), rescale_mpg = mpg)
 ```
 
-In addition you could use function `mutate_at()` as well, but its usage results in a loss of clarity:
+`mutate_each` will be deprecated in favour of `mutate_at()`:
 
 ```{r}
 # without groups
@@ -773,7 +774,7 @@ mtcars %>%
   mutate_each(funs(rescale), rescale_mpg = mpg, rescale_disp = disp)
 ```
 
-Alternatively you may use `mutate_at()`:
+Alternatively, `mutate_at()` may be used:
 
 ```{r}
 # without groups

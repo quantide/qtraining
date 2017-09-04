@@ -4,6 +4,7 @@ title: "Tibbles"
 
 ```{r options, include=FALSE, purl=FALSE}
 options(width = 108)
+knitr::opts_chunk$set(message = FALSE)
 ```
 
 
@@ -19,7 +20,7 @@ You can load `tibble` by loading `tidyverse`:
 require(tidyverse)
 ```
 
-or you can load it explicitely together with `dplyr` that will be useful throughout this chapter:
+or you can load it explicitely, together with `dplyr` that will be used throughout this chapter:
 
 ```{r}
 require(tibble)
