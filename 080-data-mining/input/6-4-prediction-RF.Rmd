@@ -11,7 +11,7 @@ source("options.R")
 # that is required by following examples
 
 ## Datasets from packages
-data(Default, package = "ISLR")
+data(cu.summary, package = "rpart")
 
 ## Other datasets used
 # none
@@ -65,15 +65,16 @@ summary(Default)
 require(randomForest)
 ```
 
-```{r 02i-plotsvmsd, fig.width=plot_with_legend_fig_width_short}
+```{r 06b-RFregr, fig.width=plot_with_legend_fig_width_short}
 set.seed(1000)
-train <- sample(nrow(Default), 2000)
-default_train <- Default[train,]
-default_test <-  Default[-train,]
+train <- sample(nrow(cu.summary), 2000)
+cu_train <- cu.summary[train,]
+cu_test <-  cu.summary[-train,]
 
-(rf_fit <- randomForest(x= default_train[,c("student","balance", "income")], y = default_train$default, 
-                        xtest= default_test[,c("student","balance", "income")], ytest = default_test$default, 
-                        cutoff = c(0.8, 0.2)))
+rf_fit <- randomForest(Mileage ~ Price + Country + Reliability + Type, data = cu.summary)
+# Or, with train and test sets:
+(rf_fit <- randomForest(x= cu_train[,c("Price", "Country", "Reliability", "Type")], y = cu_train$Mileage, 
+                        xtest= default_test[,c("Price", "Country", "Reliability", "Type")], ytest = default_test$default)
 plot(rf_fit)
 ```
 
