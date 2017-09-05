@@ -11,7 +11,8 @@ source("options.R")
 # that is required by following examples
 
 ## Datasets from packages
-data(cu.summary, package = "rpart")
+require(qdata)
+data(bostonhousing)
 
 ## Other datasets used
 # none
@@ -58,7 +59,7 @@ the `randomForest()` function of the `randomForest` package.
 
 Let's look at a summary of example data:
 ```{r 05a-summary}
-summary(Default)
+summary(bostonhousing)
 ```
 
 ```{r message=FALSE}
@@ -66,32 +67,43 @@ require(randomForest)
 ```
 
 ```{r 06b-RFregr, fig.width=plot_with_legend_fig_width_short}
-set.seed(1000)
-train <- sample(nrow(cu.summary), 2000)
-cu_train <- cu.summary[train,]
-cu_test <-  cu.summary[-train,]
+set.seed(100)
 
-rf_fit <- randomForest(Mileage ~ Price + Country + Reliability + Type, data = cu.summary)
-# Or, with train and test sets:
-(rf_fit <- randomForest(x= cu_train[,c("Price", "Country", "Reliability", "Type")], y = cu_train$Mileage, 
-                        xtest= default_test[,c("Price", "Country", "Reliability", "Type")], ytest = default_test$default)
+bostonhousing$lstat <- log(bostonhousing$lstat)
+bostonhousing$rm <- bostonhousing$rm^2
+bostonhousing$chas <- factor(bostonhousing$chas, levels = 0:1, labels = c("no", "yes"))
+bostonhousing$rad <- factor(bostonhousing$rad, ordered = TRUE)
+
+train <- sample(nrow(bostonhousing), 400)
+bh_train <- bostonhousing[train,]
+bh_test <-  bostonhousing[-train,]
+
+(rf_fit <- randomForest(medv ~ age + lstat + rm + zn + indus + chas + nox + age + dis + rad + tax + crim + b + ptratio, data = bh_train))
+
 plot(rf_fit)
 ```
 
 <!--- https://stats.stackexchange.com/questions/51629/multiple-curves-when-plotting-a-random-forest --->
 In above plot, the back solid line shows the overall error of random forest when the number of trees $B$ grows;
-the other lines, however, show the classifcation error for individual classes. In this case, less than 50 trees 
+the other lines, however, show the classifcation error for individual classes. In this case, about 100 trees 
 are sufficient to minimize the global error.
 
-<!--- https://www.linkedin.com/pulse/decoding-probabilities-random-forest-sanchit-tiwari --->
-Note also the use of the `cutoff` parameter that sets the threshold for which
-to declare "defaulter" one customer.  
-In this case, we have chosen to set the cutoff values to `c(0.8, 0.2)`, i.e.,
-a customer is defined as defaulter if he/she obtain a value of fraction of
-trees voted as defaulter greater than `0.2`.  
-This corresponds to a weighted voting scheme where one vote for class `default` has 
-four times weight than the `non-default` class.  
-This result has a greater sensitivity to defaulters than the default (50%, 50%) cutoff.
+Obviously, we can produce a plot of obsered Vs. predicted values, for training and test sets:
+```{r 05c-plots}
+require(dplyr)
+data_gr <- bh_train %>%
+  mutate(set="train") %>%
+  bind_rows(bh_test %>% mutate(set="test"))
+
+data_gr$fit <- predict(rf_fit, data_gr)
+
+require(ggplot2)
+ggp <- ggplot(data = data_gr, mapping = aes(x=fit, y=medv)) +
+  geom_point(aes(colour=set), alpha=0.6) +
+  geom_abline(slope=1, intercept = 0) +
+  geom_smooth(method = "lm", se = FALSE, aes(colour=set), alphs=0.6)
+print(ggp)
+```
 
 ## Some theory about Random Forests
 
