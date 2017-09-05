@@ -78,7 +78,7 @@ plot(rf_fit)
 ```
 
 <!--- https://stats.stackexchange.com/questions/51629/multiple-curves-when-plotting-a-random-forest --->
-In above plot, the back solid line shows the overall error of random forest when the number of trees $B$ grows;
+In above plot, the back solid line shows the overall OOB (Out Of Bag) error of random forest when the number of trees $B$ grows;
 the other lines, however, show the classifcation error for individual classes. In this case, less than 50 trees 
 are sufficient to minimize the global error.
 
