@@ -129,7 +129,7 @@ the $b$th random forest tree in
 terms of split variables, cutpoints at each node, and terminal-node values, and
 $\hat{C}_b(x)$ is the class prediction of the $b$th random-forest tree.
 Intuitively, reducing $m$ will reduce the correlation between any pair of trees
-in the ensemble, and hence will reduce the variance of the average.
+in the ensemble, and hence will reduce the variance of the average.  
 
 The algorithm of random forest may be then summarized as:
 
@@ -140,6 +140,11 @@ The algorithm of random forest may be then summarized as:
         ii. Pick the best variable/split-point among the $m$.
         iii. Split the node into two daughter nodes.
 2. Output the ensemble of trees $\left\{T_b\right\}_1^B$
+
+(Note: in case of regression prediction the random forest prediction, the procedure is
+similar to the one shown above, but the prediction is made of:
+$$\hat{f}_{rf}^B(x) = \frac{1}{B} \sum_{b=1}^B T_b(x; \Theta_b)$$ 
+where the $T_b(x;\Theta_b)$ are the $B$ regression trees.)
 
 <!---
 # Exerccises?
