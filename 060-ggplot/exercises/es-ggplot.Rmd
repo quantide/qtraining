@@ -1,0 +1,270 @@
+---
+title: 'null'
+author: 'null'
+date: 'null'
+output:
+  html_document:
+    self_contained: no
+  pdf_document: default
+---
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+opts_knit$set(root.dir="./data")
+show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+
+```
+ 
+# Data Visualization with `ggplot2`
+
+Load `ggplot2` package, supposing it is already installed.
+
+```{r require_tidyverse, message=FALSE}
+require(tidyverse)
+```
+
+
+## Data
+
+### iris
+
+Some of the following exercises are based on the `iris` dataset, taken from the `datasets` package.  
+It is a base package so it is already installed and loaded.  
+
+```{r data_iris}
+data("iris")
+```
+
+This dataset gives the measurements in centimeters of length and width of sepal and petal, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.   
+
+`iris` dataset contains the following variables:
+
+* `Sepal.Length`: length of iris sepal 
+* `Sepal.Width`: width of iris sepal
+* `Petal.Length`: length of iris petal
+* `Petal.Width`: width of iris petal
+* `Species`: species of iris
+
+
+```{r data-dim}
+dim(iris)
+head(iris)
+str(iris)
+```
+
+### Comic characters data
+
+Other exercises are based on `marvel_wikia_data` dataset, that you may find in the folder `exercises/data`.  
+
+```{r comics}
+marvel_wikia_data <- read_csv("marvel-wikia-data.csv")
+getwd()
+```
+
+The data comes from Marvel Wikia. The file was scraped in August 2014 and contains the following variables:
+
+
+* `page_id`: The unique identifier for that characters page within the wikia
+* `name`:	The name of the character
+* `urlslug`:	The unique url within the wikia that takes you to the character
+* `ID`:	The identity status of the character (Secret Identity, Public identity, [on marvel only: No Dual Identity])
+* `ALIGN`:	If the character is Good, Bad or Neutral
+* `EYE`:	Eye color of the character
+* `HAIR`:	Hair color of the character
+* `SEX`:	Sex of the character (e.g. Male, Female, etc.)
+* `GSM`:	If the character is a gender or sexual minority (e.g. Homosexual characters, bisexual characters)
+* `ALIVE`:	If the character is alive or deceased
+* `APPEARANCES`:	The number of appareances of the character in comic books (as of Sep. 2, 2014. Number will become increasingly out of date as time goes on.)
+* `FIRST APPEARANCE`	The month and year of the character's first appearance in a comic book, if available
+* `YEAR`:	The year of the character's first appearance in a comic book, if available
+
+```{r data-comics}
+dim(marvel_wikia_data)
+head(marvel_wikia_data)
+head(str(marvel_wikia_data))
+```
+
+\clearpage
+
+## Scatterplot
+
+Let us consider `iris` dataset.
+
+### Exercise 1
+
+a. Generate a scatterplot to analyze the relationship between `Sepal.Width` and `Sepal.Length` variables.  
+b. Set the size of the point as 3 and their colour (`colour` and `fill` arguments) as "green".
+_advanced_ c. Add "Sepal Characteristics" as a red italic title and change axis title to "Sepal length" and "Sepal width". 
+
+
+```{r ex1-scatterplot, echo=show_solution}
+pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length)) +
+        geom_point(size=3, colour="green", fill="green")
+pl
+```
+
+
+```{r ex1-scatterplot-adv, echo=show_solution}
+
+pl + ggtitle("Sepal Characteristics") +
+  labs(x = "Sepal width", y = "Sepal length") +
+  theme(plot.title=element_text(face="italic", colour="red"))
+
+```
+
+
+\clearpage
+
+### Exercise 2
+
+a. Generate a scatterplot to analyze the relationship between `Petal.Width` and `Petal.Length` variables according to iris species, mapped as `colour` aes. 
+_advanced_ b. Change axis title to "Sepal length" and "Sepal width". 
+_advanced_ c. Move the legend to the bottom. 
+
+
+```{r ex2-scatterplot, echo=show_solution}
+pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length, colour=Species)) +
+        geom_point()
+pl
+```
+
+
+```{r ex2-scatterplot-adv, echo=show_solution}
+pl + 
+  labs(x = "Sepal width", y = "Sepal length") +
+  theme(legend.position="bottom") 
+
+```
+
+\clearpage
+
+
+## Line PLot
+
+Let us consider `marvel_wikia_data` dataset.
+
+### Exercise 1
+
+a. Build a line plot to see the number of new characters that come out each year.
+b. Build a lineplot to compare the differences in the number of female characters and male characters that come out each year.
+c. Do as in b. but use different line types as well as different point types and different colours
+
+```{r ex1-boxplot, echo=show_solution}
+
+number_characters <- marvel_wikia_data %>% 
+  group_by(Year, SEX) %>%
+  summarise(new_char = n()) %>%
+  ungroup()
+```
+
+```{r ex1-boxplot2, echo=show_solution}
+ggplot(data=number_characters, mapping=aes(x=Year, y=new_char, colour= SEX)) +
+  geom_line() 
+```
+
+```{r ex1-boxplot3, echo=show_solution}
+
+ggplot(data=number_characters, mapping=aes(x=Year, y=new_char, colour= SEX)) +
+  geom_line(mapping=aes(linetype = SEX)) + 
+  geom_point(mapping=aes(shape = SEX))
+
+```
+
+\clearpage
+
+## Barplot
+
+Let us consider the `marvel_wikia_data` dataset.
+
+### Exercise 1
+
+a. Build a stacked barplot for representing the number of new comic characters distinguishing them by `ALIGN` and map fill to `SEX`.
+b. Consider only comic characters with blond hair and Black Hair (`filter(HAIR == "Black Hair" | HAIR == "Blond Hair")`). Build a stacked barplot for representing the number of new comic characters distinguishing them by `ALIGN` and map fill to `HAIR`.
+c. Take the barplot in (b.) and represent the distribution on Blond Hair between the character type (Good, Bad, neutral).
+
+```{r ex1-barplot, echo=show_solution}
+
+ggplot(data=marvel_wikia_data, mapping=aes(x=ALIGN, fill=SEX)) + 
+    geom_bar()
+```
+
+```{r ex1-barplot2, echo=show_solution}
+ggplot(data = marvel_wikia_data %>%
+         filter(HAIR == "Black Hair" | HAIR == "Blond Hair"), 
+       mapping=aes(x=ALIGN, fill=HAIR)) + 
+    geom_bar()
+```
+
+```{r ex1-barplot3, echo=show_solution}
+ggplot(data = marvel_wikia_data %>%
+         filter(HAIR == "Black Hair" | HAIR == "Blond Hair"), 
+       mapping=aes(x=ALIGN, fill=HAIR)) + 
+  geom_bar(position="fill")
+
+
+```
+
+
+
+### Exercise 2
+
+a. Consider only female and male comic characters (`filter(SEX == "Male Characters" | SEX == "Female Characters")`). Build a barplot with dodged barsfor representing the number comic characters distinguishing them by `ALIGN` and flip coordinates. Set bars width as 0.5.
+
+```{r ex2-barplot, echo=show_solution}
+
+ggplot(data = marvel_wikia_data %>%
+         filter(SEX == "Male Characters" | SEX == "Female Characters"), 
+       mapping=aes(x=ALIGN, fill=SEX)) + 
+  geom_bar(width=0.5, position="dodge")+
+  coord_flip()
+
+```
+
+
+\clearpage
+
+## Histogram
+
+### Exercise 1
+
+
+
+### Exercise 2
+
+
+
+
+\clearpage
+
+## Boxplot
+
+
+### Exercise 1
+
+a. Build a boxplot to represent the number of times that each comic character created in 2012 have appeared. Highlight outliers in red and set `outlier.shape=10` and `outlier.size=2`. Choose `fill = #00BFFF` and `color =	#00008B`
+b. Compare the number of times Bad comic characters and Good comic characters created in 2012 have appeared.
+
+```{r boxplot-1}
+ggplot(data=marvel_wikia_data %>% filter(Year == 2012), aes(x = 0, y = APPEARANCES)) + 
+    geom_boxplot(colour = "#00008B", fill = "#00BFFF", outlier.colour="red", outlier.shape=18, outlier.size=3) +
+    xlab("") 
+
+```
+
+```{r boxplot-2}
+ggplot(data = marvel_wikia_data %>% filter(Year == 2012) %>% 
+         filter(ALIGN == "Bad Characters" | ALIGN == "Good Characters"), 
+       aes(x = ALIGN, y = APPEARANCES)) + 
+    geom_boxplot(colour = "#00008B", fill = "#00BFFF", outlier.colour="red", outlier.shape=18, outlier.size=3) 
+
+```
+
+
+
+
