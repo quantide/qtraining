@@ -64,7 +64,9 @@ You may also add colourful text:
 
 `This is <span style="color:red"> coloured </span>`
 
-However, if you are compiling a pdf, the above sintax will not produced a coloured text. You will need to use a slightly different syntax.
+This is <span style="color:red"> coloured </span>
+
+However, if you are compiling a pdf, the above sintax will not produce a coloured text. You will need to use a slightly different syntax.
 
 ******************
 #### Headers

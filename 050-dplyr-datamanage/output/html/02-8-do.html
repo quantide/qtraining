@@ -332,6 +332,7 @@ $(document).ready(function () {
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
   <li><a href="04-2-sparklyr.html">sparklyr</a></li>
+  <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
   <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
   <li><a href="05-2-strings.html">Managing strings</a></li>
@@ -422,9 +423,6 @@ data(people)</code></pre>
 <pre class="r"><code>people %&gt;% group_by(Area) %&gt;%
   summarise_each(funs(&quot;mean&quot;, &quot;sd&quot;) , Height) %&gt;%
   gather(key = stat, value = value, -Area)</code></pre>
-<pre><code>## `summarise_each()` is deprecated.
-## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
-## To map `funs` over a selection of variables, use `summarise_at()`</code></pre>
 <pre><code>## # A tibble: 8 x 3
 ##     Area        stat      value
 ##   &lt;fctr&gt;       &lt;chr&gt;      &lt;dbl&gt;
@@ -463,9 +461,6 @@ slope &lt;- function(model) coefficients(model)[[2]]
 RSq &lt;- function(model, i) summary(model)$r.squared
 
 models %&gt;% mutate_each(funs(intercept, slope , RSq), mod)</code></pre>
-<pre><code>## `mutate_each()` is deprecated.
-## Use `mutate_all()`, `mutate_at()` or `mutate_if()` instead.
-## To map `funs` over a selection of variables, use `mutate_at()`</code></pre>
 <pre><code>## Source: local data frame [2 x 5]
 ## Groups: &lt;by row&gt;
 ## 

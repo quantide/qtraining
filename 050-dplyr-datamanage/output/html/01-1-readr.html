@@ -332,6 +332,7 @@ $(document).ready(function () {
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
   <li><a href="04-2-sparklyr.html">sparklyr</a></li>
+  <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
   <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
   <li><a href="05-2-strings.html">Managing strings</a></li>
@@ -358,22 +359,8 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>In this chapter you’ll learn how to import flat files in R. You will do this with the use of <code>readr</code> package which is part of the <code>tidyverse</code> core. As already learned, if you load the package <code>tidyverse</code>, <code>readr</code> will be automatically loaded:</p>
+<p>In this chapter you’ll learn how to import flat files in R. You will do this with the use of <code>readr</code> package which is part of the <code>tidyverse</code> core. As already learned, if you load the package <code>tidyverse</code>, <code>readr</code> will automatically be loaded:</p>
 <pre class="r"><code>require(tidyverse)</code></pre>
-<pre><code>## Loading required package: tidyverse</code></pre>
-<pre><code>## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr</code></pre>
-<pre><code>## Conflicts with tidy packages -------------------------------------------------------------------------------</code></pre>
-<pre><code>## filter(): dplyr, stats
-## lag():    dplyr, stats</code></pre>
-<p>Alternatively, one may explictely load the package <code>readr</code>, together with <code>dplyr</code> and <code>tibble</code> that are the other packages used in this chapter:</p>
-<pre class="r"><code>require(readr)
-require(dplyr)
-require(tibble)</code></pre>
 <p>Notice that base R offers many functions for importing flat files. The reasons why you will learn <code>readr</code> is that its functions are typically faster and they produce tibbles which is a common feature of tidyverse packages.</p>
 </div>
 <div id="reading-flat-files" class="section level1">
@@ -391,19 +378,6 @@ require(tibble)</code></pre>
 <pre class="r"><code>setwd(&quot;./data&quot;)</code></pre>
 <p>Now, the text file can be imported just providing its filename:</p>
 <pre class="r"><code>read_table(&quot;tennis.txt&quot;, col_names = TRUE)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   Name = col_character(),
-##   First.Name = col_character(),
-##   Age = col_integer(),
-##   Sex = col_character(),
-##   Rank = col_integer(),
-##   Slams = col_integer(),
-##   Won = col_integer(),
-##   Lost = col_integer(),
-##   Earnings = col_double(),
-##   Citizen = col_character()
-## )</code></pre>
 <pre><code>## # A tibble: 10 x 10
 ##                     Name First.Name   Age   Sex  Rank Slams   Won  Lost Earnings              Citizen
 ##                    &lt;chr&gt;      &lt;chr&gt; &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;                &lt;chr&gt;
@@ -424,13 +398,6 @@ read_tsv(&quot;aire_milano.txt&quot;, col_names = TRUE) # for tab separeted vari
 read_csv2(&quot;milano_tourism&quot;, col_names= TRUE) # for semi colon separeted variables</code></pre>
 <p>These are special cases of the more general function <code>read_delim</code>. <code>read_delim</code> reads file with any delimiter as specified in the argument <code>delim</code>.</p>
 <pre class="r"><code>read_delim(&quot;solar.txt&quot;, col_names = FALSE, delim = &quot;,&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   X1 = col_character(),
-##   X2 = col_integer(),
-##   X3 = col_integer(),
-##   X4 = col_integer()
-## )</code></pre>
 <pre><code>## # A tibble: 12 x 4
 ##       X1    X2    X3    X4
 ##    &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
@@ -447,18 +414,6 @@ read_csv2(&quot;milano_tourism&quot;, col_names= TRUE) # for semi colon separete
 ## 11   nov 26774 26914 27829
 ## 12   dic 20998 21375 22665</code></pre>
 <pre class="r"><code>read_delim(&quot;tuscany.txt&quot;, col_names = TRUE, delim = &quot;|&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   id = col_integer(),
-##   sex = col_character(),
-##   year_of_birth = col_integer(),
-##   marital_status = col_character(),
-##   income = col_double(),
-##   house_number = col_double(),
-##   city_name = col_character(),
-##   province = col_character(),
-##   provincial_acronym = col_character()
-## )</code></pre>
 <pre><code>## # A tibble: 30 x 9
 ##       id   sex year_of_birth marital_status  income house_number             city_name province
 ##    &lt;int&gt; &lt;chr&gt;         &lt;int&gt;          &lt;chr&gt;   &lt;dbl&gt;        &lt;dbl&gt;                 &lt;chr&gt;    &lt;chr&gt;
@@ -504,7 +459,7 @@ read_csv2(&quot;milano_tourism&quot;, col_names= TRUE) # for semi colon separete
 <li><strong>string</strong>: textual data</li>
 <li><strong>date</strong> and <strong>time</strong> : for dates and times</li>
 </ul>
-<p>A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in the tidyverse.</p>
+<p>A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in the <code>tidyverse</code>.</p>
 </div>
 
 

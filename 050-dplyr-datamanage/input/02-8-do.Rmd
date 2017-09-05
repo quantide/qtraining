@@ -4,6 +4,7 @@ title: "Generic Do"
 
 ```{r options, include=FALSE, purl=FALSE}
 options(width = 108)
+knitr::opts_chunk$set(message = FALSE)
 ```
 
 ```{r first, include=TRUE, purl=TRUE, message=FALSE}

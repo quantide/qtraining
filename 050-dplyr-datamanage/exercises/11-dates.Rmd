@@ -12,6 +12,8 @@ output:
 require(tidyverse) 
 require(knitr) 
 options(width=80)
+opts_knit$set(message=FALSE)
+opts_knit$set(warning=FALSE)
 opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
 opts_knit$set(root.dir="./data")
 show_solution <- if (exists("show_solution_mk")){
@@ -31,7 +33,7 @@ Dates with lubridate
 Note: all the exercises of this section are based on the `flights` dataset.
 
 
-```{r}
+```{r, message = FALSE}
 require(tidyverse)
 require(lubridate)
 require(nycflights13)

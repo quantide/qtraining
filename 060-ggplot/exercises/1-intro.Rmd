@@ -1,0 +1,24 @@
+---
+title: "Exercises for Data Visualisation"
+author:
+- email: emanuela.furfaro\@quantide.com
+  name: Emanuela Furfaro
+date: ''
+output:
+  html_document:
+    self_contained: no
+  pdf_document: default
+---
+
+
+
+Introduction
+===========================================
+
+In this document you will find some exercises about data visualisation. In the first part you will find some exercises on basic data visulisation, while in the second part you will find exercises on advanced topics of data visulisation.
+
+
+<!--
+* _Writing R functions_
+-->
+

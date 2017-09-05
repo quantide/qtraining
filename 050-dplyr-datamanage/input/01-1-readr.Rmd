@@ -5,24 +5,17 @@ title: "Reading data with `readr`"
 ```{r options, include=FALSE, purl=FALSE}
 require(knitr)
 options(width = 108)
-opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
 opts_knit$set(root.dir = "../data")
 ```
 
 # Introduction
 
-In this chapter you'll learn how to import flat files in R. You will do this with the use of `readr` package which is part of the `tidyverse` core. As already learned, if you load the package `tidyverse`, `readr` will be automatically loaded:
+In this chapter  you'll learn how to import flat files in R. You will do this with the use of `readr` package which is part of the `tidyverse` core. As already learned, if you load the package `tidyverse`, `readr` will automatically be loaded:
 
 ```{r readr}
 require(tidyverse)
-```
-
-Alternatively, one may explictely load the package `readr`, together with `dplyr` and `tibble` that are the other packages used in this chapter:
-
-```{r readr2, message=FALSE}
-require(readr)
-require(dplyr)
-require(tibble)
 ```
 
 
@@ -102,5 +95,5 @@ Let us quickly go through the variable types available in `R`:
 * __string__: textual data
 * __date__ and __time__ : for dates and times
 
-A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in the tidyverse.
+A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in the `tidyverse`.
 

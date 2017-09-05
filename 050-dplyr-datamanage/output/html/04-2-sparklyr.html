@@ -332,6 +332,7 @@ $(document).ready(function () {
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
   <li><a href="04-2-sparklyr.html">sparklyr</a></li>
+  <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
   <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
   <li><a href="05-2-strings.html">Managing strings</a></li>
@@ -365,7 +366,6 @@ $(document).ready(function () {
 </ul>
 </div>
 
-<pre class="r"><code>require(tidyverse)</code></pre>
 <div id="intoduction" class="section level1">
 <h1>Intoduction</h1>
 <div id="introduction-to-spark-and-sparklyr" class="section level2">
@@ -390,9 +390,6 @@ $(document).ready(function () {
 <pre class="r"><code>install.packages(&quot;sparklyr&quot;)</code></pre>
 <p>and then load it at the beginning of your R session:</p>
 <pre class="r"><code>require(sparklyr)</code></pre>
-<pre><code>## Loading required package: sparklyr</code></pre>
-<pre><code>## Warning in library(package, lib.loc = lib.loc, character.only = TRUE, logical.return = TRUE, : there is no
-## package called 'sparklyr'</code></pre>
 <p>You also need to install a version of Spark. You can do this directly from R:</p>
 <pre class="r"><code># this may take a while
 spark_install(version = &quot;1.6.2&quot;)</code></pre>

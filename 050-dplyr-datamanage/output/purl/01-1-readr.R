@@ -1,11 +1,6 @@
 ## ----readr---------------------------------------------------------------
 require(tidyverse)
 
-## ----readr2, message=FALSE-----------------------------------------------
-require(readr)
-require(dplyr)
-require(tibble)
-
 ## ----getwd, eval = FALSE-------------------------------------------------
 ## getwd()
 

@@ -332,6 +332,7 @@ $(document).ready(function () {
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
   <li><a href="04-2-sparklyr.html">sparklyr</a></li>
+  <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
   <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
   <li><a href="05-2-strings.html">Managing strings</a></li>
@@ -362,17 +363,7 @@ $(document).ready(function () {
 <p>In this chapter you will work with the <code>tibble</code> package which provides functions for tibbles coercion and creation.</p>
 <p>You can load <code>tibble</code> by loading <code>tidyverse</code>:</p>
 <pre class="r"><code>require(tidyverse)</code></pre>
-<pre><code>## Loading required package: tidyverse</code></pre>
-<pre><code>## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr</code></pre>
-<pre><code>## Conflicts with tidy packages -------------------------------------------------------------------------------</code></pre>
-<pre><code>## filter(): dplyr, stats
-## lag():    dplyr, stats</code></pre>
-<p>or you can load it explicitely together with <code>dplyr</code> that will be useful throughout this chapter:</p>
+<p>or you can load it explicitely, together with <code>dplyr</code> that will be used throughout this chapter:</p>
 <pre class="r"><code>require(tibble)
 require(dplyr)</code></pre>
 </div>

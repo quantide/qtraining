@@ -332,6 +332,7 @@ $(document).ready(function () {
   <li class="nav-header">Working with backend engines</li>
   <li><a href="04-1-RSQLite.html">RSQLite</a></li>
   <li><a href="04-2-sparklyr.html">sparklyr</a></li>
+  <li><a href="04-4-datatable.html">datatable</a></li>
   <li class="nav-header">Managing special formats</li>
   <li><a href="05-1-dates.html">Managing dates with lubridate</a></li>
   <li><a href="05-2-strings.html">Managing strings</a></li>
@@ -389,7 +390,7 @@ data(wimbledon)</code></pre>
 <li><code>inner_join(x, y)</code></li>
 <li><code>left_join(x, y)</code></li>
 <li><code>right_join(x, y)</code></li>
-<li><code>outer_join(x, y)</code></li>
+<li><code>full_join(x, y)</code></li>
 </ul>
 <p>For the next examples we will consider these two small data frames:</p>
 <pre class="r"><code>df1 &lt;- data.frame(id = 1:4, x1 = letters[1:4])
@@ -398,7 +399,6 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <li><code>inner_join(x, y)</code> only includes observations that match in both x and y:</li>
 </ul>
 <pre class="r"><code>inner_join(df1, df2)</code></pre>
-<pre><code>## Joining, by = &quot;id&quot;</code></pre>
 <pre><code>##   id x1 x2
 ## 1  3  c  c
 ## 2  4  d  d</code></pre>
@@ -406,7 +406,6 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <li><code>left_join(x, y)</code> includes all observations in <code>x</code>, regardless of whether they match or not. This is the most commonly used join because it ensures that you don’t lose observations from your primary table:</li>
 </ul>
 <pre class="r"><code>left_join(df1, df2)</code></pre>
-<pre><code>## Joining, by = &quot;id&quot;</code></pre>
 <pre><code>##   id x1   x2
 ## 1  1  a &lt;NA&gt;
 ## 2  2  b &lt;NA&gt;
@@ -416,13 +415,11 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <li><code>right_join(x, y)</code> includes all observations in <code>y</code>. It’s equivalent to <code>left_join(y, x)</code>, but the columns will be ordered differently:</li>
 </ul>
 <pre class="r"><code>right_join(df1, df2)</code></pre>
-<pre><code>## Joining, by = &quot;id&quot;</code></pre>
 <pre><code>##   id   x1 x2
 ## 1  3    c  c
 ## 2  4    d  d
 ## 3  5 &lt;NA&gt;  e</code></pre>
 <pre class="r"><code>left_join(df2, df1)</code></pre>
-<pre><code>## Joining, by = &quot;id&quot;</code></pre>
 <pre><code>##   id x2   x1
 ## 1  3  c    c
 ## 2  4  d    d
@@ -431,7 +428,6 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <li><code>full_join()</code> includes all observations from <code>x</code> and <code>y</code>:</li>
 </ul>
 <pre class="r"><code>full_join(df1, df2)</code></pre>
-<pre><code>## Joining, by = &quot;id&quot;</code></pre>
 <pre><code>##   id   x1   x2
 ## 1  1    a &lt;NA&gt;
 ## 2  2    b &lt;NA&gt;
@@ -451,7 +447,6 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre>
 <p>You can use a join to add “provincia” and “regione” to the Italian “comuni”:</p>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
-<pre><code>## Joining, by = c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
 <pre><code>## # A tibble: 8,003 x 9
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;
@@ -467,7 +462,6 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 ## 10       1010         Andrate           FALSE        512             1             201           1
 ## # ... with 7,993 more rows, and 2 more variables: provincia &lt;chr&gt;, sigla_auto &lt;chr&gt;</code></pre>
 <pre class="r"><code>comuni %&gt;% left_join(regioni)</code></pre>
-<pre><code>## Joining, by = &quot;cod_regione&quot;</code></pre>
 <pre><code>## # A tibble: 8,003 x 8
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione  regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;    &lt;chr&gt;
@@ -483,8 +477,6 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 ## 10       1010         Andrate           FALSE        512             1             201           1 Piemonte
 ## # ... with 7,993 more rows</code></pre>
 <pre class="r"><code>comuni %&gt;% left_join(province) %&gt;% left_join(regioni)</code></pre>
-<pre><code>## Joining, by = c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
-<pre><code>## Joining, by = &quot;cod_regione&quot;</code></pre>
 <pre><code>## # A tibble: 8,003 x 10
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;
@@ -504,7 +496,6 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 <li><code>NULL</code>, the default. <code>dplyr</code> will use all variables that appear in both tables, a natural join. For example, the <code>comuni</code> and <code>regioni</code> tables match on their common variable <code>cod_regione</code>:</li>
 </ul>
 <pre class="r"><code>comuni %&gt;% left_join(regioni)</code></pre>
-<pre><code>## Joining, by = &quot;cod_regione&quot;</code></pre>
 <pre><code>## # A tibble: 8,003 x 8
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione  regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;    &lt;chr&gt;
@@ -523,7 +514,6 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 <li>A character vector, <code>by = &quot;x&quot;</code>. It is like a natural join, but uses only some of the common variables. For example, when joining <code>comuni</code> and <code>province</code>, you will see that <code>R</code> will tell you that it’s joining the two data frames by both <code>cod_provincia</code> and <code>cod_citta_metro</code>:</li>
 </ul>
 <pre class="r"><code>comuni %&gt;% left_join(province)</code></pre>
-<pre><code>## Joining, by = c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
 <pre><code>## # A tibble: 8,003 x 9
 ##    cod_comune          comune comune_cap_prov pop_legale cod_provincia cod_citta_metro cod_regione
 ##         &lt;int&gt;           &lt;chr&gt;           &lt;lgl&gt;      &lt;int&gt;         &lt;int&gt;           &lt;chr&gt;       &lt;int&gt;
@@ -587,7 +577,6 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
   group_by(provincia) %&gt;%
   summarise(pop_legale = sum(pop_legale)) %&gt;% 
   arrange(desc(pop_legale))</code></pre>
-<pre><code>## Joining, by = c(&quot;cod_provincia&quot;, &quot;cod_citta_metro&quot;)</code></pre>
 <pre><code>## # A tibble: 110 x 2
 ##      provincia pop_legale
 ##          &lt;chr&gt;      &lt;int&gt;
@@ -610,7 +599,6 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
   group_by(regione) %&gt;%
   summarise(pop_legale = sum(pop_legale)) %&gt;%
   arrange(desc(pop_legale))</code></pre>
-<pre><code>## Joining, by = &quot;cod_regione&quot;</code></pre>
 <pre><code>## # A tibble: 20 x 2
 ##                         regione pop_legale
 ##                           &lt;chr&gt;      &lt;int&gt;
@@ -670,13 +658,11 @@ province &lt;- province %&gt;% select(cod_provincia:cod_citta_metro)</code></pre
 df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <p>All observations in <code>df1</code> also in <code>df2</code></p>
 <pre class="r"><code>df1 %&gt;% semi_join(df2)</code></pre>
-<pre><code>## Joining, by = &quot;id&quot;</code></pre>
 <pre><code>##   id x1
 ## 1  3  c
 ## 2  4  d</code></pre>
 <p>All observations in <code>df1</code> not in <code>df2</code></p>
 <pre class="r"><code>df1 %&gt;% anti_join(df2)</code></pre>
-<pre><code>## Joining, by = &quot;id&quot;</code></pre>
 <pre><code>##   id x1
 ## 1  2  b
 ## 2  1  a</code></pre>
@@ -694,7 +680,6 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <pre class="r"><code>usopen %&gt;% 
   anti_join(wimbledon, by = &quot;champion&quot;) %&gt;%
   select(year, champion_country, champion)</code></pre>
-<pre><code>## Warning: Column `champion` joining factors with different levels, coercing to character vector</code></pre>
 <pre><code>##    year champion_country              champion
 ## 1  2014              CRO           Marin Čilić
 ## 2  2009              ARG Juan Martín del Potro
@@ -715,7 +700,6 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <pre class="r"><code>usopen %&gt;% 
   semi_join(wimbledon, by = &quot;champion&quot;) %&gt;%
   select(year, champion_country, champion)</code></pre>
-<pre><code>## Warning: Column `champion` joining factors with different levels, coercing to character vector</code></pre>
 <pre><code>##    year champion_country       champion
 ## 1  1969              AUS      Rod Laver
 ## 2  1973              AUS  John Newcombe
@@ -754,7 +738,6 @@ df2 &lt;- data.frame(id = 3:5, x2 = letters[3:5])</code></pre>
 <pre class="r"><code>usopen %&gt;% 
   semi_join(wimbledon, by = c(&quot;champion&quot;, &quot;year&quot;)) %&gt;%
   select(year, champion_country, champion)</code></pre>
-<pre><code>## Warning: Column `champion` joining factors with different levels, coercing to character vector</code></pre>
 <pre><code>##    year champion_country       champion
 ## 1  1969              AUS      Rod Laver
 ## 2  1974              USA  Jimmy Connors
@@ -788,7 +771,6 @@ super_wimbledon &lt;- wimbledon %&gt;%
 super_usopen %&gt;% 
   semi_join(super_wimbledon, by = &quot;champion&quot;) %&gt;%
   select(champion)</code></pre>
-<pre><code>## Warning: Column `champion` joining factors with different levels, coercing to character vector</code></pre>
 <pre><code>## # A tibble: 7 x 1
 ##         champion
 ##           &lt;fctr&gt;
@@ -804,7 +786,6 @@ super_usopen %&gt;%
   inner_join(super_wimbledon, by = &quot;champion&quot;) %&gt;%
   mutate ( n = n_us+n_wb) %&gt;%
   arrange(desc(n))</code></pre>
-<pre><code>## Warning: Column `champion` joining factors with different levels, coercing to character vector</code></pre>
 <pre><code>## # A tibble: 7 x 4
 ##         champion  n_us  n_wb     n
 ##            &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
