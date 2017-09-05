@@ -105,11 +105,11 @@ Sort the `planes` dataset by increasing year. Then create two datasets: the firs
 
 planes_old <- planes %>% 
   arrange(year) %>%
-  slice(year <= 2000)
+  filter(year <= 2000)
 
 planes_young <- planes %>% 
   arrange(year) %>%
-  slice(year > 2000)
+  filter(year > 2000)
 
 planes_old %>% bind_rows(planes_young)
 

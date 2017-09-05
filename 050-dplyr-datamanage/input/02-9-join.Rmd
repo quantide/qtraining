@@ -41,7 +41,7 @@ There are four types of mutating join, which differ in their behaviour when a ma
 * `inner_join(x, y)`
 * `left_join(x, y)`
 * `right_join(x, y)`
-* `outer_join(x, y)`
+* `full_join(x, y)`
 
 For the next examples we will consider these two small data frames:
 
