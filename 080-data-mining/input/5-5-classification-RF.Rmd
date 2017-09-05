@@ -122,7 +122,7 @@ Specifically, when growing a tree on a bootstrapped dataset:
 
 Typically values for $m$ are $p$ or even as low as 1.
 After $B$ such trees $\left\{T (x; \Theta_b )\right\}_1^B$
-are grown, the random forest (classificazion) predictor is
+are grown, the random forest classification predictor is
 $$\hat{C}_{rf}^B(x) = majority vote \left\{ \hat{C}_b(x)\right\}_1^B$$ 
 Where $majority vote$ means the most votes classes, and $\Theta_b$ characterizes
 the $b$th random forest tree in
