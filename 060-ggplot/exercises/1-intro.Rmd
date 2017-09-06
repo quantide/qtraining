@@ -1,9 +1,8 @@
 ---
-title: "Exercises for Data Visualisation"
+title: "Exercises: Data Visualisation"
 author:
-- email: emanuela.furfaro\@quantide.com
-  name: Emanuela Furfaro
-date: ''
+  name: Quantide
+date: " "
 output:
   html_document:
     self_contained: no
@@ -15,7 +14,7 @@ output:
 Introduction
 ===========================================
 
-In this document you will find some exercises about data visualisation. In the first part you will find some exercises on basic data visulisation, while in the second part you will find exercises on advanced topics of data visulisation.
+In this document you will find some exercises about data visualisation. Most of the exercises are composed by some basic data visualisation questions and some questions on advanced topics of data visulisation, labeled as _advanced_.
 
 
 <!--

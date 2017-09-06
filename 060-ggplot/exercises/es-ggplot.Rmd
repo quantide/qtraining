@@ -98,16 +98,16 @@ Let us consider `iris` dataset.
 ### Exercise 1
 
 a. Generate a scatterplot to analyze the relationship between `Sepal.Width` and `Sepal.Length` variables.  
-b. Set the size of the point as 3 and their colour (`colour` and `fill` arguments) as "green".
 
+b. Set the size of the point as 3 and their colour (`colour` and `fill` arguments) as "orchid3".
 
 ```{r ex1-scatterplot, echo=show_solution, include = show_solution}
 pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length)) +
-        geom_point(size=3, colour="green", fill="green")
+        geom_point(size=3, colour="orchid3", fill="orchid3")
 pl
 ```
 
-_advanced_ c. Add "Sepal Characteristics" as a red italic title and change axis title to "Sepal length" and "Sepal width". 
+c. _advanced_: Add "Sepal Characteristics" as a red italic title and change axis title to "Sepal length" and "Sepal width". 
 
 ```{r ex1-scatterplot-adv, echo=show_solution, include = show_solution}
 
@@ -131,9 +131,9 @@ pl <- ggplot(data = iris, mapping = aes(x=Sepal.Width, y=Sepal.Length, colour=Sp
 pl
 ```
 
-_advanced_ b. Change axis title to "Sepal length" and "Sepal width". 
-_advanced_ c. Move the legend to the bottom. 
+b. _advanced_: Change axis title to "Sepal length" and "Sepal width". 
 
+c. _advanced_: Move the legend to the bottom. 
 
 ```{r ex2-scatterplot-adv, echo=show_solution, include = show_solution}
 pl + 
@@ -152,8 +152,8 @@ Let us consider `marvel_wikia_data` dataset.
 ### Exercise 1
 
 a. Build a line plot to see the number of new characters that come out each year.
+
 b. Build a lineplot to compare the differences in the number of female characters and male characters that come out each year.
-c. Do as in b. but use different line types as well as different point types and different colours
 
 ```{r ex1-lineplot, echo=show_solution, include = show_solution}
 
@@ -168,6 +168,8 @@ ggplot(data=number_characters, mapping=aes(x=Year, y=new_char, colour= SEX)) +
   geom_line() 
 ```
 
+c. Do as in (b.) but use different line types as well as different point types and different colours
+
 ```{r ex1-lineplot3, echo=show_solution, warning = FALSE, include = show_solution}
 
 ggplot(data=number_characters, mapping=aes(x=Year, y=new_char, colour= SEX)) +
@@ -176,17 +178,18 @@ ggplot(data=number_characters, mapping=aes(x=Year, y=new_char, colour= SEX)) +
 
 ```
 
-_advanced_ d. Choose a blue colour palette to represent the different lines (`scale_colour_brewer(palette="PuBu")`)
-_advanced_ e. Modify axis names and the key labels with ` scale_colour_brewer` choosing options `name = "Characters gender"` and `labels=c("Agender", "Female", "Genderfluid", "Male", "Not available"))`. 
+d. _advanced_: Choose a blue colour palette to represent the different lines (use the command `scale_colour_brewer( palette = "PuBu" )`)
+
+e. _advanced_: Modify axis names and the key labels with ` scale_colour_brewer` choosing options `name = "Characters gender"` and `labels = c("Agender", "Female", "Genderfluid", "Male", "Not available"))`. 
 
 
 ```{r ex1-lineplot4, echo=show_solution, warning = FALSE, include = show_solution}
 
 ggplot(data=number_characters, mapping=aes(x=Year, y=new_char, colour= SEX)) +
-  geom_line(mapping=aes(colour = SEX)) + 
-  labs(x = "Year", y = "Number of characters") +
+  geom_line(mapping=aes(colour = SEX)) + labs(x = "Year", y = "Number of characters") +
   scale_colour_brewer(palette="PuBu", name = "Characters gender",
-                      labels=c("Agender", "Female", "Genderfluid", "Male", "Not available"))
+                      labels=c("Agender", "Female", "Genderfluid", 
+                               "Male", "Not available"))
 
 
 ```
@@ -201,7 +204,8 @@ Let us consider the `marvel_wikia_data` dataset.
 ### Exercise 1
 
 a. Build a stacked barplot for representing the number of new comic characters distinguishing them by `ALIGN` and map fill to `SEX`. Set bars width as 0.7.
-_advanced_ b. Rotate the x axis by 30° so that the axis text nomore overlaps.
+
+b. _advanced_: Rotate the x axis by 30° so that the axis text nomore overlaps.
 
 
 ```{r ex1-barplot, echo=show_solution, warning = FALSE, include = show_solution}
@@ -213,6 +217,7 @@ ggplot(data=marvel_wikia_data, mapping=aes(x=ALIGN, fill=SEX)) +
 c. Consider only comic characters with blond hair and Black Hair (`filter(HAIR == "Black Hair" | HAIR == "Blond Hair")`). Build a stacked barplot for representing the number of new comic characters distinguishing them by `ALIGN` and map fill to `HAIR`.
 
 ```{r ex1-barplot2, echo=show_solution, warning = FALSE, include = show_solution}
+
 pl <- ggplot(data = marvel_wikia_data %>%
          filter(HAIR == "Black Hair" | HAIR == "Blond Hair"), 
        mapping=aes(x=ALIGN, fill=HAIR)) + 
@@ -223,7 +228,8 @@ pl
 ```
 
 d. Take the barplot in (b.) and represent the distribution on Blond Hair between the character type (Good, Bad, neutral).
-_advanced_ e. Manually set colour `grey20` for black hair and `gold3` for blond hair and change the axis name from `ALIGN` to `Character Type`.
+
+e. _advanced_: Manually set colour `grey20` for black hair and `gold3` for blond hair and change the axis name from `ALIGN` to `Character Type`.
 
 
 ```{r ex1-barplot4, echo=show_solution, warning = FALSE, include = show_solution}
@@ -248,25 +254,23 @@ ggplot(data = marvel_wikia_data %>%
 
 ```
 
+b. _advanced_: Consider only comic characters with blue, black and brown eyes. Set `facet_grid(~ EYE)`
 
-_advanced_ b. Consider only comic characters with blue, black and brown eyes. Set `facet_grid(~ EYE)`
-_advanced_ c. Customise legend, axis names and colours so that your plot is as clear as possible (for instance, you may choose colour blue for males and pink for females).
-
+c. _advanced_: Customise legend, axis names and colours so that your plot is as clear as possible (for instance, you may choose colour blue for males and pink for females).
 
 
 ```{r ex2-barplot2, echo=show_solution, warning = FALSE, include = show_solution}
 
-ggplot(data = marvel_wikia_data %>%
+data_ex2_barplot <- marvel_wikia_data %>%
          filter(SEX == "Male Characters" | SEX == "Female Characters") %>%
-         filter(EYE == "Blue Eyes" | EYE == "Brown Eyes" | EYE == "Black Eyes" ), 
-       mapping=aes(x=ALIGN, fill=SEX)) + 
-  geom_bar(width=0.5, position="dodge")+
-  coord_flip() + 
+         filter(EYE == "Blue Eyes" | EYE == "Brown Eyes" | EYE == "Black Eyes")
+
+ggplot(data = , data_ex2_barplot, mapping=aes(x=ALIGN, fill=SEX)) + 
+  geom_bar(width=0.5, position="dodge") + 
+  labs(x = "Character type") + coord_flip() +
+  facet_grid(~EYE) + theme(legend.position="bottom") + 
   scale_fill_manual(values=c("lightpink1", "lightblue1"), 
-                    labels = c("Male", "Female"), name = c("Characters gender"))+
-  facet_grid(~EYE) +
-  theme(legend.position="bottom") +
-  labs(x = "Character type")
+                    labels = c("Male", "Female"), name = c("Characters gender"))
 
 ```
 
@@ -280,7 +284,9 @@ Let us consider `iris` dataset.
 ### Exercise 1
 
 a. Represent the distribution of `Sepal_Length` variable with an histogram.
+
 b. Set bins fill colour as "hotpink" and bins line colour as "deeppink".
+
 c. Set the number of bins as 15.
 
 ```{r ex1-histogram, echo=show_solution, include = show_solution}
@@ -289,7 +295,7 @@ pl <- ggplot(data=iris, aes(x=Sepal.Length)) +
 pl
 ```
 
-_advanced_ d. Map the grouping variable `Species` to fill and choose a pink colour palette (`PuRd`)
+d. _advanced_: Map the grouping variable `Species` to fill and choose a pink colour palette (`PuRd`)
 
 ```{r ex1-histogram2, echo = show_solution, include = show_solution}
 
@@ -300,7 +306,7 @@ ggplot(data=iris, aes(x=Sepal.Length, fill = Species)) +
   
 ```
 
-_advanced_ e. Using `facet_grid()` produce a different panel for each `Species`
+e. _advanced_: Using `facet_grid()` produce a different panel for each `Species`
 
 ```{r ex1-histogram3, echo = show_solution, include = show_solution}
 pl +
@@ -319,22 +325,22 @@ a. Build a boxplot to represent the number of times that each comic character cr
 
 ```{r boxplot-1, warning = FALSE, include = show_solution}
 ggplot(data=marvel_wikia_data %>% filter(Year == 2012), aes(x = 0, y = APPEARANCES)) + 
-    geom_boxplot(colour = "#00008B", fill = "#00BFFF", 
-                 outlier.colour="red", outlier.shape=18, outlier.size=3) +
-    xlab("")
+  xlab("") + geom_boxplot(colour = "aquamarine4", fill = "aquamarine2", 
+  outlier.colour="red", outlier.shape=10, outlier.size=2) 
 
 ```
 
 b. Compare the number of times Bad comic characters and Good comic characters created in 2012 have appeared.
 
-
 ```{r boxplot-2, warning = FALSE, include = show_solution}
-ggplot(data = marvel_wikia_data %>% filter(Year == 2012) %>% 
-         filter(ALIGN == "Bad Characters" | ALIGN == "Good Characters"), 
-       aes(x = ALIGN, y = APPEARANCES)) + 
-    geom_boxplot(colour = "aquamarine4", fill = "aquamarine2", 
-                 outlier.colour="red", outlier.shape=18, outlier.size=3) +
-  labs(x = "Character type")
+
+data_boxplot <- marvel_wikia_data %>% filter(Year == 2012) %>% 
+         filter(ALIGN == "Bad Characters" | ALIGN == "Good Characters")
+
+ggplot(data = data_boxplot, aes(x = ALIGN, y = APPEARANCES)) +
+  labs(x = "Character type") +
+  geom_boxplot(colour = "aquamarine4", fill = "aquamarine2", 
+  outlier.colour="red", outlier.shape=10, outlier.size=2) 
 
 ```
 
