@@ -72,7 +72,7 @@ The syntax used to build a `nnet` object is very similar to the one used for (ge
 set.seed(100)
 nn0 <- nnet(Status ~ Class+Gender+Age,data=titanic,size=3)
 ```
-The `size` parameter of above `nnet()` call specifies the number of units (neurons) in hidden layer. `prednn` contains the predictions obtained using the `nn0` model.  
+The `size` parameter of above `nnet()` call specifies the number of units (neurons) in hidden layer. 
 
 The next table shows the confusion matrix for fitted model
 ```{r 06d-confusionmatrix}
