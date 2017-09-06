@@ -73,7 +73,7 @@ bh_test <-  bostonhousing[-train,]
 
 set.seed(100)
 
-nn0 <- nnet(medv ~ ., data = bh_train, size = 4)
+nn0 <- nnet(medv ~ ., data = bh_train, size = 14)
 ```
 The `size` parameter of above `nnet()` call specifies the number of units (neurons) in hidden layer. 
 
