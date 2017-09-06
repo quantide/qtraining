@@ -40,7 +40,6 @@ summary(titanic)
 And here we load the library used for analysis
 ```{r 06b-libraries}
 require(nnet)
-#require(MASS)
 ```
 
 Some tables could help in describing the relations between die probability and explicative variables
