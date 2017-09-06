@@ -2,11 +2,12 @@ Introduction to R
 About R						| 11-aboutr.Rmd
 R, RStudio Set Up				| 12-setup.Rmd
 A First Look to R Session			| 13-firstlook.Rmd
+rmarkdown					| 14-rmarkdown.Rmd
 
 R Objects
 Introduction					| 21-introduction.Rmd
 Data Objects					| 22-data-obj.Rmd
-Function Objects					| 23-functions-obj.Rmd
+Function Objects				| 23-functions-obj.Rmd
 
 Data Import and Export
 Introduction					| 31-introduction.Rmd

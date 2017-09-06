@@ -1,6 +1,7 @@
 ---
 title: "A First Look to R Session"
-output: html_document
+output:
+  html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}

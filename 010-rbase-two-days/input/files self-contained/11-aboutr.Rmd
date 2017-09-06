@@ -1,7 +1,9 @@
 ---
 title: "About R"
 output:
-  html_document
+  html_document:
+    self_contained: false
+    lib_dir: ../output/html/libs
 ---
 
 ```{r options, include=FALSE, purl=FALSE}

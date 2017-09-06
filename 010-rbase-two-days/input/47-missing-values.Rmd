@@ -1,0 +1,172 @@
+---
+title: "Handling missing values"
+---
+
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
+options(width = 108)
+require(knitr)
+opts_knit$set(root.dir = "./../data")
+```
+
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+# load packages and data
+require(tidyverse) 
+require(qdata)
+```
+
+## Introduction
+
+Within this chapter you will mainly work with package tidyr. As, tidyr is part of the tidyverse core, when loading tidyverse, tidyr will be automatically loaded. 
+
+
+In `R` missing values are represented with `NA` ("not available"). Missingness in `R` is _contagious_ meaning that any operation involving an unknown value will also return a missing value:
+
+```{r, include=TRUE, purl=TRUE}
+NA+1
+NA == 1
+x <- c(1, 2, 3, 4, NA); mean(x)
+```
+
+If you want to determine whether a value is missing you may use the function `is.na()` which returns a logical vector:
+
+```{r, include=TRUE, purl=TRUE}
+is.na(x)
+```
+
+
+## Types of missing values
+
+A value can be missing in two ways:
+
+1. _Explicitely_, i.e. it is represented as `NA` or with another value labelled as missing
+
+2. _Implicitely_, i.e. it is absent from your data frame
+
+
+### 1. Explicit missing values
+
+Explicit missing values may already be represented as `NA` in your data frame. This is the easiest case as they are automatically detected by `R` and you can then proceed with any of the operations presented in the next section (drop, ignore or replace). 
+
+With a very simple example:
+
+```{r setwd, eval=FALSE}
+setwd("./data")
+```
+
+
+```{r, include=TRUE, purl=TRUE}
+# example of different types of missing data
+load("unemployment.Rda")
+```
+
+The variable `unemployment_rate` contains explicit missing values. If you calculate any summary statistics on that variable, you will get a "NA":
+
+
+```{r, include=TRUE, purl=TRUE}
+unemployment %>% summarise(mean(unemployment_rate))
+```
+
+
+
+In the variable `lab_force_participation`, 999.99 does not seem in line with the other values. It may be the case that the person that collected data for you decided to identify a missing value with, for example `999.99`. In this case `R` does not recognise it as missing value and it includes it in your calculations yielding unusual results: 
+
+```{r, include=TRUE, purl=TRUE}
+unemployment %>% summarise(mean(lab_force_participation))
+```
+
+Another example may be when the missing value is just left blank. In this case `R` returns a warning:
+
+```{r, include=TRUE, purl=TRUE}
+y <- c(1, 2, 3, "")
+mean(y)
+```
+
+In the two above cases where you have an explicit missing value but it is not represented by `NA`, it is better to recode them into `NA`. By doing so they can easily be treated by `R`. The function `na_if` of the package `dplyr` quickly does it:
+
+```{r, include=TRUE, purl=TRUE}
+na_if(y, "")
+```
+
+and on the data frame `unemployment`:
+
+```{r, include=TRUE, purl=TRUE}
+unemployment_new <- na_if(unemployment, 999.99)
+
+unemployment_new
+```
+
+
+
+
+### 2. Implicit missing values
+
+There is another type of missing value in the data frame `unemployment` that has not yet been treated: the variables referring to unemployment rate and labour force participation are missing for the second semester of 2013. This is an implicit missing value. You can make it explicit with the function `complete()`:
+
+```{r, include=TRUE, purl=TRUE}
+unemployment %>% complete(year, sem)
+```
+
+Or in the data frame `unemployment_new`:
+
+```{r, include=TRUE, purl=TRUE}
+unemployment_new <- unemployment_new %>% complete(year, sem)
+```
+
+
+## Treating missing values
+
+If you encounter missing values in your data frame you have different options. You may:
+
+1. drop the entire row
+2. ignore the missing values in the analysis
+3. replace the missing values
+
+
+### 1. Drop the entire row
+
+This is not reccomandable especially if you have many variables and missing values are only a small percentage of the variables. However, if you think this is the way to go, you can easily drop the row by using `drop_na()`:
+
+```{r, include=TRUE, purl=TRUE}
+unemployment_new %>% drop_na()
+```
+
+
+### 2. Ignore missing values
+
+Most of the functions you use have the option `na.rm`. If the argument is TRUE, the function will just ignore them in the calculations. Notice that this works only if the missing values are coded as `NA`, that's why it is important to turn all missing values to `NA`.
+
+
+```{r, include=TRUE, purl=TRUE}
+unemployment_new %>% 
+  summarise_at(vars(unemployment_rate, lab_force_participation), funs(mean), na.rm = TRUE)
+```
+
+
+Notice that if you encounter unusual values in your data frame you can set them to missing as well. For example, suppose you have a variable called `age`, and you find a value equals 300. This is not a missing value but an error in typing was obviously made. Thus you may decide to consider it as a missing so that you can ignore it in your analysis. Recoding unusual values into `NA` may come in handy because unusual values, that may mess up your analysis, are ignored with the simple use of `na.rm`.
+
+
+### 3. Replace missing values
+
+If a data source has been used for data entry, missing values may simply indicate that the previous value should be carried forward:
+
+```{r, include=TRUE, purl=TRUE}
+unemployment <- tibble(
+  year = c(2014, NA, 2015, NA, 2016, NA),
+  sem = c(1, 2, 1, 2, 1, 2),
+  unemployment_rate = c(6.5, 7.6, 8.2, 7.3, NA, 6.8),
+  lab_force_participation = c(63.5, 61.4, NA, 62.7, 61.8, 63.2)
+)
+```
+
+
+The function `fill()` provided by `tidyr` helps dealing with this situation by replacing NAs with the previous value:
+
+```{r, include=TRUE, purl=TRUE}
+unemployment %>% fill(year)
+```
+
+
+However, replacing missing values is not always as easy. For example, considering the data frame `unemployment`, missing values in labour force participation or in unemployment rate would be more difficult to replace  requiring a deep knowledge of statistical tecniques. 
+
+There are many `R` packages for missing data imputation, such as `mice` and `Amelia`, but they will not be explored in this course.
