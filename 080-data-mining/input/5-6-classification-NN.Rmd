@@ -1,0 +1,129 @@
+---
+title: "Neural Networks"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+source("options.R")
+```
+
+```{r first, include=FALSE, purl=TRUE, message=FALSE}
+# This code chunk contains R code already described in the previous chapters
+# that is required by following examples
+
+## Datasets from packages
+require(qdata)
+data(titanic)
+
+## Other datasets used
+# none
+
+###########################################################
+## packages needed: nnet                                 ##
+###########################################################
+```
+
+## Introduction
+Statistical literature on prediction/modeling techniques is growing very quickly. New techniques applied to data-mining and to business intelligence projects appear every day, and new developments allow the researcher to obtain even more precise predictions.  
+In this chapter we want to introduce very briefly the basis of Neural Network analysis for classification problems.
+
+
+## Example: Titanic data
+
+This example uses the true data from surviving to Titanic wreck.  
+The aim of study is to find a prediction model to assess the probability of death for each passenger based on its `Age`, `Gender`, and `Class` of accomodation.
+
+Here we show some summaries on dataset:
+```{r 06a-summary,split=TRUE}
+head(titanic)
+summary(titanic)
+```
+And here we load the library used for analysis
+```{r 06b-libraries}
+require(nnet)
+```
+
+Some tables could help in describing the relations between die probability and explicative variables
+```{r}
+(tb1 <- table(titanic$Status,titanic$Class))
+round(prop.table(tb1,margin=2)*100,2)
+(tb2 <- table(titanic$Status,titanic$Gender))
+round(prop.table(tb2,margin=2)*100,2)
+(tb3 <- table(titanic$Status,titanic$Class,titanic$Gender))
+round(prop.table(tb3,margin=c(2,3))*100,2)
+```
+
+The above tables show counts and percentages of died and survived for each combination of Sex and Class factors. Some relations clearly appear, but their general interpretation is not really simple. One can think that the relation between independent variables and dependent variable is complex and, maybe, non linear.
+
+The following graph shows if some relations exist between `Status` and `Age`:
+```{r 06c-descrgraphs, fig.width=plot_with_legend_fig_width_short, fig.cap="Box-plot of Age within levels of Status"}
+require(ggplot2)
+ggp <- ggplot(data=titanic, mapping = aes(y=Age, x=Status)) +
+  geom_boxplot() +
+  ggtitle("Boxplot of Age Vs. Status")
+print(ggp)
+```
+Apparently, a slightly lower age is in survived passengers.
+
+Now we can try a model to predict the probability of death Vs. the independent variables.  
+The R `nnet` library gives a `nnet()` function to fit a single-hidden-layer neural network to data. `nnet()` produces in output an object of class `nnet.formula` and `nnet`.
+
+The syntax used to build a `nnet` object is very similar to the one used for (generalized) linear models:
+```{r 06d-model}
+set.seed(100)
+nn0 <- nnet(Status ~ Class+Gender+Age,data=titanic,size=3)
+```
+The `size` parameter of above `nnet()` call specifies the number of units (neurons) in hidden layer. 
+
+The next table shows the confusion matrix for fitted model
+```{r 06d-confusionmatrix}
+titanic$pred <- as.vector(predict(nn0, type="raw"))
+
+titanic$pred_class <- factor(ifelse(titanic$pred < 0.5, "Died", "Survived"))
+
+require(caret)
+
+confusionMatrix(titanic$pred_class, reference = titanic$Status)
+
+```
+
+If we want to get a prediction of probability of death for several levels of independet variables, we can calculate a table of independent variable values and then predict the probabilities.  
+In following example, the mean values of probability for each combination of `Class` and `Gender` factors, and the mean age for each combination of factor levels is produced:
+```{r 06e-prediction}
+require(dplyr)
+
+ds_pred <- titanic %>%
+  group_by(Class, Gender) %>%
+  summarise(Age = mean(Age, na.rm=TRUE))
+
+ds_pred$prob <- predict(nn0, newdata = ds_pred, type="raw")
+
+ds_pred
+```
+
+## Some theory about Neural networks
+Neural networks can be considered a type of nonlinear regression that takes a set of 
+inputs (explanatory variables), transforms and weights these within a set of hidden units
+and hidden layers to produce a set of outputs or predictions (that are also transformed).
+
+Next figure is an example of a feed forward neural network consisting of four inputs, a
+hidden layer that contains three units and an output layer that contains two outputs.
+
+![Example of simple feed-forward Neural Network](./images/nnet.png)
+
+The outputs of nodes in one layer are inputs to the next layer. The inputs to each node are combined using a weighted linear combination. The result is then usually modified by a nonlinear function before being output. For example, the inputs into hidden neuron $j$ in above figure are combined to give
+
+$z_j=b_j+\sum_{i=1}^4 w_{i,j} x_i$.
+
+In the hidden layer, this is then modified using a nonlinear function such as a sigmoid,
+
+$\phi(z)=\dfrac{1}{1+e^{-z}}$,
+
+to give the input for the next layer. This allows the formula to reduce the effect of extreme input values, thus making the network more robust to outliers.
+
+The parameters $b_1$,$b_2$,$b_3$ and $w_{1,1}, \cdots ,w_{4,3}$ are "learned" from the data. 
+
+The weights usually take random values to begin with, and are then updated using the observed data. Consequently, there is an element of randomness in the predictions produced by a neural network. Therefore, the network is usually trained several times using different random starting points, and the results are averaged.
+
+The number of hidden layers, and the number of nodes in each hidden layer, must be specified in advance. 
+
+
