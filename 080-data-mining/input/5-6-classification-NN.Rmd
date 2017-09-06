@@ -30,7 +30,7 @@ In this chapter we want to introduce very briefly the basis of Neural Network an
 ## Example: Titanic data
 
 This example uses the true data from surviving to Titanic wreck.  
-The aim of study is to find a prediction model to assess the probability of die for each passenger based on its `Age`, `Gender`, and `Class` of accomodation.
+The aim of study is to find a prediction model to assess the probability of death for each passenger based on its `Age`, `Gender`, and `Class` of accomodation.
 
 Here we show some summaries on dataset:
 ```{r 06a-summary,split=TRUE}
