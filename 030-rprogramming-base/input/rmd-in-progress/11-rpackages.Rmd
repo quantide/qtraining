@@ -1,0 +1,152 @@
+---
+title: "Developing R packages"
+output: html_document
+---
+
+## Introduction
+A wide documentation is available on the internet providing the technical instructions to build `R` packages, starting from the manual [Writing R extensions](http://cran.r-project.org/doc/manuals/r-release/R-exts.html) at the official `R` site.
+ 
+This section provides a general overview about R packages. The following sections try to provide some insights on the mechanism used by `R` when dealing with packages.
+
+
+### Why create a `R` package?
+
+According to Rossi[^Rossi], there are at least three good reasons to create an R package.
+
+[^Rossi]: http://www.math.ncu.edu.tw/~chenwc/R_note/reference/package/packages.pdf
+
+1.  Creating an R package forces the user to document the code and provide test examples to insure that it actually works. It will also be much easier to use the code as documentation will only be a `?` command away and all of functions and shared libraries will be available for use. This is a good reason to create a package, also for its own use.
+
+2.  If the goal is disseminate a research, this is an ideal way of making sure others have access to the work. It will also increase the probability that eventually the work will be correct. This is a good reason to create a package for a team (private) use.
+
+3.  Giving back something to this amazing community of volunteers! This is a good reason to make the package available for the whole world (e.g. through CRAN).  
+
+## The package structure behind `R`
+Packages provide a mechanism for loading optional code, data and documentation as needed. 
+
+An R package can be thought of as the software equivalent of a scientific article: articles are the _de facto_ standard to communicate scientific results, and readers expect them to be in a certain format. R packages are a comfortable way to maintain collections of R functions and data sets (Leisch, 2009)[^Leisch].
+
+[^Leisch]: http://cran.r-project.org/doc/contrib/Leisch-CreatingPackages.pdf
+
+The R distribution itself includes about 30 packages that can be split into three categories.
+
+* **Base** packages: part of the R source tree, maintained by R Core.
+* **Recommended** packages: part of every R installation, but not necessarily maintained by R Core.
+* **Contributed** packages: all the rest. These are necessarily of lesser quality than the above. In fact, note that many contributed packages on CRAN are written and maintained by R Core members. The goal is simply to try and keep the base distribution as lean as possible and all non-essential packages are on CRAN but are not included in base R.
+
+The `installed.packages()` function returns a matrix with several information about installed packages. The ``Priority'' column reports the category (base, reccomended or contributed) which each package belong to.
+
+Terms about R packages are often confused. It may be helpful to clarify this a bit:
+
+* **Package**: a collection of R functions, data, and compiled code in a well-defined format.
+* **Library**: the directory where packages are installed.
+* **Repository**: A website providing packages for installation.
+* **Source**: The original version of a package with human-readable text and code.
+* **Binary**: A compiled version of a package with computer-readable text and code, may work only on a specific platform.
+
+
+## Packages Environments 
+
+Every R package has two associated environments:
+
+1. package environment 
+2. namespace environment 
+
+The package environment contains all functions of the package exposed to the end user.
+
+The namespace environment contains all functions the package including those functions included in the package environment. 
+
+The namespace environment contains all functions (including internal functions), and its parent environment is a special imports environment that contains bindings to all the functions that the package needs. Every exported function in a package is bound into the package environment, but enclosed by the namespace environment. This complicated relationship is illustrated by the following diagram:
+
+## Package structure
+
+### Code (R/)
+
+### Package metadata (DESCRIPTION)
+
+### Object documentation (man/)
+
+### Vignettes (vignettes/)
+
+### Testing (tests/)
+
+### Namespaces (NAMESPACE)
+
+### Data (data/)
+
+### Compiled code (src/)
+
+### Installed files (inst/)
+
+### Other 
+
+
+## Further deepenings
+
+### Submit a package to CRAN
+
+To distribute a package through the Comprehensive R Archive Network (CRAN) repository, just follow the instructions in [CRAN website](http://cran.r-project.org/). Binaries for Windows and Max OS X are created by CRAN.
+
+### Get the Windows binary
+
+Sometimes, packages are created for personal or business team purposes and may not be avalaible through CRAN.
+
+If the package cannot be submitted through the CRAN repository, the tool provided by the [R-project](http://win-builder.r-project.org/) can be used to get the Windows binary.
+
+
+
+## Collaboration with Git and Github
+
+There are a number of advantages to putting your R package on GitHub.
+
+ - It will be easier for others to peruse your code. They can do so in the web browser without having to download, extract, and start fishing.
+ - GitHub includes issue tracking: people (including yourself) can note problems they’re having or suggestions for improvements they’d like you to make.
+ - In addition to just pointing out problems, people can actually fix the problem and send you a patch, which you can easily test and then incorporate into your package. Some of this can be done entirely online, with no knowledge of git.
+ - With the `install_github()` function in Hadley Wickham’s `devtools` package, it’s easy for people to install your package directly from GitHub. It doesn’t have to be on CRAN. 
+
+
+### How to install a package from GitHub
+
+To install a package that’s sitting on GitHub:
+
+ 1. First, you need to install the devtools package. You can do this from CRAN:
+ 
+    ```{r packages-github1, eval=FALSE}
+install.packages("devtools")
+    ```
+
+ 2. Load the devtools package:
+ 
+    ```{r packages-github2, eval=FALSE}
+library(devtools)
+    ``` 
+
+ 3. In most cases, you just use `install_github("author/package")`.  
+    For example, with  [R/broman package](http://github.com/kbroman/broman), you’d type:
+    
+    ```{r packages-github3, eval=FALSE}
+install_github("kbroman/broman")
+    ```
+
+
+### Put your R package on GitHub
+
+To put your package on GitHub, you’ll need to get a GitHub account.  
+To create a new git repository, you have to:
+
+ - Change to the package directory
+ - Initialize the repository with `git init`
+ - Add and commit everything with `git add .` and `git commit`
+ - Create a new repository on GitHub
+ - Connect your local repository to the GitHub one.
+ 
+    ```{r packages-github4, eval=FALSE}
+git remote add origin https://github.com/username/reponame
+    ```
+ 
+ - Push everything to github
+ 
+    ```{r packages-github5, eval=FALSE}
+git push -u origin master
+    ```
+
