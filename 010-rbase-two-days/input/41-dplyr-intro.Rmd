@@ -1,5 +1,5 @@
 ---
-title: "Introduction to `dplyr`"
+title: "Introduction to `tidyverse` and `dplyr`"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -9,7 +9,7 @@ options(width = 108)
 
 ![](./images/flow-dtman.png)
 
-This chapter provides an overview of data management with `R` through the `dplyr` package.
+This chapter provides an overview of data management in the `tidyverse` through the `dplyr` package, which is part of the `tidyverse` core.
 
 The `dplyr` package for `R` is very powerful for data management since:
 
@@ -18,10 +18,10 @@ The `dplyr` package for `R` is very powerful for data management since:
 * it uses efficient data storage backends, so you spend less time waiting for the computer.
 
 ```{r message=FALSE}
-require(dplyr)
+require(tidyverse)
 ```
 
-In the following chapters, we will explore the innovations introduced by `dplyr` to make our lifes easier when dealing with dataframes manipulation tasks.     
+In the following chapters, we will explore the innovations introduced in the tidyverse to make our lifes easier when dealing with dataframes manipulation tasks.     
 In particular:
 
 * pipe operator (`%>%`) 
@@ -29,7 +29,7 @@ In particular:
 * `dplyr` verbs for data manipulation 
 * Group data and chain verbs
 
-In the following two paragraphs we will explore two important `dplyr` innovations: pipe operator (`%>%`) and `tbl_df` data frame class
+In the following two paragraphs we will explore the pipe operator (`%>%`) and `tbl_df` data frame class which are uniffying features of the tidyverse.
 
 
 ## Pipe operator  
@@ -38,7 +38,7 @@ In the following two paragraphs we will explore two important `dplyr` innovation
 
 ![<small>Source: www.datacamp.com</small>](./images/pipe.png)
 
-Pipes can work with nearly any functions (`dplyr` and not-`dplyr` functions), let us see an example.
+Pipes can work with nearly any functions (`tidyverse` and not-`tidyverse` functions), let us see an example.
 
 Let us consider `bank` data set, included in `qdata` package, which contains information about a direct marketing campaigns of a Portuguese banking institution based on phone calls. 
 
@@ -70,27 +70,82 @@ bank %>% head(n=10)
 ```
 
 
-## `tbl_df`: the `dplyr` Data Frame Class
+Instead of the traditional R's data frames, throughout this course you will work mainly with "tibbles". "Tibbles" are similar to data frames but offer better checking and printing capabilities than traditional data frames. Almost all of the functions that you will use in this course produce, and take as input, tibbles. In fact tibbles are one of the unifying features of the tidyverse. 
 
-Sometimes data frames have large dimensions. `dplyr` package provide `tbl_df`, which is a wrapper around a data frame that will not accidentally print a lot of data to the screen; indeed tbl objects only print a few rows and all the columns that fit on one screen, describing the rest of it as text.
+In this chapter you will work with the `tibble` package which provides functions for tibbles coercion and creation.
 
-When the class of data object is not tbl, `tbl_df()` function should be used.  
+You can load `tibble` by loading `tidyverse`:
+
+```{r}
+require(tidyverse)
+```
+
+or you can load it explicitely, together with `dplyr` that will be used throughout this chapter:
+
+```{r}
+require(tibble)
+require(dplyr)
+```
+
+
+## `tbl_df`: the `tidyverse` Data Frame Class
+
+`dplyr`, as well as other packages that you will work with in this course, can work with data frames as is but it is worthwhile to convert them to a tibble (`tbl_df`), especially if frames have large dimensions. `tbl_df` is a wrapper around a data frame that, as mentioned, will not accidentally print a lot of data to the screen, indeed tbl objects only print a few rows and all the columns that fit in one screen, describing the rest of it as text.
+
+Almost all of the functions that you will use in this course produce, and take as input, tibbles. In fact tibbles are one of the unifying features of the tidyverse. 
+
+
+When the class of data object is not tibble, you can convert it to a tibble with the function `as_tibble()`.  
 Let us consider `mtcars`, a dataset included in `datasets` package (automatically loaded at the start of an R session): 
 
-```{r tbl_df, message=FALSE}
+```{r data frame, message=FALSE}
 # Example of data frame
 class(mtcars)
 
 # If we do not convert it as a tbl_df, all mtcars rows and columns will be printed when calling mtcars 
 dim(mtcars)
 mtcars
+```
 
-# dplyr version of the same data frame (tbl_df conversion)
-mtcars_tbl <- tbl_df(mtcars)
+Now, using the package `tibble`, you can convert mtcars into a `tbl_df` object:
+
+```{r tibble, message=FALSE}
+# tibble version of the same data frame 
+mtcars_tbl <- as_tibble(mtcars)
+mtcars_tbl
+```
+
+Alternatively, you may use the function `tbl_df()`  in the package `dplyr`.
+
+```{r tbl_df, message=FALSE}
+# tibble version of the data frame mtcars with the function tbl_df()
+mtcars_tbl2 <- tbl_df(mtcars)
 class(mtcars_tbl)
 mtcars_tbl
 ```
 
-<!--
-cambiare mtcars -> rivedere perchè non va
--->
+Moreover you may want to create a tibble from individual vectors. This can be easily done with the function `tibble()`.
+
+```{r tibble2, message=FALSE}
+# tibble version of the data frame mtcars with the function tbl_df()
+tb <- tibble(
+  id = 1:5,
+  height = c(1.7, 1.65, 1.6, 1.75, 1.73),
+  weight = c(80, 46, 52, 82, 75),
+  bmi = weight/ (height) ^2
+)
+tb
+```
+
+Notice that it is possibile for a tibble to have column names that are not valid as `R` variables names, for instance they may be numbers or may contain unsual characters such as spaces.
+
+```{r tibble3, message=FALSE}
+# tibble version of the data frame mtcars with the function tbl_df()
+tb <- tibble(
+  ":)" = "happy",
+  "1" = "one",
+  "/" = "slash",
+  " " = "space"
+)
+tb
+```
