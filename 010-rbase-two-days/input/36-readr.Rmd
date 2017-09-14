@@ -1,0 +1,99 @@
+---
+title: "Reading data with `readr`"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+require(knitr)
+options(width = 108)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+opts_knit$set(root.dir = "../data")
+```
+
+# Introduction
+
+In this chapter  you'll learn how to import flat files in R. You will do this with the use of `readr` package which is part of the `tidyverse` core. As already learned, if you load the package `tidyverse`, `readr` will automatically be loaded:
+
+```{r readr}
+require(tidyverse)
+```
+
+
+Notice that base R offers many functions for importing flat files. The reasons why you will learn `readr` is that its functions are typically faster and they produce tibbles which is a common feature of tidyverse packages.
+
+
+# Reading flat files
+
+Suppose you want to import data from `tennis.txt` (available in the data folder). 
+
+
+If you open the `tennis.txt` file you may observe that:
+
+1. variables are delimited by many columns of space 
+2. variable names are at the top of the file 
+
+For dealing with 1), the function `read_r_table` comes in handy.  `read_r_table` is designed to read the type of text data where each column is separated by one (or more) columns of space. 
+
+
+In order to import the text file, you first need to "give the coordinates" of the folder in which the text file is stored. You are currently working in the directory given by the following command:
+
+```{r getwd, eval = FALSE}
+getwd()
+```
+
+that may not be the folder in which your text file is stored. If that is the case, you need to set the working directory on the folder containing the data:
+
+```{r setwd, eval=FALSE}
+setwd("./data")
+```
+
+Now, the text file can be imported just providing its filename:
+
+```{r tennis1}
+read_table("tennis.txt", col_names = TRUE)
+```
+
+Notice that `col_names = TRUE` indicates that the variables names are at the begininning of the file (to deal with observation 2). 
+
+Besides space, common delimiters for variable names are tab, comma and semi colon. Hence there are specific functions that automatically deal with these separators.
+
+```{r csvs, eval = FALSE}
+read_csv("solar.txt", col_names = FALSE) # for comma separeted variables
+read_tsv("aire_milano.txt", col_names = TRUE) # for tab separeted variables
+read_csv2("milano_tourism", col_names= TRUE) # for semi colon separeted variables
+```
+
+These are special cases of the more general function `read_delim`. `read_delim` reads file with any delimiter as specified in the argument `delim`. 
+
+```{r delim}
+read_delim("solar.txt", col_names = FALSE, delim = ",")
+read_delim("tuscany.txt", col_names = TRUE, delim = "|")
+```
+
+Notice that all these functions import data in the `dplyr` format, that is tibble. Moreover it identifies the variables type without the need of any further specification. In order to do so `R` reads the first 1000 rows and uses some heuristics to figure out each columns' type. If you are curious about it you may explore the functions `guess_parser` and `parse_guess` that are the functions used to guess the column type and parse the column.
+
+
+However, this method does not always work, especially when the file is very large. More specifically, two basic problems may arise:
+
+* suppose the first 1000 rows are an integer, but the others are not. `R` will classify that variable as an integer although integer is a special case of a numeric variable. Thus is general, if the first thousand rows are special cases, `R` will classify the variable as that special case. 
+
+* if the first 1000 rows are only missing values (NAs), readr will guess that it's a character although the remaining rows may be anything. 
+
+
+In order to solve these problems, you may tweak the type of (some of) the columns with the argument `col_types = cols()`:
+
+```{r}
+read_delim("solar.txt", col_names = FALSE, delim = ",",
+           col_types = cols(X2 = col_double()))
+```
+
+
+Let us quickly go through the variable types available in `R`:
+
+* numbers: for numeric variables you may choose between __double__ (for decimals) and __integer__
+* __factor__ : categorical variables that have a known set of possible values
+* __string__: textual data
+* __date__ and __time__ : for dates and times
+
+A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in the `tidyverse`.
+
