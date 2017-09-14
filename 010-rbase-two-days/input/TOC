@@ -2,7 +2,8 @@ Introduction to R
 About R						| 11-aboutr.Rmd
 R, RStudio Set Up				| 12-setup.Rmd
 A First Look to R Session			| 13-firstlook.Rmd
-rmarkdown					| 14-rmarkdown.Rmd
+Reports with Rmarkdown				| 14-rmarkdown.Rmd
+The Tidyverse					| 15-intro-tidyverse.Rmd
 
 R Objects
 Introduction					| 21-introduction.Rmd
@@ -11,15 +12,20 @@ Function Objects				| 23-functions-obj.Rmd
 
 Data Import and Export
 Introduction					| 31-introduction.Rmd
-Text files		  			| 32-dataimport-text.Rmd
-Microsoft Excel					| 33-dataimport-excel.Rmd	
-Databases					| 34-dataimport-db.Rmd
+Data import		  			| 32-dataimport.Rmd
 R data files 					| 35-dataimport-rdata.Rmd
+Tidyverse data import				| 36-readr.Rmd
 
 Data Manipulation  
 Introduction to dplyr              		| 41-dplyr-intro.Rmd
-Verb Functions					| 42-dplyr-verbs.Rmd
+Dplyr verb functions				| 42-dplyr-verbs.Rmd
+Joining tables					| 45-join.Rmd
+Tidy data					| 48-tidying-data.Rmd
+
+Data Discovery
 Group Data and Chain Verbs          		| 43-group-chain.Rmd
+Multiple operations				| 44-at-all-each.Rmd
+Missing values					| 47-missing-values.Rmd
 
 Data Visualization 
 Introduction					| 51-data-visualization-intro.Rmd
