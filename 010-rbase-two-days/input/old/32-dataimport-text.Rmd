@@ -1,0 +1,110 @@
+---
+title: "Text Files"
+---
+
+```{r, options, echo=FALSE, results='hide', message=FALSE, warning=FALSE, purl=FALSE}
+options(width = 108)
+require(knitr)
+opts_knit$set(root.dir = "./../data")
+outDir <- "."
+```
+
+```{r g, echo=FALSE, purl=FALSE}
+include_graphics("images/import-text-2.png", dpi=150)
+```
+
+## Data Import 
+
+The `read.table()` function imports a text file (ASCII) with a table structure where each row represents a case.
+
+A full path can be provided, but it must be modified by each user, otherwise it fails:
+```{r read.table, error=TRUE}
+df <- read.table("C:/Users/UserName/Documents/data/tennis.txt", header = TRUE, sep = "", dec = ".")
+```
+
+The path uses the slash ("`/`") as delimiting character, in the UNIX-like style. Under Windows, can be used both a slash character or a doubled backslash character ("`\\`").
+
+So, it is strongly suggested to set the working directory to the directory containing the data.  
+
+`getwd()` function allows you to view the current working directory:
+
+```{r, getwd, eval=FALSE}
+getwd() 
+```
+
+```
+## [1] "C:/Users/Andrea/Documents"
+```
+
+and `setwd()` function allows you to set the working directory on "data" folder, in this way:    
+
+```{r, setwd, eval=FALSE}
+setwd("./data") 
+```
+
+```
+## [1] "C:/Users/Andrea/Documents/data"
+```
+
+Now, the the text file can be imported just providing its filename: 
+
+```{r, read.table2}
+df <- read.table("tennis.txt", header = TRUE)
+```
+
+```{r, head}
+head(df)
+```
+
+The `header = TRUE` option tells R that the first row of the file contains column headings and it is used to assign the name of variables. If the first row contains the first case the `header = FALSE` ought to be used and the names of the variables are automatically assigned. R assumes a default value for the `header` parameter according to the file format, which is why specifying the correct option is advisable.  Alternatively, the names of the columns can be specified using the `col.names` parameter. This parameter requires a character vector with the same length as the number of the data frame columns.
+
+The `sep` argument specifies the separator between different cases. The default value for the `read.table()` function is `sep = ""` which takes into consideration the fields delimited by a white space, be it one or more spaces or tabulations.
+
+The `dec` argument specifies the decimal separator. The argument usually assumes the `dec = "."`  (default) or `dec = ","` values.
+
+The `nrows` argument specifies the maximum number of rows to read in.
+
+```{r, nrows1}
+read.table("tennis.txt", header = TRUE, sep = "", dec = ".", nrows = 3)
+```
+
+The `skip` argument specifies the number of lines of the data file to skip before beginning to read data. If the first line contains the header and it is ignored, than `header = FALSE` should be set.
+
+```{r, nrows2}
+read.table("tennis.txt", header = FALSE, sep = "", dec = ".", skip = 2)
+```
+
+The `nrows` and `skip` arguments can be mixed. The following example read the second and the third rows of the data frame.
+
+```{r, nrows3}
+read.table("tennis.txt", header = FALSE, sep = "", dec = ".", nrows = 2, skip = 2)
+```
+
+Variables containing text are set as character variables with the `stringsAsFactors = FALSE` option, whereas by default they are set as factors. This setting can be modified with the "global" option for it to be applied until the end of the work session. This can be done with the `options(stringsAsFactors = FALSE)` instruction.
+
+```{r, stringsAsFactors}
+df <- read.table("tennis.txt", header = TRUE, sep = "", dec = ".", stringsAsFactors = FALSE)
+head(df)
+```
+
+When there are missing values the `na.strings` can be used to indicate which string is referred to them. The `na.string` argument can be a character vector. R indicates missing values with the `NA` (Not Available) symbol.
+
+```{r, na.strings}
+# Data frame imported without na.strings parameter 
+df <- read.table("tennis.NA.txt", header = TRUE, sep = "", dec = ".", stringsAsFactors = FALSE)
+head(df)
+# Data frame imported considering also na.strings parameter
+df <- read.table("tennis.NA.txt", header = TRUE, sep = "", dec = ".", na.strings = c("MC", "ND"), stringsAsFactors = FALSE)
+head(df)
+```
+
+## Data Export 
+
+To save a data frame in a text file in R use the `write.table()` function.
+
+```{r, write.table, eval = FALSE}
+# It creates a df_write.txt file in the current directory containing df data frame
+df <- data.frame(a1 = rnorm(10), a2 = rnorm(10), a3 = rnorm(10))
+write.table(df, file = "df_write.txt")
+```
+
