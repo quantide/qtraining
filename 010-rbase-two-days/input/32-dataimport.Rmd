@@ -1,0 +1,191 @@
+---
+title: "Data Import from external sources"
+---
+
+```{r setup, include=FALSE, purl=FALSE, message=FALSE}
+require(knitr)
+opts_chunk$set(echo = TRUE)
+opts_knit$set(root.dir = "./data")
+```
+
+```{r g, echo=FALSE, purl=FALSE}
+include_graphics("images/flow-robj.png", dpi=150)
+```
+
+
+In the following paragraphs we will explore data import methods for:
+
+* Text files
+* Microsoft Excel files
+* Databases
+
+
+## Text files
+
+```{r g1, echo=FALSE, purl=FALSE}
+include_graphics("images/import-text.png", dpi=150)
+```
+
+The `read.table()` function imports a text file (ASCII) with a table structure where each row represents a case.
+
+A full path can be provided, but it must be modified by each user, otherwise it fails:
+```{r read_table, error=TRUE}
+df <- read.table("C:/Users/UserName/Documents/data/tennis.txt", header = TRUE, sep = "", dec = ".")
+```
+
+The path uses the slash ("`/`") as delimiting character, in the UNIX-like style. Under Windows, can be used both a slash character or a doubled backslash character ("`\\`").
+
+So, it is strongly suggested to set the working directory to the directory containing the data.  
+
+`getwd()` function allows you to view the current working directory:
+
+```{r getwd, eval=FALSE}
+getwd() 
+```
+
+```
+## [1] "C:/Users/Andrea/Documents"
+```
+
+and `setwd()` function allows you to set the working directory on "data" folder, in this way:    
+
+```{r setwd, eval=FALSE}
+setwd("./data") 
+```
+
+```
+## [1] "C:/Users/Andrea/Documents/data"
+```
+
+Now, the text file can be imported just providing its filename: 
+
+```{r read_table2}
+df <- read.table("tennis.txt", header = TRUE)
+```
+
+```{r head}
+head(df)
+str(df)
+```
+
+The `header = TRUE` option tells R that the first row of the file contains column headings and it is used to assign the name of variables. If the first row contains the first case the `header = FALSE` ought to be used and the names of the variables are automatically assigned.
+
+The `sep` argument specifies the separator between different cases. The default value for the `read.table()` function is `sep = ""` which takes into consideration the fields delimited by a white space, be it one or more spaces or tabulations.
+
+The `dec` argument specifies the decimal separator. The argument usually assumes the `dec = "."`  (default) or `dec = ","` values.
+
+```{r sepdec}
+df <- read.table("tennis.txt", header = TRUE, sep = "", dec = ".")
+head(df)
+```
+
+Variables containing text are set as character variables with the `stringsAsFactors = FALSE` option, whereas by default they are set as factors. 
+```{r stringsAsFactors}
+df <- read.table("tennis.txt", header = TRUE, sep = "", dec = ".", stringsAsFactors = FALSE)
+str(df)
+```
+
+# Microsoft Excel files
+
+```{r g2, echo=FALSE, purl=FALSE}
+include_graphics("images/import-excel.png", dpi=150)
+```
+
+
+One of the most important R package for importing excel files into R is `readxl`.
+Let us see how it works.
+
+```{r require_readxl, message=FALSE}
+require(readxl)
+```
+
+To read an existing excel file, the syntax is:
+
+```{r excel_file_name_readxl}
+# Excel file (with path) to be loaded into R
+file_xls <- "./xlsx/newFile.xlsx"
+```
+
+```{r load_xlsx_readxl}
+ds <-read_excel(path = file_xls, sheet = 'Airquality', col_names = TRUE)
+head(ds)
+```
+
+`read_excel()` function allows us to read xls and xlsx files, specified in `path` argument. `sheet` argument specifies the sheet to read and `col_names` indicates if the first row has to be used as column names (set as `TRUE`).
+
+## Databases
+
+```{r g3, echo=FALSE, purl=FALSE}
+include_graphics("images/import-db.png", dpi=150)
+```
+
+
+## ODBC
+
+Open Database Connectivity (ODBC) is a standard programming language interface for accessing database management systems (DBMS). ODBC is independent from database systems and operating systems. An application can use ODBC to query data from a DBMS, regardless of the operating system or DBMS it uses. ODBC accomplishes DBMS independence by using an ODBC driver as a translation layer between the application and the DBMS.
+
+With the `RODBC` package R enables the use of ODBC for interacting with databases. This solution is particularly useful when data occupies much space, is frequently updated or shared by two or more users. In this case, data is kept in the database. With R it is possible to make a query in the database, load data in the R workspace and carry out analyses.
+
+The following code shows some examples of how to use ODBC in a MySQL database. For the following examples to work, it is necessary to modify the following functions with the parameters related to the available MySQL database.
+
+The `odbcConnect()` function establishes the connection to the MySQL database. Its main arguments are: `dsn`, a string containing the name of the data source, `uid` and `pwd`, i.e. the user name and the password for the login.\
+
+The `sqlQuery()` function performs queries to the MySQL database. The use of single and double quotation marks require attention. In the following example the query is contained in a string and is delimited by double quotation marks. The strings belonging to the query are delimited by single quotation marks.
+
+Finally, the `odbcClose()` function closes the connection to the database.
+
+```{r RODBCsqlQuery, eval=FALSE}
+# RODBC driver ought be configured to work properly
+require(RODBC)
+conn <- odbcConnect(dsn = "test", uid = "user", pwd = "pass")
+sqlQuery(conn, "select * from tbl where gender = 'F'") 
+odbcClose(conn)
+```
+
+
+## SQLlite 
+
+`RSQLite` package embeds the SQLite database engine in R, providing a DBI-compliant interface. SQLite is a public-domain, single-user, very light-weight database engine that implements a decent subset of the SQL 92 standard, including the core table creation, updating, insertion, and selection operations, plus transaction management.  
+
+```{r require_pkg, message=FALSE}
+require(RSQLite)
+```
+
+
+The function `dbConnect` connect to a SQLite database, or creates it if it doesn't exist:
+
+```{r con_db}
+con <- dbConnect(RSQLite::SQLite(), "mtcars.sqlite")
+```
+
+To see a list of available SQLite tables:
+
+```{r available_tables}
+dbListTables(con)
+```
+
+or a list of fields in specified table:
+
+```{r table_fields}
+dbListFields(con, "mtcars")
+```
+
+The next function mimics its R/Splus counterpart `get`, except that it generates code that gets remotely executed in a database engine:
+
+```{r}
+dbReadTable(con, "mtcars")
+```
+
+The function `dbGetQuery` send query, retrieve results and then clear result set:
+
+```{r query}
+dbGetQuery(con, "SELECT * FROM mtcars WHERE cyl = 4")
+```
+
+
+And finally disconnect from the database:
+
+```{r disconnect_to_db_2}
+dbDisconnect(con)
+```
+
