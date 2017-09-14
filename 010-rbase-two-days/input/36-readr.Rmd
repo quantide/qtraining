@@ -12,7 +12,9 @@ opts_knit$set(root.dir = "../data")
 
 # Introduction
 
-In this chapter  you'll learn how to import flat files in R. You will do this with the use of `readr` package which is part of the `tidyverse` core. As already learned, if you load the package `tidyverse`, `readr` will automatically be loaded:
+In this chapter  you'll learn how to import flat files in `tidyverse`. You will do this with the use of `readr` package which is part of the `tidyverse` core. 
+
+As already learned, if you load the package `tidyverse`, `readr` will automatically be loaded:
 
 ```{r readr}
 require(tidyverse)
@@ -88,12 +90,11 @@ read_delim("solar.txt", col_names = FALSE, delim = ",",
 ```
 
 
-Let us quickly go through the variable types available in `R`:
+Variable types available in `R` are:
 
 * numbers: for numeric variables you may choose between __double__ (for decimals) and __integer__
 * __factor__ : categorical variables that have a known set of possible values
 * __string__: textual data
 * __date__ and __time__ : for dates and times
 
-A specific section is dedicated to strings and dates as they are not as straightforward to manipulate and specific packages are avaiable in the `tidyverse`.
 

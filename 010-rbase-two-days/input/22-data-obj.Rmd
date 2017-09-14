@@ -472,6 +472,71 @@ head(iris)
 ```
 
 
+### `tbl_df`: the `tidyverse` Data Frame Class
+
+Instead of the traditional R's data frames, throughout this course you will often work with "tibbles". "Tibbles" are similar to data frames but offer better checking and printing capabilities than traditional data frames. Almost all of the functions that you will use in this course produce, and take as input, tibbles. In fact tibbles are one of the unifying features of the tidyverse. 
+
+The `tibble` package, which is part of the tidyverse core, provides functions for tibbles coercion and creation. You can load `tibble` by loading `tidyverse`:
+
+```{r}
+require(tidyverse)
+```
+
+or you can load it explicitely, together with `dplyr` that will be used in this section:
+
+```{r}
+require(tibble)
+require(dplyr)
+```
+
+When the class of data object is not tibble, you can convert it to a tibble with the function `as_tibble()`.  
+Let us consider `mtcars`, a dataset included in `datasets` package (automatically loaded at the start of an R session): 
+
+```{r data frame, message=FALSE}
+# Example of data frame
+class(mtcars)
+
+# If we do not convert it as a tbl_df, all mtcars rows and columns will be printed when calling mtcars 
+dim(mtcars)
+mtcars
+```
+
+Now, using the package `tibble`, you can convert mtcars into a `tbl_df` object:
+
+```{r tibble, message=FALSE}
+# tibble version of the same data frame 
+mtcars_tbl <- as_tibble(mtcars)
+mtcars_tbl
+```
+
+Moreover you may want to create a tibble from individual vectors. This can be easily done with the function `tibble()`.
+
+```{r tibble2, message=FALSE}
+# tibble version of the data frame mtcars with the function tbl_df()
+tb <- tibble(
+  id = 1:5,
+  height = c(1.7, 1.65, 1.6, 1.75, 1.73),
+  weight = c(80, 46, 52, 82, 75),
+  bmi = weight/ (height) ^2
+)
+tb
+```
+
+Notice that it is possibile for a tibble to have column names that are not valid as `R` variables names, for instance they may be numbers or may contain unsual characters such as spaces.
+
+```{r tibble3, message=FALSE}
+# tibble version of the data frame mtcars with the function tbl_df()
+tb <- tibble(
+  ":)" = "happy",
+  "1" = "one",
+  "/" = "slash",
+  " " = "space"
+)
+tb
+```
+
+
+
 ## Missing Values, Null Objects and Infinite
 
 In R missing values are represented by the symbol `NA` (Not Available).
