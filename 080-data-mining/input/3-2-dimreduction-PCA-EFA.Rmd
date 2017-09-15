@@ -89,9 +89,11 @@ Of course, when correlation matrices are used to perform PCA, the divisor does n
 impact on results at all.
 
 ## Example: Life data
-Let's consider the `life` dataset (see the section *Introduction and datasets used* for further information). The data contains life expectations in 1960 at birth, 25, 50 and 75 years for men and women in 31 Countries or regions. 
+Let's consider the `life` dataset (see the section *Introduction and datasets used* for further information). The data contains life expectations in 1960 at birth, 25, 50 and 75 years for men and women in 31 Countries or regions. Before using the data for analysis a data fixing is applied.
 
 ```{r 02b-loadlifedata}
+# Data fixing:
+life[life$country=="Trinidad (62)", "m25"] <- 43
 str(life)
 summary(life)
 ```
@@ -107,7 +109,7 @@ require(GGally)
 ```{r 02b-graphlifesummary1}
 lf <- life[, -1]
 class(life) <- "data.frame"
-ggscatmat(life, columns = 2:8)
+ggscatmat(life, columns = 2:9)
 ```
 
 As seen from the above scatterplot matrix, some of the original variables are
@@ -137,11 +139,10 @@ print(summary(pca_princomp, loadings = TRUE)) # (cutoff = .1)
 print(summary(pca_princomp, loadings = TRUE), cutoff = .3)
 ```
 The loadings above can help giving a name to principal components.  
-The first PC seems (negatively) dominated by the mean level of life expectation and, maybe, 
-by the life expectancy at birth.  
-The second PC, instead, seems to oppose (women?) life expectancy at birth versus life expectancy at
+The first PC seems (negatively) dominated by the global level of life expectancy.  
+The second PC, instead, seems to oppose life expectancy at birth versus life expectancy at
 older ages.  
-The third PC seems to set adult men against adult-to-old women life expectancy.
+The third PC seems to set men against women life expectancy.
 
 A graphical representation of PCA values analysis via the scatterplot of loadings may also help to "name" Pcs.  
 Loadings are part of the output produced by `princomp()`.
@@ -183,14 +184,14 @@ ggcorr(cbind(lf, pca_princomp$scores), label = TRUE, cex = 2.5)
 ```
 
 The table shows that the 1st PC is strongly and negatively related to all the variables:
-the mean life expectation within each region drops when the age of subjects grows. This 
-confirm previous considerations.
+the mean life expectation within each region drops when the age of subjects grows. That
+means that regions with lower value in first PC score should have a longer life expectancy. This 
+confirm previous considerations.  
 The 2nd PC instead contrasts the life expectancy at birth with the life expectancy at elderly ages,
 giving positive values to life expectancy at birth; this might mean that regions with higher 
-value in second PC have a lower infant mortality.
-The 3rd component is related to the distances of inner frame to the lower and
-upper borders, while the remaining PCs do not seem to be strongly related to
-any of the original variables.
+value in second PC should have a bigger difference in life expectancy at birth and at elderly ages.  
+The 3rd PC seems to contrast males with females measures. This should mean that regions with higher
+values in 3rd PC should have an higher value of life expectancy for females than for males.
 
 Now, the scatter plot of the first two PCs scores is produced:
 
@@ -200,16 +201,21 @@ ggplot(pca_sc, aes(x = Comp.1, y = Comp.2, color = country)) + geom_point() + ge
 ggplot(pca_sc, aes(x = Comp.1, y = Comp.3, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.1 Vs Comp.3 scores")
 ggplot(pca_sc, aes(x = Comp.2, y = Comp.3, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.2 Vs Comp.3 scores")
 ```
-The scatterplot shows that the first two PCs allow to almost perfectly
-separate the two groups of banknotes (genuine vs. counterfeit) and this could
-also facilitate the classification of banknotes in either one of the two groups.
+
 Another graphical representation of the results of a PCA where both the
 component scores and the loadings are jointly represented is the biplot,
 which can be obtained with the `biplot()` function:
 
 ```{r 02b-biplotlife, fig.width=plot_with_legend_fig_width_short}
-biplot(pca_princomp, cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(1,2), cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(1,3), cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(2,3), cex = c(.7, .7), col = c("gray", "red"))
 ```
+
+Now, we have seen that the principal components are linear transformations of
+original variables. The total number of principal components that can be 
+extracted from a dataset is equal to the minimum between the number of rows
+and the number of columns of dataset.
 
 How many PCs should we retain? This is probably the main question while
 carrying out a PCA. Because the criterion for a good projection in PCA is a
@@ -242,37 +248,30 @@ popular:
 						eigenvalues of the sample correlation matrix exceed
 						0.7.
 
-For the banknotes example, the explained variance criterion would suggest to
-use 3 components. The scree plot, given by
+For the life example, the explained variance criterion would suggest to
+use no more than 2 components. The scree plot, given by
 
 ```{r 02b-plotprincomplife}
 plot(pca_princomp, type = "lines")
 ```
 
-does not offer any advice on the number of PCs to retain because there is no
-clear elbow in the plot (note that the variances reported on the vertical 
+should suggest two, or at most three components (note that the variances reported on the vertical 
 axis of this plot correspond to the egienvalues of the correlation matrix of
-the original data). The Kaiser's rule suggests that 3 components provide a
-good summary of the overall information contained in the original data.
-
-To plot the scores for components different from the first two, one can still
-use the `biplot()` function adding the argument 'choices' for the components to
-plot. In following example the default "Comp.1" and "Comp.2" are chosen:
-
-```{r 02b-biplotprincomplife, fig.width=plot_with_legend_fig_width_short}
-biplot(pca_princomp, cex = c(.7, .7), col = c("gray", "red"), choices = c("Comp.1","Comp.2"))
-```
+the original data). The Kaiser's rule suggests 4 components, maybe an high 
+value, if the aim is in obtaining a summary of the overall information contained
+in the original data.
 
 A 3-dimensional plot of the first three PCs can be obtained with the
 `plot3d()` function in the `rgl` package (the plot can be spinned with the
- mouse):
+mouse):
 
 ```{r eval=FALSE}
 require(rgl)
 ```
 
 ```{r eval=FALSE}
-plot3d(pca_princomp$scores[, 1:3], col = as.integer(banknotes[, 7]) + 2, size = 5)
+plot3d(pca_princomp$scores[, 1:3], size = 5)
+texts3d(pca_princomp$scores[, 1:3], texts = life$country, adj = c(0.5,0))
 play3d(spin3d(axis = c(1, 1, 1), rpm = 15), duration = 10)
 ```
 
@@ -330,23 +329,17 @@ system.time(pca_prcomp <- prcomp(bn, center = TRUE, scale = TRUE))
 summary(pca_prcomp)
 ```
 
-The two functions return the same results. `prcomp()` is numerically
-more accurate, but somewhat slower for larger dataset. In the rest of the
-presentation we'll keep going using `princomp()`.
+The two functions return the same results. 
 
 From the output we can see that the first three PCs account for more than 84%
 of the total variance, and have coefficients:
 
 ```{r 02b-summary}
 print(summary(pca_princomp, loadings = TRUE)) # (cutoff = .1)
-print(summary(pca_princomp, loadings = TRUE), cutoff = .5)
 ```
 
-<!--- Notice that the first PC puts little weight on carbohydrates, while the
-second PC puts little weight on fat and saturated fat. --->
-
-A useful approach for interpreting the estimated PCs is to calculate the
-correlations of the PCs with each one of the original variables:
+Now we calculate the correlations of the PCs with each one of the original
+variables to interpret the components:
 
 ```{r 02b-correlation, fig.width=plot_with_legend_fig_width_medium}
 cor(bn, pca_princomp$scores)
@@ -360,16 +353,7 @@ The 3rd component is related to the distances of inner frame to the lower and
 upper borders, while the remaining PCs do not seem to be strongly related to
 any of the original variables.
 
-The coordinates of the estimated PCs are called component scores. These are
-the new variables that one should use in other analyses such as a regression.
-Component scores are part of the output provided by `princomp()`. Typically one
-can represent them graphically to look for features in the data like clusters,
-outliers, etc. In our example, the scatter plot of the first two PCs is
-obtained as:
-
-```{r message=FALSE}
-require(ggplot2)
-```
+Now let us draw the scatter plot of the first two PCs:
 
 ```{r 02b-scoreplots, fig.width=plot_with_legend_fig_width_medium}
 pca_sc <- data.frame(pca_princomp$scores, type = banknotes[, 7])
@@ -379,45 +363,13 @@ ggplot(pca_sc, aes(x = Comp.1, y = Comp.2, color = type)) + geom_point()
 The scatter plot shows that the first two PCs allow to almost perfectly
 separate the two groups of banknotes (genuine vs. counterfeit) and this could
 also facilitate the classification of banknotes in either one of the two groups.
-Another graphical representation of the results of a PCA where both the
-component scores and the loadings are jointly represented is the biplot,
-which can be obtained with the `biplot()` function:
+Now let us try to use the `biplot()` function:
 
 ```{r 02b-biplot, fig.width=plot_with_legend_fig_width_short}
 biplot(pca_princomp, cex = c(.7, .7), col = c("gray", "red"))
 ```
 
-How many PCs should we retain? This is probably the main question while
-carrying out a PCA. Because the criterion for a good projection in PCA is a
-high variance for that projection, we should only retain those principal
-components with large variances. The question, therefore, involves the
-magnitudes of the eigenvalues of the sample covariance matrix. Different
-criteria have been introduced in the literature and we review now the most
-popular:
-
-- **explained variance**: retain just enough components to explain some
-							 specified large percentage of the total variation
-							 of the original variables. Values between 70% and
-							 90% are usually suggested.
-- **scree plot**: this plot represents the ordered sample eigenvalues
-					 against their order number. If the largest few sample
-					 eigenvalues dominate in magnitude, with the remaining
-					 sample eigenvalues very small, then the scree plot will
-					 exhibit an "elbow" in the plot corresponding to the
-					 division into "large" and "small" values of the sample 
-					 eigenvalues. The order number at which the elbow occurs 
-					 can be used as the number of PCs to retain.
-- **Kaiser’s rule**: retain only those PCs whose eigenvalues exceed unity.
-						This decision guideline is based upon the argument that
-						because the total variation of all the R standardized
-						variables is equal to `R`, it follows that a PCA should
-						account for at least the average variation of a single
-						standardized variable. This rule is popular but
-						controversial; there is evidence that the cutoff value
-						of 1 is too high. A modified rule retains all PCs whose
-						eigenvalues of the sample correlation matrix exceed
-						0.7.
-
+How many PCs should we retain? 
 For the banknotes example, the explained variance criterion would suggest to
 use 3 components. The scree plot, given by
 
@@ -432,34 +384,24 @@ the original data). The Kaiser's rule suggests that 3 components provide a
 good summary of the overall information contained in the original data.
 
 To plot the scores for components different from the first two, one can still
-use the `biplot()` function adding the argument 'choices' for the components to
-plot. In following example the default "Comp.1" and "Comp.2" are chosen:
+use the `biplot()` function:
 
 ```{r 02b-biplotprincomp, fig.width=plot_with_legend_fig_width_short}
 biplot(pca_princomp, cex = c(.7, .7), col = c("gray", "red"), choices = c("Comp.1","Comp.2"))
 ```
 
 A 3-dimensional plot of the first three PCs can be obtained with the
-`plot3d()` function in the `rgl` package (the plot can be spinned with the
- mouse):
-
-```{r eval=FALSE}
-require(rgl)
-```
+`plot3d()` function:
 
 ```{r eval=FALSE}
 plot3d(pca_princomp$scores[, 1:3], col = as.integer(banknotes[, 7]) + 2, size = 5)
 play3d(spin3d(axis = c(1, 1, 1), rpm = 15), duration = 10)
 ```
 
-(Note: the above command shows a dynamic 3D graph that cannot be shown here, of course)  
-
 Let us now replay the analysis by using separately genuine and counterfeit banknotes.
 
 ```{r 02b-banknotes_altro1}
 unique(banknotes$type)
-# banknotes <- (banknotes[ banknotes$type=="genuine",])
-# bn <- banknotes[, -7]
 
 # Splits the two datasets
 bn_list <- split(x = banknotes,f = banknotes$type)
