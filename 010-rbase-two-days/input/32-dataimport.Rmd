@@ -8,18 +8,6 @@ opts_chunk$set(echo = TRUE)
 opts_knit$set(root.dir = "./../data")
 ```
 
-```{r g, echo=FALSE, purl=FALSE}
-include_graphics("images/flow-robj.png", dpi=150)
-```
-
-
-In the following paragraphs we will explore data import methods for:
-
-* Text files
-* Microsoft Excel files
-* Databases
-
-
 ## Text files
 
 ```{r g1, echo=FALSE, purl=FALSE}

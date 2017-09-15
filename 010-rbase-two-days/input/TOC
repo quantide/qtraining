@@ -2,8 +2,8 @@ Introduction to R
 About R						| 11-aboutr.Rmd
 R, RStudio Set Up				| 12-setup.Rmd
 A First Look to R Session			| 13-firstlook.Rmd
-Reports with Rmarkdown				| 14-rmarkdown.Rmd
 The Tidyverse					| 15-intro-tidyverse.Rmd
+Reports with Rmarkdown				| 14-rmarkdown.Rmd
 
 R Objects
 Introduction					| 21-introduction.Rmd
@@ -24,8 +24,8 @@ Tidy data					| 48-tidying-data.Rmd
 
 Data Discovery
 Group Data and Chain Verbs          		| 43-group-chain.Rmd
-Multiple operations				| 44-at-all-each.Rmd
-Missing values					| 47-missing-values.Rmd
+At, all, each					| 44-at-all-each.Rmd
+Handling missing values				| 47-missing-values.Rmd
 
 Data Visualization 
 Introduction					| 51-data-visualization-intro.Rmd
