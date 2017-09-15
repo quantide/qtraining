@@ -277,6 +277,164 @@ play3d(spin3d(axis = c(1, 1, 1), rpm = 15), duration = 10)
 
 (Note: the above command shows a dynamic 3D graph that cannot be shown here, of course)  
 
+## Example: Life data on correlations
+
+```{r 02b-performancelife2}
+system.time(pca_princomp <- princomp(lf, cor = TRUE))
+summary(pca_princomp)
+system.time(pca_prcomp <- prcomp(lf, center = TRUE, scale. = TRUE))
+summary(pca_prcomp)
+```
+
+The two functions return very similar results. `prcomp()` is numerically
+more accurate, but somewhat slower for larger dataset. In the rest of the
+presentation we'll keep going using `princomp()`.
+
+From the output we can see that the first three PCs account for more than 97%
+of the total variability, and have coefficients:
+
+```{r 02b-summarylife2}
+print(summary(pca_princomp, loadings = TRUE)) # (cutoff = .1)
+print(summary(pca_princomp, loadings = TRUE), cutoff = .3)
+```
+The loadings above can help giving a name to principal components.  
+The first PC seems (negatively) dominated by the global level of life expectancy.  
+The second PC, instead, seems to oppose life expectancy at birth versus life expectancy at
+older ages.  
+The third PC seems to set men against women life expectancy.
+
+A graphical representation of PCA values analysis via the scatterplot of loadings may also help to "name" Pcs.  
+Loadings are part of the output produced by `princomp()`.
+This graph allows the researcher to find some relations that may appear between 
+principal components.
+```{r 02b-correlationlife2, fig.width=plot_with_legend_fig_width_medium,results='hold'}
+require(ggplot2)
+dl <- pca_princomp$loadings
+class(dl) <- "matrix"
+dl <- data.frame(dl)
+dl$gender <- rep(c("male", "female"), each=4)
+dl$age <- rep(as.character((0:3)*25), 2)
+ggp <- ggplot(dl, mapping = aes(x=Comp.1, y=Comp.2, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC1 Vs PC2 by gender and age")
+print(ggp)
+ggp <- ggplot(dl, mapping = aes(x=Comp.1, y=Comp.3, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC1 Vs PC3 by gender and age")
+print(ggp)
+ggp <- ggplot(dl, mapping = aes(x=Comp.2, y=Comp.3, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC2 Vs PC3 by gender and age")
+print(ggp)
+```
+
+```{r, echo=FALSE, results='hold'}
+rm(dl)
+```
+
+Now we will deepen these reslts by analyzing the so-called __component scores__.
+
+Component scores are the coordinates of original points (rows), once projected on PCs. These are
+the new (derived) variables that one could use in other analyses such as a regression.
+Component scores are part of the output provided by `princomp()`. Typically one
+can represent them graphically to look for features in the data like clusters,
+outliers, etc.  
+A useful approach for interpreting the estimated PCs is to calculate the
+correlations of the most important PCs component scores with each one of the
+original variables:
+
+```{r 02b-pcsgraphlife2, fig.width=plot_with_legend_fig_width_medium}
+cor(lf, pca_princomp$scores)
+ggcorr(cbind(lf, pca_princomp$scores), label = TRUE, cex = 2.5)
+```
+
+The table shows that the 1st PC is strongly and negatively related to all the variables:
+the mean life expectation within each region drops when the age of subjects grows. That
+means that regions with lower value in first PC score should have a longer life expectancy. This 
+confirm previous considerations.  
+The 2nd PC instead contrasts the life expectancy at birth with the life expectancy at elderly ages,
+giving positive values to life expectancy at birth; this might mean that regions with higher 
+value in second PC should have a bigger difference in life expectancy at birth and at elderly ages.  
+The 3rd PC seems to contrast males with females measures. This should mean that regions with higher
+values in 3rd PC should have an higher value of life expectancy for females than for males.
+
+Now, the scatter plot of the first two PCs scores is produced:
+
+```{r 02b-scoreplotslife2, fig.width=plot_with_legend_fig_width_big}
+pca_sc <- data.frame(pca_princomp$scores, country = life[, 1])
+ggplot(pca_sc, aes(x = Comp.1, y = Comp.2, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.1 Vs Comp.2 scores")
+ggplot(pca_sc, aes(x = Comp.1, y = Comp.3, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.1 Vs Comp.3 scores")
+ggplot(pca_sc, aes(x = Comp.2, y = Comp.3, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.2 Vs Comp.3 scores")
+```
+
+Another graphical representation of the results of a PCA where both the
+component scores and the loadings are jointly represented is the biplot,
+which can be obtained with the `biplot()` function:
+
+```{r 02b-biplotlife2, fig.width=plot_with_legend_fig_width_short}
+biplot(pca_princomp, choices = c(1,2), cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(1,3), cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(2,3), cex = c(.7, .7), col = c("gray", "red"))
+```
+
+Now, we have seen that the principal components are linear transformations of
+original variables. The total number of principal components that can be 
+extracted from a dataset is equal to the minimum between the number of rows
+and the number of columns of dataset.
+
+How many PCs should we retain? This is probably the main question while
+carrying out a PCA. Because the criterion for a good projection in PCA is a
+high variance for that projection, we should only retain those principal
+components with large variances. The question, therefore, involves the
+magnitudes of the eigenvalues of the sample covariance matrix. Different
+criteria have been introduced in the literature and we review now the most
+popular:
+
+- **explained variance**: retain just enough components to explain some
+							 specified large percentage of the total variation
+							 of the original variables. Values between 70% and
+							 90% are usually suggested.
+- **scree plot**: this plot represents the ordered sample eigenvalues
+					 against their order number. If the largest few sample
+					 eigenvalues dominate in magnitude, with the remaining
+					 sample eigenvalues very small, then the scree plot will
+					 exhibit an "elbow" in the plot corresponding to the
+					 division into "large" and "small" values of the sample 
+					 eigenvalues. The order number at which the elbow occurs 
+					 can be used as the number of PCs to retain.
+- **Kaiser’s rule**: retain only those PCs whose eigenvalues exceed unity.
+						This decision guideline is based upon the argument that
+						because the total variation of all the R standardized
+						variables is equal to `R`, it follows that a PCA should
+						account for at least the average variation of a single
+						standardized variable. This rule is popular but
+						controversial; there is evidence that the cutoff value
+						of 1 is too high. A modified rule retains all PCs whose
+						eigenvalues of the sample correlation matrix exceed
+						0.7.
+
+For the life example, the explained variance criterion would suggest to
+use no more than 2 components. The scree plot, given by
+
+```{r 02b-plotprincomplife2}
+plot(pca_princomp, type = "lines")
+```
+
+should suggest two, or at most three components (note that the variances reported on the vertical 
+axis of this plot correspond to the egienvalues of the correlation matrix of
+the original data). The Kaiser's rule suggests 4 components, maybe an high 
+value, if the aim is in obtaining a summary of the overall information contained
+in the original data.
+
+A 3-dimensional plot of the first three PCs can be obtained with the
+`plot3d()` function in the `rgl` package (the plot can be spinned with the
+mouse):
+
+```{r eval=FALSE}
+require(rgl)
+```
+
+```{r eval=FALSE}
+plot3d(pca_princomp$scores[, 1:3], size = 5)
+texts3d(pca_princomp$scores[, 1:3], texts = life$country, adj = c(0.5,0))
+play3d(spin3d(axis = c(1, 1, 1), rpm = 15), duration = 10)
+```
+
+(Note: the above command shows a dynamic 3D graph that cannot be shown here, of course)  
 
 ## Example: Banknotes
 
