@@ -23,13 +23,17 @@ title: "About this course"
   
 4. Classification
 
+    - Recalls about Logistic regression
     - Linear and Quadratic Discriminant Analyses (LDA and QDA)
     - K-Nearest Neighbors (KNN)
     - Classification Trees (CTREE)
     - Support Vector Machines (SVM)
+    - Introduction to Random Forests (RF)
+    - Introduction to Neural Networks (NN)
   
 5. Prediction
 
     - Linear Model Variations (LM)
     - Regression Trees (RTREE)
     - An Introduction to Bootstrap Techniques
+    - Introduction to Random Forests (RF)
