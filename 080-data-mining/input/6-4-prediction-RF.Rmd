@@ -88,8 +88,8 @@ plot(rf_fit)
 ```
 
 <!--- https://stats.stackexchange.com/questions/51629/multiple-curves-when-plotting-a-random-forest --->
-In above plot, the back solid line shows the overall error of random forest when the number of trees $B$ grows;
-the other lines, however, show the classifcation error for individual classes. In this case, about 100 trees 
+In above plot, the back solid line shows the overall error of random forest when the number of trees $B$ grows<!---;
+the other lines, however, show the classifcation error for individual classes --->. In this case, about 100 trees 
 are sufficient to minimize the global error.
 
 Obviously, we can produce a plot of obsered Vs. predicted values, for training and test sets:
