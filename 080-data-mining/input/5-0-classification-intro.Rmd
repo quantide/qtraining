@@ -55,6 +55,8 @@ classification:
 3. **K-Nearest Neighbors (KNN)**
 4. **Classification Trees (CTREE)**
 5. **Support Vector Machines (SVM)**
+6. **Random Forests (RF)**
+7. **Neural Networks (NN)**
 
 All these techiniques fall in the class of data analysis
 methodologies that in the machine learning literature are known as
