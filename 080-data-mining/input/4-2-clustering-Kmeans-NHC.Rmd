@@ -117,23 +117,8 @@ look at this solution. The group means for this solutions is computed by
 ```{r 02e-plotsuc1}
 km_4 <- kmeans(utilities_s, centers = 4)
 km_4$centers * rge
-
-utilities_pca <- princomp(utilities_tmp, cor = TRUE)
-summary(utilities_pca, loadings=TRUE)
-plot(utilities_pca, type = "l")
-abline(h = 1, lty = 2)
 ```
-
-If we apply the "proportion of explained variance" criterion, the number of components to retain should be at least 4.  
-Anyway, for this example, we will retain the first two components only.
-
-```{r 02e-plotsuc1a}
-biplot(utilities_pca)
-ggcorr(cbind(utilities_s, utilities_pca$scores), label = TRUE, cex = 2.5)
-```
-
-The first principal component seems to oppose technical measures (`fuel`, `load`, `cost`) with financial ones (`coverage` and `return`), while the second principal component seems to oppose sales (`sales`) and costs (`fuel`) .  
-Now we can try using the Calinski-Harabasz index to help us in finding the optimal number of clusters to "combine" with PCA analysis results:
+We can try using the Calinski-Harabasz index to help us in finding the optimal number of clusters to "combine" with PCA analysis results:
 ```{r 02d-chfuncut,warning=FALSE, message=FALSE}
 require(clusterSim)
 minC <- 2
@@ -152,7 +137,26 @@ print(ggp)
 
 This index gives an almost clear indication on the number of clusters to choose, i.e., 4.
 
-Since many variables are available, we will try to plot the grouing information on the plot of scores of 
+Now, with the aim of explaining or understanding the meaning of the groups, we can apply
+the PCA methods to reduce the data dimensionality:
+```{r 02ea-explain-pca}
+utilities_pca <- princomp(utilities_tmp, cor = TRUE)
+summary(utilities_pca, loadings=TRUE)
+plot(utilities_pca, type = "l")
+abline(h = 1, lty = 2)
+```
+
+If we apply the "proportion of explained variance" criterion, the number of components to retain should be at least 4.  
+Anyway, for this example, we will retain the first two components only, and then we analyse the correlation between sores and original variables.
+
+```{r 02e-plotsuc1a}
+biplot(utilities_pca)
+ggcorr(cbind(utilities_s, utilities_pca$scores), label = TRUE, cex = 2.5)
+```
+
+The first principal component seems to oppose technical measures (`fuel`, `load`, `cost`) with financial ones (`coverage` and `return`), while the second principal component seems to oppose sales (`sales`) and costs (`fuel`) .  
+
+Let us try to plot the grouping information on the plot of scores of 
 a simple 2-dimensions PCA analysis
 
 ```{r 02e-plotsuc2, fig.width=plot_with_legend_fig_width_short}
@@ -166,7 +170,7 @@ ggp <- ggplot(data= utilities_scores, mapping = aes(x = Comp.1, y=Comp.2, label=
 print(ggp)
 ```
 
-This graph show how the 4 groups are related with the first 2 components of PCA. It shows that the group 1 and 3 are clearly separated.  
+This graph show how the 4 groups are related with the first 2 components of PCA. It shows that the group 2 and 3 are clearly separated.  
 The other two groups are somehow confused; maybe, they could be better separated by using a third PC.
 
 Without using 3D graphs, the next graph can help to find some differences between the remaining two groups:
@@ -228,7 +232,6 @@ stars(to.draw, draw.segments = TRUE, scale = FALSE, key.loc = c(4.6,2.0), nrow=3
 palette("default")
 ```
 
-Thus, it seems that the cluster are also associated with geographic areas of US states.
 <!---
 # Exercises with iris o utilities 
 --->
