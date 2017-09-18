@@ -47,4 +47,5 @@ excluding irrelevant variables from a multiple regression model:
 1. **Linear Model Variations (LM)** (different alternative fitting techniques for a linear model);
 2. **Regression Trees (RTREE)**;
 3. Outlines on **Bootstrap Techniques**.
+4. Itroduction to **Neural Networks**
 
