@@ -49,7 +49,7 @@ that builds a large collection of de-correlated trees, and then averages them.
 On many problems the performance of random forests is high, and they are simple
 to train and tune. As a consequence, random forests became popular.
 
-## Example: Credit card default
+## Example: Boston housing
 
 Perhaps, the most important `R` packages that implement random forests is
 `randomForest`.
