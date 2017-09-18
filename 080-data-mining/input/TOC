@@ -21,10 +21,13 @@ LDA and QDA                           | 5-1-classification-LDA-QDA.Rmd
 KNN                                   | 5-2-classification-KNN.Rmd
 CTREE                                 | 5-3-classification-CTREE.Rmd
 SVM                                   | 5-4-classification-SVM.Rmd
+Random Forest                         | 5-5-classification-RF.Rmd
+Neural Nets                           | 5-6-classification-NN.Rmd
 
 Prediction
 Introduction                          | 6-0-prediction-intro.Rmd
 LM                                    | 6-1-prediction-LM.Rmd
 RTREE                                 | 6-2-prediction-RTREE.Rmd
 Bootstrap Techniques                  | 6-3-prediction-BOOT.Rmd
+Random Forest                         | 6-4-prediction-RF.Rmd
 
