@@ -10,7 +10,7 @@ source("options.R")
 # This code chunk contains R code already described in the previous chapters
 # that is required by following examples
 
-## Datasets from packages
+## Datasets from packages 
 data(Default, package = "ISLR")
 
 ## Other datasets used

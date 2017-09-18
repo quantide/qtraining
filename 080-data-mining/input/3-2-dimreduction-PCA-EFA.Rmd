@@ -3,7 +3,7 @@ title: "Principal Component Analysis (PCA) and Exploratory Factor Analysis (EFA)
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-source("options.R")
+source("options.R") 
 ```
 
 ```{r first, include=FALSE, purl=TRUE, message=FALSE}
