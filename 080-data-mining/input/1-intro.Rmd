@@ -1,5 +1,5 @@
 ---
-title: "Data Mining with `R`"
+title: "Statistics for Data Science with `R`"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
