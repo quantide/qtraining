@@ -1,5 +1,5 @@
 ---
-title: "Debugging tools in R and RStudio"
+title: "Profiling in R and RStudio"
 ---
 
 
@@ -10,186 +10,77 @@ options(width = 108)
 
 ## Introduction
 
-In this chapter you will be introduced to the `R` and the `RStudio` debugging tools that will help you find bugs by figuring out where the code is not behaving the way you expected. `RStudio` integrated the debugging tools in `R` into its IDE exposing them in a user friendly way. 
 
-We will show two main ways of detecting your bugs
+## Measuring code performance
 
-* opening the function scope and look into the function with `debugonce()` to detect anomalies
+One way to check how long your function is taking to run, is to use the `microbenchmark` package. If you want to compare how long you are gaining, by, for example, switching from a `for` cycle to a functional, the `microbenchmark` function may come in handy. 
 
-* finding and fixing an error: `traceback()` shows the sequence of calls that lead to the error
+Suppose you want a function that:
 
+1. deletes one row
+2. estimate a model on the remaining observations
+3. makes a prediction on that one observation
+4. finds the residual 
+5. saves it
 
-## Debugging your code
+This must be applied on all rows, meaning that each row at the time must be taken out of the dataframe.
 
-### `debugonce()`
+First you build a function that does actions 1-5:
 
-If you know there is a problem in the function you are writing, but you do not exactly know where the errori occurs, you may use  `debugonce()`.
-
-`debugonce` allows you to enter the debugger when you run a specific function. Entering the debugger or the debug mode, means that you can pause the code and see what is happenening. In other words pausing the code when a function is executed, means that you run one line at the time and you can explore the scope of the function.
-
-Let us see an example.
-
-Suppose you built a function to find the first `n` prime numbers. However you made a mistake:
-
-```{r debug1}
-prime_numbers <- function(n){
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
-
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes)
-#          primes <- c(primes, i)
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
+```{r}
+# funzione che fa tutta la parte sopra
+require(microbenchmark)
+.cross_validation <- function(data, i, formula) {
+  training <- data[-i,]
+  test <- data[i,]
+  fm <- lm(formula, data = training)
+  out <- predict(fm, newdata = test)
+  return(out)
 }
 
-prime_numbers(7)
-
 ```
 
-The function is not returning an error, but it is returning something that you did not expect. One way to dig into the function you just built is to run the debugger for `prime_numbers`:
+and then a function that does a cycle over the above function:
 
-```{r debug2}
-debugonce(prime_numbers())
+```{r}
+# funzione che fa il ciclo per applicare a tutte le righe
+cross_validation1 <- function(data, formula) {
+  n <- nrow(data)
+  cv <- numeric(n)
+  for (i in 1:n) {
+    cv_i <- .cross_validation(data, i, formula)
+    cv[i] <- cv_i
+  }
+  return(cv)
+}
 ```
 
-The `debugonce()` allows you to enter the local function environment the first time you run the function and go through the instructions one by one to see how it works.
+Now, we know that `for` cycles are not as fast as functionals. So let us see if we can recode it by using a functional:
 
-We are enever updating the content of `primes` vector, so let's change it:
-
-```{r debug3}
-prime_numbers <- function(n){
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
-
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes, i)
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
+```{r}
+cross_validation2 <- function(data, formula) {
+  n <- nrow(data)
+  cv <- lapply(1:n, .cross_validation, data = data, formula)
+  return(cv)
 }
 
-prime_numbers(7)
-
 ```
 
-It seems like it's working!
+and finally, you may want to compare the two functions:
 
-So let us open the function environment but we'll do it in a slightly different way. If you place `browser()` in the code you want to debug, the debugger will open when it encounters it.
+```{r}
 
-```{r debug4}
+data(mtcars)
 
-prime_numbers <- function(n){
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
-
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes, i)
-          browser()
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
-}
-
-prime_numbers(7)
-
+microbenchmark(
+  cross_validation1(data = mtcars, formula = mtcars$mpg ~ mtcars$hp),
+  cross_validation2(data = mtcars, formula = mtcars$mpg ~ mtcars$hp), 1
+)
 ```
 
 
-### `debug()`
-
-The function `debug()` allows you to enter the local environment of the function every time you run the function. This means, however, that you need to exit the debugger once you have finished debugging the function.
+Focus on the median time, and use the upper and lower quartiles to gauge the variability of the measurement.
 
 
-## Finding and fixing an error
-
-Suppose again that you are writing the function to find the first `n` prime numbers.
-
-
-```{r traceback1}
-
-prime_numbers <- function(n){
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
-
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes, i)
-          browser()
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
-}
-
-prime_numbers(c(10,1))
-
-```
-
-We do get an error. In order to see where exactly the error occured, you may use the `traceback()` function or just click on `Show traceback` if you using RStudio.
-
-This will allow you to see where the function stopped. Now, you may want to go closer into the function, you may want to go and see inside the function scope. Hence you may run the function `options(error=browser)`. This means that when R finds an error, it will stop right at the moment the error occured and let you look inside the function environment.
-
-```{r options error}
-
-options(error = browser)
-
-prime_numbers(c(10,1))
-
-```
-
-So the error is that our function is designed for only working with vectors of length 1. We may try to correct the error, for example by printing a message that says that the input cannot be a vector of length > 1.
-
-
-```{r traceback1}
-
-prime_numbers <- function(n){
-  if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
-
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes, i)
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-      }
-}
-
-prime_numbers(c(10,1))
-
-```
-
-<!--
-Rifare esempio di traceback
--->
-
-This can also be done with the RStudio environment as many of these functions are embedded into the RStudio IDE.
+## Profiling tools in R and RStudio
 
