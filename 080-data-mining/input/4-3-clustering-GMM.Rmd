@@ -83,7 +83,7 @@ summary(faithfulMclust, parameters = TRUE)
 The clustering results can be displayed as follows
 
 ```{r 02g-plotsff, fig.height=8,fig.width=10}
-op <- par(mfrow = c(2, 3))
+op <- par(mfrow = c(2, 2))
 plot(faithfulMclust, what = "BIC")
 plot(faithfulMclust, what = "classification")
 plot(faithfulMclust, what = "uncertainty")

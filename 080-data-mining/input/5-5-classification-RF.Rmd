@@ -10,7 +10,7 @@ source("options.R")
 # This code chunk contains R code already described in the previous chapters
 # that is required by following examples
 
-## Datasets from packages
+## Datasets from packages 
 data(Default, package = "ISLR")
 
 ## Other datasets used
@@ -124,7 +124,7 @@ Typically values for $m$ are $p$ or even as low as 1.
 After $B$ such trees $\left\{T (x; \Theta_b )\right\}_1^B$
 are grown, the random forest classification predictor is
 $$\hat{C}_{rf}^B(x) = majority vote \left\{ \hat{C}_b(x)\right\}_1^B$$ 
-Where $majority vote$ means the most votes classes, and $\Theta_b$ characterizes
+Where $majority vote$ means the most voted classes, and $\Theta_b$ characterizes
 the $b$th random forest tree in
 terms of split variables, cutpoints at each node, and terminal-node values, and
 $\hat{C}_b(x)$ is the class prediction of the $b$th random-forest tree.

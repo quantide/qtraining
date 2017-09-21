@@ -142,7 +142,7 @@ the class label of $x_i$ (where $x_i$ are points in $\mathbb{R}^p$):
   $y_i \left(w^Tx_i + b \right) \ge 1 ,     \forall i \in 1, \dots, n$
   
 * Thus the decision boundary can be found by solving the  
-  following constrained optimization problem (Lagrnge multipliers):  
+  following constrained optimization problem (Lagrange multipliers):  
   $\min \left\{ \|w\| \right \}  \text{ s.t. } y_i \left(w^Tx_i + b \right) \ge 1 \forall i \in 1, \dots, n$
 
 When the classes are not perfectly separated (__soft margin__), then SVM is extendend

@@ -1,5 +1,5 @@
 ---
-title: "Data Mining with `R`"
+title: "Statistics for Data Science with `R`"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
@@ -30,7 +30,7 @@ This course will provide an overview of the main data mining techniques through 
 2. **Dimensionality reduction**: whose aim is at showing some methods to reduce the number of variables contained in the data by keeping almost the same information;
 3. **Clustering**: when the objective of the analysis is to divide observations into groups, created on the basis of the variables at our disposal;
 4. **Classification**: when the objective of the analysis is to correctly assign a new observation to a value of a categorical response variable, through a proper statistical model estimated from the data;
-5. **Prediction**: when the objective of the analysis is to predict the value of a response variable in a new observation, through a proper statistical model estimated from the data.
+5. **Prediction**: when the objective of the analysis is to predict the numeric value of a response variable in a new observation, through a proper statistical model estimated from the data.
 
 Several `R` packages, besides the base `R` distribution, will be used in this course: `boot`, `ca`, `caret`, `clusterSim`, `dplyr`, `e1071`, `ellipse`, `fBasics`, `GGally`, `ggplot2`, `glmnet`, `hdm`, `Hmisc`, `HSAUR2`, `ISLR`, `kohonen`, `lattice`, `leaps`, `MASS`, `mclust`, `MCMCpack`, `mice`, `MSQC`, `mvnormtest`, `mvtnorm`, `party`, `pls`, `pROC`, `psych`, `reshape2`, `rgl`, `rpart`, `rpart.plot`, `smacof`, `tree`.  
 

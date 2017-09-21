@@ -143,7 +143,7 @@ print(res)
 summary(lm(mpg ~ horsepower + I(horsepower^2), data = Auto))$coef
 ```
 
-Finally, to test the bootstrap on data which are corretly specified by design,
+Finally, to test the bootstrap on data which are correctly specified by design,
 we could try the following:
 
 ```{r cz}

@@ -65,7 +65,7 @@ rankMatrix(X)
 try(solve(t(X)%*%X))
 
 ```
-Note that the $(\underline{X}^T \underline{X})^{-1}$ matrix has very high diagonal values.
+Notice that the $(\underline{X}^T \underline{X})^{-1}$ matrix has very high diagonal values.
 This is because of collinearity between predictors. This also will probably produce very
 high standard errors and very unstable  parameter estimates (since the variance/covariance
 matrix of parameter estimates is equal to $\sigma^2 (\underline{X}^T \underline{X})^{-1}$).
