@@ -151,5 +151,45 @@ prime_numbers(c(10,1))
 
 We do get an error. In order to see where exactly the error occured, you may use the `traceback()` function or just click on `Show traceback` if you using RStudio.
 
-This will allow you to see where the function stopped. Now, you may want to go closer into the function, you may want to go and see inside the function scope.
+This will allow you to see where the function stopped. Now, you may want to go closer into the function, you may want to go and see inside the function scope. Hence you may run the function `options(error=browser)`. This means that when R finds an error, it will stop right at the moment the error occured and let you look inside the function environment.
+
+```{r options error}
+
+options(error = browser)
+
+prime_numbers(c(10,1))
+
+```
+
+So the error is that our function is designed for only working with vectors of length 1. We may try to correct the error, for example by printing a message that says that the input cannot be a vector of length > 1.
+
+
+```{r traceback1}
+
+prime_numbers <- function(n){
+  if (n >= 2) {
+      sieve <- seq(2, n)
+      primes <- c()
+
+      for (i in seq(2, n)) {
+        if (any(sieve == i)) {
+          primes <- c(primes, i)
+          sieve <- c(sieve[(sieve %% i) != 0], i)
+        }
+      }
+      return(primes)
+    } else {
+      stop("n should be at least 2.")
+      }
+}
+
+prime_numbers(c(10,1))
+
+```
+
+<!--
+Rifare esempio di traceback
+-->
+
+This can also be done with the RStudio environment as many of these functions are embedded into the RStudio IDE.
 
