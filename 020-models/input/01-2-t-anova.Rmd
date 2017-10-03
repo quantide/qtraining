@@ -340,7 +340,11 @@ coefficients(fm)
 ```
 Next line of code shows that the `hormoneB` coefficient is simply the difference between average growths for `hormoneA` and `hormoneB` chickens.
 ```{r}
-diff(tapply(hormones$gain, hormones$hormone, mean))
+hormones %>%
+  group_by(hormone) %>%
+  summarise(avg_gain = mean(gain)) %>%
+  pull(var = avg_gain) %>%
+  diff()
 ```
 
 R can use several types of contrasts: `contr.treatment` sets to zero the coefficient of first factor level, that becomes the intercept,
