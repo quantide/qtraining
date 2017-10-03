@@ -56,77 +56,81 @@ html: $(HTML_FILES)
 ### PARAMETERS DEFINITION
     	
 ### List of source files (without extension: it will be used for .Rmd, .html and .R)
-#LIST = \
-#  1-intro \
-#	es-data-obj \
-#	es-data-import \
+LIST = \
+  lm-exercises \
 	
 
 # Pandoc Path (RSTUDIO VERSION)
-#PANDOC_PATH = /usr/lib/rstudio/bin/pandoc/pandoc
+PANDOC_PATH = /usr/lib/rstudio/bin/pandoc/pandoc
 
 # Input and output paths
-#INPUT_PDF_DIR = exercises
-#OUTPUT_PDF_DIR = output/pdf
+INPUT_PDF_DIR = exercises
+OUTPUT_PDF_DIR = exercises
+
 
 # Output file name
-#PDF_OUT = data-programming-exercises-questions.pdf
-#PDF_OUT = data-programming-exercises-solutions.pdf
+PDF_OUT = models-exercises-questions.pdf
+PDF_OUT_SOLUTION = models-exercises-solutions.pdf
 
 # List of md files to build pdf 
-#MD_PATH = $(addprefix exercises/,$(LIST))
-#MD = $(addsuffix .md,$(MD_PATH))
-#MD_LIST = $(addsuffix .md,$(MD_PATH))
+MD_PATH = $(addprefix exercises/,$(LIST))
+MD =      $(addsuffix .md, $(MD_PATH))
+MD_SOLUTION = $(addsuffix .solution.md, $(MD_PATH))
+MD_LIST = $(addsuffix .md, $(MD_PATH))
 
 # Pandoc pdf options
-#PANDOC_PDF_OPTIONS = \
-#  --latex-engine xelatex  \
-#  --template='./../include/tex/manual-with-written-cover.tex' \
-#	--variable=geometry:a4paper \
-#	--variable=links-as-notes \
-#  --chapters \
-#  --number-sections \
-#	--toc
+PANDOC_PDF_OPTIONS = \
+  --latex-engine xelatex  \
+  --template='./../include/tex/manual-with-written-cover.tex' \
+	--variable=geometry:a4paper \
+	--variable=links-as-notes \
+  --chapters \
+  --number-sections \
+	--toc
 
 
 ### COMPILE
 # all: by default perform all actions
 
-#all: knitr pdf
+all: knitr pdf clean
 
-#.PHONY: change_dir
 
-#change_dir:
-#	$(MAKE) -C $(INPUT_PDF_DIR)
-	
 # build md files from rmd
-#%.md: %.Rmd
-#	Rscript -e "require(knitr); knit('$<', output= '$@', quiet=FALSE)"
+%.md: %.Rmd
+	Rscript -e "require(knitr); knit('$<', output= '$@', quiet=FALSE)"
 
+%.solution.md: %.Rmd
+	Rscript -e "require(knitr); show_solution_mk <- TRUE; knit('$<', output= '$@', quiet=FALSE)"
+
+# build html files from md and upload
+%.html: %.md
+	Rscript -e "require(rmarkdown);  render('$<', html_document())" 
+	#sed -i -e '1,/<body>/d' -e '/^<\/body>/,$$d' $*.html
 
 # build R files from rmd and upload
-#%.R: %.Rmd
-#	Rscript -e "require(knitr);  purl('$<'); getwd()"
+%.R: %.Rmd
+	Rscript -e "require(knitr);  purl('$<'); getwd()"
 
 
 
 # build pdf file from md
-#$(PDF_OUT): $(MD_LIST)
-#	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $(MD_LIST) --output $(OUTPUT_PDF_DIR)/$(PDF_OUT)
+$(PDF_OUT): $(MD_LIST)
+	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $(MD_LIST) --output $(OUTPUT_PDF_DIR)/$(PDF_OUT)
+
+$(PDF_OUT_SOLUTION): $(MD_SOLUTION)	
+	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $(MD_SOLUTION) --output $(OUTPUT_PDF_DIR)/$(PDF_OUT_SOLUTION)
+
 
 # single actions
-#knitr: $(MD)
+knitr: $(MD) $(MD_SOLUTION)
 #html: $(addsuffix .html,$(MD_PATH))
 #purl: $(addsuffix .R,$(MD_PATH))
-#pdf: $(PDF_OUT)
+pdf: $(PDF_OUT) $(PDF_OUT_SOLUTION)
 
 
 #.PHONY: clean
-#clean: 
-#	rm -f *.md 	
-#	mv 	*.R $(PURL_DIR)/
-
-#	rm -f *.md *.html *.R	
+clean: 
+	rm -f $(MD_LIST) $(MD_SOLUTION)
 ###################################################################
 
 

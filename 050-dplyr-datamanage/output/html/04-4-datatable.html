@@ -368,14 +368,12 @@ require(data.table) </code></pre>
 <pre class="r"><code>data2006 &lt;- fread(&quot;~/data/2006.csv&quot;)</code></pre>
 <pre><code>## 
 Read 0.0% of 7141922 rows
-Read 9.5% of 7141922 rows
-Read 19.0% of 7141922 rows
-Read 30.7% of 7141922 rows
-Read 43.0% of 7141922 rows
-Read 60.6% of 7141922 rows
-Read 78.4% of 7141922 rows
-Read 96.2% of 7141922 rows
-Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:11</code></pre>
+Read 16.5% of 7141922 rows
+Read 33.6% of 7141922 rows
+Read 50.4% of 7141922 rows
+Read 67.3% of 7141922 rows
+Read 84.0% of 7141922 rows
+Read 7141922 rows and 29 (of 29) columns from 0.626 GB file in 00:00:09</code></pre>
 <pre class="r"><code>is.data.table(data2006)    </code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <p>And then you want to calculate the average delay for data grouped per month:</p>
@@ -444,9 +442,9 @@ datatable = data2006[, list(mean(ArrDelay, na.rm = TRUE), sd(ArrDelay, na.rm=TRU
 times = 20
 )</code></pre>
 <pre><code>## Unit: milliseconds
-##             expr      min       lq     mean   median       uq      max neval
-##  datatable_dplyr 384.1374 435.0047 509.6148 477.5463 595.4443 786.2276    20
-##        datatable 143.0159 143.8901 156.8680 146.6850 151.9949 204.5875    20</code></pre>
+##             expr      min       lq     mean   median       uq      max neval cld
+##  datatable_dplyr 402.4309 439.5522 520.8863 480.0716 621.5006 801.0186    20   b
+##        datatable 143.6265 150.0143 165.1702 154.1728 166.5069 243.5009    20  a</code></pre>
 </div>
 
 

@@ -1,6 +1,7 @@
 ---
 title: "Exercises with `dplyr` and `tidyr`"
 author:
+- email: andrea.spano\@quantide.com, emanuela.furfaro\@quantide.com
   name: Quantide
 date: ''
 output:
