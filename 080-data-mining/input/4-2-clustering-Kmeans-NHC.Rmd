@@ -58,7 +58,7 @@ run using different initial random assignments of the items to $K$ clusters
 minimum of WGSS and, hence, the best clustering solution based upon $K$
 clusters.
 
-As an example, we consider the `uscrime` dataset (see the section *Introduction and datasets used* for further information):
+As an example, we consider the `utilities` dataset (see the section *Introduction and datasets used* for further information):
 
 ```{r message=FALSE}
 require(ggplot2)
@@ -90,7 +90,7 @@ sapply(utilities_s, var)
 ```
 
 We can now proceed with clustering the data. First we plot the WGSS for one-
-to six-group solutions to see if we can get any indication of the number of
+to eight-group solutions to see if we can get any indication of the number of
 groups. The plot is obtained as follows:
 
 ```{r 02e-scree1uc}
@@ -170,7 +170,7 @@ ggp <- ggplot(data= utilities_scores, mapping = aes(x = Comp.1, y=Comp.2, label=
 print(ggp)
 ```
 
-This graph show how the 4 groups are related with the first 2 components of PCA. It shows that the group 2 and 3 are clearly separated.  
+This graph shows how the 4 groups are related with the first 2 components of PCA. It shows that the groups 2 and 3 are clearly separated.  
 The other two groups are somehow confused; maybe, they could be better separated by using a third PC.
 
 Without using 3D graphs, the next graph can help to find some differences between the remaining two groups:
