@@ -1,0 +1,25 @@
+## ----readr---------------------------------------------------------------
+require(tidyverse)
+
+## ----getwd, eval = FALSE-------------------------------------------------
+## getwd()
+
+## ----setwd, eval=FALSE---------------------------------------------------
+## setwd("./data")
+
+## ----tennis1-------------------------------------------------------------
+read_table("tennis.txt", col_names = TRUE)
+
+## ----csvs, eval = FALSE--------------------------------------------------
+## read_csv("solar.txt", col_names = FALSE) # for comma separeted variables
+## read_tsv("aire_milano.txt", col_names = TRUE) # for tab separeted variables
+## read_csv2("milano_tourism", col_names= TRUE) # for semi colon separeted variables
+
+## ----delim---------------------------------------------------------------
+read_delim("solar.txt", col_names = FALSE, delim = ",")
+read_delim("tuscany.txt", col_names = TRUE, delim = "|")
+
+## ------------------------------------------------------------------------
+read_delim("solar.txt", col_names = FALSE, delim = ",",
+           col_types = cols(X2 = col_double()))
+

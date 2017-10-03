@@ -10,10 +10,8 @@ show_chunk <- function(x){
 require(knitr)
 ```  
 
-```{r g0, echo=FALSE, purl=FALSE}
-include_graphics("./images/flow-info.png", dpi=150)
-```
 
+![](./images/flow-info.png)
 
 ## Introduction
 

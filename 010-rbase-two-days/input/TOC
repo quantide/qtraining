@@ -5,6 +5,7 @@ A First Look to R Session			| 13-firstlook.Rmd
 The Tidyverse					| 15-intro-tidyverse.Rmd
 Reports with Rmarkdown				| 14-rmarkdown.Rmd
 
+
 R Objects
 Introduction					| 21-introduction.Rmd
 Data Objects					| 22-data-obj.Rmd
@@ -35,3 +36,5 @@ Managing and Exporting Graphs                   | 54-presenting.Rmd
 
 Data Analysis
 Statistical Models with R			| 61-statmodels.Rmd
+
+
