@@ -794,20 +794,20 @@ summary(fmA)
 Now let us try to use automatic model selection procedures.
 
 In a first attempt a lower stepwise procedure is used. Such a procedure tries to build an "optimum" model starting from a (almost) complete model and then removing the non significant terms with a step-wise fashion, one by one.  
-During the process, if some removed term become significant, it is re-inserted in model.
+During the process, if some removed term become significant, it will be re-inserted in model until the `upper` element of the `scope` parameter (see also the `direction = "both"` parameter).
 
-In this case, the model must always include `Year` as an explicative variable (see the `scope` parameter).
+In this case, the model must always include `Year` as an explicative variable (see the `lower` element of `scope` parameter).
 ```{r}
-lower_step_aic_fm <- stepAIC(fmA, scope = list(lower  =  ~Year))
+lower_step_aic_fm <- stepAIC(fmA, scope = list(lower  =  ~Year, upper = ~ .), direction = "both")
 summary(lower_step_aic_fm)
 ```
 The final model has the terms: `Year`, `Rain0`, `Rain2`, and `Temp4`.
 
-A second attempt with a upper stepwise procedure is then tried. Such a procedure tries to build an "optimum" model starting from a "only mean" model and then adding significant terms, one by one, with a step-wise fashion.  
-During the process, if some added term become non significant, it is removed from model.  
+A second attempt with a upper stepwise procedure is then tried. Such a procedure tries to build an "optimum" model starting from the `lower_step_aic_fm` model and then adding significant terms, one by one, with a step-wise fashion.  
+During the process, if some added term becomes non significant, it will be removed from model (see again the `direction = "both"` parameter)..  
 In this case, the maximal model has all two-way interactions (see the `scope` parameter again):
 ```{r}
-upper_step_aic_fm <- stepAIC(lower_step_aic_fm, scope = list(upper  =  ~.^2))
+upper_step_aic_fm <- stepAIC(lower_step_aic_fm, scope = list(upper  =  ~.^2), direction = "both")
 summary(upper_step_aic_fm)
 ```
 The final model has the terms: `Year`, `Rain0`, `Rain2`, `Temp4`, `Rain2:Temp4`. It is slightly more complex than the previous one.
