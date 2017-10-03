@@ -71,8 +71,8 @@ The above tables show counts and percentages of died and survived for each combi
 The following graph shows if some relations exist between `Status` and `Age`:
 
 ```{r,fig.cap="Box-plot of Age within levels of Status"}
-ggp <- ggplot(data=titanic, mapping=aes(x=Status, y=Age)) +
-  geom_boxplot()+ ggtitle("Box-plot of Age within levels of Status")
+(ggp <- ggplot(data=titanic, mapping=aes(x=Status, y=Age)) +
+  geom_boxplot()+ ggtitle("Box-plot of Age within levels of Status"))
 ```
 
 Apparently, a slightly lower age is in survived passengers.

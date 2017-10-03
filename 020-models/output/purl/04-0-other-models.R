@@ -23,8 +23,8 @@ round(prop.table(tb2,margin=2)*100,2)
 round(prop.table(tb3,margin=c(2,3))*100,2)
 
 ## ----fig.cap="Box-plot of Age within levels of Status"-------------------
-ggp <- ggplot(data=titanic, mapping=aes(x=Status, y=Age)) +
-  geom_boxplot()+ ggtitle("Box-plot of Age within levels of Status")
+(ggp <- ggplot(data=titanic, mapping=aes(x=Status, y=Age)) +
+  geom_boxplot()+ ggtitle("Box-plot of Age within levels of Status"))
 
 ## ------------------------------------------------------------------------
 fm1 <- glm(Status ~ Class+Gender+Class:Gender+Age, data = titanic, family = binomial)

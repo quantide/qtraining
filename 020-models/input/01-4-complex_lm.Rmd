@@ -738,7 +738,7 @@ ggp2 <- ggplot(data=istat %>% filter(Gender=="Female"), mapping=aes(x=Height, y=
 grid.arrange(ggp1, ggp2, ncol=2)
 ```
 
-## Example: Iowa example
+## Example: Iowa wheat
 ```{r,echo=FALSE}
 rm(list = ls())
 ```

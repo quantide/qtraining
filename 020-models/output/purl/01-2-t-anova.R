@@ -189,7 +189,11 @@ options(contrasts = c("contr.treatment", "contr.poly"))
 coefficients(fm)
 
 ## ------------------------------------------------------------------------
-diff(tapply(hormones$gain, hormones$hormone, mean))
+hormones %>%
+  group_by(hormone) %>%
+  summarise(avg_gain = mean(gain)) %>%
+  pull(var = avg_gain) %>%
+  diff()
 
 ## ------------------------------------------------------------------------
 options(contrasts = c("contr.sum", "contr.poly"))

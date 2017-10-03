@@ -212,7 +212,7 @@ print(ggp)
 ```
 
 The `geom_point()` function and `geom_line()` functions add the red points of two group averages to second graph and then link them with a segment.  
-`group_by()` and `summarise()` functions applies separately the `mean()` function to values of `gain` corresponding to `hormone` variable levels. In this case, if the segment is near to parallel to the x-axis, then the two means are probably equal. 
+`group_by()` and `summarise()` functions apply separately the `mean()` function to values of `gain` corresponding to `hormone` variable levels. In this case, if the segment is near to parallel to the x-axis, then the two means are probably equal. 
 Anyway, both graphs and statistics show that hormone B tends to generate heavier chickens.  
 
 ### Inference and models
