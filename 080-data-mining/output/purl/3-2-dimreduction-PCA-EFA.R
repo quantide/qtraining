@@ -13,6 +13,126 @@ data(banknotes, uscompanies, druguse, life)
 ## packages needed: GGally, ggplot2, rgl, lattice, ellipse, psych ##
 ####################################################################
 
+## ----02b-loadlifedata----------------------------------------------------
+# Data fixing:
+life[life$country=="Trinidad (62)", "m25"] <- 43
+str(life)
+summary(life)
+
+## ----message=FALSE-------------------------------------------------------
+require(GGally)
+
+## ----02b-graphlifesummary1-----------------------------------------------
+lf <- life[, -1]
+class(life) <- "data.frame"
+ggscatmat(life, columns = 2:9)
+
+## ----02b-performancelife-------------------------------------------------
+system.time(pca_princomp <- princomp(lf))
+summary(pca_princomp)
+system.time(pca_prcomp <- prcomp(lf))
+summary(pca_prcomp)
+
+## ----02b-summarylife-----------------------------------------------------
+print(summary(pca_princomp, loadings = TRUE)) # (cutoff = .1)
+print(summary(pca_princomp, loadings = TRUE), cutoff = .3)
+
+## ----02b-correlationlife, fig.width=plot_with_legend_fig_width_medium,results='hold'----
+require(ggplot2)
+dl <- pca_princomp$loadings
+class(dl) <- "matrix"
+dl <- data.frame(dl)
+dl$gender <- rep(c("male", "female"), each=4)
+dl$age <- rep(as.character((0:3)*25), 2)
+ggp <- ggplot(dl, mapping = aes(x=Comp.1, y=Comp.2, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC1 Vs PC2 by gender and age")
+print(ggp)
+ggp <- ggplot(dl, mapping = aes(x=Comp.1, y=Comp.3, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC1 Vs PC3 by gender and age")
+print(ggp)
+ggp <- ggplot(dl, mapping = aes(x=Comp.2, y=Comp.3, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC2 Vs PC3 by gender and age")
+print(ggp)
+
+## ---- echo=FALSE, results='hold'-----------------------------------------
+rm(dl)
+
+## ----02b-pcsgraphlife, fig.width=plot_with_legend_fig_width_medium-------
+cor(lf, pca_princomp$scores)
+ggcorr(cbind(lf, pca_princomp$scores), label = TRUE, cex = 2.5)
+
+## ----02b-scoreplotslife, fig.width=plot_with_legend_fig_width_big--------
+pca_sc <- data.frame(pca_princomp$scores, country = life[, 1])
+ggplot(pca_sc, aes(x = Comp.1, y = Comp.2, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.1 Vs Comp.2 scores")
+ggplot(pca_sc, aes(x = Comp.1, y = Comp.3, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.1 Vs Comp.3 scores")
+ggplot(pca_sc, aes(x = Comp.2, y = Comp.3, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.2 Vs Comp.3 scores")
+
+## ----02b-biplotlife, fig.width=plot_with_legend_fig_width_short----------
+biplot(pca_princomp, choices = c(1,2), cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(1,3), cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(2,3), cex = c(.7, .7), col = c("gray", "red"))
+
+## ----02b-plotprincomplife------------------------------------------------
+plot(pca_princomp, type = "lines")
+
+## ----eval=FALSE----------------------------------------------------------
+## require(rgl)
+
+## ----eval=FALSE----------------------------------------------------------
+## plot3d(pca_princomp$scores[, 1:3], size = 5)
+## texts3d(pca_princomp$scores[, 1:3], texts = life$country, adj = c(0.5,0))
+## play3d(spin3d(axis = c(1, 1, 1), rpm = 15), duration = 10)
+
+## ----02b-performancelife2------------------------------------------------
+system.time(pca_princomp <- princomp(lf, cor = TRUE))
+summary(pca_princomp)
+system.time(pca_prcomp <- prcomp(lf, center = TRUE, scale. = TRUE))
+summary(pca_prcomp)
+
+## ----02b-summarylife2----------------------------------------------------
+print(summary(pca_princomp, loadings = TRUE)) # (cutoff = .1)
+print(summary(pca_princomp, loadings = TRUE), cutoff = .3)
+
+## ----02b-correlationlife2, fig.width=plot_with_legend_fig_width_medium,results='hold'----
+require(ggplot2)
+dl <- pca_princomp$loadings
+class(dl) <- "matrix"
+dl <- data.frame(dl)
+dl$gender <- rep(c("male", "female"), each=4)
+dl$age <- rep(as.character((0:3)*25), 2)
+ggp <- ggplot(dl, mapping = aes(x=Comp.1, y=Comp.2, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC1 Vs PC2 by gender and age")
+print(ggp)
+ggp <- ggplot(dl, mapping = aes(x=Comp.1, y=Comp.3, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC1 Vs PC3 by gender and age")
+print(ggp)
+ggp <- ggplot(dl, mapping = aes(x=Comp.2, y=Comp.3, colour=gender, shape=age)) + geom_point() + scale_shape_manual(values = rep(0:3,2)) + ggtitle("PC2 Vs PC3 by gender and age")
+print(ggp)
+
+## ---- echo=FALSE, results='hold'-----------------------------------------
+rm(dl)
+
+## ----02b-pcsgraphlife2, fig.width=plot_with_legend_fig_width_medium------
+cor(lf, pca_princomp$scores)
+ggcorr(cbind(lf, pca_princomp$scores), label = TRUE, cex = 2.5)
+
+## ----02b-scoreplotslife2, fig.width=plot_with_legend_fig_width_big-------
+pca_sc <- data.frame(pca_princomp$scores, country = life[, 1])
+ggplot(pca_sc, aes(x = Comp.1, y = Comp.2, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.1 Vs Comp.2 scores")
+ggplot(pca_sc, aes(x = Comp.1, y = Comp.3, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.1 Vs Comp.3 scores")
+ggplot(pca_sc, aes(x = Comp.2, y = Comp.3, color = country)) + geom_point() + geom_text(mapping = aes(label = country), vjust=1) + theme(legend.position = "none") + ggtitle("Comp.2 Vs Comp.3 scores")
+
+## ----02b-biplotlife2, fig.width=plot_with_legend_fig_width_short---------
+biplot(pca_princomp, choices = c(1,2), cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(1,3), cex = c(.7, .7), col = c("gray", "red"))
+biplot(pca_princomp, choices = c(2,3), cex = c(.7, .7), col = c("gray", "red"))
+
+## ----02b-plotprincomplife2-----------------------------------------------
+plot(pca_princomp, type = "lines")
+
+## ----eval=FALSE----------------------------------------------------------
+## require(rgl)
+
+## ----eval=FALSE----------------------------------------------------------
+## plot3d(pca_princomp$scores[, 1:3], size = 5)
+## texts3d(pca_princomp$scores[, 1:3], texts = life$country, adj = c(0.5,0))
+## play3d(spin3d(axis = c(1, 1, 1), rpm = 15), duration = 10)
+
 ## ----02b-loaddata--------------------------------------------------------
 str(banknotes)
 summary(banknotes)
@@ -36,14 +156,10 @@ summary(pca_prcomp)
 
 ## ----02b-summary---------------------------------------------------------
 print(summary(pca_princomp, loadings = TRUE)) # (cutoff = .1)
-print(summary(pca_princomp, loadings = TRUE), cutoff = .5)
 
 ## ----02b-correlation, fig.width=plot_with_legend_fig_width_medium--------
 cor(bn, pca_princomp$scores)
 ggcorr(cbind(bn, pca_princomp$scores), label = TRUE, cex = 2.5)
-
-## ----message=FALSE-------------------------------------------------------
-require(ggplot2)
 
 ## ----02b-scoreplots, fig.width=plot_with_legend_fig_width_medium---------
 pca_sc <- data.frame(pca_princomp$scores, type = banknotes[, 7])
@@ -59,16 +175,11 @@ plot(pca_princomp, type = "lines")
 biplot(pca_princomp, cex = c(.7, .7), col = c("gray", "red"), choices = c("Comp.1","Comp.2"))
 
 ## ----eval=FALSE----------------------------------------------------------
-## require(rgl)
-
-## ----eval=FALSE----------------------------------------------------------
 ## plot3d(pca_princomp$scores[, 1:3], col = as.integer(banknotes[, 7]) + 2, size = 5)
 ## play3d(spin3d(axis = c(1, 1, 1), rpm = 15), duration = 10)
 
 ## ----02b-banknotes_altro1------------------------------------------------
 unique(banknotes$type)
-# banknotes <- (banknotes[ banknotes$type=="genuine",])
-# bn <- banknotes[, -7]
 
 # Splits the two datasets
 bn_list <- split(x = banknotes,f = banknotes$type)
