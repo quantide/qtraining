@@ -30,4 +30,3 @@ LM                                    | 6-1-prediction-LM.Rmd
 RTREE                                 | 6-2-prediction-RTREE.Rmd
 Bootstrap Techniques                  | 6-3-prediction-BOOT.Rmd
 Random Forest                         | 6-4-prediction-RF.Rmd
-Neural Nets                           | 6-5-prediction-NN.Rmd
