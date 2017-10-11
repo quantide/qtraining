@@ -507,7 +507,7 @@ On the contrary, `type2` coefficient is the difference between `poultry` interce
 Let us try to recode factor type to obtain only two types of hot-dogs.
 ```{r}
 hotdogs$type2 <- as.character(hotdogs$type)
-hotdogs$type2[hotdogs$type2 == "beef"] = "meat"
+hotdogs$type2[hotdogs$type2 == "beef"] <- "meat"
 hotdogs$type2 <- factor(hotdogs$type2, levels = c("meat", "poultry"))
 ```
 
@@ -552,7 +552,7 @@ plot(fm1)
 par(op)
 ```
 
-Either graphs report that the residuals are "very good".
+Both graphs report that the residuals are "very good".
 
 
 ## Example: Toy model with Istat data
