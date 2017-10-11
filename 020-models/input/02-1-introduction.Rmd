@@ -72,11 +72,11 @@ The results were:
 </center>
 
 
-
+<br/>
 To analyze such a type of relation, a "classic" linear model is inadequate, because:
 
 * Dependent variable of model is clearly non-Normal.
-* The error term of model cannot be thought as homoscedastic, because if the true ratio of death mots is close to 0.5, then the variance of dependent variable is close to 0.25; whereas, if the true ratio of death mots is close to 0 or 1, then the variance of dependent variable may be much less than 0.25.
+* The error term of model cannot be thought as homoscedastic, because if the true ratio of death of mots is close to 0.5, then the variance of dependent variable is close to 0.25; whereas, if the true ratio of death of mots is close to 0 or 1, then the variance of dependent variable may be much less than 0.25.
 * The predicted values produced by a "classic" linear model may almost surely fall oustide the allowed range for the dependent variable in this case; consequently, and also, the relation between independent and dependent variables is almost surely non-linear.
 
 To analyze such a problem, we can model the individual moth exitus by using the Binomial distribution: 
@@ -110,8 +110,10 @@ $$
 $$
 The resulting model could be graphically summarized, for this specific example, with the following graph:
 
-![](./images/glm-budwormsFinalModelGraph.png)
-
+<!--- ![](./images/glm-budwormsFinalModelGraph.png) --->
+```{r image, out.width = "600px", echo=FALSE}
+knitr::include_graphics("./images/glm-budwormsFinalModelGraph.png")
+```
 
 ### How to specify response variable for binomial data in R
 In the case of binomial data, in **R** response variable may be specified in three different ways:
