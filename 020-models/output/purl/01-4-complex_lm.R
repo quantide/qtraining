@@ -296,7 +296,7 @@ summary(fm3)
 
 ## ------------------------------------------------------------------------
 hotdogs$type2 <- as.character(hotdogs$type)
-hotdogs$type2[hotdogs$type2 == "beef"] = "meat"
+hotdogs$type2[hotdogs$type2 == "beef"] <- "meat"
 hotdogs$type2 <- factor(hotdogs$type2, levels = c("meat", "poultry"))
 
 ## ------------------------------------------------------------------------
