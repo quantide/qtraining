@@ -1,5 +1,5 @@
 ---
-title: "Statistics for Data Science with `R`"
+title: "Machine Learning with R"
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
