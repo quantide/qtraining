@@ -17,7 +17,7 @@ data(skulls, package = "HSAUR2")
 
 ## ----02a-loadfk----------------------------------------------------------
 mds
-pairs(x = mds, pch = rownames(mds))
+pairs(x = mds, pch = as.character(as.numeric(rownames(mds))-1))
 
 ## ----require_GGally, message=FALSE---------------------------------------
 require(GGally)
@@ -82,7 +82,7 @@ ggplot(data = D_all, mapping = aes(x = Observed, y = Fitted)) +
   geom_abline(linetype = "dashed", color = "gray")
 
 ## ----02a-plotfinalfk-----------------------------------------------------
-pairs(x = X_final, pch = rownames(mds))
+pairs(x = X_final, pch = as.character(as.numeric(rownames(mds))-1))
 
 ## ----02a-plotfinalfk_alternative_plot, echo=TRUE, eval=FALSE-------------
 ## require(rgl)
