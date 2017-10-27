@@ -88,7 +88,7 @@ with(iris_rp, {
 })
 
 ## ----bw------------------------------------------------------------------
-iris.pruned <- prune(iris_rp, cp=0.01)
+iris.pruned <- prune(iris_rp, cp=0.094)
 plot(iris.pruned, compress = TRUE, margin = 0.2, branch = 0.3)
 text(iris.pruned, use.n = TRUE, digits = 3, cex = 0.8)
 
