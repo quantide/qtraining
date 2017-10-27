@@ -246,10 +246,10 @@ with(iris_rp, {
 })
 ```
 
-And here is the custom-pruned tree for `cp=0.01` (the minimum xerror tree):
+And here is the custom-pruned tree for `cp=0.02` (the minimum xerror tree):
 
 ```{r bw}
-iris.pruned <- prune(iris_rp, cp=0.01)
+iris.pruned <- prune(iris_rp, cp=0.02)
 plot(iris.pruned, compress = TRUE, margin = 0.2, branch = 0.3)
 text(iris.pruned, use.n = TRUE, digits = 3, cex = 0.8)
 ```
