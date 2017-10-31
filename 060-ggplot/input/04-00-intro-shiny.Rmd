@@ -1,0 +1,44 @@
+---
+title: "Introduction to Shiny"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(tidyverse)
+```
+
+
+## Introduction
+
+
+Shiny is a package from RStudio that allows you to easily build interactive web pages with R. You can easily interact and display R objects: plots, tables, etc. To get a glimpse of the many things you can build with Shiny, out of the many websites that contain Shiny examples, we suggest you visit https://daattali.com/shiny/ and https://shiny.rstudio.com/gallery/.
+
+
+If you want to find additional material, you may visit the RStudio official Shiny page https://shiny.rstudio.com/ and we suggest you always keep the Shiny app https://www.rstudio.com/resources/cheatsheets/ cheat sheet on hand when you are developing your Shiny app!
+
+In this second part of the course, we'll walk you through the creation of a Shiny app using a dataset on comics characters. We will start from a basic app and we'll add complexity step by step. Of course you may think of adding additional features as we go on and as you think of additional data insights!
+
+
+## Required R packages
+
+Before we begin you need to install `Shiny` package:
+
+```{r, eval = FALSE}
+install.packages("shiny")
+```
+
+To ensure you successfully installed Shiny, try running one of the demo apps.
+
+```{r, eval = FALSE}
+library(shiny)
+runExample("01_hello")
+```
+
+If the example app is running, press Escape to close the app, and you are ready to build your first Shiny app!
+
