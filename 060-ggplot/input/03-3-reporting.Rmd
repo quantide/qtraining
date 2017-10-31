@@ -218,7 +218,7 @@ knitr::kable(head(mtcars))
 
 ### Code chunk options
 
-If you are taking notes or you are writing a manual for other R users, you may want to show the code along with the output and some other times you may want to show just the code. Some other times, for examples if you are just creating a report, you may want to hide the code and only show the output. These sorts of actions can be changed for all code chunks by adding some options to each code chunk.
+If you are taking notes or you are writing a manual for other R users, you may sometimes want to show the code along with the output and some other times you may want to show just the output or the code. For example if you are creating a report, you may want to hide the code and only show the output. This can be achieved by modifying the chunk options. Below is a list of useful chunk options:
 
 * _Hide code_: for hiding code, you just need to add to your code chunk ``{r, echo = FALSE}``
 
