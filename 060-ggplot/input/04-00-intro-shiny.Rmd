@@ -42,3 +42,22 @@ runExample("01_hello")
 
 If the example app is running, press Escape to close the app, and you are ready to build your first Shiny app!
 
+
+
+## Data
+
+The data folder contains the dataset `marvel-wikia-data.csv`. Using `readr` package, load the dataset as this is the data we'll work on to build our shiny app:
+
+
+```{r load-data}
+require(tidyverse)
+df <- read_csv("../data/marvel-wikia-data.csv")
+```
+
+
+Let us quickly explore the dataset so that you can start thinking of intersting data visualisations:
+
+```{r data-explore}
+str(df)
+```
+
