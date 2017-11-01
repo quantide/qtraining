@@ -1,0 +1,72 @@
+---
+title: "Adding inputs to the UI"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+## Introduction
+
+Shiny apps are powerful because they allow you to interact with the data: inputs are the way users interact with it. Many kinds of interactions are supported by Shiny functions. In this section you will learn how to enter text, numbers, dates  and how to generally select inputs from a dropdown menu.
+
+
+Input functions in Shiny have the same first two arguments, `inputId` and `label`. More specifically:
+
+* `inputId` is the name that Shiny will use to refer to this input when you want to retrieve its current value, every input must have a unique inputId 
+* `label` specifies the text in the display label that goes along with the input widget
+
+Plus, each input functions has some additional arguments.
+
+## Entering text: `textInput()`
+
+The datset we are working on is based on the idea that comic characters are for men. so we may be intersted, for example, to see the evolution thoroughout time in the number of female and male characters separately. For this we want some kind of a text input to filter by gender. 
+
+Many alternatives are availables: 
+
+* `textInput()`: allows the user to enter text freely 
+* `radioButtons()`: it restricts the user to only a few choices
+
+Entering text freely may be risky, as the user may type something that is not contained in the dataset, hence, here you see an example of `radioButtons()`
+
+```{r radioButtons, eval = FALSE}
+radioButtons("typeInput", "Product type",
+            choices = c("BEER", "REFRESHMENT", "SPIRITS", "WINE"),
+            selected = "WINE")
+```
+
+
+## Dropdown menu: `selectInput()`
+
+Another way to add text inputs is a dropdown manu that allows the user to select from a list of choices, i.e. from a dropdown menu. For now let’s only have CANADA, FRANCE, ITALY as options, and later we’ll see how to include all countries.
+
+```{r selectInput, eval = FALSE}
+selectInput("countryInput", "Country",
+            choices = c("CANADA", "FRANCE", "ITALY"))
+```
+
+
+
+## Entering numbers: `numericInput()` and `sliderInput()`
+
+It may be interesting to look at the number of new characters appearing every year, visualising a line plot with the number of new characters per year. The user would need to eneter the start and the end year. Two options are possible for this:
+
+* `numericInput()`: it allows the user to enter two inputs, that is the start and end year for the time series
+* `sliderInput()` another way for doing it could be that of having a slidebar from which we select a year range. 
+
+
+If you decide to use `numericInput()` something like this should be done:
+
+
+While for `sliderInput()`, that in this case seems more appropriate, the code will look like this:
+
+```{r sliderInput, eval = FALSE}
+sliderInput("priceInput", "Price", min = 0, max = 100,
+            value = c(25, 40), pre = "$")
+```
+
+
+## Entering dates: `dateInput()`
+
