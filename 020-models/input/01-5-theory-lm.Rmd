@@ -55,7 +55,7 @@ or
       $$
       y_i = \beta_0 + \beta_1 \cdot x_{i1} + \beta_2 \cdot x_{i2} + \dots + \beta_p \cdot x_{ip} + \varepsilon_i
       $$
-or
+or again
       $$
       y_i \sim N(\mu_i, \sigma^2)
       $$  

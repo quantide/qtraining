@@ -4,7 +4,7 @@ title: "Acknowledgements"
 
 This web book is the result of work of my colleagues:
 
-* Enrico Pegoraro, who wrote all previous versions of this book
+* Enrico Pegoraro, who wrote all versions of this book
 * Veronica Giro, who reviewed and reassembled all these materials.
 
 ![](images/EF5C8766.jpg)

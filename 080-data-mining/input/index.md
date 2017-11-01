@@ -7,7 +7,7 @@ title: "About this course"
 
 ## Syllabus:
 
-1. Basic data mining techniques
+1. Basic techniques
 
 2. Dimensionality reduction
 

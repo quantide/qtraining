@@ -296,7 +296,7 @@ summary(fm3)
 
 ## ------------------------------------------------------------------------
 hotdogs$type2 <- as.character(hotdogs$type)
-hotdogs$type2[hotdogs$type2 == "beef"] = "meat"
+hotdogs$type2[hotdogs$type2 == "beef"] <- "meat"
 hotdogs$type2 <- factor(hotdogs$type2, levels = c("meat", "poultry"))
 
 ## ------------------------------------------------------------------------
@@ -472,11 +472,11 @@ fmA <- lm(Yield ~ ., data = iowheat)
 summary(fmA)
 
 ## ------------------------------------------------------------------------
-lower_step_aic_fm <- stepAIC(fmA, scope = list(lower  =  ~Year))
+lower_step_aic_fm <- stepAIC(fmA, scope = list(lower  =  ~Year, upper = ~ .), direction = "both")
 summary(lower_step_aic_fm)
 
 ## ------------------------------------------------------------------------
-upper_step_aic_fm <- stepAIC(lower_step_aic_fm, scope = list(upper  =  ~.^2))
+upper_step_aic_fm <- stepAIC(lower_step_aic_fm, scope = list(upper  =  ~.^2), direction = "both")
 summary(upper_step_aic_fm)
 
 ## ----fig.show='hold',fig.cap="Residual plot of model"--------------------

@@ -212,7 +212,7 @@ print(ggp)
 ```
 
 The `geom_point()` function and `geom_line()` functions add the red points of two group averages to second graph and then link them with a segment.  
-`group_by()` and `summarise()` functions applies separately the `mean()` function to values of `gain` corresponding to `hormone` variable levels. In this case, if the segment is near to parallel to the x-axis, then the two means are probably equal. 
+`group_by()` and `summarise()` functions apply separately the `mean()` function to values of `gain` corresponding to `hormone` variable levels. In this case, if the segment is near to parallel to the x-axis, then the two means are probably equal. 
 Anyway, both graphs and statistics show that hormone B tends to generate heavier chickens.  
 
 ### Inference and models
@@ -340,7 +340,11 @@ coefficients(fm)
 ```
 Next line of code shows that the `hormoneB` coefficient is simply the difference between average growths for `hormoneA` and `hormoneB` chickens.
 ```{r}
-diff(tapply(hormones$gain, hormones$hormone, mean))
+hormones %>%
+  group_by(hormone) %>%
+  summarise(avg_gain = mean(gain)) %>%
+  pull(var = avg_gain) %>%
+  diff()
 ```
 
 R can use several types of contrasts: `contr.treatment` sets to zero the coefficient of first factor level, that becomes the intercept,

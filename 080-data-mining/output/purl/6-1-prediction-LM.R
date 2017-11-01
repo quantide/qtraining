@@ -53,7 +53,8 @@ ols_fit <- lm(y ~ ., data = dt_train)
 summary(ols_fit)
 
 ## ----c2------------------------------------------------------------------
-mse <- summary((predict(ols_fit, newdata = dt_test) - dt_test$y)^2)
+res <- dt_test$y - predict(ols_fit, newdata = dt_test)
+mse <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
 print(mse)
 ggp <- ggplot(data = data.frame(fit=predict(ols_fit, newdata = dt_test), obs=dt_test$y), mapping = aes(x = obs, y = fit)) +
   geom_point() +
@@ -69,7 +70,7 @@ require(MASS)
 m_init <- lm(y ~ 1, data = dt_train)
 upr <- paste("x",1:100, sep="", collapse=" + ")
 upr <- as.formula(paste("~",upr))
-forw_fit <- stepAIC(m_init, scope = list(upper = upr, lower = ~ 1) , direction = "forward", trace = FALSE)
+forw_fit <- stepAIC(m_init, scope = list(upper = upr, lower = ~ 1) , direction = "both", trace = FALSE)
 summary(forw_fit)
 
 ## ----g1------------------------------------------------------------------
@@ -82,13 +83,16 @@ ggp <- ggplot(data = data.frame(fit=predict(forw_fit, newdata = dt_test), obs=dt
 print(ggp)
 
 y_pred_forw <- predict(forw_fit, newdata = dt_test)
-mse <- rbind(mse, summary((y_pred_forw - dt_test$y)^2))
+res <- dt_test$y - y_pred_forw
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
+rownames(mse)[1] <- "OLS"
 rownames(mse)[nrow(mse)] <- "Forward"
 mse
 
 ## ----h, cache=cacheTF----------------------------------------------------
 m_init <- lm(y ~ ., data = dt_train)
-back_fit <- stepAIC(m_init, scope = list(upper = ~ ., lower = ~ 1) , direction = "backward", trace = FALSE)
+back_fit <- stepAIC(m_init, scope = list(upper = ~ ., lower = ~ 1) , direction = "both", trace = FALSE)
 summary(back_fit)
 
 
@@ -102,7 +106,9 @@ ggp <- ggplot(data = data.frame(fit=predict(back_fit, newdata = dt_test), obs=dt
 print(ggp)
 
 y_pred_back <- predict(back_fit, newdata = dt_test)
-mse <- rbind(mse, summary((y_pred_back - dt_test$y)^2))
+res <- dt_test$y - y_pred_back
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
 rownames(mse)[nrow(mse)] <- "Backward"
 mse
 
@@ -144,8 +150,9 @@ ggp <- ggplot(data = data.frame(fit=predict(m_bestsubset, newdata = dt_test), ob
 print(ggp)
 
 y_pred_bestsubset <- predict(m_bestsubset, dt_test[, bestfeat])
-mse <- rbind(mse, summary((y_pred_bestsubset - dt_test$y)^2))
-rownames(mse)[1] <- "OLS"
+res <- dt_test$y - y_pred_bestsubset
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
 rownames(mse)[nrow(mse)] <- "Best subset"
 mse
 
@@ -179,7 +186,9 @@ ggp <- ggplot(data = data.frame(fit=y_pred_ridge, obs=dt_test$y), mapping = aes(
 print(ggp)
 
 ## ----l-------------------------------------------------------------------
-mse <- rbind(mse, summary((y_pred_ridge - dt_test$y)^2))
+res <- dt_test$y - y_pred_ridge
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
 rownames(mse)[nrow(mse)] <- "Ridge"
 mse
 
@@ -204,7 +213,9 @@ print(ggp)
 
 ## ----q-------------------------------------------------------------------
 y_pred_pcr <- as.vector(predict(pcr_fit, dt_test, ncomp = ncomp))
-mse <- rbind(mse, summary((y_pred_pcr - dt_test$y)^2))
+res <- dt_test$y - y_pred_pcr
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
 rownames(mse)[nrow(mse)] <- "PCR"
 mse
 
@@ -227,7 +238,9 @@ print(ggp)
 
 (ncomp <- which.min(pls_fit$validation$PRESS))
 y_pred_pls <- predict(pls_fit, dt_test, ncomp = ncomp)
-mse <- rbind(mse, summary((y_pred_pls - dt_test$y)^2))
+res <- dt_test$y - y_pred_pls
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
 rownames(mse)[nrow(mse)] <- "PLS"
 mse
 
@@ -247,7 +260,9 @@ plot(cv)
 glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = cv$lambda.min, alpha = 0.9)
 coef(glmnet_fit)
 y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
-mse <- rbind(mse, summary((y_pred_glmnet - dt_test$y)^2))
+res <- dt_test$y - y_pred_glmnet
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
 rownames(mse)[nrow(mse)] <- "glmnet"
 mse
 
@@ -302,7 +317,9 @@ glmnet_fit <- glmnet(x = as.matrix(dt_train[, 1:100]), y = dt_train$y, lambda = 
 coef(glmnet_fit, label = TRUE)
 y_pred_glmnet <- as.numeric(predict(glmnet_fit, newx = as.matrix(dt_test[, 1:100])))
 
-mse <- rbind(mse, summary((y_pred_glmnet - dt_test$y)^2))
+res <- dt_test$y - y_pred_glmnet
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
 rownames(mse)[nrow(mse)] <- "best-glmnet"
 mse
 
@@ -325,7 +342,9 @@ ggp <- ggplot(data = data.frame(fit=y_pred_post_lasso, obs=dt_test$y), mapping =
 print(ggp)
 
 ## ----compare-pred--------------------------------------------------------
-mse <- rbind(mse, summary((y_pred_post_lasso - dt_test$y)^2))
+res <- dt_test$y - y_pred_post_lasso
+mse1 <- setNames(c(summary(res), mean(res^2)), nm = c("Min.","1st Qu.","Median","Mean","3rd Qu.","Max.","MeanSqErr"))
+mse <- rbind(mse, mse1)
 rownames(mse)[nrow(mse)] <- "Post-Lasso"
 mse
 

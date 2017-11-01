@@ -53,7 +53,7 @@ to train and tune. As a consequence, random forests became popular.
 
 Perhaps, the most important `R` packages that implement random forests is
 `randomForest`.
-The next example, based on credit card default data seen above, will then use
+The next example, based on bosto housing data, will then use
 the `randomForest()` function of the `randomForest` package.
 
 

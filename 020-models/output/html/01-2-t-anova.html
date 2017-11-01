@@ -670,7 +670,7 @@ Stripchart with connect line of gain by hormone
 </p>
 </div>
 <p>The <code>geom_point()</code> function and <code>geom_line()</code> functions add the red points of two group averages to second graph and then link them with a segment.<br />
-<code>group_by()</code> and <code>summarise()</code> functions applies separately the <code>mean()</code> function to values of <code>gain</code> corresponding to <code>hormone</code> variable levels. In this case, if the segment is near to parallel to the x-axis, then the two means are probably equal. Anyway, both graphs and statistics show that hormone B tends to generate heavier chickens.</p>
+<code>group_by()</code> and <code>summarise()</code> functions apply separately the <code>mean()</code> function to values of <code>gain</code> corresponding to <code>hormone</code> variable levels. In this case, if the segment is near to parallel to the x-axis, then the two means are probably equal. Anyway, both graphs and statistics show that hormone B tends to generate heavier chickens.</p>
 </div>
 <div id="inference-and-models-1" class="section level3">
 <h3>Inference and models</h3>
@@ -862,9 +862,12 @@ summary(fm) </code></pre>
 <pre><code>## (Intercept)    hormoneB 
 ##     619.100     203.525</code></pre>
 <p>Next line of code shows that the <code>hormoneB</code> coefficient is simply the difference between average growths for <code>hormoneA</code> and <code>hormoneB</code> chickens.</p>
-<pre class="r"><code>diff(tapply(hormones$gain, hormones$hormone, mean))</code></pre>
-<pre><code>##       B 
-## 203.525</code></pre>
+<pre class="r"><code>hormones %&gt;%
+  group_by(hormone) %&gt;%
+  summarise(avg_gain = mean(gain)) %&gt;%
+  pull(var = avg_gain) %&gt;%
+  diff()</code></pre>
+<pre><code>## [1] 203.525</code></pre>
 <p>R can use several types of contrasts: <code>contr.treatment</code> sets to zero the coefficient of first factor level, that becomes the intercept, and consequently all the means of other levels are relative to the first level. Another option is <code>contr.sum</code>, that sets to zero the sum of coefficients, and then the reference value of coefficients becomes the gran mean, calculated on all factor levels. R uses <code>contr.treatment</code> as default.</p>
 <p>Let’s try to change type of contrasts:</p>
 <pre class="r"><code>options(contrasts = c(&quot;contr.sum&quot;, &quot;contr.poly&quot;))</code></pre>

@@ -48,15 +48,6 @@ print(ggp)
 km_4 <- kmeans(utilities_s, centers = 4)
 km_4$centers * rge
 
-utilities_pca <- princomp(utilities_tmp, cor = TRUE)
-summary(utilities_pca, loadings=TRUE)
-plot(utilities_pca, type = "l")
-abline(h = 1, lty = 2)
-
-## ----02e-plotsuc1a-------------------------------------------------------
-biplot(utilities_pca)
-ggcorr(cbind(utilities_s, utilities_pca$scores), label = TRUE, cex = 2.5)
-
 ## ----02d-chfuncut,warning=FALSE, message=FALSE---------------------------
 require(clusterSim)
 minC <- 2
@@ -71,6 +62,16 @@ ggp <- ggplot(data=data.frame(x=2:(length(res)+1), y= res), mapping = aes(x=x,y=
   xlab("Number of clusters") +
   ylab("Calinski-Harabasz pseudo F-statistic")
 print(ggp)
+
+## ----02ea-explain-pca----------------------------------------------------
+utilities_pca <- princomp(utilities_tmp, cor = TRUE)
+summary(utilities_pca, loadings=TRUE)
+plot(utilities_pca, type = "l")
+abline(h = 1, lty = 2)
+
+## ----02e-plotsuc1a-------------------------------------------------------
+biplot(utilities_pca)
+ggcorr(cbind(utilities_s, utilities_pca$scores), label = TRUE, cex = 2.5)
 
 ## ----02e-plotsuc2, fig.width=plot_with_legend_fig_width_short------------
 Cluster <- as.character(km_4$cluster)

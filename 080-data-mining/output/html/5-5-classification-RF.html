@@ -292,7 +292,7 @@ $(document).ready(function () {
 
 <header>
       <div class="inner">
-        <h1>Statistics for Data Science with <code>R</code></h1>
+        <h1>Machine Learning with <code>R</code></h1>
         <h2></h2>
       </div>
     </header>
@@ -421,7 +421,7 @@ This result has a greater sensitivity to defaulters than the default (50%, 50%) 
 <ul>
 <li><em>Before each split, select <span class="math inline">\(m \le p\)</span> of the input variables at random as candidates for splitting</em></li>
 </ul>
-<p>Typically values for <span class="math inline">\(m\)</span> are <span class="math inline">\(p\)</span> or even as low as 1. After <span class="math inline">\(B\)</span> such trees <span class="math inline">\(\left\{T (x; \Theta_b )\right\}_1^B\)</span> are grown, the random forest classification predictor is <span class="math display">\[\hat{C}_{rf}^B(x) = majority vote \left\{ \hat{C}_b(x)\right\}_1^B\]</span> Where <span class="math inline">\(majority vote\)</span> means the most votes classes, and <span class="math inline">\(\Theta_b\)</span> characterizes the <span class="math inline">\(b\)</span>th random forest tree in terms of split variables, cutpoints at each node, and terminal-node values, and <span class="math inline">\(\hat{C}_b(x)\)</span> is the class prediction of the <span class="math inline">\(b\)</span>th random-forest tree. Intuitively, reducing <span class="math inline">\(m\)</span> will reduce the correlation between any pair of trees in the ensemble, and hence will reduce the variance of the average.</p>
+<p>Typically values for <span class="math inline">\(m\)</span> are <span class="math inline">\(p\)</span> or even as low as 1. After <span class="math inline">\(B\)</span> such trees <span class="math inline">\(\left\{T (x; \Theta_b )\right\}_1^B\)</span> are grown, the random forest classification predictor is <span class="math display">\[\hat{C}_{rf}^B(x) = majority vote \left\{ \hat{C}_b(x)\right\}_1^B\]</span> Where <span class="math inline">\(majority vote\)</span> means the most voted classes, and <span class="math inline">\(\Theta_b\)</span> characterizes the <span class="math inline">\(b\)</span>th random forest tree in terms of split variables, cutpoints at each node, and terminal-node values, and <span class="math inline">\(\hat{C}_b(x)\)</span> is the class prediction of the <span class="math inline">\(b\)</span>th random-forest tree. Intuitively, reducing <span class="math inline">\(m\)</span> will reduce the correlation between any pair of trees in the ensemble, and hence will reduce the variance of the average.</p>
 <p>The algorithm of random forest may be then summarized as:</p>
 <ol style="list-style-type: decimal">
 <li>For <span class="math inline">\(b = 1 \dots B\)</span>:
