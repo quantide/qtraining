@@ -328,6 +328,13 @@ $(document).ready(function () {
   <li><a href="03-1-ggfamily.html">ggplot2 community</a></li>
   <li><a href="03-2-presenting.html">Presenting Plots</a></li>
   <li><a href="03-3-reporting.html">Reports with rmarkdown</a></li>
+  <li class="nav-header">Shiny</li>
+  <li><a href="04-00-intro-shiny.html">Introduction</a></li>
+  <li><a href="04-01-my-first-shiny.html">My first Shiny App</a></li>
+  <li><a href="05-01-ui.html">User Interface</a></li>
+  <li><a href="05-02-ui-input.html">User Interface Inputs</a></li>
+  <li><a href="05-03-ui-output.html">User Interface Outputs</a></li>
+  <li><a href="06-server-side.html">Server Side</a></li>
 </ul>
     </div>  
   </div>
@@ -652,7 +659,7 @@ head(mtcars)</code></pre>
 </div>
 <div id="code-chunk-options" class="section level3">
 <h3>Code chunk options</h3>
-<p>If you are taking notes or you are writing a manual for other R users, you may want to show the code along with the output and some other times you may want to show just the code. Some other times, for examples if you are just creating a report, you may want to hide the code and only show the output. These sorts of actions can be changed for all code chunks by adding some options to each code chunk.</p>
+<p>If you are taking notes or you are writing a manual for other R users, you may sometimes want to show the code along with the output and some other times you may want to show just the output or the code. For example if you are creating a report, you may want to hide the code and only show the output. This can be achieved by modifying the chunk options. Below is a list of useful chunk options:</p>
 <ul>
 <li><p><em>Hide code</em>: for hiding code, you just need to add to your code chunk <code>{r, echo = FALSE}</code></p></li>
 <li><p><em>Hide output</em>: if you want to show the outuput but not the code, add the option <code>{r, echo = FALSE}</code></p></li>

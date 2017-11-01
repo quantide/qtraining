@@ -4,7 +4,7 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
@@ -29,12 +29,12 @@ Many alternatives are availables:
 * `textInput()`: allows the user to enter text freely 
 * `radioButtons()`: it restricts the user to only a few choices
 
-Entering text freely may be risky, as the user may type something that is not contained in the dataset, hence, here you see an example of `radioButtons()`
+Entering text freely may be risky, as the user may type something that is not contained in the dataset, hence, here you see an example of `radioButtons()`:
 
 ```{r radioButtons, eval = FALSE}
-radioButtons("typeInput", "Product type",
-            choices = c("BEER", "REFRESHMENT", "SPIRITS", "WINE"),
-            selected = "WINE")
+radioButtons("typeInput", "Gender",
+                  choices = c("Female Characters", "Male Characters"),
+                  selected = "Female Characters")
 ```
 
 
@@ -42,9 +42,11 @@ radioButtons("typeInput", "Product type",
 
 Another way to add text inputs is a dropdown manu that allows the user to select from a list of choices, i.e. from a dropdown menu. For now let’s only have CANADA, FRANCE, ITALY as options, and later we’ll see how to include all countries.
 
-```{r selectInput, eval = FALSE}
-selectInput("countryInput", "Country",
-            choices = c("CANADA", "FRANCE", "ITALY"))
+```{r selectInput}
+
+selectInput("alignInput", "Character Type",
+            choices = c("Good Characters", "Bad Characters", "Neutral Characters")),
+
 ```
 
 
@@ -62,9 +64,36 @@ If you decide to use `numericInput()` something like this should be done:
 
 While for `sliderInput()`, that in this case seems more appropriate, the code will look like this:
 
-```{r sliderInput, eval = FALSE}
-sliderInput("priceInput", "Price", min = 0, max = 100,
-            value = c(25, 40), pre = "$")
+```{r sliderInput1}
+
+sliderInput("yearInput", "Year", 1939, 2013, c(1990, 1995)))
+
+```
+
+So, if we put all the input so far selected, we find the following:
+
+```{r sliderInput2}
+library(shiny)
+df <- read_csv("../data/marvel-wikia-data.csv")
+
+ui <- fluidPage(
+  titlePanel("Comic Characters"),
+  em("Here is a visualisation of Comic Characters Data"), 
+  sidebarLayout(
+    sidebarPanel(
+      radioButtons("genderInput", "Gender",
+                  choices = c("Female Characters", "Male Characters"),
+                  selected = "Female Characters"),
+      selectInput("alignInput", "Character Type",
+                  choices = c("Good Characters", "Bad Characters", "Neutral Characters")),
+      sliderInput("yearInput", "Year", 1939, 2013, c(1990, 1995))),
+    mainPanel("the results will go here")
+  )
+)
+
+server <- function(input, output) {}
+
+shinyApp(ui = ui, server = server)
 ```
 
 

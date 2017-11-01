@@ -2,6 +2,7 @@
 title: "Exercises: Data Visualisation"
 author:
   name: Quantide
+  email: andrea.spano\@quantide.com; emanuela.furfaro\@quantide.com
 date: " "
 output:
   html_document:

@@ -1,291 +1,228 @@
 ---
-title: "Creating a Scatter Plot"
+title: "The server side functions"
 output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
-<!--
-# Creating a Scatter Plot
--->
 
-```{r first, include=TRUE, purl=TRUE, message=FALSE}
-require(dplyr)
-require(ggplot2)
-require(qdata)
-data(bands)
+## Introduction
+
+In this section we will walk you through writing the server functions, which will be responsible for listening to changes to the inputs and creating outputs to show in the app.
+
+As for input and output functions, server functions have quite a standardised structure, i.e. they are always defined with the following two arguments: 
+
+* _input_ : the values of all the different inputs at any given time
+* _output_ : a list where output objects (such as tables and plots) will be saved to be then displayed in your app
+
+Each output will be created separately, so as we put placeholders for two types of outputs, we will create two outputs separately.
+
+In general, the steps to build an output in Shiny are the following:
+
+1. Save the output object into the _output_ list
+2. Build the object with a `render` function (for example `renderPlot` or `renderTable`)
+3. Access input values using the `input` list
+
+
+## Rendering plots
+
+If we want to render a plot, for example the line plot with the number of new characters as a function of the year, we write the following lines:
+
+```{r output}
+output$timeSeries <- renderPlot({
+  plot(rnorm(100))
+})
+
 ```
 
-Scatter plots are used to display the relationship between two continuous variables. Axes represent a variable each, while each point represents an observation. This plot is often the first way to describe data when you look at it. 
+Since `timeSeries` was defined as a `plotOutput`, we must use the renderPlot function, and we must create a plot inside the renderPlot function. We set `output$object_name` with `object_name` being equal to the object name chosen in the placeholder.
 
-```{r scatterplots, message=FALSE, echo=FALSE, purl=FALSE}
-set.seed(123456)
-ds <- data.frame(matrix(rnorm(40*4, 4), ncol=4))
 
-ggplot(data=ds) + geom_point(aes(x=X1, y=X2, size=X3*1), colour="#2B4C6F", show.legend = FALSE) +
-  xlab("Explanatory variable\n(x)") + ylab("Response variable\n(y)") +
-  theme(axis.text.x = element_blank(), axis.text.y = element_blank())
+Note that all we are doing is creating a plot inside the `renderPlot()` function, and assigning it to `timeSeries` which is an element in the output list. 
+
+
+As you may have noticed, the code above just plots a sample of size 100 from a standard normal distribution. We were aiming for something a bit more complicated: we wanted to plot the number of new comic characters created each year from 1938, possibly filtered by sex and character type (bad/good/neutral character). Also, it would be nicer to do so using `ggplot2` package. 
+
+Let us create the visualision the way we like and then embed it in the server function.
+
+
+First we need to make sure `ggplot2` is loaded together with `dplyr` that we'll use for some data manipulation, so add a `require(tidyverse)`, then we go on with the data visualisation:
+
+```{r}
+require(tidyverse)
+
+ggplot(df %>% 
+       group_by(year) %>%
+       summarise(new_chars = n()), aes(x = year, y = new_chars)) +
+  geom_line()
+
 ```
 
-This chapter presents how to build scatter plots and introduces some basic concept of `ggplot2` grammar: aesthetic mappings and layers.
+And now we embed it in the Shiny app, so that the overall code looks like this:
 
+```{r}
+require(tidyverse)
+require(shiny)
 
-## The first scatter plot
+df <- read_csv("../data/marvel-wikia-data.csv")
 
-Suppose you are interested in the relationship between the humidity and the viscosity in the `bands` dataset. 
+ui <- fluidPage(
+  titlePanel("Comic Characters"),
+  em("Here is a visualisation of Comic Characters Data"), 
+      br(), 
+      br(),
+  sidebarLayout(
+    sidebarPanel(
+      radioButtons("genderInput", "Gender",
+                  choices = c("Female Characters", "Male Characters"),
+                  selected = "Female Characters"),
+      br(),
+      br(),
+      selectInput("alignInput", "Character Type",
+                  choices = c("Good Characters", "Bad Characters", "Neutral Characters")),
+      br(),
+      br(),
+      sliderInput("yearInput", "Year", 1939, 2013, c(1990, 1995))),
+    mainPanel(plotOutput("timeSeries"),
+              br(),
+              br(),
+              dataTableOutput("tableResults"))
+  )
+)
 
-```{r scatterplot_first, message=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point()
+server <- function(input, output) {
+  output$timeSeries <- renderPlot({
+    new_df <- df %>% 
+         group_by(year) %>%
+         summarise(new_chars = n())
+    ggplot(new_df, aes(x = year, y = new_chars)) + 
+      geom_line()
+})
+}
+
+shinyApp(ui = ui, server = server)
+
 ```
 
-
-The syntax is quite simple. The function `ggplot()` initializes the plot with the following parameters: 
-
-* _data_ refers to the dataframe to use for the plot, in this case is the `bands` data frame 
-* _mapping_ refers to the  list of aesthetic mappings (visual properties) to use for plot, passed as arguments of the `aes()` function. In this case you _map_ the data to _aesthetics_  of plot like follow: the _x_-axis displays the `humidity` variable and the _y_-axis displays the `viscosity` variable. 
-
-Notes: 
-
-* the variable names must be unquoted 
-* the function is named `ggplot()` while the package is named `ggplot2`
+If you run the Shiny app, you will see that the plot is there, but it does not react to your inputs: if you change a different time range, the plot does not update, and so is for comic character gender and character type. Indeed, we have not considered filtering variables yet.
 
 
-The `ggplot()` function does not return anything. You have to add to `ggplot()`, which geometric object (_geom_) you want to add. A scatter plot is made by points, and so you will use the `geom_point()` function, without any argument. 
+Reall that we have 3 inputs: genderInput, alignInput, and yearInput. We will filter the data based on the values of these three inputs. We’ll use `dplyr` functions to filter the data and then we will simply plot the filtered data instead of the original data. Your server function should now look like this:
 
-The meaning of technical terms will be cleared in the following examples.
 
-The function returns a warning message: in six observations at least one between `humidity` and `viscosity` has missing values and points cannot be drawn. In the following examples, the warning message will not be shown.
+```{r}
 
-Alternatively, the plot can be initialized with `ggplot()` without any argument and the same arguments have to be passed to `geom_point()`.
+server <- function(input, output) {
+output$timeSeries <- renderPlot({
+  filtered <-df %>% 
+    filter(year >= input$yearInput[1],
+           year <= input$yearInput[2],
+           align == input$alignInput,
+           sex == input$genderInput) %>%
+    group_by(year) %>%
+    summarise(new_chars = n())
+  ggplot(filtered, aes(x = year, y = new_chars)) +
+    geom_line()
+})
+}
 
-```{r scatterplot_geompoint, message=FALSE, warning=FALSE}
-ggplot() + 
-  geom_point(data=bands, mapping=aes(x=humidity, y=viscosity))
 ```
 
-To understand the difference between the two examples above, you can add a new `geom` to the plot. From the previous plot it appears a (weak) positive correlation between the variables. A regression line can be added to the plot. The `geom_smooth()` with `method="lm"` adds a regression line based on the linear model.
+If you replace the old server function with the one above, your Shiny app will contain a time series that updates according to the input!
 
-```{r scatterplot_geomsmooth, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point() + 
-  geom_smooth(method="lm")
-```
-
-The plot now displays a regression line with its confidence interval.  
-
-You can try to add a smoother to the plot, but starting from the code with `ggplot()` without arguments.
-
-```{r scatterplot_noinherit, message=FALSE, warning=FALSE}
-ggplot() + 
-  geom_point(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_smooth(method="lm")
-```
-
-There is no line. Why? The reason is quite simple: `geom_smooth()` do not know which data and which variable should be used for the linear model. You can solve the issue like follow.
-
-```{r scatterplot_settinggeoms, message=FALSE, warning=FALSE}
-ggplot() + 
-  geom_point(data=bands, mapping=aes(x=humidity, y=viscosity)) +
-  geom_smooth(data=bands, mapping=aes(x=humidity, y=viscosity), method="lm")
-```
-
-To sum up, data and aesthetics specified in `ggplot()` are used by default by all layers. Layers are like tracing papers, you can overlay them. Each layer contains a geometry. If a layer has its own data and/or aesthetics, that layer will ignore the default values.
+Of course you can further customise the plot, to add different colours, change the font or change axis names.
 
 
-## Assigning `ggplot`s to a variable
+## Rendering tables
 
-From a formal point of view, a ggplot is an R object like anything else; so you can assign it to a variable.
+In the UI we defined the other output as `tableResults`. It is meant to represent just a table with the values showed in the plot. 
 
-```{r scatterplot_assignment1, message=FALSE, warning=FALSE}
-gp1 <- ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point() 
-```
+This time, we are working with a table output, more specifically, we defined the output as a datatable output. So we use the `renderDataTable()` function. We will do the exact same filtering on the data, and then simply return the data as a `data.table`. 
 
-And now you can recall the plot named `gp1`.
+Again, we first create the filtered dataset, just as we did before, and then ask to just print the datatable:
 
-```{r scatterplot_assignment2, message=FALSE, warning=FALSE}
-gp1
-```
+```{r}
 
-_Note_: you can print the plot by recalling it; indeed the run of `gp1` does the same work of `print(gp1)` command.
+  output$tableResults <- renderDataTable({
+    filtered <-df %>% 
+      filter(year >= input$yearInput[1],
+             year <= input$yearInput[2],
+             align == input$alignInput,
+             sex == input$genderInput) %>%
+      group_by(year) %>%
+      summarise(new_chars = n())
+    filtered
+})
 
-Once you assigned the scatter plot to `gp1`, you can add to this plot a smoother by doing:
-```{r scatterplot_assignment3, message=FALSE, warning=FALSE}
-gp2 <- gp1 + 
-  geom_smooth(method="lm")
-gp2
-```
-
-
-## Changing the shape and size of points
-
-At this point, you probably are interested to change the aspect of points like shape or size: it suffices to set the `shape` or the `size` as a parameter of `geom_point()`.
-
-```{r scatterplot_shape, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point(shape=2)
-```
-
-The following shapes are available in R graphics. Point shapes from 0 to 14 have just an outline, shapes from 15 to 20 are solid and shapes from 21 to 25 have both an outline and a fill. Default shape for `ggplot2` graphics is 16.
-
-```{r plot_shape, echo=FALSE, fig=TRUE, purl=FALSE}
- par(mar=rep(0,4))
- # Make an empty chart
- plot(1, 1, xlim = c(1, 5.5), ylim=c(0.5, 9.5), type = "n", axes = FALSE, ann = FALSE, frame.plot = TRUE, mar=0)
- # Plot symbols 0-4 with increasing size
- points(1:5, rep(9, 5), cex = 2, pch = 0:4, col="red", bg="green")
- text((1:5) + 0.4, rep(9, 5), cex = 1, (0:4))
- # Plot symbols 5-9 with labels
- points(1:5, rep(7, 5), cex = 2, pch = (5:9), col="red", bg="green")
- text((1:5) + 0.4, rep(7, 5), cex = 1, (5:9))
- # Plot symbols 10-14 with labels
- points(1:5, rep(5, 5), cex = 2, pch = (10:14), col="red", bg="green")
- text((1:5) + 0.4, rep(5, 5), cex = 1, (10:14))
- # Plot symbols 15-19 with labels
- points(1:6 * 0.8 + 0.2, rep(3, 6), cex = 2, pch = (15:20), col="red", bg="green")
- text((1:6) * 0.8 + 0.6, rep(3, 6), cex = 1, (15:20))
- # Plot symbols 20-25 with labels
- points((1:5), rep(1, 5), cex = 2, pch = (21:25), col="red", bg="green")
- text((1:5) + 0.4, rep(1, 5), cex = 1, (21:25))
-```
-
-Shape can also be a (single) character string.
-
-```{r scatterplot_shape_char, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point(shape="$", size=3)
-```
-
-The same way works for `size` too.
-
-```{r scatterplot_size, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point(size=5)
-```
-
-```{r scatterplot_shape_size, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point(shape=3, size=1)
 ```
 
 
-## Changing the colour of points
+## Final UI
 
-Colour can be set in a similar way than `shape` and `size`: setting `colour` as a `geom_point()` parameters. Both UK and US spellings (`color`) can be used.
+Last, let us embed everything into the Shiny app and your code should look like this:
 
-```{r scatterplot_colour, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point(colour="red")
-```
+```{r}
 
-Shapes from 21 to 25 allow two colours. In these cases, `colour` set the outline and `fill` set the internal colour.
+require(tidyverse)
+require(shiny)
 
-```{r scatterplot_fill, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) + 
-  geom_point(shape=21, colour="red", fill="#2b439a")
-```
+df <- read_csv("../data/marvel-wikia-data.csv")
 
-When you need to pass a colour to R, you can use a string with the colour name. There are 657 colour names in R; just type `colours()` to view them. Alternatively, you can pass a string with the hexadecimal code (e.g. "#2b439a") or you can use `rgb()`, `hsv()` or `hcl()`  if you are familiar with these colour models.
+ui <- fluidPage(
+  titlePanel("Comic Characters"),
+  em("Here is a visualisation of Comic Characters Data"), 
+      br(), 
+      br(),
+  sidebarLayout(
+    sidebarPanel(
+      radioButtons("genderInput", "Gender",
+                  choices = c("Female Characters", "Male Characters"),
+                  selected = "Female Characters"),
+      br(),
+      br(),
+      selectInput("alignInput", "Character Type",
+                  choices = c("Good Characters", "Bad Characters", "Neutral Characters")),
+      br(),
+      br(),
+      sliderInput("yearInput", "Year", 1939, 2013, c(1990, 1995))),
+    mainPanel(plotOutput("timeSeries"),
+              br(),
+              br(),
+              dataTableOutput("tableResults"))
+  )
+)
 
-Data used in these examples has 540 observations but the plot seems have less points. This is because many points overlap. Transparencies are useful in this cases. The `alpha` aesthetic set the transparency level: legal `alpha` values are any numbers from 0 (transparent) to 1 (opaque). 
+server <- function(input, output) {
+output$timeSeries <- renderPlot({
+  filtered <-df %>% 
+    filter(year >= input$yearInput[1],
+           year <= input$yearInput[2],
+           align == input$alignInput,
+           sex == input$genderInput) %>%
+    group_by(year) %>%
+    summarise(new_chars = n())
+  ggplot(filtered, aes(x = year, y = new_chars)) +
+    geom_line()
+})
+  output$tableResults <- renderDataTable({
+    filtered <-df %>% 
+      filter(year >= input$yearInput[1],
+             year <= input$yearInput[2],
+             align == input$alignInput,
+             sex == input$genderInput) %>%
+      group_by(year) %>%
+      summarise(new_chars = n())
+    filtered
+})
+}
 
-```{r scatterplot_alpha, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
-  geom_point(alpha=0.25)
-```
+shinyApp(ui = ui, server = server)
 
-Since `alpha=0.25` (and 0.25 is 1/4) a point will be drawn as solid when four points overlap.
-
-If you are familiar with base graphics in R, `shape` substitutes `pch`, `size` substitutes `cex`, `colour` substitutes `col` and `fill` substitutes `bg`. The base syntax can be used also in `ggplot2` but it is strongly suggested to migrate to the new and more intuitive syntax.
-
-
-## Mapping a third variable to scatter plots
-
-Scatter plots were born to visualize the relationship between two variables: one mapped to the x-axis and one mapped to the y-axis. Sometimes, a third variable should be visualized. In these case, you can map a third variable to other aesthetics: size, shape or colour.
-
-Suppose you're interested in the relationship between humidity and viscosity accordingly the presence or absence of `band_type`. `band_type` is a discrete variable so to perform this task, you can map it to `colour`. 
-
-```{r scatterplot_map_colour, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type)) +
-  geom_point()
-```
-
-Note that mapping occurs within `aes()`, while setting occurs outside of `aes()`.
-
-The plot shows the same points that previous ones with different colours and a legend will be added.
-
-Alternatively, you can map `band_type` to another aesthetic, like `shape`.
-
-```{r scatterplot_map_shape, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, shape=band_type)) +
-  geom_point()
-```
-
-Since different shapes are more difficult to read when you have many points, this solution provide an alternative when you are printing in black and white, without colours. You can improve your result using both aesthetics together.
-
-```{r scatterplot_map_colour_shape, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type, shape=band_type)) +
-  geom_point()
-```
-
-Mapping a discrete variable to `size` aestethic is not advised.
-
-
-If you're interested in a continuous variable as third variable you can `map` it to `colour` or to `size`. It makes no sense map a continuous value to `shape`. Let us consider `ink_pct` as third variable:
-
-```{r scatterplot_map_colour_continuous, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=ink_pct)) +
-  geom_point()
-```
-
-```{r scatterplot_map_size_continuous, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct)) +
-  geom_point()
-```
-
-It is more difficult perceiving small differences in size and colour, so variable mapped to these aesthetic attributes will be interpreted with a much lower accuracy than those mapped to spatial coordinates (`x` and `y`).
-
-The following code will produce a scatter plot of `humidity` versus `viscosity` with `band_type` mapped to `colour`. 
-
-```{r scatterplot_map_colour_smooth, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, colour=band_type)) +
-  geom_point() + geom_smooth(method="lm")
-```
-
-The scatter plot has two regression lines. This is the expected results, as `band_type` is mapped to `colour` in the `ggplot()` function and its arguments are used not only by `geom_point()` but also by `geom_smooth()`.
-
-To produce a scatter plot with a single regression line the `colour` aesthetic must be mapped only to `geom_point()`.
-
-```{r scatterplot_map_colour_onesmooth, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
-  geom_point(mapping=aes(colour=band_type)) + 
-  geom_smooth(method="lm")
-```
-
-Finally, this is the plot if you are interested to three regression line, one for all values and one for each level of `band_type`.
-
-```{r scatterplot_map_colour_threesmooth, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity)) +
-  geom_point(mapping=aes(colour=band_type)) + 
-  geom_smooth(mapping=aes(colour=band_type), method="lm") +
-  geom_smooth(method="lm")
 ```
 
 
-## Mapping four variables to scatter plots
 
-Although the interpretation may be difficult, different variable can map to different aesthetics at the same time. From a theoretical point of view you can map as many variable as the number of aesthetics, but it is not suggested map more than four variable.
-
-This is the result when you are interested to the ink percentage and band type, at the same time.
-
-```{r scatterplot_map_four_variables, message=FALSE, warning=FALSE}
-ggplot(data=bands, mapping=aes(x=humidity, y=viscosity, size=ink_pct, colour=band_type)) +
-  geom_point()
-```
-
-When a variable is mapped to `size` it is not suggested to map another variable to `shape`. This is because it is difficult to compare the sizes of different shapes.
 

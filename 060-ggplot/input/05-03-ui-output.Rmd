@@ -11,26 +11,84 @@ options(width = 108)
 
 ## Introduction
 
-After creating all the inputs, we should add elements to the UI to display the outputs. Outputs can be any object that R creates and that we want to display in our app - such as a plot, a table, or text. We’re still only building the UI, so at this point we can only add placeholders for the outputs that will determine where an output will be and what its ID is, but it won’t actually show anything. Each output needs to be constructed in the server code later.
+So far we have layed out the shiny app so that inputs can be hosted. We now should add elements to the UI to display the outputs. 
 
-Shiny provides several output functions, one for each type of output. Similarly to the input functions, all the ouput functions have a outputId argument that is used to identify each output, and this argument must be unique for each output.
+Outputs are objects that R creates and that we want to display in our app. In this situation, we want the user to be able to explore the data, so you can think of the output as anything that can help users get better insights of the data, such as plots and tables. 
 
+Note that in this secton we are still building the UI, so at this point we only add _placeholders_ for the outputs. _placeholders_ determine where an output will be and what its ID is, but they do not show anything. Each output must be built in the server code later.
 
-## Output for a plot of the results
+Similarly to the input section Shiny provides different output functions for different type of output. In this section we give details of the major Shiny functions useful for representing the major output types, that are plots and tables. 
 
-At the top of the main panel we’ll have a plot showing some visualization of the results. Since we want a plot, the function we use is plotOutput().
-
-Add the following code into the mainPanel() (replace the existing text):
-
-plotOutput("coolplot")
-This will add a placeholder in the UI for a plot named coolplot.
+All the ouput functions have the first same argument, that is `outputId`. It is used to identify each output, and it must be unique for each output.
 
 
-## Output for a table summary of the results
-Below the plot, we will have a table that shows all the results. To get a table, we use the tableOutput() function.
+## Plots
 
-Here is a simple way to create a UI element that will hold a table output:
+As mentioned, it may be intersting to show a plot representing the number of new comic charecters coming out each year. In the previous sections, we have also thought of filtering the data by character type and by sex, to better study the differences between these variables.
 
-tableOutput("results")
-Add this output to the mainPanel() as well. Maybe add a couple br() in between the two outputs, just as a space buffer so that they aren’t too close to each other.
+One of the outputs we want to show is hence a line plot/time series. Since we want a plot, the function we use is `plotOutput()`:
+
+```{r plotOutput}
+plotOutput("timeSeries")
+```
+
+Again, note that this will only add a _placeholder_ in the UI for a plot named `timeSeries`.
+
+Additional arguments for `plotOutput` function are width and height of the output, but, more importantly there are some additonal arguments that allow the user to further interact with the app by clicking on it. For instance, the argument `click` can be used so that the plot sends coordinates to the server whenever it is clicked, and the value is showed. We will come back to this argument later on.
+
+
+
+## Summary tables
+
+Below the plot, we may want to have a table that shows all the results. In order to add the table placeholder, we use the `tableOutput()` function:
+
+```{r tableOutput}
+tableOutput("tableResults")
+```
+
+Alternatively to `tableOutput`, you may use `dataTableOutput` to create interactive tables with more features:
+
+```{r tableOutput2}
+dataTableOutput("tableResults")
+```
+
+
+## Final UI 
+
+At this point, we can add the output to the `mainPanel()` just after the input functions. In order to have a better lay out, you can also choose to add a couple of brakes in between outputs and in between inputs. So that your final user interface shoud look like this:
+
+
+```{r finalUI}
+library(shiny)
+df <- read_csv("../data/marvel-wikia-data.csv")
+
+ui <- fluidPage(
+  titlePanel("Comic Characters"),
+  em("Here is a visualisation of Comic Characters Data"), 
+      br(), 
+      br(),
+  sidebarLayout(
+    sidebarPanel(
+      radioButtons("genderInput", "Gender",
+                  choices = c("Female Characters", "Male Characters"),
+                  selected = "Female Characters"),
+      br(),
+      br(),
+      selectInput("alignInput", "Character Type",
+                  choices = c("Good Characters", "Bad Characters", "Neutral Characters")),
+      br(),
+      br(),
+      sliderInput("yearInput", "Year", 1939, 2013, c(1990, 1995))),
+    mainPanel(plotOutput("timeSeries"),
+              br(),
+              br(),
+              dataTableOutput("tableResults"))
+  )
+)
+
+server <- function(input, output) {}
+
+shinyApp(ui = ui, server = server)
+```
+
 

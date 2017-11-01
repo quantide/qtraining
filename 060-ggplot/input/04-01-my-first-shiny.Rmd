@@ -19,7 +19,7 @@ Notice that in this course "the computer" will be your own laptop, although most
 
 In `Shiny` terminology, the two parts are called _user interface (ui)_ and _server_: 
 
-* the _ui_ contains the functions that show the layout of the app and that allow you to interact with the app, here you need to indicate where you want your plot to be showed, if you want to include a drop down menu, etc
+* the _ui_ contains the functions that show the layout of the app and that allow you to interact with the app; here you need to indicate where you want your plot to be showed, where you want to include a drop down menu, etc
 
 * the _server_ is where plots and tables are generated, here you will add all the types of plots you want to show, you will need to indicated which colour you want your plot, etc
 

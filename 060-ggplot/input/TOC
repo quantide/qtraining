@@ -27,3 +27,4 @@ My first Shiny App 	 | 04-01-my-first-shiny.Rmd
 User Interface           | 05-01-ui.Rmd
 User Interface Inputs    | 05-02-ui-input.Rmd
 User Interface Outputs   | 05-03-ui-output.Rmd
+Server Side              | 06-server-side.Rmd
