@@ -1,0 +1,36 @@
+---
+title: "Add placeholders for outputs to the UI"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+
+## Introduction
+
+After creating all the inputs, we should add elements to the UI to display the outputs. Outputs can be any object that R creates and that we want to display in our app - such as a plot, a table, or text. We’re still only building the UI, so at this point we can only add placeholders for the outputs that will determine where an output will be and what its ID is, but it won’t actually show anything. Each output needs to be constructed in the server code later.
+
+Shiny provides several output functions, one for each type of output. Similarly to the input functions, all the ouput functions have a outputId argument that is used to identify each output, and this argument must be unique for each output.
+
+
+## Output for a plot of the results
+
+At the top of the main panel we’ll have a plot showing some visualization of the results. Since we want a plot, the function we use is plotOutput().
+
+Add the following code into the mainPanel() (replace the existing text):
+
+plotOutput("coolplot")
+This will add a placeholder in the UI for a plot named coolplot.
+
+
+## Output for a table summary of the results
+Below the plot, we will have a table that shows all the results. To get a table, we use the tableOutput() function.
+
+Here is a simple way to create a UI element that will hold a table output:
+
+tableOutput("results")
+Add this output to the mainPanel() as well. Maybe add a couple br() in between the two outputs, just as a space buffer so that they aren’t too close to each other.
+
