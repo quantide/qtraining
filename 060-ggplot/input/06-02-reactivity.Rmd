@@ -4,16 +4,16 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
 
 ## What is reactive programming?
 
-In your Shiny App, when you change the input you output updates. For example when you select a shorter time span, the time series updates and a shorter time span is showed in the plot.
+In Shiny Apps, when you change the input your output updates. For example when you select a shorter time span, the time series updates and a shorter time span is showed in the plot.
 
-Reactivity is complex: in short, it means that when the value of a variable `x` changes, then anything that relies on x gets re-evaluated. This is not as obvious in `R`. As an example, suppose you assign a value to a variable `x` and then build an object `y` that depends on it:
+Reactivity is complex, but we'll try to make it as simple as possible here. In simple words, it means that when the value of a variable `x` changes, then anything that relies on x gets re-evaluated. This is not as obvious in `R`. As an example, suppose you assign a value to a variable `x` and then build an object `y` that depends on it:
 
 ```{r reactivity}
 x <- 10
@@ -23,7 +23,7 @@ y <- 10*2
 If you change the values assigned to `x`, `y` is not re-evaluated:
 
 
-```{r reactivity}
+```{r reactivity2}
 x <- 20
 y
 ```
@@ -31,86 +31,128 @@ y
 If `x` and `y` are reactive variables, then the value of `y` would be 40 because it would be updated whenever `x` is changed. Only reactive variables behave this way, and in Shiny all inputs are automatically reactive. So, if you use `input$x` in render functions, you can be sure that whatever output depends on `x` will use the updated value of `x` whenever `x` changes.
 
 
-## Reactive variables in Shiny
+You can think of reactivity as a process that starts a chain reaction: when one reactive value changes, anything that depends on it will get updated. If any of the updated values are themselves reactive variables, then any reactive contexts that depend on those variables will also get updated in turn. 
+
+
+## Reactive variables and reactive context in Shiny
+
+Reactivity in Shiny is made of two sides: _reactive variables_ and _reactive contexts_. Reactive variables can be used only inside reactive contexts.
 
 
 The input list in Shiny is a reactive variable and as so, it can only be used inside reactive contexts. Any `render` function is a reactive context in Shiny. So whenever you place `input$my_input` inside a render function, you know you are doing right. 
 
-Note that if you try to access a reactive variable outside a reactive context, and you will get an error when running the app:
 
-```{r reactivity2}
+Note that if you try to access a reactive variable outside a reactive context, you will get an error when running the app:
 
+```{r reactivity3}
+print(input$yearInput)
 ```
 
 `Operation not allowed without an active reactive context. (You tried to do something that can only be done from inside a reactive expression or observer.)`
 
-The `observe({})` function allows you to access the input variable. So, if you now run the following code instead of the one above:
+So how can you, for example, print the value of a reactive variable? The `observe({})` function allows you to access reactive variables. So, if you now run the following code, inside your server function in your App, everything should work smoothly:
 
-```{r reactivity3}
-
+```{r reactivity4}
+observe({print(input$yearInput)})
 ```
 
-the `print()` function wors just as you expected and it also updates when the input changes. In other words, the `observe({})` function makes the code inside of it running again, and the new value will then be printed. Hence, remeber that if you are debugging your code and yout want to know what value a reactive variable holds, you need to wrap `cat(input$x)` or `print(input$x)` with an `observe({})`.
 
-So, with regards to reactive content, we have so far seen "the natural" reactive content with `render` and how to create reactive contents with the `observe({})` variable.
+Now the `print()` function works just as you expected and it also updates when the input changes. In other words, the `observe({})` function makes the code inside of it running again, and the new value will then be printed. The `observe({})` function creates a reactive context: the code inside it, will get re-run whenever any of the reactive variables in it gets updated.
+
+
+This may be useful when you are debugging your code and you want to know what value a reactive variable holds: you need to wrap `cat(input$x)` or `print(input$x)` in an `observe({})` function.
+
+
+So, with regards to reactive content, we have so far seen "the natural" reactive content with `render` and how to create reactive contents with the `observe({})` function.
+
 
 With regards to reactive variables, "the natural" reactive variable is `input$`, but you can also create your own reactive variables. To do so, you need to use the `reactive({})` function. 
 
-The `reactive({})` function is similar to `observe({})` in that it is also a reactive context, which means that it will get re-run whenever any of the reactive variables in it get updated. The difference between them is that `reactive({})` returns a value.
+
+The `reactive({})` function is similar to `observe({})` as it is also a reactive content, but it is different because `reactive({})` returns a value.
 
 
-To see it in action, let’s create a variable called priceDiff that will be the difference between the maximum and minimum price selected. If you try to naively define priceDiff <- diff(input$priceInput), you’ll see the same error as before about doing something outside a reactive context. This is because input$priceInput is a reactive variable, and we can’t use a reactive variable outside a reactive context. Since we want to assign a value, we use the reactive({}) function. Try adding the following line to your server:
+Let us see it in action and create a variable called `timeSpan` that will be the difference between the maximum and minimum year selected. One may simply try to define:
 
-priceDiff <- reactive({
-  diff(input$priceInput)
+```{r reactive5}
+
+timeSpan <- diff(input$yearInput)
+
+```
+
+and if you insert it in your server function and run it, you get the same error as before about doing something outside a reactive context. This is because `input$yearInput` is a reactive variable, and we can’t use a reactive variable outside a reactive context. Since we want to assign a value, we use the reactive({}) function. Try adding the following line to your server:
+
+```{r reactive6}
+timeSpan <- reactive({
+  diff(input$yearInput)
 })
+```
+
+Now if you insert the above code in your app and run, it will work just as fine. 
+
+If you want to access a reactive variable defined with `reactive({})`, you must add parentheses after the variable name, as if it was a function. So, for example, if you would like to print `timeSpan`:
+
+```{r reactive7}
+observe({ print(timeSpan()) })
+```
+
+So, basically to acces the variable you just created you simply use `timeSpan()` instead of `timeSpan`, just as if, in base `R` you were accessing a function instead of a variable.
 
 
-Now your app will run. If you want to access a reactive variable defined with reactive({}), you must add parentheses after the variable name, as if it’s a function. To demonstrate this, add observe({ print(priceDiff()) }) to your server function. Notice that we use priceDiff() rather than priceDiff. It’s very important to remember this, because you can get confusing unclear errors if you simply try to access a custom reactive variable without the parentheses.
-
-
-You can think of reactivity as causing a chain reaction: when one reactive value changes, anything that depends on it will get updated. If any of the updated values are themselves reactive variables, then any reactive contexts that depend on those variables will also get updated in turn. 
-
-
-As a concrete example, let’s think about what happens when you change the value of the priceInput on the page. Since input$priceInput is a reactive variable, any expression that uses it will get updated. This means the two render functions from earlier will execute because they both depend on input$priceInput, as well as the priceDiff variable because it also depends on it. But since priceDiff is itself a reactive variable, Shiny will check if there is anything that depends on priceDiff, and indeed there is - the observe({}) function that prints the value of priceDiff. So once priceDiff gets updated, the observe({}) function will run, and the value will get printed.
-
-To learn more about reactivty visit the RStudio website.
+To learn more about reactivity visit the [RStudio website](https://shiny.rstudio.com/articles/reactivity-overview.html).
 
 
 ## Dealing with code duplication
 
-You may have noticed that we have the exact same code filtering the dataset in two places, once in each render function. We can solve that problem by defining a reactive variable that will hold the filtered dataset, and use that variable in the render functions.
+Now that we have learned the concept of reactivity, we may make a step forward and see how we can use reactivity to deal with some other problems that do not seem explicitely related to it.
 
-The first step would be to create the reactive variable. The following code should be added to the server function.
 
+You may have noticed that we have the exact same code filtering the dataset in two places, once in each render function. One way to solve solve this problem may be to define a reactive variable that will hold the filtered dataset, and then use that variable in the render functions.
+
+Let us start by creating the reactive variable, by adding the following code to the server function:
+
+```{r reactivity8}
 filtered <- reactive({
-  bcl %>%
-    filter(Price >= input$priceInput[1],
-           Price <= input$priceInput[2],
-           Type == input$typeInput,
-           Country == input$countryInput
-    )
+  df %>% 
+    filter(year >= input$yearInput[1],
+           year <= input$yearInput[2],
+           align == input$alignInput,
+           sex == input$genderInput) %>%
+    group_by(year) %>%
+    summarise(new_chars = n())
 })
-The variable filtered is being defined exactly like before, except the body is wrapped by a reactive({}), and it’s defined in the server function instead of inside the individual render functions. Now that we have our reactive variable, we can use it in the output render functions. Try it yourself, and when you think you’re done, check the code below. Don’t forget that in order to access the value of a reactive expression, you must follow the name of the variable with parentheses! This is how your server function should look like now.
+```
+
+
+The filtered datset is being defined like before but the body is wrapped by the `reactive({})` function, and it’s defined outside the individual `render` functions. 
+
+Now, we can use it in the output render functions so that your server function looks like this:
+
+```{r reavtivity9}
 
 server <- function(input, output) {
   filtered <- reactive({
-    bcl %>%
-      filter(Price >= input$priceInput[1],
-             Price <= input$priceInput[2],
-             Type == input$typeInput,
-             Country == input$countryInput
-      )
-  })
-  
-  output$coolplot <- renderPlot({
-    ggplot(filtered(), aes(Alcohol_Content)) +
-      geom_histogram()
-  })
+  df %>% 
+    filter(year >= input$yearInput[1],
+           year <= input$yearInput[2],
+           align == input$alignInput,
+           sex == input$genderInput) %>%
+    group_by(year) %>%
+    summarise(new_chars = n())
+})
 
-  output$results <- renderTable({
+  output$timeSeries <- renderPlot({
+  ggplot(filtered, aes(x = year, y = new_chars)) +
+    geom_line()
+})
+  
+  output$tableResults <- renderDataTable({
     filtered()
-  })
+})
 }
 
-As a reminder, Shiny creates a dependency tree with all the reactive expressions to know what value depends on what other value. For example, when the price input changes, Shiny looks at what values depend on price, and sees that filtered is a reactive expression that depends on the price input, so it re-evaluates filtered. Then, because filtered is changed, Shiny now looks to see what expressions depend on filtered, and it finds that the two render functions use filtered. So Shiny re-executes the two render functions as well.
+```
+
+
+
+
