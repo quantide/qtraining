@@ -4,13 +4,13 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
 ## Basic concepts
 
-The first think you need to know is that every Shiny app is composed of two parts: 
+The first thing you need to know is that every Shiny app is composed of two parts: 
 
 * a _web page_ that shows the app to the user and that the user interacts with
 * a _computer_ that runs the functions that create the output to be visualised in the webpage 
@@ -19,9 +19,9 @@ Notice that in this course "the computer" will be your own laptop, although most
 
 In `Shiny` terminology, the two parts are called _user interface (ui)_ and _server_: 
 
-* the _ui_ contains the functions that show the layout of the app and that allow you to interact with the app; here you need to indicate where you want your plot to be showed, where you want to include a drop down menu, etc
+* the _ui_ contains the functions that show the layout of the app and that allow you to interact with the app; here you need to indicate where you want your plots to be showed, where you want to include a drop down menu, how many tabs you want, etc
 
-* the _server_ is where plots and tables are generated, here you will add all the types of plots you want to show, you will need to indicated which colour you want your plot, etc
+* the _server_ is where plots and tables are generated, here you will add all the types of outputs you want to show, you will need to indicate which colour you want your plot, whether the data to be plotted is filtered by specific characteristics, what kind of tables you want, etc
 
 You need to build both of them separately and they will be run together when you run the shiny app in order to compose the app.
 
@@ -41,13 +41,13 @@ shinyApp(ui = ui, server = server)
 
 More specifically we initialised an empty web page (ui) and an empty server.
 
-Notice that once you save thf ile as `app.R`, the latest RStudio recognizes that you are building a Shiny app, and at the top right of you code, you should see the Run button change to Run App.
+Notice that once you save the file as `app.R`, the latest RStudio recognizes that you are building a Shiny app, and, at the top right of you code, you should see the Run button change to Run App.
 
 If you click the Run App button, your app should run. As we are just building an empty app, all you see is a new window appearing and the console with a text similar to this:
 
 `Listening on http://127.0.0.1:7118`
 
-This means that R is currently busy as it is powering a Shiny app and is waiting (listening) for user interaction. In this case, of course, no user interaction is possible as the ui contains a blank page and we have not programmed any interactive parts.
+This means that R is currently busy as it is powering a Shiny app and is waiting (listening) for user interaction. In this case, of course, no user interaction will happen as the ui contains a blank page and we have not programmed any interactive parts. In fact, our `ui` function is empty and so is the `server`.
 
 If you click the stop button the app will stop.
 
@@ -58,7 +58,6 @@ When the app gets more complicated, it is a good practice to work on separate fi
 
 When RStudio sees these two files in the same folder, it will know you’re writing a Shiny app. If you use this method (instead of having one `app.R` file), then you do not need to include the `shinyApp(ui = ui, server = server)` line.
 
-From now on, we will then work on these two separate files.
 
 
 
