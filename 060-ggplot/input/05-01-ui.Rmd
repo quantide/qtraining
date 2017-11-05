@@ -4,19 +4,21 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
+
+## Introduction
 
 
 In this section you will learn how to populate the _ui_, i.e we will add elements to the UI. 
 
-As already mentioned, the _ui_ is that part of the Shiny App that contains the instructions on the layout of the app and how you interact with the it; here you need to indicate where you want your plot to be showed, where you want to include a drop down menu, etc. 
+As already mentioned, the _ui_ is that part of the Shiny App that contains the instructions on the layout of the app and how you interact with the it; here you need to indicate where you want your plots to be showed, where you want to include a drop down menu, how many tabs you want, etc.
 
-Note that the whole UI will be built by passing comma-separated arguments into the `fluidPage()` function introduced in the previous sections. 
+Note that we will be building the whole user interface just by passing comma-separated arguments into the `fluidPage()` function presented in the previous sections. 
 
-Step by step, we will introduce some basic and essential visual elements and we will then complicate the structure.
 
+Step by step, we will introduce some basic and essential visual elements and we will then complicate the structure. Remember that this is just a draft of your Shiny App and if you think of any additional feature, you can add it.
 
 
 ## Rendering text
@@ -32,7 +34,7 @@ Let us start by adding a title to the web page. Shiny allows you to do so with t
 ```{r shiny-title, eval = FALSE}
 
 ui <- fluidPage(
-  titlePanel("Comic Characters")
+  titlePanel("Comic Characters Data")
 )
 
 ```
@@ -52,6 +54,7 @@ ui <- fluidPage(
 
 
 ```
+
 
 You can also format your text nicer, by using Shiny functions that are wrappers around HTML tags that format text. This means that you do not need to learn HTML, you can just use the Shiny function and they will do the rest! 
 
@@ -131,11 +134,141 @@ ui <- fluidPage(
 ```
 
 
-### Creating tabset panels
+## Creating tabset panels
+
+If you have lots of different outputs to display, you may like to split the outputs into different "pages" you can navigate through. Here we see how you can use `tabsetPanel()` or `navlistPanel()`.
 
 
-## `tabsetPanel()`
+### `tabsetPanel()`
+
+`tabsetPanel()` creates a tabset that contains `tabPanel` elements. Tabsets do exactly what we are looking for: they divide output into multiple independently viewable sections. So, for example, if we want to show a plot and some summary statistics, we could use the `tabsetPanel()` function inside the `fluidPage()`:
 
 
-## `navlistPanel()`
+```{r shiny-tabsetPanel}
+
+ui <- fluidPage(
+  titlePanel("Comic Characters"),
+  em("Here is a visualisation of Comic Characters Data"),
+    mainPanel(tabsetPanel(
+      tabPanel("Plot"),
+      tabPanel("Summary")
+    )
+  )
+)
+
+
+```
+
+And as usual, if you run the app, you should get the expected output: in this case two tabsets called Plot and Summary.
+
+### `navlistPanel()`
+
+Another way to achive the creation of many different panels, is through `navlistPanel()` function. It creates a navigation list panel that provides a list of links on the left which navigate to a set of tabPanels displayed to the right. We can try and do the same that we did for `tabsetPanel()` to see the difference:
+
+
+```{r shiny-navlistPanel}
+
+ui <- fluidPage(
+  titlePanel("Comic Characters"),
+  navlistPanel(
+    "",
+    tabPanel("Plot"),
+    tabPanel("Summary")
+  )
+)
+
+```
+
+
+
+## Shinydashboard
+
+As mentioned, shinydashboard naturally allows for a given layout. So, let us go into further details with it.
+
+The `shinydashboard` structure suggests that the first thing we should do is to give a title to the app:
+
+```{r shinydashboard1}
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Comic characters"),
+  dashboardSidebar(),
+  dashboardBody()
+)
+
+```
+
+Differently from `fluidPage()`, in order to add components to the main page, we add boxes in the body. Boxes will have a content although for now, we will leave them blank:
+
+```{r shinydashboard2}
+ui <- dashboardPage(
+  dashboardHeader(title = "Basic dashboard"),
+  dashboardSidebar(),
+  dashboardBody(
+    fluidRow(
+      box(),
+      box()
+    )
+  )
+)
+
+
+```
+
+For now, these boxes will be empty, and later on, when we add outputs placeholders, we will come back to it.
+
+There is one additional part that can be customised, that is the `dashboardSidebar()`. Here we are asked to add differnt tabpanels:
+
+
+```{r shinydashboard3}
+
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Plot", tabName = "plot", icon = icon("th")),
+      menuItem("Summary", tabName = "summary", icon = icon("th"))
+    )
+  )
+
+```
+
+
+In the body, add tabItems with corrsponding values for `tabName` so that the final app looks like this:
+
+
+```{r shinydashboard4}
+
+ui <- dashboardPage(
+    dashboardHeader(title = "Comic characters Data"),
+## Sidebar content
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Plot", tabName = "plot", icon = icon("th")),
+      menuItem("Summary", tabName = "summary", icon = icon("th"))
+    )
+  ),
+
+## Body content
+  dashboardBody(
+    tabItems(
+      # First tab content
+      tabItem(tabName = "plot",
+        fluidRow(
+          box(),
+          box()
+        )
+      ),
+
+      # Second tab content
+      tabItem(tabName = "summary",
+        h2("Some output")
+      )
+    )
+  )
+)
+
+server <- function(input, output) { }
+ 
+shinyApp(ui, server)  
+
+
+```
 

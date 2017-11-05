@@ -334,7 +334,10 @@ $(document).ready(function () {
   <li><a href="05-01-ui.html">User Interface</a></li>
   <li><a href="05-02-ui-input.html">User Interface Inputs</a></li>
   <li><a href="05-03-ui-output.html">User Interface Outputs</a></li>
-  <li><a href="06-server-side.html">Server Side</a></li>
+  <li><a href="06-01-server-side.html">Server Side</a></li>
+  <li><a href="06-02-reactivity.html">Reactive Programming</a></li>
+  <li class="nav-header">Html Widgets</li>
+  <li><a href="07-html-widgets.html">An overview of html widgets</a></li>
 </ul>
     </div>  
   </div>
@@ -355,7 +358,7 @@ $(document).ready(function () {
 <li><a href="#entering-text-textinput">Entering text: <code>textInput()</code></a></li>
 <li><a href="#dropdown-menu-selectinput">Dropdown menu: <code>selectInput()</code></a></li>
 <li><a href="#entering-numbers-numericinput-and-sliderinput">Entering numbers: <code>numericInput()</code> and <code>sliderInput()</code></a></li>
-<li><a href="#entering-dates-dateinput">Entering dates: <code>dateInput()</code></a></li>
+<li><a href="#shinydashboard">Shinydashboard</a></li>
 </ul>
 </div>
 
@@ -378,15 +381,15 @@ $(document).ready(function () {
 <li><code>radioButtons()</code>: it restricts the user to only a few choices</li>
 </ul>
 <p>Entering text freely may be risky, as the user may type something that is not contained in the dataset, hence, here you see an example of <code>radioButtons()</code>:</p>
-<pre class="r"><code>radioButtons(&quot;typeInput&quot;, &quot;Gender&quot;,
-                  choices = c(&quot;Female Characters&quot;, &quot;Male Characters&quot;),
-                  selected = &quot;Female Characters&quot;)</code></pre>
+<pre class="r"><code>radioButtons(&quot;publisherInput&quot;, &quot;Publisher&quot;,
+                  choices = c(&quot;DC&quot;, &quot;Marvel&quot;),
+                  selected = &quot;DC&quot;)</code></pre>
 </div>
 <div id="dropdown-menu-selectinput" class="section level2">
 <h2>Dropdown menu: <code>selectInput()</code></h2>
 <p>Another way to add text inputs is a dropdown manu that allows the user to select from a list of choices, i.e. from a dropdown menu. For now let’s only have CANADA, FRANCE, ITALY as options, and later we’ll see how to include all countries.</p>
 <pre class="r"><code>selectInput(&quot;alignInput&quot;, &quot;Character Type&quot;,
-            choices = c(&quot;Good Characters&quot;, &quot;Bad Characters&quot;, &quot;Neutral Characters&quot;)),</code></pre>
+            choices = c(&quot;Good Characters&quot;, &quot;Bad Characters&quot;, &quot;Neutral Characters&quot;))</code></pre>
 </div>
 <div id="entering-numbers-numericinput-and-sliderinput" class="section level2">
 <h2>Entering numbers: <code>numericInput()</code> and <code>sliderInput()</code></h2>
@@ -397,22 +400,23 @@ $(document).ready(function () {
 </ul>
 <p>If you decide to use <code>numericInput()</code> something like this should be done:</p>
 <p>While for <code>sliderInput()</code>, that in this case seems more appropriate, the code will look like this:</p>
-<pre class="r"><code>sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 1995)))</code></pre>
+<pre class="r"><code>sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 1995))</code></pre>
 <p>So, if we put all the input so far selected, we find the following:</p>
 <pre class="r"><code>library(shiny)
-df &lt;- read_csv(&quot;../data/marvel-wikia-data.csv&quot;)
+
+load(&quot;../data/comics_data.RData&quot;)
 
 ui &lt;- fluidPage(
   titlePanel(&quot;Comic Characters&quot;),
   em(&quot;Here is a visualisation of Comic Characters Data&quot;), 
   sidebarLayout(
     sidebarPanel(
-      radioButtons(&quot;genderInput&quot;, &quot;Gender&quot;,
-                  choices = c(&quot;Female Characters&quot;, &quot;Male Characters&quot;),
-                  selected = &quot;Female Characters&quot;),
+      radioButtons(&quot;publisherInput&quot;, &quot;Publisher&quot;,
+                  choices = c(&quot;DC&quot;, &quot;Marvel&quot;),
+                  selected = &quot;DC&quot;),
       selectInput(&quot;alignInput&quot;, &quot;Character Type&quot;,
                   choices = c(&quot;Good Characters&quot;, &quot;Bad Characters&quot;, &quot;Neutral Characters&quot;)),
-      sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 1995))),
+      sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 2013))),
     mainPanel(&quot;the results will go here&quot;)
   )
 )
@@ -421,8 +425,49 @@ server &lt;- function(input, output) {}
 
 shinyApp(ui = ui, server = server)</code></pre>
 </div>
-<div id="entering-dates-dateinput" class="section level2">
-<h2>Entering dates: <code>dateInput()</code></h2>
+<div id="shinydashboard" class="section level2">
+<h2>Shinydashboard</h2>
+<p>Similarly, if you prefer the shinydashboard layout, you can embed all the above features into a <code>shinydashboard</code> page:</p>
+<pre class="r"><code>library(shiny)
+library(shinydashboard)
+
+load(&quot;../data/comics_data.RData&quot;)
+
+
+ui &lt;- dashboardPage(
+    dashboardHeader(title = &quot;Comic characters Data&quot;),
+    ## Sidebar content
+    dashboardSidebar(
+      sidebarMenu(
+        menuItem(&quot;Plot&quot;, tabName = &quot;plot&quot;, icon = icon(&quot;th&quot;)),
+        menuItem(&quot;Summary&quot;, tabName = &quot;summary&quot;, icon = icon(&quot;th&quot;))
+        )
+      ),
+
+## Body content
+  dashboardBody(
+    tabItems(
+      # First tab content
+      tabItem(tabName = &quot;plot&quot;,
+        fluidRow(
+          box(title = &quot;Choose publisher&quot;, radioButtons( &quot;publisherInput&quot;, &quot;Publisher&quot;,
+                  choices = c(&quot;DC&quot;, &quot;Marvel&quot;),
+                  selected = &quot;DC&quot;)),
+          box(title = &quot;Select year&quot;, sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 2013))
+              )
+        ),
+      # Second tab content
+      tabItem(tabName = &quot;summary&quot;,
+        h2(&quot;Some output&quot;)
+      )
+    )
+  )
+)
+)
+
+server &lt;- function(input, output) {}
+
+shinyApp(ui = ui, server = server)</code></pre>
 </div>
 
 

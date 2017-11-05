@@ -1,0 +1,304 @@
+---
+title: "The server side functions"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+
+## Introduction
+
+In this section we will walk you through writing the server functions, which will be responsible for listening to changes to the inputs and creating outputs to show in the app.
+
+As for input and output functions, server functions have quite a standardised structure, i.e. they are always defined with the following two arguments: 
+
+* _input_ : the values of all the different inputs at any given time
+* _output_ : a list where output objects (such as tables and plots) will be saved to be then displayed in your app
+
+Each output will be created separately, so as we put placeholders for two types of outputs, we will create two outputs separately.
+
+In general, the steps to build an output in Shiny are the following:
+
+1. Save the output object into the _output_ list
+2. Build the object with a `render` function (for example `renderPlot` or `renderTable`)
+3. Access input values using the `input` list
+
+
+## Rendering plots
+
+We will start with a very simple example: suppose we want to plot a time series composed by a 100 numbers randomly selected from a standardised normal distribution. We would write the following lines:
+
+```{r plot1}
+output$timeSeries <- renderPlot({
+  plot.ts(rnorm(100))
+})
+
+```
+
+Since `timeSeries` was defined as a `plotOutput`, we must use the renderPlot function, and we must create a plot inside the renderPlot function. We set `output$object_name` with `object_name` being equal to the object name chosen in the placeholder.
+
+
+Note that all we are doing is creating a plot inside the `renderPlot()` function, and assigning it to `timeSeries` which is an element in the output list. 
+
+
+As you may have noticed, the code above just plots a sample of size 100 from a standard normal distribution. We were aiming for something a bit more complicated: we wanted to plot the number of new comic characters created each year from 1938, possibly filtered by publiher and character type (bad/good/neutral character) and distinguish by sex. Also, it would be nicer to do so using `ggplot2` package. 
+
+Let us create the visualision the way we like and then embed it in the server function.
+
+
+First we need to make sure `ggplot2` is loaded together with `dplyr` that we'll use for some data manipulation, so add a `require(tidyverse)`, then we go on with the data visualisation:
+
+```{r plot2, eval = TRUE}
+require(tidyverse)
+
+load("../data/comics_data.RData")
+
+ggplot(comics_data %>% 
+       group_by(year, sex) %>%
+       summarise(new_chars = n()), aes(x = year, y = new_chars, group = sex)) +
+  geom_line(aes(colour = sex))
+
+```
+
+And now we embed it in the Shiny app, so that the overall code looks like this:
+
+```{r}
+require(tidyverse)
+require(shiny)
+
+load("../data/comics_data.RData")
+
+ui <- fluidPage(
+  titlePanel("Comic Characters"),
+  em("Here is a visualisation of Comic Characters Data"), 
+      br(), 
+      br(),
+  sidebarLayout(
+    sidebarPanel(
+      radioButtons("publisherInput", "Publisher",
+                  choices = c("DC", "Marvel"),
+                  selected = "DC"),
+      br(),
+      br(),
+      selectInput("alignInput", "Character Type",
+                  choices = c("Good Characters", "Bad Characters", "Neutral Characters")),
+      br(),
+      br(),
+      sliderInput("yearInput", "Year", 1939, 2013, c(1990, 1995))),
+    mainPanel(plotOutput("timeSeries"),
+              br(),
+              br(),
+              dataTableOutput("tableResults"))
+  )
+)
+
+server <- function(input, output) {
+  output$timeSeries <- renderPlot({
+    new_df <- comics_data %>% 
+       group_by(year) %>%
+       summarise(new_chars = n()) 
+    ggplot(new_df, aes(x = year, y = new_chars)) + 
+      geom_line()
+})
+}
+
+
+shinyApp(ui = ui, server = server)
+
+```
+
+If you run the Shiny app, you will see that the plot is there, but it does not react to your inputs: if you choose a different time range, the plot does not update, and so is for comic character gender and character type. Indeed, we have not considered filtering variables yet.
+
+
+Reall that we have 3 inputs: genderInput, alignInput, and yearInput. We will filter the data based on the values of these three inputs. We’ll use `dplyr` functions to filter the data and then we will simply plot the filtered data instead of the original data. Your server function should now look like this:
+
+
+```{r}
+
+server <- function(input, output) {
+output$timeSeries <- renderPlot({
+  filtered <- comics_data %>% 
+    filter(year >= input$yearInput[1],
+           year <= input$yearInput[2],
+           align == input$alignInput,
+           publisher == input$publisherInput) %>%
+    group_by(year, sex) %>%
+    summarise(new_chars = n())
+  ggplot(filtered, aes(x = year, y = new_chars, group = sex)) +
+    geom_line(aes(colour = sex))
+})
+}
+
+```
+
+If you replace the old server function with the one above, your Shiny app will contain a time series that updates according to the input!
+
+Of course you can further customise the plot, to add different colours, change the font or change axis names.
+
+
+## Rendering tables
+
+In the UI we defined the other output as `tableResults`. It is meant to represent just a table with the values showed in the plot. 
+
+This time, we are working with a table output, more specifically, we defined the output as a datatable output. So we use the `renderDataTable()` function. We will do the exact same filtering on the data, and then simply return the data as a `data.table`. 
+
+Again, we first create the filtered dataset, just as we did before, and then ask to just print the datatable:
+
+```{r}
+
+  output$tableResults <- renderDataTable({
+    filtered <- comics_data %>% 
+      filter(year >= input$yearInput[1],
+             year <= input$yearInput[2],
+             align == input$alignInput,
+             publisher == input$publisherInput) %>%
+      group_by(year, publisher) %>%
+      summarise(new_chars = n())
+    filtered
+})
+
+```
+
+
+## Final UI
+
+Last, let us embed everything into the Shiny app and your code should look like this:
+
+```{r}
+
+require(tidyverse)
+require(shiny)
+
+load("../data/comics_data.RData")
+
+ui <- fluidPage(
+  titlePanel("Comic Characters"),
+  em("Here is a visualisation of Comic Characters Data"), 
+      br(), 
+      br(),
+  sidebarLayout(
+    sidebarPanel(
+      radioButtons("publisherInput", "Publisher", choices = c("DC", "Marvel"),
+                  selected = "DC"),
+      br(),
+      br(),
+      selectInput("alignInput", "Character Type",
+                  choices = c("Good Characters", "Bad Characters", "Neutral Characters")),
+      br(),
+      br(),
+      sliderInput("yearInput", "Year", 1939, 2013, c(1990, 1995))),
+    mainPanel(plotOutput("timeSeries"),
+              br(),
+              br(),
+              dataTableOutput("tableResults"))
+  )
+)
+
+server <- function(input, output) {
+output$timeSeries <- renderPlot({
+  filtered <- comics_data %>% 
+    filter(year >= input$yearInput[1],
+           year <= input$yearInput[2],
+           align == input$alignInput,
+           publisher == input$publisherInput) %>%
+    group_by(year, sex) %>%
+    summarise(new_chars = n())
+  ggplot(filtered, aes(x = year, y = new_chars, group = sex)) +
+    geom_line(aes(colour = sex))
+})
+  output$tableResults <- renderDataTable({
+    filtered <- comics_data %>% 
+      filter(year >= input$yearInput[1],
+             year <= input$yearInput[2],
+             align == input$alignInput,
+             publisher == input$publisherInput) %>%
+      group_by(year, publisher) %>%
+      summarise(new_chars = n())
+    filtered
+})
+
+}
+
+shinyApp(ui = ui, server = server)
+
+```
+
+
+## Shinydashboard
+
+As mentioned, the only difference between Shiny and Shinydashboard is the user interface organisation. So, based on the user interface organisation you choose, you just need to add the server function. Here is an example where in the panel Plot, we plot the number of new characters released each year differentiating by sex and filtering by publisher and year. In the second panel called Summary, we give a table with the number of new characters that come out each year, filtering by type of character (Bad, good, Neutral) and year:
+
+```{r shinydashboard}
+
+library(shiny)
+library(shinydashboard)
+
+load("../data/comics_data.RData")
+
+
+ui <- dashboardPage(
+    dashboardHeader(title = "Comic characters Data"),
+    ## Sidebar content
+    dashboardSidebar(
+      sidebarMenu(
+        menuItem("Plot", tabName = "plot", icon = icon("th")),
+        menuItem("Summary", tabName = "summary", icon = icon("th"))
+        )
+      ),
+
+## Body content
+  dashboardBody(
+    tabItems(
+      # First tab content
+      tabItem(tabName = "plot",
+        fluidRow(
+          box(title = "Choose publisher", radioButtons( "publisherInput", "Publisher",
+                  choices = c("DC", "Marvel"),
+                  selected = "DC")),
+          box(title = "Select year", sliderInput("yearInput", "Year", 1939, 2013, c(1990, 2013))
+              ),
+          box(plotOutput("timeSeries"), width = 12)
+        )),
+      # Second tab content
+      tabItem(tabName = "summary",
+              fluidRow(
+                box(selectInput("alignInput", "Character Type",
+                                choices = c("Good Characters", "Bad Characters", "Neutral Characters"))),
+                box(title = "Select year", sliderInput("yearInput2", "Year", 1939, 2013, c(1990, 2013))),
+                box(dataTableOutput("tableResults"), width = 12)))
+      )
+    )
+  )
+
+
+server <- function(input, output) {
+output$timeSeries <- renderPlot({
+  filtered <- comics_data %>% 
+    filter(year >= input$yearInput[1],
+           year <= input$yearInput[2],
+           publisher == input$publisherInput) %>%
+    group_by(year, sex) %>%
+    summarise(new_chars = n())
+  ggplot(filtered, aes(x = year, y = new_chars, group = sex)) +
+    geom_line(aes(colour = sex))
+})
+  output$tableResults <- renderDataTable({
+    filtered <- comics_data %>% 
+      filter(align == input$alignInput,
+             year >= input$yearInput2[1],
+             year <= input$yearInput2[2]) %>%
+      group_by(year, publisher) %>%
+      summarise(new_chars = n())
+    filtered
+})
+
+}
+
+shinyApp(ui = ui, server = server)
+
+```
+
+Note that this is just an example of dashboard you can create, but once you understand the logic, you can simply modify and add as many features as you like.

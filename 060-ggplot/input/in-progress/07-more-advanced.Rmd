@@ -1,0 +1,18 @@
+---
+title: "Getting more sophisticated"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+
+## Using `navbarPage()` and `tabsetPanel()` to add more pages
+
+
+## Showing errors
+
+
+## Altro?

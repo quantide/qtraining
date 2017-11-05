@@ -4,7 +4,7 @@ output: html_document
 ---
 
 ```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 8, fig.height = 5)
 options(width = 108)
 ```
 

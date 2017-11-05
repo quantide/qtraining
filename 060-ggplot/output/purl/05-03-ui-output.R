@@ -18,9 +18,9 @@ ui <- fluidPage(
       br(),
   sidebarLayout(
     sidebarPanel(
-      radioButtons("genderInput", "Gender",
-                  choices = c("Female Characters", "Male Characters"),
-                  selected = "Female Characters"),
+      radioButtons("publisherInput", "Publisher",
+                  choices = c("DC", "Marvel"),
+                  selected = "DC"),
       br(),
       br(),
       selectInput("alignInput", "Character Type",
@@ -34,6 +34,48 @@ ui <- fluidPage(
               dataTableOutput("tableResults"))
   )
 )
+
+server <- function(input, output) {}
+
+shinyApp(ui = ui, server = server)
+
+## ----shinydashboard------------------------------------------------------
+
+library(shiny)
+library(shinydashboard)
+
+load("../data/comics_data.RData")
+
+
+ui <- dashboardPage(
+    dashboardHeader(title = "Comic characters Data"),
+    ## Sidebar content
+    dashboardSidebar(
+      sidebarMenu(
+        menuItem("Plot", tabName = "plot", icon = icon("th")),
+        menuItem("Summary", tabName = "summary", icon = icon("th"))
+        )
+      ),
+
+## Body content
+  dashboardBody(
+    tabItems(
+      # First tab content
+      tabItem(tabName = "plot",
+        fluidRow(
+          box(title = "Choose publisher", radioButtons( "publisherInput", "Publisher",
+                  choices = c("DC", "Marvel"),
+                  selected = "DC")),
+          box(title = "Select year", sliderInput("yearInput", "Year", 1939, 2013, c(1990, 2013))
+              ),
+          box(plotOutput("timeSeries"), width = 12)
+        )),
+      # Second tab content
+      tabItem(tabName = "summary",
+        h2(box(dataTableOutput("tableResults"))))
+      )
+    )
+  )
 
 server <- function(input, output) {}
 

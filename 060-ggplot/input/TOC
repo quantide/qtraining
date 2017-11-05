@@ -29,4 +29,6 @@ User Interface Inputs    | 05-02-ui-input.Rmd
 User Interface Outputs   | 05-03-ui-output.Rmd
 Server Side              | 06-01-server-side.Rmd
 Reactive Programming     | 06-02-reactivity.Rmd
-More advanced            | 07-more-advanced.Rmd
+
+Html Widgets
+An overview of html widgets | 07-html-widgets.Rmd

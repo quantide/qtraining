@@ -1,0 +1,33 @@
+---
+title: "An overview of htmlwidgets"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+
+```{r first, include=TRUE, purl=TRUE, message=FALSE}
+require(tidyverse)
+```
+
+
+
+`htmlwidgets` is an `R` package that provides a framework for creating `R` bindings to JavaScript libraries. 
+
+In this section we give a quick overview of what this package allows you to do and why it is important to get at least a glimpse of what it is.
+
+HTML Widgets can be useful for a number of applications. They can be used from `R` just like conventional plots, but they can also be embedded within R Markdown documents and incorporated into Shiny web applications or saved as standalone web pages.
+
+In general, all widgets include the following three components:
+
+* they include _dependencies_, that is the JavaScript and CSS assets used by the widget. In fact all you are doing is creating a wrapper around a JavaScript or CSS library.
+
+* they include _R binding_, that is the function end users will call
+
+* they include _JavaScript binding_ that is the JavaScript code that glues everything together, passing the data and options gathered in the R binding to the underlying JavaScript library.
+
+All of these components are included in the R package in which widgets are contained.
+

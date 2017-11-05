@@ -10,8 +10,26 @@ require(tidyverse)
 
 ## ----load-data-----------------------------------------------------------
 require(tidyverse)
-df <- read_csv("../data/marvel-wikia-data.csv")
+load("../data/comics_data.RData")
 
 ## ----data-explore--------------------------------------------------------
-str(df)
+str(comics_data)
+
+## ----data-explore2-------------------------------------------------------
+pp <- ggplot(comics_data %>%
+         filter(!is.na(sex)) %>%
+         group_by(year, sex) %>%
+         summarise(new_chars = n()), aes(x=year, y=new_chars, sex)) +
+  geom_line(aes(colour = sex))
+pp
+
+
+## ----data-explore3-------------------------------------------------------
+pp2 <- ggplot(comics_data %>%
+         filter(!is.na(sex)) %>%
+         group_by(year, sex, publisher) %>%
+         summarise(new_chars = n()), aes(x=year, y=new_chars, sex)) +
+  geom_line(aes(colour = sex)) + facet_grid( ~ publisher)
+pp2
+
 

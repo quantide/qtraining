@@ -107,7 +107,7 @@ To learn more about reactivity visit the [RStudio website](https://shiny.rstudio
 Now that we have learned the concept of reactivity, we may make a step forward and see how we can use reactivity to deal with some other problems that do not seem explicitely related to it.
 
 
-You may have noticed that we have the exact same code filtering the dataset in two places, once in each render function. One way to solve solve this problem may be to define a reactive variable that will hold the filtered dataset, and then use that variable in the render functions.
+Consider now the code for producing the shiny app (not that we used for shinydashboard). You may have noticed that we have the exact same code filtering the dataset in two places, once in each render function. One way to solve solve this problem may be to define a reactive variable that will hold the filtered dataset, and then use that variable in the render functions.
 
 Let us start by creating the reactive variable, by adding the following code to the server function:
 

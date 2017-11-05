@@ -334,7 +334,10 @@ $(document).ready(function () {
   <li><a href="05-01-ui.html">User Interface</a></li>
   <li><a href="05-02-ui-input.html">User Interface Inputs</a></li>
   <li><a href="05-03-ui-output.html">User Interface Outputs</a></li>
-  <li><a href="06-server-side.html">Server Side</a></li>
+  <li><a href="06-01-server-side.html">Server Side</a></li>
+  <li><a href="06-02-reactivity.html">Reactive Programming</a></li>
+  <li class="nav-header">Html Widgets</li>
+  <li><a href="07-html-widgets.html">An overview of html widgets</a></li>
 </ul>
     </div>  
   </div>
@@ -355,6 +358,7 @@ $(document).ready(function () {
 <li><a href="#plots">Plots</a></li>
 <li><a href="#summary-tables">Summary tables</a></li>
 <li><a href="#final-ui">Final UI</a></li>
+<li><a href="#shinydashboard">Shinydashboard</a></li>
 </ul>
 </div>
 
@@ -394,9 +398,9 @@ ui &lt;- fluidPage(
       br(),
   sidebarLayout(
     sidebarPanel(
-      radioButtons(&quot;genderInput&quot;, &quot;Gender&quot;,
-                  choices = c(&quot;Female Characters&quot;, &quot;Male Characters&quot;),
-                  selected = &quot;Female Characters&quot;),
+      radioButtons(&quot;publisherInput&quot;, &quot;Publisher&quot;,
+                  choices = c(&quot;DC&quot;, &quot;Marvel&quot;),
+                  selected = &quot;DC&quot;),
       br(),
       br(),
       selectInput(&quot;alignInput&quot;, &quot;Character Type&quot;,
@@ -410,6 +414,51 @@ ui &lt;- fluidPage(
               dataTableOutput(&quot;tableResults&quot;))
   )
 )
+
+server &lt;- function(input, output) {}
+
+shinyApp(ui = ui, server = server)</code></pre>
+<p>Note that we added <code>br()</code> now and then. It is just a coule of line brekas with the only purpose to leave some space between outputs so that the overall app can be better visualised. If you like, you can choose to remove it or add more/less space.</p>
+</div>
+<div id="shinydashboard" class="section level2">
+<h2>Shinydashboard</h2>
+<p>Suppose again, we want to use shinydashboard. As usual, not much changes: the only difference is the way the overall space is managed with the use of boxes.</p>
+<p>Output placeholders will be placed in <code>dashboardBody()</code> as here is where the plots and tables will go. Note that every output is inside a <code>box()</code> and note also that the box width may be customised setting <code>width</code> argument. Setting <code>width = 12</code> is equals to expanding the box to the whole length of the page: remember that Shiny works on a <em>12-unit wide grid</em>:</p>
+<pre class="r"><code>library(shiny)
+library(shinydashboard)
+
+load(&quot;../data/comics_data.RData&quot;)
+
+
+ui &lt;- dashboardPage(
+    dashboardHeader(title = &quot;Comic characters Data&quot;),
+    ## Sidebar content
+    dashboardSidebar(
+      sidebarMenu(
+        menuItem(&quot;Plot&quot;, tabName = &quot;plot&quot;, icon = icon(&quot;th&quot;)),
+        menuItem(&quot;Summary&quot;, tabName = &quot;summary&quot;, icon = icon(&quot;th&quot;))
+        )
+      ),
+
+## Body content
+  dashboardBody(
+    tabItems(
+      # First tab content
+      tabItem(tabName = &quot;plot&quot;,
+        fluidRow(
+          box(title = &quot;Choose publisher&quot;, radioButtons( &quot;publisherInput&quot;, &quot;Publisher&quot;,
+                  choices = c(&quot;DC&quot;, &quot;Marvel&quot;),
+                  selected = &quot;DC&quot;)),
+          box(title = &quot;Select year&quot;, sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 2013))
+              ),
+          box(plotOutput(&quot;timeSeries&quot;), width = 12)
+        )),
+      # Second tab content
+      tabItem(tabName = &quot;summary&quot;,
+        h2(box(dataTableOutput(&quot;tableResults&quot;))))
+      )
+    )
+  )
 
 server &lt;- function(input, output) {}
 

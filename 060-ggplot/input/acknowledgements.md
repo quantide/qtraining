@@ -5,7 +5,7 @@ title: "Acknowledgements"
 This web book is the result of work of my colleagues:
 
 * Nicola Sturaro, who wrote the first version of this book
-* Veronica Giro, who wrote the current version.
+* Veronica Giro and Emanuela Furfaro, who wrote the current version.
 
 ![](images/EF5C8766.jpg)  
 

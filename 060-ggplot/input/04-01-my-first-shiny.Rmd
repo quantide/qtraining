@@ -51,6 +51,9 @@ This means that R is currently busy as it is powering a Shiny app and is waiting
 
 If you click the stop button the app will stop.
 
+Now, let us spend a couple of words on the functions we are using. `fluidPage()` creates a page with fluid layout which consists of rows that include columns. Rows make sure their elements appear on the same line (if the browser has adequate width), while columns define how much horizontal space within a _12-unit wide grid_ elements should occupy. When you build the user interface, all you will be doing is passing comma-separated elements to the `fluidPage()` function.
+
+`server` is initialised as a function taking two arguments: input and output. This structure is always the same, we will come back to it when we will walk you through the creation of the server functions.
 
 ### Separate ui and server functions
 
@@ -60,4 +63,28 @@ When RStudio sees these two files in the same folder, it will know you’re writ
 
 
 
+## Using shinydashboard
+
+`shinydashboard` is a package that provides a theme on top of 'Shiny'. The structure is the same as the one seen so far: you have a _ui_ and a _server_ function, but it allows for a better graphical layout.
+
+First of all, the dashboard is defined as having three parts: a header, a sidebar, and a body. 
+
+To initialise an empty `shinydashboard`, use the following code:
+
+```{r shinydashboard}
+library(shiny)
+library(shinydashboard)
+ 
+ui <- dashboardPage(
+     dashboardHeader(),
+     dashboardSidebar(),
+     dashboardBody()
+)
+ 
+server <- function(input, output) { }
+ 
+shinyApp(ui, server)
+```
+
+Again, you will notice that the `R` session is busy listening to user's interactions. Note also, that differently from before, we were forced to include some sort of layout: in fact, together with `dashboardPage`, we had to add `dashboardHeader()`, `dashboardSidebar()` and `dashboardBody()`. The app does not run if you do not add these three.
 
