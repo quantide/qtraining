@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Shiny"
+title: "Introduction"
 output: html_document
 ---
 
@@ -13,19 +13,23 @@ options(width = 108)
 require(tidyverse)
 ```
 
-
-## Introduction
-
-
-Shiny is a package from RStudio that allows you to easily build interactive web pages with R. You can easily interact and display R objects: plots, tables, etc. To get a glimpse of the many things you can build with Shiny, out of the many websites that contain Shiny examples, we suggest you visit https://daattali.com/shiny/ and https://shiny.rstudio.com/gallery/.
-
-
-If you want to find additional material, you may visit the RStudio official Shiny page https://shiny.rstudio.com/ and we suggest you always keep the Shiny  http://shiny.rstudio.com/images/shiny-cheatsheet.pdf cheat sheet on hand when you are developing your Shiny app!
+## Introduction to the course
 
 In this second part of the course, we'll walk you through the creation of a Shiny app using a dataset on comics characters. We will start from a basic app and we'll add complexity step by step. Of course you may think of adding additional features as we go on and as you think of additional data insights!
 
 
-## Required R packages
+
+## Introduction to Shiny
+
+
+Shiny is a package from RStudio that allows you to easily build interactive web pages with R. You will be able interact and display any R objects: plots, tables, etc. Online resources on Shiny are as rich as you can image. To get a glimpse of the many things you can build with Shiny, out of the many websites with Shiny examples, we suggest you visit https://daattali.com/shiny/ and https://shiny.rstudio.com/gallery/.
+
+
+If you want to find additional material, you may visit the RStudio official Shiny page https://shiny.rstudio.com/ and we suggest you always keep the [Shiny cheat sheet](http://shiny.rstudio.com/images/shiny-cheatsheet.pdf) on hand when you are developing your Shiny app!
+
+
+
+### Required R packages
 
 Before we begin you need to install `Shiny` package:
 
@@ -48,27 +52,25 @@ If the example app is running, press Escape to close the app, and you are ready 
 
 The data we will visualise in the Shiny App are the raw data behind the story [Comic Books Are Still Made By Men, For Men And About Men](https://fivethirtyeight.com/features/women-in-comic-books/).
 
-Originally, the data come from Marvel Wikia and DC Wikia, characters were scraped on August 24, appearance counts were scraped on September 2 and the month and year of the first issue each character appeared in was pulled on October 6.
+The data come from Marvel Wikia and DC Wikia. Characters were scraped on August 24, appearance counts were scraped on September 2 and the month and year of the first issue each character appeared in was pulled on October 6.
 
-The data is split into two files although here, for cimplicity we will consider only one file, `marvel-wikia-data.csv`.
-
-The dataset `marvel-wikia-data.csv` is contained in the data folder of this manual. Using `readr` package, load the dataset as this is the data we'll work on to build our shiny app:
+In the data folder of this manual, you find the .R file `comics_data.RData`. Load the dataset as this is the data we'll work on to build our shiny app:
 
 
 ```{r load-data}
 require(tidyverse)
-df <- read_csv("../data/marvel-wikia-data.csv")
+load("../data/comics_data.RData")
 ```
 
 
 Let us quickly explore the dataset so that you can start thinking of intersting data visualisations:
 
 ```{r data-explore}
-str(df)
+str(comics_data)
 ```
 
 
-The data comes from Marvel Wikia. The file was scraped in August 2014 and contains the following variables:
+The data comes from Marvel Wikia and DC Wikia. The file contains the following variables:
 
 * `page_id`: The unique identifier for that characters page within the wikia
 * `name`:	The name of the character
@@ -81,5 +83,31 @@ The data comes from Marvel Wikia. The file was scraped in August 2014 and contai
 * `gsm`:	If the character is a gender or sexual minority (e.g. Homosexual characters, bisexual characters)
 * `alive`:	If the character is alive or deceased
 * `appearances`:	The number of appareances of the character in comic books (as of Sep. 2, 2014. Number will become increasingly out of date as time goes on.)
-* `first-appearances`	The month and year of the character's first appearance in a comic book, if available
+* `first_appearances`	The month and year of the character's first appearance in a comic book, if available
 * `year`:	The year of the character's first appearance in a comic book, if available
+* `publisher`: weather the character was publishded by Marvel or DC
+
+
+And we can start plotting the data so that we get some insights. For example, we may plot the number of new female and male characters each year:
+
+```{r data-explore2}
+pp <- ggplot(comics_data %>%
+         filter(!is.na(sex)) %>%
+         group_by(year, sex) %>%
+         summarise(new_chars = n()), aes(x=year, y=new_chars, sex)) +
+  geom_line(aes(colour = sex))
+pp
+
+```
+
+and see whether they change according to the different publishers:
+
+```{r data-explore3}
+ggplot(comics_data %>%
+         filter(!is.na(sex)) %>%
+         group_by(year, sex, publisher) %>%
+         summarise(new_chars = n()), aes(x=year, y=new_chars, sex)) +
+  geom_line(aes(colour = sex)) + facet_grid( ~ publisher)
+
+```
+
