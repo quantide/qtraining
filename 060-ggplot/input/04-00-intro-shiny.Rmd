@@ -103,11 +103,12 @@ pp
 and see whether they change according to the different publishers:
 
 ```{r data-explore3}
-ggplot(comics_data %>%
+pp2 <- ggplot(comics_data %>%
          filter(!is.na(sex)) %>%
          group_by(year, sex, publisher) %>%
          summarise(new_chars = n()), aes(x=year, y=new_chars, sex)) +
   geom_line(aes(colour = sex)) + facet_grid( ~ publisher)
+pp2
 
 ```
 
