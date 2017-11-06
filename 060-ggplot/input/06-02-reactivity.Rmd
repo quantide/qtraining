@@ -65,6 +65,7 @@ This may be useful when you are debugging your code and you want to know what va
 
 So, with regards to reactive content, we have so far seen "the natural" reactive content with `render` and how to create reactive contents with the `observe({})` function.
 
+<!-- todo: correct the terminology here -->
 
 With regards to reactive variables, "the natural" reactive variable is `input$`, but you can also create your own reactive variables. To do so, you need to use the `reactive({})` function. 
 
@@ -107,7 +108,69 @@ To learn more about reactivity visit the [RStudio website](https://shiny.rstudio
 Now that we have learned the concept of reactivity, we may make a step forward and see how we can use reactivity to deal with some other problems that do not seem explicitely related to it.
 
 
-Consider now the code for producing the shiny app (not that we used for shinydashboard). You may have noticed that we have the exact same code filtering the dataset in two places, once in each render function. One way to solve solve this problem may be to define a reactive variable that will hold the filtered dataset, and then use that variable in the render functions.
+Consider now the code for producing the shiny app (not that we used for shinydashboard). 
+
+```{r}
+
+
+require(tidyverse)
+require(shiny)
+
+load("../data/comics_data.RData")
+
+ui <- fluidPage(
+	titlePanel("Comic Characters"),
+	em("Here is a visualisation of Comic Characters Data"), 
+	br(), 
+	br(),
+	sidebarLayout(
+		sidebarPanel(
+			radioButtons("publisherInput", "Publisher", choices = c("DC", "Marvel"),
+									 selected = "DC"),
+			br(),
+			br(),
+			selectInput("alignInput", "Character Type",
+									choices = c("Good Characters", "Bad Characters", "Neutral Characters")),
+			br(),
+			br(),
+			sliderInput("yearInput", "Year", 1939, 2013, c(1990, 1995))),
+		mainPanel(plotOutput("timeSeries"),
+							br(),
+							br(),
+							dataTableOutput("tableResults"))
+	)
+)
+
+server <- function(input, output) {
+	output$timeSeries <- renderPlot({
+		filtered <- comics_data %>% 
+			filter(year >= input$yearInput[1],
+						 year <= input$yearInput[2],
+						 align == input$alignInput,
+						 publisher == input$publisherInput) %>%
+			group_by(year, sex) %>%
+			summarise(new_chars = n())
+		ggplot(filtered, aes(x = year, y = new_chars, group = sex)) +
+			geom_line(aes(colour = sex))
+	})
+	output$tableResults <- renderDataTable({
+		filtered <- comics_data %>% 
+			filter(year >= input$yearInput[1],
+						 year <= input$yearInput[2],
+						 align == input$alignInput,
+						 publisher == input$publisherInput) %>%
+			group_by(year, publisher) %>%
+			summarise(new_chars = n())
+		filtered
+	})
+	
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+You may have noticed that we have the exact same code filtering the dataset in two places, once in each render function. One way to solve solve this problem may be to define a reactive variable that will hold the filtered dataset, and then use that variable in the render functions.
 
 Let us start by creating the reactive variable, by adding the following code to the server function:
 
@@ -123,7 +186,6 @@ filtered <- reactive({
 })
 ```
 
-
 The filtered datset is being defined like before but the body is wrapped by the `reactive({})` function, and it’s defined outside the individual `render` functions. 
 
 Now, we can use it in the output render functions so that your server function looks like this:
@@ -131,28 +193,24 @@ Now, we can use it in the output render functions so that your server function l
 ```{r reavtivity9}
 
 server <- function(input, output) {
-  filtered <- reactive({
-  df %>% 
-    filter(year >= input$yearInput[1],
-           year <= input$yearInput[2],
-           align == input$alignInput,
-           sex == input$genderInput) %>%
-    group_by(year) %>%
-    summarise(new_chars = n())
-})
-
-  output$timeSeries <- renderPlot({
-  ggplot(filtered, aes(x = year, y = new_chars)) +
-    geom_line()
-})
-  
-  output$tableResults <- renderDataTable({
-    filtered()
-})
+	filtered <- reactive({
+		comics_data %>% 
+			filter(year >= input$yearInput[1],
+						 year <= input$yearInput[2],
+						 align == input$alignInput,
+						 publisher == input$publisherInput) %>%
+			group_by(year, sex) %>%
+			summarise(new_chars = n())
+	})
+	output$timeSeries <- renderPlot({
+		ggplot(filtered(), aes(x = year, y = new_chars, group = sex)) +
+			geom_line(aes(colour = sex))
+	})
+	output$tableResults <- renderDataTable({
+		filtered()
+	})
 }
 
+shinyApp(ui = ui, server = server)
 ```
-
-
-
 
