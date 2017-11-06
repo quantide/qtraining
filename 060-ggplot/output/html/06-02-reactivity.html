@@ -384,6 +384,7 @@ y</code></pre>
 <p>Now the <code>print()</code> function works just as you expected and it also updates when the input changes. In other words, the <code>observe({})</code> function makes the code inside of it running again, and the new value will then be printed. The <code>observe({})</code> function creates a reactive context: the code inside it, will get re-run whenever any of the reactive variables in it gets updated.</p>
 <p>This may be useful when you are debugging your code and you want to know what value a reactive variable holds: you need to wrap <code>cat(input$x)</code> or <code>print(input$x)</code> in an <code>observe({})</code> function.</p>
 <p>So, with regards to reactive content, we have so far seen “the natural” reactive content with <code>render</code> and how to create reactive contents with the <code>observe({})</code> function.</p>
+<!-- todo: correct the terminology here -->
 <p>With regards to reactive variables, “the natural” reactive variable is <code>input$</code>, but you can also create your own reactive variables. To do so, you need to use the <code>reactive({})</code> function.</p>
 <p>The <code>reactive({})</code> function is similar to <code>observe({})</code> as it is also a reactive content, but it is different because <code>reactive({})</code> returns a value.</p>
 <p>Let us see it in action and create a variable called <code>timeSpan</code> that will be the difference between the maximum and minimum year selected. One may simply try to define:</p>
@@ -401,39 +402,94 @@ y</code></pre>
 <div id="dealing-with-code-duplication" class="section level2">
 <h2>Dealing with code duplication</h2>
 <p>Now that we have learned the concept of reactivity, we may make a step forward and see how we can use reactivity to deal with some other problems that do not seem explicitely related to it.</p>
-<p>Consider now the code for producing the shiny app (not that we used for shinydashboard). You may have noticed that we have the exact same code filtering the dataset in two places, once in each render function. One way to solve solve this problem may be to define a reactive variable that will hold the filtered dataset, and then use that variable in the render functions.</p>
+<p>Consider now the code for producing the shiny app (not that we used for shinydashboard).</p>
+<pre class="r"><code>require(tidyverse)
+require(shiny)
+
+load(&quot;../data/comics_data.RData&quot;)
+
+ui &lt;- fluidPage(
+    titlePanel(&quot;Comic Characters&quot;),
+    em(&quot;Here is a visualisation of Comic Characters Data&quot;), 
+    br(), 
+    br(),
+    sidebarLayout(
+        sidebarPanel(
+            radioButtons(&quot;publisherInput&quot;, &quot;Publisher&quot;, choices = c(&quot;DC&quot;, &quot;Marvel&quot;),
+                                     selected = &quot;DC&quot;),
+            br(),
+            br(),
+            selectInput(&quot;alignInput&quot;, &quot;Character Type&quot;,
+                                    choices = c(&quot;Good Characters&quot;, &quot;Bad Characters&quot;, &quot;Neutral Characters&quot;)),
+            br(),
+            br(),
+            sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 1995))),
+        mainPanel(plotOutput(&quot;timeSeries&quot;),
+                            br(),
+                            br(),
+                            dataTableOutput(&quot;tableResults&quot;))
+    )
+)
+
+server &lt;- function(input, output) {
+    output$timeSeries &lt;- renderPlot({
+        filtered &lt;- comics_data %&gt;% 
+            filter(year &gt;= input$yearInput[1],
+                         year &lt;= input$yearInput[2],
+                         align == input$alignInput,
+                         publisher == input$publisherInput) %&gt;%
+            group_by(year, sex) %&gt;%
+            summarise(new_chars = n())
+        ggplot(filtered, aes(x = year, y = new_chars, group = sex)) +
+            geom_line(aes(colour = sex))
+    })
+    output$tableResults &lt;- renderDataTable({
+        filtered &lt;- comics_data %&gt;% 
+            filter(year &gt;= input$yearInput[1],
+                         year &lt;= input$yearInput[2],
+                         align == input$alignInput,
+                         publisher == input$publisherInput) %&gt;%
+            group_by(year, publisher) %&gt;%
+            summarise(new_chars = n())
+        filtered
+    })
+    
+}
+
+shinyApp(ui = ui, server = server)</code></pre>
+<p>You may have noticed that we have the exact same code filtering the dataset in two places, once in each render function. One way to solve solve this problem may be to define a reactive variable that will hold the filtered dataset, and then use that variable in the render functions.</p>
 <p>Let us start by creating the reactive variable, by adding the following code to the server function:</p>
 <pre class="r"><code>filtered &lt;- reactive({
-  df %&gt;% 
+  comics_data %&gt;% 
     filter(year &gt;= input$yearInput[1],
            year &lt;= input$yearInput[2],
-           align == input$alignInput,
-           sex == input$genderInput) %&gt;%
-    group_by(year) %&gt;%
+                     align == input$alignInput,
+                     publisher == input$publisherInput) %&gt;%
+    group_by(year, publisher) %&gt;%
     summarise(new_chars = n())
 })</code></pre>
 <p>The filtered datset is being defined like before but the body is wrapped by the <code>reactive({})</code> function, and it’s defined outside the individual <code>render</code> functions.</p>
 <p>Now, we can use it in the output render functions so that your server function looks like this:</p>
 <pre class="r"><code>server &lt;- function(input, output) {
-  filtered &lt;- reactive({
-  df %&gt;% 
-    filter(year &gt;= input$yearInput[1],
-           year &lt;= input$yearInput[2],
-           align == input$alignInput,
-           sex == input$genderInput) %&gt;%
-    group_by(year) %&gt;%
-    summarise(new_chars = n())
-})
+    filtered &lt;- reactive({
+        comics_data %&gt;% 
+            filter(year &gt;= input$yearInput[1],
+                         year &lt;= input$yearInput[2],
+                         align == input$alignInput,
+                         publisher == input$publisherInput) %&gt;%
+            group_by(year, sex) %&gt;%
+            summarise(new_chars = n())
+    })
+    output$timeSeries &lt;- renderPlot({
+        ggplot(filtered(), aes(x = year, y = new_chars, group = sex)) +
+            geom_line(aes(colour = sex))
+    })
+    output$tableResults &lt;- renderDataTable({
+        filtered()
+    })
+}
 
-  output$timeSeries &lt;- renderPlot({
-  ggplot(filtered, aes(x = year, y = new_chars)) +
-    geom_line()
-})
-  
-  output$tableResults &lt;- renderDataTable({
-    filtered()
-})
-}</code></pre>
+shinyApp(ui = ui, server = server)</code></pre>
 </div>
 
 

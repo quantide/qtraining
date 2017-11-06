@@ -176,12 +176,12 @@ Let us start by creating the reactive variable, by adding the following code to 
 
 ```{r reactivity8}
 filtered <- reactive({
-  df %>% 
+  comics_data %>% 
     filter(year >= input$yearInput[1],
            year <= input$yearInput[2],
-           align == input$alignInput,
-           sex == input$genderInput) %>%
-    group_by(year) %>%
+					 align == input$alignInput,
+					 publisher == input$publisherInput) %>%
+    group_by(year, publisher) %>%
     summarise(new_chars = n())
 })
 ```

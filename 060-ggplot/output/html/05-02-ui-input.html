@@ -438,31 +438,31 @@ ui &lt;- dashboardPage(
     dashboardHeader(title = &quot;Comic characters Data&quot;),
     ## Sidebar content
     dashboardSidebar(
-      sidebarMenu(
-        menuItem(&quot;Plot&quot;, tabName = &quot;plot&quot;, icon = icon(&quot;th&quot;)),
-        menuItem(&quot;Summary&quot;, tabName = &quot;summary&quot;, icon = icon(&quot;th&quot;))
+        sidebarMenu(
+            menuItem(&quot;Plot&quot;, tabName = &quot;plot&quot;, icon = icon(&quot;th&quot;)),
+            menuItem(&quot;Summary&quot;, tabName = &quot;summary&quot;, icon = icon(&quot;th&quot;))
         )
-      ),
-
-## Body content
-  dashboardBody(
-    tabItems(
-      # First tab content
-      tabItem(tabName = &quot;plot&quot;,
-        fluidRow(
-          box(title = &quot;Choose publisher&quot;, radioButtons( &quot;publisherInput&quot;, &quot;Publisher&quot;,
-                  choices = c(&quot;DC&quot;, &quot;Marvel&quot;),
-                  selected = &quot;DC&quot;)),
-          box(title = &quot;Select year&quot;, sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 2013))
-              )
-        ),
-      # Second tab content
-      tabItem(tabName = &quot;summary&quot;,
-        h2(&quot;Some output&quot;)
-      )
+    ),
+    
+    ## Body content
+    dashboardBody(
+        tabItems(
+            # First tab content
+            tabItem(tabName = &quot;plot&quot;,
+                            fluidRow(
+                                box(title = &quot;Choose publisher&quot;, radioButtons( &quot;publisherInput&quot;, &quot;Publisher&quot;,
+                                                                                                                            choices = c(&quot;DC&quot;, &quot;Marvel&quot;),
+                                                                                                                            selected = &quot;DC&quot;)),
+                                box(title = &quot;Select year&quot;, sliderInput(&quot;yearInput&quot;, &quot;Year&quot;, 1939, 2013, c(1990, 2013))
+                                )
+                            ),
+                            # Second tab content
+                            tabItem(tabName = &quot;summary&quot;,
+                                            h2(&quot;Some output&quot;)
+                            )
+            )
+        )
     )
-  )
-)
 )
 
 server &lt;- function(input, output) {}

@@ -356,6 +356,7 @@ $(document).ready(function () {
 <ul>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#rendering-text">Rendering text</a><ul>
+<li><a href="#starting-with-an-empty-page">Starting with an empty page</a></li>
 <li><a href="#adding-a-title">Adding a title</a></li>
 <li><a href="#adding-plain-text">Adding plain text</a></li>
 </ul></li>
@@ -381,12 +382,23 @@ $(document).ready(function () {
 <div id="rendering-text" class="section level2">
 <h2>Rendering text</h2>
 <p>One of the first things you would like to show is some text. You may want to add is a title or just as plain text.</p>
+<div id="starting-with-an-empty-page" class="section level3">
+<h3>Starting with an empty page</h3>
+<pre class="r"><code>library(shiny)
+
+ui &lt;- fluidPage()
+server &lt;- function(input, output) {}
+
+shinyApp(ui = ui, server = server)</code></pre>
+</div>
 <div id="adding-a-title" class="section level3">
 <h3>Adding a title</h3>
 <p>Let us start by adding a title to the web page. Shiny allows you to do so with the function <code>titlePanel()</code>. <code>titlePanel()</code> not only adds a visible big title-like text to the top of the page, but it also sets the “official” title of the web page. This means that when you look at the name of the tab in the browser, you’ll see this title.</p>
 <pre class="r"><code>ui &lt;- fluidPage(
   titlePanel(&quot;Comic Characters Data&quot;)
-)</code></pre>
+)
+
+shinyApp(ui = ui, server = server)</code></pre>
 </div>
 <div id="adding-plain-text" class="section level3">
 <h3>Adding plain text</h3>
@@ -394,7 +406,9 @@ $(document).ready(function () {
 <pre class="r"><code>ui &lt;- fluidPage(
   titlePanel(&quot;Comic Characters&quot;),
   &quot;Here is a visualisation of Comic Characters Data&quot;
-)</code></pre>
+)
+
+shinyApp(ui = ui, server = server)</code></pre>
 <p>You can also format your text nicer, by using Shiny functions that are wrappers around HTML tags that format text. This means that you do not need to learn HTML, you can just use the Shiny function and they will do the rest!</p>
 <p>Here is a list of some of them:</p>
 <ul>
@@ -409,7 +423,9 @@ $(document).ready(function () {
 <pre class="r"><code>ui &lt;- fluidPage(
   titlePanel(&quot;Comic Characters&quot;),
   em(&quot;Here is a visualisation of Comic Characters Data&quot;)
-)</code></pre>
+)
+
+shinyApp(ui = ui, server = server)</code></pre>
 </div>
 </div>
 <div id="add-a-template" class="section level2">
@@ -426,7 +442,9 @@ $(document).ready(function () {
     em(&quot;one plot goes here&quot;),
     em(&quot;another plot goes here&quot;)
   )
-)</code></pre>
+)
+
+shinyApp(ui = ui, server = server)</code></pre>
 </div>
 <div id="sidebarlayout" class="section level3">
 <h3><code>sidebarLayout()</code></h3>
@@ -439,7 +457,9 @@ $(document).ready(function () {
     sidebarPanel(&quot;our inputs will go here&quot;),
     mainPanel(&quot;the results will go here&quot;)
   )
-)</code></pre>
+)
+
+shinyApp(ui = ui, server = server)</code></pre>
 <p>Note that the default is that the main area occupies 2/3 of the horizontal width, although you can further customise it by setting the parameter <code>width</code> of the function <code>mainPanel()</code>:</p>
 <pre class="r"><code>ui &lt;- fluidPage(
   titlePanel(&quot;Comic Characters&quot;),
@@ -448,7 +468,9 @@ $(document).ready(function () {
     sidebarPanel(&quot;our inputs will go here&quot;),
     mainPanel(&quot;the results will go here&quot;, width = 4)
   )
-)</code></pre>
+)
+
+shinyApp(ui = ui, server = server)</code></pre>
 </div>
 </div>
 <div id="creating-tabset-panels" class="section level2">
@@ -465,7 +487,9 @@ $(document).ready(function () {
       tabPanel(&quot;Summary&quot;)
     )
   )
-)</code></pre>
+)
+
+shinyApp(ui = ui, server = server)</code></pre>
 <p>And as usual, if you run the app, you should get the expected output: in this case two tabsets called Plot and Summary.</p>
 </div>
 <div id="navlistpanel" class="section level3">
@@ -478,18 +502,26 @@ $(document).ready(function () {
     tabPanel(&quot;Plot&quot;),
     tabPanel(&quot;Summary&quot;)
   )
-)</code></pre>
+)
+
+shinyApp(ui = ui, server = server)</code></pre>
 </div>
 </div>
 <div id="shinydashboard" class="section level2">
 <h2>Shinydashboard</h2>
 <p>As mentioned, shinydashboard naturally allows for a given layout. So, let us go into further details with it.</p>
 <p>The <code>shinydashboard</code> structure suggests that the first thing we should do is to give a title to the app:</p>
-<pre class="r"><code>ui &lt;- dashboardPage(
+<pre class="r"><code>library(shiny)
+library(shinydashboard)
+
+ui &lt;- dashboardPage(
   dashboardHeader(title = &quot;Comic characters&quot;),
   dashboardSidebar(),
   dashboardBody()
-)</code></pre>
+) 
+server &lt;- function(input, output) { }
+ 
+shinyApp(ui, server)</code></pre>
 <p>Differently from <code>fluidPage()</code>, in order to add components to the main page, we add boxes in the body. Boxes will have a content although for now, we will leave them blank:</p>
 <pre class="r"><code>ui &lt;- dashboardPage(
   dashboardHeader(title = &quot;Basic dashboard&quot;),
@@ -500,15 +532,28 @@ $(document).ready(function () {
       box()
     )
   )
-)</code></pre>
+)
+
+shinyApp(ui, server)</code></pre>
 <p>For now, these boxes will be empty, and later on, when we add outputs placeholders, we will come back to it.</p>
 <p>There is one additional part that can be customised, that is the <code>dashboardSidebar()</code>. Here we are asked to add differnt tabpanels:</p>
-<pre class="r"><code>  dashboardSidebar(
+<pre class="r"><code>ui &lt;- dashboardPage(
+  dashboardHeader(title = &quot;Basic dashboard&quot;),
+  dashboardSidebar(
     sidebarMenu(
-      menuItem(&quot;Plot&quot;, tabName = &quot;plot&quot;, icon = icon(&quot;th&quot;)),
-      menuItem(&quot;Summary&quot;, tabName = &quot;summary&quot;, icon = icon(&quot;th&quot;))
+        menuItem(&quot;Plot&quot;, tabName = &quot;plot&quot;, icon = icon(&quot;th&quot;)),
+        menuItem(&quot;Summary&quot;, tabName = &quot;summary&quot;, icon = icon(&quot;th&quot;))
     )
-  )</code></pre>
+  ),
+  dashboardBody(
+    fluidRow(
+      box(),
+      box()
+    )
+  )
+)
+
+shinyApp(ui, server)</code></pre>
 <p>In the body, add tabItems with corrsponding values for <code>tabName</code> so that the final app looks like this:</p>
 <pre class="r"><code>ui &lt;- dashboardPage(
     dashboardHeader(title = &quot;Comic characters Data&quot;),

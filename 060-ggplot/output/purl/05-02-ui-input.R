@@ -46,34 +46,34 @@ load("../data/comics_data.RData")
 
 
 ui <- dashboardPage(
-    dashboardHeader(title = "Comic characters Data"),
-    ## Sidebar content
-    dashboardSidebar(
-      sidebarMenu(
-        menuItem("Plot", tabName = "plot", icon = icon("th")),
-        menuItem("Summary", tabName = "summary", icon = icon("th"))
-        )
-      ),
-
-## Body content
-  dashboardBody(
-    tabItems(
-      # First tab content
-      tabItem(tabName = "plot",
-        fluidRow(
-          box(title = "Choose publisher", radioButtons( "publisherInput", "Publisher",
-                  choices = c("DC", "Marvel"),
-                  selected = "DC")),
-          box(title = "Select year", sliderInput("yearInput", "Year", 1939, 2013, c(1990, 2013))
-              )
-        ),
-      # Second tab content
-      tabItem(tabName = "summary",
-        h2("Some output")
-      )
-    )
-  )
-)
+	dashboardHeader(title = "Comic characters Data"),
+	## Sidebar content
+	dashboardSidebar(
+		sidebarMenu(
+			menuItem("Plot", tabName = "plot", icon = icon("th")),
+			menuItem("Summary", tabName = "summary", icon = icon("th"))
+		)
+	),
+	
+	## Body content
+	dashboardBody(
+		tabItems(
+			# First tab content
+			tabItem(tabName = "plot",
+							fluidRow(
+								box(title = "Choose publisher", radioButtons( "publisherInput", "Publisher",
+																															choices = c("DC", "Marvel"),
+																															selected = "DC")),
+								box(title = "Select year", sliderInput("yearInput", "Year", 1939, 2013, c(1990, 2013))
+								)
+							),
+							# Second tab content
+							tabItem(tabName = "summary",
+											h2("Some output")
+							)
+			)
+		)
+	)
 )
 
 server <- function(input, output) {}
