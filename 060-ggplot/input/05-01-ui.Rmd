@@ -25,6 +25,16 @@ Step by step, we will introduce some basic and essential visual elements and we 
 
 One of the first things you would like to show is some text. You may want to add is a title or just as plain text.
 
+### Starting with an empty page
+
+```{r shiny-empty, eval = FALSE}
+library(shiny)
+
+ui <- fluidPage()
+server <- function(input, output) {}
+
+shinyApp(ui = ui, server = server)
+```
 
 ### Adding a title
 
@@ -37,8 +47,8 @@ ui <- fluidPage(
   titlePanel("Comic Characters Data")
 )
 
+shinyApp(ui = ui, server = server)
 ```
-
 
 ### Adding plain text
 
@@ -52,7 +62,7 @@ ui <- fluidPage(
   "Here is a visualisation of Comic Characters Data"
 )
 
-
+shinyApp(ui = ui, server = server)
 ```
 
 
@@ -76,6 +86,7 @@ ui <- fluidPage(
   em("Here is a visualisation of Comic Characters Data")
 )
 
+shinyApp(ui = ui, server = server)
 ```
 
 
@@ -100,6 +111,7 @@ ui <- fluidPage(
   )
 )
 
+shinyApp(ui = ui, server = server)
 ```
 
 ### `sidebarLayout()`
@@ -117,6 +129,8 @@ ui <- fluidPage(
     mainPanel("the results will go here")
   )
 )
+
+shinyApp(ui = ui, server = server)
 ```
 
 Note that the default is that the main area occupies 2/3 of the horizontal width, although you can further customise it by setting the parameter `width` of the function `mainPanel()`:
@@ -131,6 +145,8 @@ ui <- fluidPage(
     mainPanel("the results will go here", width = 4)
   )
 )
+
+shinyApp(ui = ui, server = server)
 ```
 
 
@@ -156,7 +172,7 @@ ui <- fluidPage(
   )
 )
 
-
+shinyApp(ui = ui, server = server)
 ```
 
 And as usual, if you run the app, you should get the expected output: in this case two tabsets called Plot and Summary.
@@ -177,6 +193,7 @@ ui <- fluidPage(
   )
 )
 
+shinyApp(ui = ui, server = server)
 ```
 
 
@@ -188,13 +205,17 @@ As mentioned, shinydashboard naturally allows for a given layout. So, let us go 
 The `shinydashboard` structure suggests that the first thing we should do is to give a title to the app:
 
 ```{r shinydashboard1}
+library(shiny)
+library(shinydashboard)
 
 ui <- dashboardPage(
   dashboardHeader(title = "Comic characters"),
   dashboardSidebar(),
   dashboardBody()
-)
-
+) 
+server <- function(input, output) { }
+ 
+shinyApp(ui, server)
 ```
 
 Differently from `fluidPage()`, in order to add components to the main page, we add boxes in the body. Boxes will have a content although for now, we will leave them blank:
@@ -211,7 +232,7 @@ ui <- dashboardPage(
   )
 )
 
-
+shinyApp(ui, server)
 ```
 
 For now, these boxes will be empty, and later on, when we add outputs placeholders, we will come back to it.
@@ -220,14 +241,23 @@ There is one additional part that can be customised, that is the `dashboardSideb
 
 
 ```{r shinydashboard3}
-
+ui <- dashboardPage(
+  dashboardHeader(title = "Basic dashboard"),
   dashboardSidebar(
-    sidebarMenu(
-      menuItem("Plot", tabName = "plot", icon = icon("th")),
-      menuItem("Summary", tabName = "summary", icon = icon("th"))
+  	sidebarMenu(
+  		menuItem("Plot", tabName = "plot", icon = icon("th")),
+  		menuItem("Summary", tabName = "summary", icon = icon("th"))
+  	)
+  ),
+  dashboardBody(
+    fluidRow(
+      box(),
+      box()
     )
   )
+)
 
+shinyApp(ui, server)
 ```
 
 
@@ -268,7 +298,5 @@ ui <- dashboardPage(
 server <- function(input, output) { }
  
 shinyApp(ui, server)  
-
-
 ```
 
