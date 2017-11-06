@@ -31,3 +31,13 @@ In general, all widgets include the following three components:
 
 All of these components are included in the R package in which widgets are contained.
 
+
+In order to get an overview of htmlwidgets, you can browse the [htmlwidgets for R gallery](http://gallery.htmlwidgets.org/). Among others, make sure you take a look to the following:
+
+* [leaflet](http://rstudio.github.io/leaflet/): it creates and customizes interactive maps, in addition to using it from the R console, it allows to create maps and it includes powerful and convenient features for integrating with Shiny applications
+
+* [plotlyr](https://plot.ly/r/): a graphing library to makes interactive, publication-quality graphs
+
+* [networkD3](http://christophergandrud.github.io/networkD3/): it allows for a number of interactive and nice looking network graphs, including sankey diagrams, radial networks, dendro networks 
+
+
