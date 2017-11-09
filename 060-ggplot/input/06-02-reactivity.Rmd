@@ -174,6 +174,8 @@ You may have noticed that we have the exact same code filtering the dataset in t
 
 Let us start by creating the reactive variable, by adding the following code to the server function:
 
+<!-- todo: Here add the function before the reactive (app2-function) only server modified-->
+
 ```{r reactivity8}
 filtered <- reactive({
   comics_data %>% 
@@ -213,4 +215,22 @@ server <- function(input, output) {
 
 shinyApp(ui = ui, server = server)
 ```
+
+<!-- 
+
+Questo file lo chiamerei 06-02-reactive.Rmd
+
+add app1-isolate.R
+
+add app3-eventReactive.R 
+
+---
+
+Nuovo file 06-03-observe.Rmd
+
+add app4-observeEvent-and-reactiveValues.R
+
+add app5-observe.R
+
+-->
 
