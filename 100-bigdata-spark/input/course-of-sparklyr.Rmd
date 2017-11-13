@@ -73,7 +73,7 @@ R_df
 
 # sparklyr
 
-## Install and Initialize spark environment
+## Install Spark
 
 First of all, you need to have `sparklyr` available to R. So install it and load it in this way:
 
@@ -92,6 +92,8 @@ You can install a version directly from R:
 spark_install(version = "2.0.0")
 ```
 
+## Initialize spark environment
+
 Now that spark is correctly install we need to initialize a spark context
 
 ```{R}
@@ -102,6 +104,20 @@ where:
 
 1. "local" means that spark will work on our local machine, this is in contrast with the concept of cluster.
 2. `version` refers to the version of Spark installed with `sparklyr`, we chose the version previously installed.
+
+<!-- new -->
+
+After the initializiation we can work with the Spark connector. For now we only ask for the Spark version.
+
+```{r}
+spark_version(sc)
+```
+
+When we will be done with Spark we should close the connection.
+
+```{r}
+spark_disconnect(sc)
+```
 
 ## csv reading
 
@@ -120,7 +136,7 @@ spark_table <- spark_read_csv(
 spark_table
 ```
 
-## sparklyr compared to R 
+## sparklyr compared to R 	
 
 Where does Spark table differ to dplyr `tbl_df` or `data.frame`? Spark, like a database do, move the data out of R, so the management of memory is left to the Spark process. The object spark_table in R is only a handle to an object of Spark.
 
@@ -134,6 +150,21 @@ format( object.size(spark_table), units = "auto" )
 
 ```
 
+<!-- todo: There are differences also in getting the structure of the date: -->
+
+```{r}
+# Examine structure of tibble
+str(R_df)
+
+# Examine structure of data
+glimpse(spark_table)
+
+```
+
+## copy_to???
+## src_tbls???
+## Sampling???
+
 # dplyr
 
 ## 5 verbs
@@ -144,6 +175,10 @@ We now can use sparklyr and dplyr functions to deal with this dataset.
 require(dplyr)
 
 colnames(spark_table)
+
+## or
+
+tbl_vars(spark_table)
 
  ## we are interested only in some columns, for example
 spark_table_detail <-
@@ -159,6 +194,7 @@ spark_table_detail %>%
     group_by( Year, FlightNum ) %>%
     summarize( avg = mean( ArrDelay ) ) %>%
     arrange( desc(avg) )
+
 ```
 
 ## Cast
@@ -206,7 +242,7 @@ ggplot(delay, aes(dist, delay)) +
   geom_point(aes(size = count), alpha = 1/2) 
 ```
 
-## SQL
+# SQL
 
 ```{R}
 library(DBI)
@@ -220,7 +256,7 @@ class(new_spark_table_detail)
 
 ```
 
-### spark_write_csv
+## spark_write_csv
 
 As usual we have some methods to export manipulated data. For convenience we export only the first 10 rows of the spark table. So first of all we set this mini dataset called `mini_spark_table` and we write it onto disk.
 
@@ -250,14 +286,6 @@ src_tbls(sc)
 
 dim( mini_spark_table )
 dim( collect(mini_spark_table) )
-```
-
-# Terminate a spark instance
-
-At the end of R session, it is convenient to terminate the spark process and disconnect R from it. 
-
-```{R}
-spark_disconnect(sc)
 ```
 
 # Appendix
@@ -309,4 +337,98 @@ Bash:
 
 4. Reference card: http://www.tldp.org/LDP/abs/html/refcards.html
 
+## Benchmark
+
+```{r}
+spark_partial <- 	spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		compute(name = "spark_partial")
+
+tmp <- collect(spark_partial)
+tmp
+library(microbenchmark)
+microbenchmark({
+	tmp_1 <- 
+		spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		compute()
+},{
+	tmp_2 <- 
+		spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		collect()
+},{
+	tmp_3 <- collect(spark_partial)
+},{
+	tmp_4 <- 
+		R_df %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		collect()
+}, times = 10)
+
+ ## todo
+tmp_1
+tmp_2
+identical(tmp_2, tmp_3)
+
+tmp_3 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
+tmp_4 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
+class(tmp_3)
+
+```
+
+## Cache Latency
+
+https://gist.github.com/jboner/2841832
+
+Latency Comparison Numbers
+
+L1 cache reference                           0.5 ns
+Branch mispredict                            5   ns
+L2 cache reference                           7   ns                      14x L1 cache
+Mutex lock/unlock                           25   ns
+Main memory reference                      100   ns                      20x L2 cache, 200x L1 cache
+Compress 1K bytes with Zippy             3,000   ns        3 us
+Send 1K bytes over 1 Gbps network       10,000   ns       10 us
+Read 4K randomly from SSD*             150,000   ns      150 us          ~1GB/sec SSD
+Read 1 MB sequentially from memory     250,000   ns      250 us
+Round trip within same datacenter      500,000   ns      500 us
+Read 1 MB sequentially from SSD*     1,000,000   ns    1,000 us    1 ms  ~1GB/sec SSD, 4X memory
+Disk seek                           10,000,000   ns   10,000 us   10 ms  20x datacenter roundtrip
+Read 1 MB sequentially from disk    20,000,000   ns   20,000 us   20 ms  80x memory, 20X SSD
+Send packet CA->Netherlands->CA    150,000,000   ns  150,000 us  150 ms
+
+Notes
+
+1 ns = 10^-9 seconds
+1 us = 10^-6 seconds = 1,000 ns
+1 ms = 10^-3 seconds = 1,000 us = 1,000,000 ns
+
+Credit
+
+By Jeff Dean:               http://research.google.com/people/jeff/
+Originally by Peter Norvig: http://norvig.com/21-days.html#answers
+
+## Tools ##
+
+This tools are useful to read messages of Spark engine:
+
+```{r}
+spark_web(sc)
+spark_log(sc)
+```
+
+This is to store a different Spark configuration in a file:
+
+```{r}
+spark_config(file = "config.yml", use_default = TRUE)
+```
 
