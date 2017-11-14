@@ -1,0 +1,313 @@
+---
+title: "Combining Data"
+---
+
+```{r options, include=FALSE, purl=FALSE}
+options(width = 108)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+```{r first, include=TRUE, message=FALSE}
+require(tidyverse)
+require(qdata)
+data(comuni)
+data(province)
+data(regioni)
+data(usopen)
+data(wimbledon)
+```
+
+
+# Introduction
+
+Very often you will have to deal with many tables that contribute to the analysis you are performing and you need flexible tools to combine them. 
+
+Supposing that the two tables are already in a tidy form (= the rows are observations and the columns are variables), `dplyr` provides three families of verbs that work with two tables at a time:
+
+* __mutating joins__, which add new variables to one table from matching rows in another;
+* __filtering joins__, which filter observations from one table based on whether or not they match an observation in the other table;
+* __set operations__, which combine the observations in the data sets as if they were set elements.
+
+All these verbs work similarly: the first two arguments, `x` and `y`, provide the tables to combine. The output is always a new table with the same type as `x`.
+
+
+## Mutating Join
+
+Mutating joins allow you to combine variables from multiple tables.  
+
+There are four types of mutating join, which differ in their behaviour when a match is not found: 
+
+* `inner_join(x, y)`
+* `left_join(x, y)`
+* `right_join(x, y)`
+* `full_join(x, y)`
+
+For the next examples we will consider these two small data frames:
+
+```{r}
+df1 <- data.frame(id = 1:4, x1 = letters[1:4])
+df2 <- data.frame(id = 3:5, x2 = letters[3:5])
+```
+
+
+* `inner_join(x, y)` only includes observations that match in both x and y:
+
+```{r}
+inner_join(df1, df2)
+```
+
+
+* `left_join(x, y)` includes all observations in `x`, regardless of whether they match or not. This is the most commonly used join because it ensures that you don’t lose observations from your primary table:
+
+```{r}
+left_join(df1, df2)
+```
+
+
+* `right_join(x, y)` includes all observations in `y`. It’s equivalent to `left_join(y, x)`, but the columns will be ordered differently:
+
+```{r}
+right_join(df1, df2)
+left_join(df2, df1)
+
+```
+
+* `full_join()` includes all observations from `x` and `y`:
+
+```{r}
+full_join(df1, df2)
+```
+
+
+The left, right and full joins are collectively know as outer joins. When a row doesn’t match in an outer join, the new variables are filled in with missing values.
+
+While mutating joins are primarily used to add new variables, they can also generate new observations. If a match is not unique, a join will add all possible combinations (the Cartesian product) of the matching observations.
+
+# Example: the Italia data frame
+
+Data frame `comuni` contains several variables detected on Italian "comuni", in particular the codes of the Italian "province" and "regioni" relative to the "comuni", but not their names. 
+
+You don't know which "provincia" or "regione" each "comune" belongs to but, in data frames `province` and `regioni` you have the codes for "province" and "regioni" along with their names.
+
+Let's keep only a few variables of these datasets in order to better understand the join results:
+
+```{r}
+comuni <- comuni %>% select(cod_comune:pop_legale, cod_provincia:cod_regione)
+province <- province %>% select(cod_provincia:cod_citta_metro)
+```
+
+You can use a join to add "provincia" and "regione" to the Italian "comuni":
+
+```{r}
+comuni %>% left_join(province)
+comuni %>% left_join(regioni)
+comuni %>% left_join(province) %>% left_join(regioni)
+```
+
+As well as `x` and `y`, each mutating join takes an argument `by` that controls which variables are used to match observations in the two tables and there are few ways to specify it:
+
+* `NULL`, the default. `dplyr` will use all variables that appear in both tables, a natural join. For example, the `comuni` and `regioni` tables match on their common variable `cod_regione`:
+
+```{r}
+comuni %>% left_join(regioni)
+```
+
+* A character vector, `by = "x"`. It is like a natural join, but uses only some of the common variables. For example, when joining `comuni` and `province`, you will see that `R` will tell you that it's joining the two data frames by both `cod_provincia` and `cod_citta_metro`:
+
+```{r}
+comuni %>% left_join(province)
+```
+
+But we only want to join by `cod_provincia` not  by `cod_citta_metro`. As only some of the "province" have a "città metropolitana" (9 of them: Torino, Milano, Venezia, Genova, Bologna, Firenze, Roma, Napoli, Bari):
+
+```{r}
+comuni %>% left_join(province, by = "cod_provincia")
+```
+
+Note that the `cod_citta_metro` columns in the output are disambiguated with a suffix.
+
+* A named character vector: `by = c("x" = "a")`. This will match variable `x` in table `x` to variable `a` in table `b`. For example, suppose the `regioni2` table is equal to `regioni` except for that its id variable is called `id_regione` and not `cod_regione` and suppose we want to use `regioni2` to associate the "regione" to each "comune":
+
+```{r}
+regioni2 <- regioni %>% rename(id_regione = cod_regione)
+```
+
+Then, in this case
+
+```{r}
+comuni %>% left_join(regioni2, c("cod_regione" = "id_regione"))
+``` 
+
+
+## A Pretty Example
+
+With the commands you have seen so far, with very few lines of `R` code you can for example:
+
+* calculate the population living in the Italian "province" and sort by legal population:
+
+```{r}
+  province %>%
+  left_join(comuni) %>%
+  group_by(provincia) %>%
+  summarise(pop_legale = sum(pop_legale)) %>% 
+  arrange(desc(pop_legale))
+```
+
+
+* calculate the population living in the Italian "regioni" and sort by legal population:
+
+```{r}
+  regioni %>%
+  left_join(comuni) %>%
+  group_by(regione) %>%
+  summarise(pop_legale = sum(pop_legale)) %>%
+  arrange(desc(pop_legale))
+```
+
+
+* calculate the population living in the "comuni" which are administrative centers of their "province" * and sort by `pop_legale`:
+
+```{r}
+  comuni %>%
+  filter(comune_cap_prov == TRUE) %>%
+  select(comune, pop_legale) %>% 
+  arrange(desc(pop_legale))
+```
+
+
+# Filtering Joins
+
+Filtering joins match observations in the same way as mutating joins, but affect the observations, not the variables. There are two types:
+
+* `semi_join(x, y)` keeps all observations in `x` that have a match in `y`;
+* `anti_join(x, y)` drops all observaitons in `x` that have a match in `y`.
+
+These are most useful for diagnosing join mismatches.
+
+Let's recall the small example data frames:
+
+```{r}
+df1 <- data.frame(id = 1:4, x1 = letters[1:4])
+df2 <- data.frame(id = 3:5, x2 = letters[3:5])
+```
+
+All observations in `df1` also in `df2`
+
+```{r}
+df1 %>% semi_join(df2)
+```
+
+All observations in `df1` not in `df2`
+
+```{r}
+df1 %>% anti_join(df2)
+```
+
+
+## The tennis example
+
+Data frames `wimbledon` and `usopen` are related to the tow tennis tournament and contain the following variables:
+
+* year
+* champion_country
+* champion
+* runner up country
+* runner up
+
+If you want to know who won the US open and never won Wimbledon
+
+```{r}
+usopen %>% 
+  anti_join(wimbledon, by = "champion") %>%
+  select(year, champion_country, champion)
+```
+
+If you want to know who won both the US open and Wimbledon
+
+```{r}
+usopen %>% 
+  semi_join(wimbledon, by = "champion") %>%
+  select(year, champion_country, champion)
+```
+
+If you want to know who won both the US open and Wimbledon in the same year
+
+
+```{r}
+usopen %>% 
+  semi_join(wimbledon, by = c("champion", "year")) %>%
+  select(year, champion_country, champion)
+```
+
+If you want to know who won both the US open and Wimbledon more than once
+
+```{r}
+# who won the US open more than once
+super_usopen <- usopen %>% 
+  group_by(champion) %>%
+  summarise (n_us = n()) %>%
+  filter(n_us > 1)
+
+# who won Wimbledon more than once
+super_wimbledon <- wimbledon %>% 
+  group_by(champion) %>%
+  summarise (n_wb = n()) %>%
+  filter(n_wb > 1)
+
+# semi join
+super_usopen %>% 
+  semi_join(super_wimbledon, by = "champion") %>%
+  select(champion)
+```
+
+Finally, if you wish to know who was the best player in the two tournaments:
+
+```{r}
+super_usopen %>% 
+  inner_join(super_wimbledon, by = "champion") %>%
+  mutate ( n = n_us+n_wb) %>%
+  arrange(desc(n))
+```
+ 
+
+# Binding
+
+`bind_rows` and `bind_cols` allow to bind data frames by rows and by columns, respectively.
+
+Variables names in the two data frames to bind play a crucial role in the outcome type.
+
+When binding rows and both data frames have the same columns: 
+
+```{r}
+df1 <- data.frame(x = 1:3, y = 3:1)
+df2 <- data.frame(x = 4:6, y = 6:4)
+df1 %>% bind_rows(df2)
+```
+
+When binding rows and data frames do not have the same columns: 
+
+```{r}
+df1 <- data.frame(x1 = 1:3, y1 = 3:1)
+df2 <- data.frame(x2 = 4:6, y2 = 6:4, z2 = 0)
+df1 %>% bind_rows(df2)
+```
+
+When binding columns and both data frames have the same columns: 
+
+```{r}
+df1 <- data.frame(x = 1:3, y = 3:1)
+df2 <- data.frame(x = 4:6, y = 6:4)
+df1 %>% bind_cols(df2)
+```
+
+When binding columns and data frames do not have the same columns: 
+
+```{r}
+df1 <- data.frame(x1 = 1:3, y1 = 3:1)
+df2 <- data.frame(x2 = 4:6, y2 = 6:4, z2 = 0)
+df1 %>% bind_cols(df2)
+```
+
+
+
