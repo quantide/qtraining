@@ -1,0 +1,19 @@
+---
+title: "Introduction to Data Visualization"
+output: html_document
+---
+
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+![](./images/flow-dtvisual.png)
+
+
+In the following chapters we will explore R systems for data visualization, in particular:
+
+* Standard R Graphics System
+* `ggplot2` Grammar of Graphics
+
+We will cover also some issues on managing and exporting graphics.
+
