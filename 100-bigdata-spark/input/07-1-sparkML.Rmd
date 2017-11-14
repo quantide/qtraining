@@ -1,0 +1,219 @@
+---
+title: "Spark ML"
+output: html_document
+---
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 6, fig.height = 4)
+options(width = 108)
+```
+
+
+## Introduction
+
+`sparklyr` allows you to access the machine learning routines provided by the `spark.ml` package by providing three families of functions that you can use with Spark machine learning:
+
+* Machine learning algorithms for analyzing data (`ml_*`)
+* Feature transformers for manipulating individual features (`ft_*`)
+* Functions for manipulating Spark DataFrames (`sdf_*`)
+
+In this chapter you will learn how to use machine learning algorithm from the `ml_*` family to model your data and how to inspect your model fit, and use it to make predictions with new data.
+
+## Algorithms
+
+Here is an overview of the main functions to access Spark's machine learning library:
+
+* K-Means Clustering: `ml_kmeans`	
+*	Linear Regression: `ml_linear_regression`
+* Logistic Regression: `ml_logistic_regression`
+* Survival Regression: `ml_survival_regression`
+*	Generalized Linear Regression: `ml_generalized_linear_regression`
+*	Decision Trees: `ml_decision_tree`
+* Random Forests: `ml_random_forest`
+* Gradient-Boosted Trees: `ml_gradient_boosted_trees`
+*	Principal Components Analysis: `ml_pca`
+*	Naive-Bayes: `ml_naive_bayes`
+* Multilayer Perceptron: `ml_multilayer_perceptron`
+*	Latent Dirichlet Allocation: `ml_lda`
+
+The `ml_*` functions take the arguments `response` and `features`. But features can also be a formula with main effects (note that it currently does not accept interaction terms). Later on an example will be showed. 
+
+Moreover there is a set of `ml_*` functions for interacting with Spark ML model fits. Here is a brief list with a short description:
+
+* binary models: `ml_binary_classification_eval` calculates the area under the curve for a binary classification model; `ml_classification_eval` calculates performance metrics (i.e. f1, precision, recall, weightedPrecision, weightedRecall, and accuracy) for binary and multiclass classification model.
+* decision trees: `ml_tree_feature_importance` calculates variable importance for decision trees (i.e. decision trees, random forests, gradient boosted trees)
+
+
+## Examples
+
+In this section, we see a list of examples based on the usual `flights` dataset. Before we start anything, we need to load the needed libraries: 
+
+```{r setup, results="hide"}
+library(tidyverse)
+library(sparklyr)
+```
+
+
+and initialize Spark:
+
+```{r, eval = FALSE}
+sc <- spark_connect("yarn", version = "2.0.0")
+spark_disconnect(sc)
+sc <- spark_connect("local", version = "1.6.2")
+csv_file <- '~/data/2006.csv'
+ontime_tbl <- spark_read_csv(sc = sc, 
+                             'ontime_tbl' , 
+                             path = csv_file,
+                             header = TRUE, delimiter = ',')
+
+```
+
+### Linear Regression
+
+#### Linear Regression in R
+
+Let us see how to perform a linear regression in R
+
+```{r, eval = FALSE}
+model <- lm(ArrDelay ~ DepDelay, data = ontime_tbl)
+
+```
+
+<!---
+Se vogliamo rappresentare graficamente retta e dati, bisogna selezionare un sottoinsieme dei dati
+-->
+
+#### Linear Regression in Spark
+
+```{r}
+model <- ontime_tbl %>%
+	select(ArrDelay, DepDelay) %>%
+	ml_linear_regression(response = "ArrDelay", features = c("DepDelay"))
+print(model)
+```
+
+<!---
+Cosa si vuole far vedere con questo esempio? Più veloce? Più lento? Che differenza c'è?
+-->
+
+### Logistic Regression
+
+Suppose that we want to model whether a flight will be late or on time where late means that the arrival delay is higher than 15 minutes and on time means it arrived with a maximum of 15 minutes delay.
+
+In this case, we would be modelling a variable taking value 1 if the flight is over 15 minutes late and 0 otherwise. The logistic regression is a regression model where the dependent variable is a binary variable, hence in this situation we would need to use a logistic model. 
+
+First of all let us manipulate the `flights` dataset so that the outcome variable is a binary variable taking value 1 if the flight is late and 0 otherwise:
+
+
+```{r}
+# Manipulate dataset
+
+ontime_tbl_binary <- ontime_tbl %>%
+  mutate(Delay = ifelse(ArrDelay >= 15, 1, 0))
+
+ontime_tbl_binary$Delay <- factor(ontime_tbl_binary$Delay, labels = c("Ontime", "Late"))
+
+```
+
+#### Logistic Regression in R
+
+Now let us run the regression model in `R`:
+
+```{r}
+# Fit model
+model <- glm(Delay ~ DepDelay, data = ontime_tbl_binary, family = binomial(link = "logit"))
+print(model)
+
+# Plot prediction curve
+newdata <- data.frame(
+	temp = seq(min(beaver$DepDelay), max(beaver$DepDelay), length.out = 128)
+)
+
+df <- data.frame(
+	x = newdata$temp,
+	y = predict(model, newdata = newdata, type = "response") + 1
+)
+
+```
+
+#### Logistic Regression in Spark
+
+And now let us use `Spark`
+
+```{r}
+ontime_tbl_binary <- copy_to(sc, ontime_tbl_binary, "ontime_tbl_binary", overwrite = TRUE)
+
+model <- ontime_tbl_binary %>%
+	ml_logistic_regression(response = "Delay", features = "DepDelay")
+
+print(model)
+```
+
+
+### Decision Tree with Spark
+
+Decision trees are popular methods for machine learning tasks of classification and regression. They are widely used since they are easy to interpret, they handle both categorical and continous features and are able to capture non-linearities and feature interactions. 
+
+Here we see an example with the modified `ontime_tbl_binary` dataset so that we model the probability of a flight being late given a set of covariates
+
+```{r}
+mDecisionTree <- ontime_tbl_binary %>%
+	ml_decision_tree(
+		response = "Delay",
+		features = c("ArrDelay", "Origin", "Distance"),
+		max.bins = 32L,
+		max.depth = 5L
+	)
+mPredict <- predict(mDecisionTree, ontime_tbl_binary)
+head(mPredict)
+```
+
+
+### Random Forests with Spark
+
+Random forests are combinations of decision or regression trees (according to the class of the output variable) aimed at reducing the risk of overfitting. The `spark.ml` implementation supports random forests for binary and multiclass classification and for regression.
+
+Here we consider the case in which the outcome variable is a binary variable hence indicating whether a flight will be late or not:
+
+
+```{r}
+mForest <- ontime_tbl_binary %>%
+	ml_random_forest(
+		response = "Delay",
+		features = c("ArrDelay", "Origin", "Distance"),
+		max.bins = 32L,
+		max.depth = 5L,
+		num.trees = 20L
+	)
+mPredict <- predict(mForest, ontime_tbl_binary)
+head(mPredict)
+```
+
+
+<!---
+#### Comparing Random Forest Classification
+
+
+Using the model to predict the same data it was trained on is
+certainly not best practice, but it at least showcases that
+the results produced are concordant between R and Spark.
+
+```{r}
+df <- as.data.frame(table(x = rPredict, y = mPredict), stringsAsFactors = FALSE)
+
+ggplot(df) +
+	geom_raster(aes(x, y, fill = Freq)) +
+	geom_text(aes(x, y, label = Freq), col = "#222222", size = 6, nudge_x = 0.005, nudge_y = -0.005) +
+	geom_text(aes(x, y, label = Freq), col = "white", size = 6) +
+	labs(
+		x = "R-predicted Species",
+		y = "Spark-predicted Species",
+		title = "Random Forest Classification — Comparing R and Spark")
+```
+
+
+-->
+
+```{r}
+spark_disconnect(sc)
+```
