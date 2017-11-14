@@ -1,0 +1,8 @@
+## packrat
+packrat/lib*/
+/packrat/bundles
+packrat/src
+## sparklyr
+derby.log
+log4j.spark.log
+log4j.spark.log.*
