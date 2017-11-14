@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-![](./images/flow-dtvisual.png)
+![](images/flow-dtvisual.png)
 
 
 In the following chapters we will explore R systems for data visualization, in particular:
