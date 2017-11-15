@@ -1,0 +1,434 @@
+---
+title: "Course of spark with sparklyr"
+author: "Andrea Melloncelli"
+date: "19/9/2016"
+output: html_document
+---
+
+# The dataset
+	
+## Introduction
+
+The dataset we will use in this course is a public dataset collected by U.S. Department of Transportation's (DOT) Bureau of Transportation Statistics (BTS) about on-time performance of domestic flights operated by large air carriers. You find data and a short explanation of tables on this page.
+
+	http://stat-computing.org/dataexpo/2009/the-data.html
+
+## first data manipulation
+
+Data is in bzipped csv format. We can download them from the terminal following these instructions:
+
+```{bash}
+cd ~
+mkdir data			# create data dir
+cd data	  			# enter this dir
+wget http://stat-computing.org/dataexpo/2009/2006.csv.bz2
+wget http://stat-computing.org/dataexpo/2009/2007.csv.bz2
+wget http://stat-computing.org/dataexpo/2009/2008.csv.bz2
+bunzip *.csv.bz2
+ls
+```
+
+We thus have 3 csv files in this folder. We can print out the first 5 line of one of this file with the `head` command
+
+```{bash}
+head -n 5 2008.csv
+```
+
+The first line of each file contains the column names, which are equals in the three files. Now we want concatenate these files in a bigger csv. We will follow this steps:
+
+1. Create a new file `ontime.csv` with the column names
+2. Add the content of each file csv starting from the second line (without header)
+
+
+```{bash}
+	
+head -n 1 2008.csv  > ontime.csv   # step 1.
+tail -n +2 2008.csv >> ontime.csv  # step 2. 
+tail -n +2 2007.csv >> ontime.csv  # step 2. 
+tail -n +2 2006.csv >> ontime.csv  # step 2. 
+
+```
+
+## Faliure of R with read.table()
+
+Now the file `~/data/ontime.csv` contains about 2 Gb of data. If you are using a machine with 2 Gb or less of RAM, the reading of this file will fail.
+
+```{R}
+ontime <- read.table(file = "~/data/ontime.csv", header = T, sep = ",", quote = "\"")
+```
+
+If we want to succeeded in reading a csv file on a 2 Gb machine we need to take a sample of these files.
+
+```{bash}
+head -n 30000 2008.csv > mini.csv
+```
+
+Now from RStudio-server
+
+```{R}
+csv_file <- "~/data/mini.csv"
+R_df <- read.table(file = csv_file, header = T, sep = ",", quote = "\"")
+R_df
+```
+
+# sparklyr
+
+## Install Spark
+
+First of all, you need to have `sparklyr` available to R. So install it and load it in this way:
+
+```{R sparklyr installation}
+install.packages("devtools")
+devtools::install_github("rstudio/sparklyr")
+```
+
+```{R require-sparklyr}
+require(sparklyr)
+```
+
+You can install a version directly from R:
+
+```{R}
+spark_install(version = "2.0.0")
+```
+
+## Initialize spark environment
+
+Now that spark is correctly install we need to initialize a spark context
+
+```{R}
+sc <- spark_connect( master = "local", version = "2.0.0" )
+```
+
+where:
+
+1. "local" means that spark will work on our local machine, this is in contrast with the concept of cluster.
+2. `version` refers to the version of Spark installed with `sparklyr`, we chose the version previously installed.
+
+<!-- new -->
+
+After the initializiation we can work with the Spark connector. For now we only ask for the Spark version.
+
+```{r}
+spark_version(sc)
+```
+
+When we will be done with Spark we should close the connection.
+
+```{r}
+spark_disconnect(sc)
+```
+
+## csv reading
+
+The following code is to read a csv file. We are reading it from our local hard-drive but also distributed filesystem protocols like `hdfs://` and `s3n://` are allowed.
+
+```{r}
+
+csv_file <- "~/data/2008.csv"
+
+spark_table <- spark_read_csv(
+  sc = sc,
+  name = "year2008",
+  path = csv_file
+)
+
+spark_table
+```
+
+## sparklyr compared to R 	
+
+Where does Spark table differ to dplyr `tbl_df` or `data.frame`? Spark, like a database do, move the data out of R, so the management of memory is left to the Spark process. The object spark_table in R is only a handle to an object of Spark.
+
+```{r}
+R_df <- read.table(file = csv_file, header = T, sep = ",", quote = "\"")
+R_df <- tbl_df( R_df )
+R_df
+
+format( object.size(R_df), units = "auto" )
+format( object.size(spark_table), units = "auto" )
+
+```
+
+<!-- todo: There are differences also in getting the structure of the date: -->
+
+```{r}
+# Examine structure of tibble
+str(R_df)
+
+# Examine structure of data
+glimpse(spark_table)
+
+```
+
+## copy_to???
+## src_tbls???
+## Sampling???
+
+# dplyr
+
+## 5 verbs
+
+We now can use sparklyr and dplyr functions to deal with this dataset. 
+
+```{r}
+require(dplyr)
+
+colnames(spark_table)
+
+## or
+
+tbl_vars(spark_table)
+
+ ## we are interested only in some columns, for example
+spark_table_detail <-
+    spark_table %>%
+    select(Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum )
+spark_table_detail
+
+spark_table_detail %>%
+    filter( ! TailNum == "" ) %>%
+    arrange( FlightNum, TailNum  )
+
+spark_table_detail %>%
+    group_by( Year, FlightNum ) %>%
+    summarize( avg = mean( ArrDelay ) ) %>%
+    arrange( desc(avg) )
+
+```
+
+## Cast
+
+As you can see variable like `ArrDelay` are read as *strings*. In the previous case the cast (change of type of the variable) was automatic. However we want to cast them into integers previously, for this we pass through dplyr:
+
+```{R}
+spark_table_detail %>%
+    group_by( Year, FlightNum ) %>%
+    mutate( ArrDelay = as.integer( ArrDelay ) ) %>%   # cast 
+    summarize( avg = mean( ArrDelay ) ) %>%
+    arrange( desc(avg) )
+
+```
+
+So, in this way, we can cast more than one var at a time
+
+```{R}
+spark_table_1 <-
+    spark_table_detail %>%
+    mutate(
+        DepDelay = as.integer(DepDelay) ,
+        ArrDelay = as.integer(ArrDelay) ) %>% # cast
+    select(                             # only a column sorting
+        ArrDelay,
+        DepDelay,
+        everything() )
+spark_table_1
+```
+
+## Plot with ggplot2
+
+```{R}
+ ## Collect some data
+delay <-
+    spark_table %>% 
+    group_by(TailNum) %>%
+    summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+    filter(count > 20, dist < 2000, !is.na(delay)) %>%
+    collect()
+
+ ## Plot delays
+library(ggplot2)
+ggplot(delay, aes(dist, delay)) +
+  geom_point(aes(size = count), alpha = 1/2) 
+```
+
+# SQL
+
+```{R}
+library(DBI)
+
+new_spark_table_detail <- dbGetQuery(sc, "SELECT Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum from year2008 LIMIT 5")
+new_spark_table_detail
+sql_render(spark_table_detail)
+
+class(spark_table_detail)
+class(new_spark_table_detail)
+
+```
+
+## spark_write_csv
+
+As usual we have some methods to export manipulated data. For convenience we export only the first 10 rows of the spark table. So first of all we set this mini dataset called `mini_spark_table` and we write it onto disk.
+
+Spark is made to deal with big data, thus is convenient (and default behavior of Spark) to split up this datasets in more files. So the destination of the writing operation will be a directory where put those files.
+
+```{r}
+mini_spark_table <- 
+  head(spark_table, n=10)
+
+out_csv_dir <- "~/data/mini_spark_table"
+
+spark_write_csv(x = mini_spark_table, path = out_csv_dir )
+
+spark_write_csv(x = spark_table, path = out_csv_dir )
+```
+
+Now we reload this family of csv, in a unique data set. Spark do the job for us simply taking as input the directory path in place of a single filename.
+
+```{r}
+spark_read_tbl <- spark_read_csv(sc = sc, 'read', path = out_csv_dir, header = T )
+
+class(spark_read_tbl)
+```
+
+```{r}
+src_tbls(sc) 
+
+dim( mini_spark_table )
+dim( collect(mini_spark_table) )
+```
+
+# Appendix
+
+## Locate and use a binary Spark installation 
+
+If you have a binary installation of Spark on your system you have to tell to `R` where it is. For that set this environment variable and check it correctness.
+
+```{R set spark-home}
+Sys.setenv( SPARK_HOME = "/usr/local/spark")
+Sys.getenv("SPARK_HOME")
+```
+
+## Connect Spark to a YARN cluster
+
+Yarn is a cluster manager, Spark can run on top of it with the advantage to split it workloads across multiple machines. This is pretty easy if the `R` process runs on the master of Hadoop YARN cluster.
+
+If spark is not installed on the cluster we need to install it specifying the right version of Hadoop running on the cluster. 
+
+```{R}
+spark_install(version = "2.0.0", hadoop_version = "2.6")
+
+```
+
+Now, we can start spark:
+
+```{R}
+Sys.setenv( SPARK_HOME = "~/.cache/spark/spark-2.0.0-bin-hadoop2.6/")
+sc <- spark_connect(master = "yarn", version = "2.0.0" )
+```
+
+Now spark operations can be performed as the `master` would be "local", but the computational effort will be spread across multiple computers in the cluster.
+
+## Useful links
+
+R and spark:
+
+1. sparklyr homepage: http://spark.rstudio.com/index.html
+
+2. spark documentatin: http://spark.apache.org/docs/latest/
+
+Bash:
+
+1. Bash Beginner Guide: http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html
+
+2. Bash Reference Manual: http://www.gnu.org/software/bash/manual/bash.html
+
+3. Advanced Bash-Scripting Guide: http://www.tldp.org/LDP/abs/html/index.html
+
+4. Reference card: http://www.tldp.org/LDP/abs/html/refcards.html
+
+## Benchmark
+
+```{r}
+spark_partial <- 	spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		compute(name = "spark_partial")
+
+tmp <- collect(spark_partial)
+tmp
+library(microbenchmark)
+microbenchmark({
+	tmp_1 <- 
+		spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		compute()
+},{
+	tmp_2 <- 
+		spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		collect()
+},{
+	tmp_3 <- collect(spark_partial)
+},{
+	tmp_4 <- 
+		R_df %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		collect()
+}, times = 10)
+
+ ## todo
+tmp_1
+tmp_2
+identical(tmp_2, tmp_3)
+
+tmp_3 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
+tmp_4 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
+class(tmp_3)
+
+```
+
+## Cache Latency
+
+https://gist.github.com/jboner/2841832
+
+Latency Comparison Numbers
+
+L1 cache reference                           0.5 ns
+Branch mispredict                            5   ns
+L2 cache reference                           7   ns                      14x L1 cache
+Mutex lock/unlock                           25   ns
+Main memory reference                      100   ns                      20x L2 cache, 200x L1 cache
+Compress 1K bytes with Zippy             3,000   ns        3 us
+Send 1K bytes over 1 Gbps network       10,000   ns       10 us
+Read 4K randomly from SSD*             150,000   ns      150 us          ~1GB/sec SSD
+Read 1 MB sequentially from memory     250,000   ns      250 us
+Round trip within same datacenter      500,000   ns      500 us
+Read 1 MB sequentially from SSD*     1,000,000   ns    1,000 us    1 ms  ~1GB/sec SSD, 4X memory
+Disk seek                           10,000,000   ns   10,000 us   10 ms  20x datacenter roundtrip
+Read 1 MB sequentially from disk    20,000,000   ns   20,000 us   20 ms  80x memory, 20X SSD
+Send packet CA->Netherlands->CA    150,000,000   ns  150,000 us  150 ms
+
+Notes
+
+1 ns = 10^-9 seconds
+1 us = 10^-6 seconds = 1,000 ns
+1 ms = 10^-3 seconds = 1,000 us = 1,000,000 ns
+
+Credit
+
+By Jeff Dean:               http://research.google.com/people/jeff/
+Originally by Peter Norvig: http://norvig.com/21-days.html#answers
+
+## Tools ##
+
+This tools are useful to read messages of Spark engine:
+
+```{r}
+spark_web(sc)
+spark_log(sc)
+```
+
+This is to store a different Spark configuration in a file:
+
+```{r}
+spark_config(file = "config.yml", use_default = TRUE)
+```
+
