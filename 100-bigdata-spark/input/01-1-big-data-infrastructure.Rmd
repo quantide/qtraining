@@ -86,11 +86,11 @@ Each file is splitted in blocks, here represented by numbers. Each block is usua
 
 ## Why Spark?
 
-Spark is ???
+Apache Spark is an open-source cluster-computing framework. 
 
 Advantages over hadoop:
 
-1. Speed: 10~100 times faster than hadoop
+1. Speed: 10~100 times faster than Hadoop
 2. better API (Application Programming interface)
 3. Combine SQL, streaming, machine-learning and Graph libraries.
 
@@ -114,4 +114,14 @@ Driver program
 - Task: A unit of work that will be sent to one executor
 
 ![https://spark.apache.org/docs/latest/cluster-overview.htm](images/spark-cluster-overview.png)
+
+# Sparklyr
+
+1. Connect to Spark from R. It creates the SparkContext.
+
+2. Provides a complete dplyr backend: filter and aggregate Spark datasets then bring them into R for analysis and visualization.
+
+3. It allows to use Spark’s distributed machine learning library from R.
+
+4. The full Spark API are still available to create extensions.
 
