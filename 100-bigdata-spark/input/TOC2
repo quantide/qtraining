@@ -1,3 +1,8 @@
+Big data infrastructure
+Distributed computing (Hadoop and Spark)
+Virtual Environment
+Installation 
+
 Databases
 RSQLite				| 02-1-Rsqlite.Rmd
 
@@ -5,6 +10,8 @@ RSQLite				| 02-1-Rsqlite.Rmd
 Sparklyr
 Connect work disconnect pattern	| 03-1-sparklyr.Rmd
 
+
+Data import and export
 
 
 Data Manipulation
@@ -14,13 +21,15 @@ Dplyr verb functions		| 05-3-dplyr-verbs.Rmd
 At, all, each			| 05-4-at-all-each.Rmd
 Joining tables			| 05-5-join.Rmd
 Group Data and Chain Verbs	| 05-6-group-chain.Rmd
+Sampling
+Partial computing and Collection
 Example 			| 05-9-flights-example.Rmd
 
 Data Visualisation
 Intro 				| 06-1-data-visualization-intro.Rmd
 ggplot 				| 06-2-ggplot.Rmd
 Markdown			| 06-3-rmarkdown.Rmd
-Shiny application		| 06-4-intro-shiny.Rmd
+Shiny application		| 06-4-shiny.Rmd
 
 SparkML				| 07-1-sparkML.Rmd
 

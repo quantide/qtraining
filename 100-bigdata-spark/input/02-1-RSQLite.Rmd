@@ -1,5 +1,5 @@
 ---
-title: "RSQLite: 'SQLite' Interface for R"
+title: 'RSQLite: ''SQLite'' Interface for R'
 ---
 
 ```{r options, include=FALSE, purl=FALSE}

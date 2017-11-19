@@ -1,9 +1,11 @@
 ---
-title: "Course of spark with sparklyr"
-author: "Andrea Melloncelli"
-date: "19/9/2016"
+title: "Spark with sparklyr"
 output: html_document
 ---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
 
 # The dataset
 	
