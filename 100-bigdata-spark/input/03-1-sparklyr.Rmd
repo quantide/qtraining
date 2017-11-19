@@ -297,56 +297,8 @@ dim( spark_table )
 dim( collect(spark_table) )
 ```
 
-# Appendix
 
-## Locate and use a binary Spark installation 
-
-If you have a binary installation of Spark on your system you have to tell to `R` where it is. For that set this environment variable and check it correctness.
-
-```{R set spark-home}
-Sys.setenv( SPARK_HOME = "/usr/local/spark")
-Sys.getenv("SPARK_HOME")
-```
-
-## Connect Spark to a YARN cluster
-
-Yarn is a cluster manager, Spark can run on top of it with the advantage to split it workloads across multiple machines. This is pretty easy if the `R` process runs on the master of Hadoop YARN cluster.
-
-If spark is not installed on the cluster we need to install it specifying the right version of Hadoop running on the cluster. 
-
-```{R}
-spark_install(version = "2.0.0", hadoop_version = "2.6")
-
-```
-
-Now, we can start spark:
-
-```{R}
-Sys.setenv( SPARK_HOME = "~/.cache/spark/spark-2.0.0-bin-hadoop2.6/")
-sc <- spark_connect(master = "yarn", version = "2.0.0" )
-```
-
-Now spark operations can be performed as the `master` would be "local", but the computational effort will be spread across multiple computers in the cluster.
-
-## Useful links
-
-R and spark:
-
-1. sparklyr homepage: http://spark.rstudio.com/index.html
-
-2. spark documentatin: http://spark.apache.org/docs/latest/
-
-Bash:
-
-1. Bash Beginner Guide: http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html
-
-2. Bash Reference Manual: http://www.gnu.org/software/bash/manual/bash.html
-
-3. Advanced Bash-Scripting Guide: http://www.tldp.org/LDP/abs/html/index.html
-
-4. Reference card: http://www.tldp.org/LDP/abs/html/refcards.html
-
-## Benchmark
+# Benchmark
 
 ```{r}
 spark_partial <- 	spark_table_detail %>%
@@ -394,50 +346,4 @@ class(tmp_3)
 
 ```
 
-## Cache Latency
-
-https://gist.github.com/jboner/2841832
-
-Latency Comparison Numbers
-
-L1 cache reference                           0.5 ns
-Branch mispredict                            5   ns
-L2 cache reference                           7   ns                      14x L1 cache
-Mutex lock/unlock                           25   ns
-Main memory reference                      100   ns                      20x L2 cache, 200x L1 cache
-Compress 1K bytes with Zippy             3,000   ns        3 us
-Send 1K bytes over 1 Gbps network       10,000   ns       10 us
-Read 4K randomly from SSD*             150,000   ns      150 us          ~1GB/sec SSD
-Read 1 MB sequentially from memory     250,000   ns      250 us
-Round trip within same datacenter      500,000   ns      500 us
-Read 1 MB sequentially from SSD*     1,000,000   ns    1,000 us    1 ms  ~1GB/sec SSD, 4X memory
-Disk seek                           10,000,000   ns   10,000 us   10 ms  20x datacenter roundtrip
-Read 1 MB sequentially from disk    20,000,000   ns   20,000 us   20 ms  80x memory, 20X SSD
-Send packet CA->Netherlands->CA    150,000,000   ns  150,000 us  150 ms
-
-Notes
-
-1 ns = 10^-9 seconds
-1 us = 10^-6 seconds = 1,000 ns
-1 ms = 10^-3 seconds = 1,000 us = 1,000,000 ns
-
-Credit
-
-By Jeff Dean:               http://research.google.com/people/jeff/
-Originally by Peter Norvig: http://norvig.com/21-days.html#answers
-
-## Tools ##
-
-This tools are useful to read messages of Spark engine:
-
-```{r}
-spark_web(sc)
-spark_log(sc)
-```
-
-This is to store a different Spark configuration in a file:
-
-```{r}
-spark_config(file = "config.yml", use_default = TRUE)
-```
 
