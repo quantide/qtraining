@@ -2,7 +2,7 @@
 title: "Acknowledgements"
 ---
 
-This web book is the result of work of my colleagues:
+This web book is the result of work of many, people, among these the colleagues:
 
 * Andrea Melloncelli, who wrote the first version of this manual
 
@@ -10,8 +10,7 @@ This web book is the result of work of my colleagues:
 
 ![](images/EF5C8766.jpg)
 
-However, it would not have been possible without the sharing of knowledge, information, ideas, doubts and even criticisms of many individuals on the internet. I would like to extend my sincere thanks to all of them.
+However, it would not have been possible without the sharing of knowledge, information, ideas, doubts and even criticisms of many individuals on the internet.
 
-Andrea Spanò,  
 Quantide s.r.l.
 
