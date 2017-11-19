@@ -15,16 +15,19 @@ Introduction to tidyverse 	| 05-1-intro-tidyverse.Rmd
 Introduction to dplyr 		| 05-2-intro-dplyr.Rmd
 Dplyr verb functions		| 05-3-dplyr-verbs.Rmd
 Joining tables			| 05-5-join.Rmd
-Group Data and Chain Verbs	| 05-6-group-chain.Rmd
-Data Manipulation with Spark	| 05-6-data-man-spark.Rmd
+Group Data & Chain Verbs	| 05-6-group-chain.Rmd
+Data Manipulation & Spark	| 05-6-data-man-spark.Rmd
+
 
 Data Visualisation
-Intro 				| 06-1-data-visualization-intro.Rmd
+Introduction			| 06-1-data-visualization-intro.Rmd
 ggplot 				| 06-2-ggplot.Rmd
 GGplot with Spark 		| 06-2-a-ggplot-spark.Rmd
-Markdown			| 06-3-rmarkdown.Rmd
+Reports with Markdown		| 06-3-rmarkdown.Rmd
 Shiny application		| 06-4-intro-shiny.Rmd
 
+
+Spark Machine Learning
 SparkML				| 07-1-sparkML.Rmd
 
 
