@@ -1,13 +1,16 @@
-# What is Big Data?
+<!-- # What is Big Data? -->
 
-## ODG ???
+<!-- ## ODG ??? -->
 
 # Distributed Architecture
 
 ## Kinds of computations
 
-- In parallel computing, all processors have random access to a shared memory.
-- In distributed computing, each processor has its own private memory. 
+Different types of architectures requires different computation paradigms. Clusers use distributed computing to perform their calculation. 
+
+1. In single thread computation one process performs the code istructions each at a time on a sole processor, if more processors are available their are not used. It is the case of base R.
+2. (In pitctures: (c)) In parallel computing, all processors have random access to a shared memory.
+3. (In pitctures: (a)(b)) In distributed computing, each processor has its own private memory. 
 
 
 ![https://en.wikipedia.org/wiki/Distributed_computing](./images/Distributed-parallel.svg.png)
@@ -29,10 +32,10 @@ Hadoop Goals
 
 Hadoop features:
 
-- Scalability
-- Flexibility
-- Efficient and simple fault tolerant mechanism
-- Inexpensive hardware
+- Scalability: it is the capability of handling a growing amount of work. This means increasing the numerosity of the cluster running the same code.
+- Flexibility: hadoop can ingest, store and manipulate any kind of data on any size.
+- Efficient and simple fault tolerant mechanism.
+- Inexpensive hardware: no supercomputer are used, each node is a top of the line of commercial computers. 
 
 Cluster architecture:
 
@@ -42,15 +45,15 @@ What is the cluster abstraction to the end user?
 
 1. One single unit: the cluster is presented as a single unit and the distribution and parallelization of tasks is performed automatically.
 
-2. Fault tolerance and automatic recovery: Hadoop takes care of task and node failiures automatically. Failure is the norm rather than exeption.
+2. Fault tolerance and automatic recovery: Hadoop takes care of task and node failiures automatically. Failure is considered the norm rather than exeption.
 
-3. Simple Programming interface (API): using MapReduce Paradigm.
+3. Simple Programming interface (API): using MapReduce Paradigm. For each step the programmer has to provide a map and a reduce function to operate on data.
 
 ## Layers
 
-- HDFS: Hadoop distributed filesystem
+1. HDFS: Hadoop distributed filesystem
 
-- Yarn: Yet Another Resource Negotiator
+2. Yarn: Yet Another Resource Negotiator
 
 ## HDFS
 
@@ -60,24 +63,44 @@ Features:
 
 2. Replication: each file block is replicated many times on different nodes.
 
-3. Data is accessed with the "hdfs" protocol from application: "hdfs://folder/file.csv"
+3. Data is accessed with the "hdfs" protocol from any application: "hdfs://folder/file.csv"
 
 
-Each file is splitted in blocks, here represented by numbers. Each block is usually around 100 Mb of size. Each block is replicated three times, by default, on different nodes: this prevents the data loss in case of failure and makes that portion of data available on different nodes to different computations.
+Each file is splitted in blocks, here represented by numbers. Each block is usually around 100 Mb of size. Each block is replicated three times, by default, and on different nodes: this prevents the data loss in case of failure and makes that portion of data available on different nodes for different computations.
 
 ![http://tudorlapusan.ro/hdfs-the-hadoop-distributed-filesystem-part-2/](./images/hdfs-replication.png)
 
 ## Architecture:
 
+Also the HDFS layer follows the one master with serveral slaves model. Here the master is the Datanode and slaves are the namenodes.
+
 - Datanode: it stores a portion of the Hadoop File System data.
 - Namenode: it is the centerpiece of an HDFS file system. It keeps track of the directory tree of all files and tracks where across the cluster each file block is kept.
 - Secondary namenode: it is the namenode recovery.
+
+The Datanode is a single server. This fact makes it a single point of failure: if it goes down the entire cluster is compromised. In order to avoid this, the Secondary Namenode constantly backups the Namenode data, and ,in case of failure, it becames the working Namenode.
 
 ![http://bradhedlund.com/2011/09/10/understanding-hadoop-clusters-and-the-network/](images/hdfs_architecure4.png)
 
 ## MapReduce Paradigm
 
+Map Reduce is a programming model that allows any kind of data processing on a distributed architecture. It is composed by three main steps:
+
+1. map step: mapping means apply the same function to a list of objects. This is a fully parallelizable operation. The end-user have to provide a function to process the data. This computation is performed on each single slave involved.
+
+![https://wikis.nyu.edu/display/NYUHPC/Big+Data+Tutorial+1%3A+MapReduce](images/MappingFunction.png)
+
+2. shuffle step: it happends at the end of the "map step" when the algorithm requires that the data is exchanged by nodes. It is a netword operation. This operation is automatically done, no user programming is required.
+
+3. reduce step: reducing takes as input a list and output a different kind of object. 
+
+![https://wikis.nyu.edu/display/NYUHPC/Big+Data+Tutorial+1%3A+MapReduce](images/ReducingFunction.png)
+
+Here an example of a Map Reduce implementation of a Word Count algorithm:
+
 ![https://wikis.nyu.edu/display/NYUHPC/Big+Data+Tutorial+1%3A+MapReduce](images/WordCount_MapReduce_Paradigm.png)
+
+Here a join implementation:
 
 ![https://blog.matthewrathbone.com/2013/02/09/real-world-hadoop-implementing-a-left-outer-join-in-hadoop-map-reduce.html](images/map-reduce-join.png)
 
@@ -98,6 +121,12 @@ Advantages over hadoop:
 ![](images/spark-vs-hadoop.png)
 
 ## In memory computation
+
+Hadoop Map Reduce in order to guarantee its recovery capabilities writes everything on disk (input and output on each worker). So when the computation is performed locally (mapping and reducing operations) the bottleneck of the performance is on the speed of the Hard drive. On the contrary in the shuffling operation the bottleneck is the speed of the network.
+
+On the other hand, Spark perform the shuffling over the network, but the map and reducing operations in memory (RAM). 
+
+Before trying to understand why Spark is quicker than Hadoop Map Reduce, here are some read timing about different kind of memories:
 
 Cache Latency:
 
@@ -131,11 +160,6 @@ Credit
 By Jeff Dean:               http://research.google.com/people/jeff/
 Originally by Peter Norvig: http://norvig.com/21-days.html#answers
 
-
-
-Hadoop Map Reduce in order to guarantee its recovery capabilities writes everything on disk (input and output on each worker). So when the computation is performed locally (mapping and reducing operations) the bottleneck of the performance is on the speed of the Hard drive. On the contrary in the shuffling operation the bottleneck is the speed of the network.
-
-On the other hand, Spark perform the shuffling over the network, but the map and reducing operations in memory (RAM). 
 
 Observing the order of magnitude it is clear that reading/writing operation are faster on RAM than on disk, which is faster then Network. This way Spark can achive its superiority in performance.
 
