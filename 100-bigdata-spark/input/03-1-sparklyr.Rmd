@@ -11,7 +11,7 @@ knitr::opts_chunk$set(eval = FALSE)
 	
 ## Introduction
 
-The dataset we will use in this course is a public dataset collected by U.S. Department of Transportation's (DOT) Bureau of Transportation Statistics (BTS) about on-time performance of domestic flights operated by large air carriers. You find data and a short explanation of tables on this page.
+The dataset we will use in this part of the course is again the dataset regarding on-time performance of domestic flights operated by large air carriers. You find data and a short explanation of tables on this page.
 
 	http://stat-computing.org/dataexpo/2009/the-data.html
 
