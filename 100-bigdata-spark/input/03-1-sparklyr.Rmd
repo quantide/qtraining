@@ -127,7 +127,7 @@ The following code is to read a csv file. We are reading it from our local hard-
 
 ```{r}
 
-csv_file <- "~/data/2008.csv"
+csv_file <- "/data/2008.csv"
 
 spark_table <- spark_read_csv(
   sc = sc,
@@ -268,9 +268,15 @@ Spark is made to deal with big data, thus is convenient (and default behavior of
 mini_spark_table <- 
   head(spark_table, n=10)
 
-out_csv_dir <- "~/data/mini_spark_table"
+out_csv_dir <- "/home/cloudera/data/mini_spark_table"
 
-spark_write_csv(x = mini_spark_table, path = out_csv_dir )
+if (dir.exists(out_csv_dir))
+  unlink(out_csv_dir, recursive = TRUE)
+
+spark_write_csv(x = mini_spark_table, path = out_csv_dir)
+
+if (dir.exists(out_csv_dir))
+  unlink(out_csv_dir, recursive = TRUE)
 
 spark_write_csv(x = spark_table, path = out_csv_dir )
 ```
@@ -286,8 +292,8 @@ class(spark_read_tbl)
 ```{r}
 src_tbls(sc) 
 
-dim( mini_spark_table )
-dim( collect(mini_spark_table) )
+dim( spark_table )
+dim( collect(spark_table) )
 ```
 
 # Appendix

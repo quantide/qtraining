@@ -1,0 +1,127 @@
+# What is Big Data?
+
+## ODG ???
+
+# Distributed Architecture
+
+## Kinds of computations
+
+- In parallel computing, all processors have random access to a shared memory.
+- In distributed computing, each processor has its own private memory. 
+
+
+![https://en.wikipedia.org/wiki/Distributed_computing](./images/Distributed-parallel.svg.png)
+## Apache Hadoop
+
+Hadoop is a software framework for distributed processing of large datesets across large clusters of computers.
+
+- Large datasets -> Terabytes or petabytes of data
+- Large clusters -> hundreds or thousands of nodes
+
+Hadoop is an open-source implementation for Google MapReduce and it is based on a simple programming model called MapReduce.
+
+Hadoop Goals
+
+- Store big data,
+- Parallelize the computation in order to process big data,
+- Avoid lose of data
+
+Hadoop features:
+
+- Scalability
+- Flexibility
+- Efficient and simple fault tolerant mechanism
+- Inexpensive hardware
+
+Cluster architecture:
+
+![https://understanding-hadoop-by-mahesh.blogspot.it/2017/01/hadoop-273-multi-node-cluster-setup-in.html](images/cluster_arch.jpg)
+
+What is the cluster abstraction to the end user?
+
+1. One single unit: the cluster is presented as a single unit and the distribution and parallelization of tasks is performed automatically.
+
+2. Fault tolerance and automatic recovery: Hadoop takes care of task and node failiures automatically. Failure is the norm rather than exeption.
+
+3. Simple Programming interface (API): using MapReduce Paradigm.
+
+## Layers
+
+- HDFS: Hadoop distributed filesystem
+
+- Yarn: Yet Another Resource Negotiator
+
+## HDFS
+
+Features:
+
+1. One single folder: each file is splitted in blocks which are distributed across the cluster. The end user sees only one filesystem with all files inside.
+
+2. Replication: each file block is replicated many times on different nodes.
+
+3. Data is accessed with the "hdfs" protocol from application: "hdfs://folder/file.csv"
+
+
+Each file is splitted in blocks, here represented by numbers. Each block is usually around 100 Mb of size. Each block is replicated three times, by default, on different nodes: this prevents the data loss in case of failure and makes that portion of data available on different nodes to different computations.
+
+![http://tudorlapusan.ro/hdfs-the-hadoop-distributed-filesystem-part-2/](./images/hdfs-replication.png)
+
+## Architecture:
+
+- Datanode: it stores a portion of the Hadoop File System data.
+- Namenode: it is the centerpiece of an HDFS file system. It keeps track of the directory tree of all files and tracks where across the cluster each file block is kept.
+- Secondary namenode: it is the namenode recovery.
+
+![http://bradhedlund.com/2011/09/10/understanding-hadoop-clusters-and-the-network/](images/hdfs_architecure4.png)
+
+## MapReduce Paradigm
+
+![https://wikis.nyu.edu/display/NYUHPC/Big+Data+Tutorial+1%3A+MapReduce](images/WordCount_MapReduce_Paradigm.png)
+
+![https://blog.matthewrathbone.com/2013/02/09/real-world-hadoop-implementing-a-left-outer-join-in-hadoop-map-reduce.html](images/map-reduce-join.png)
+
+## Limits 
+
+# Spark
+
+## Why Spark?
+
+Apache Spark is an open-source cluster-computing framework. 
+
+Advantages over hadoop:
+
+1. Speed: 10~100 times faster than Hadoop
+2. better API (Application Programming interface)
+3. Combine SQL, streaming, machine-learning and Graph libraries.
+
+
+![](images/spark-vs-hadoop.png)
+
+## In memory computation
+
+[Glossary](https://spark.apache.org/docs/latest/cluster-overview.html#glossary)
+
+Driver program
+
+- Cluster manager: An external service for acquiring resources on the cluster (e.g. standalone manager, Mesos, YARN)
+
+- Driver program: The process running the main() function of the application and creating the SparkContext
+
+- Worker node: Any node that can run application code in the cluster
+
+- Executor: A process launched for an application on a worker node, that runs tasks and keeps data in memory or disk storage across them. Each application has its own executors.
+
+- Task: A unit of work that will be sent to one executor
+
+![https://spark.apache.org/docs/latest/cluster-overview.htm](images/spark-cluster-overview.png)
+
+# Sparklyr
+
+1. Connect to Spark from R. It creates the SparkContext.
+
+2. Provides a complete dplyr backend: filter and aggregate Spark datasets then bring them into R for analysis and visualization.
+
+3. It allows to use Spark’s distributed machine learning library from R.
+
+4. The full Spark API are still available to create extensions.
+
