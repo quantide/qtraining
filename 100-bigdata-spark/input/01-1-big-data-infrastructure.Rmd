@@ -95,7 +95,7 @@ Advantages over hadoop:
 3. Combine SQL, streaming, machine-learning and Graph libraries.
 
 
-![](images/spark-vs-hadoop.png)
+![http://spark.apache.com](images/spark-vs-hadoop.png)
 
 ## In memory computation
 
@@ -117,11 +117,44 @@ Driver program
 
 # Sparklyr
 
+## Introduction Sparklyr
+
+Spark is a fast and general engine for large-scale data processing.
+`sparklyr` provides an interface between R and Apache Spark. It enables to connect to Spark and:
+
+
 1. Connect to Spark from R. It creates the SparkContext.
-
 2. Provides a complete dplyr backend: filter and aggregate Spark datasets then bring them into R for analysis and visualization.
-
 3. It allows to use Spark’s distributed machine learning library from R.
+4. allows to create extensions that call the full Spark API and provide interfaces to Spark packages (Source: http://spark.rstudio.com/index.html).
 
-4. The full Spark API are still available to create extensions.
+![<small> Source: http://spark.rstudio.com/index.html</small>](./images/sparklyr-illustration.png)
+
+For a full documentation on Spark, please visit the spark website http://spark.apache.org/
+
+For further details on `sparklyr` visit the `sparklyr` website http://spark.rstudio.com/index.html
+
+
+
+## Getting started with Spark and sparklyr
+
+You can easily install the `sparklyr` package from CRAN:
+
+```{r, eval = FALSE}
+install.packages("sparklyr")
+```
+
+and then load it at the beginning of your R session:
+
+```{r}
+require(sparklyr)
+```
+
+You also need to install a version of Spark. You can do this directly from R:
+
+```{r, eval = FALSE}
+# this may take a while
+spark_install(version = "1.6.2")
+```
+
 
