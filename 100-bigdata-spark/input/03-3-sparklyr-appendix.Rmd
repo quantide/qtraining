@@ -1,0 +1,63 @@
+# Appendix
+
+## Locate and use a binary Spark installation 
+
+If you have a binary installation of Spark on your system you have to tell to `R` where it is. For that set this environment variable and check it correctness.
+
+```{R set spark-home}
+Sys.setenv( SPARK_HOME = "/usr/local/spark")
+Sys.getenv("SPARK_HOME")
+```
+
+## Connect Spark to a YARN cluster
+
+Yarn is a cluster manager, Spark can run on top of it with the advantage to split it workloads across multiple machines. This is pretty easy if the `R` process runs on the master of Hadoop YARN cluster.
+
+If spark is not installed on the cluster we need to install it specifying the right version of Hadoop running on the cluster. 
+
+```{R}
+spark_install(version = "2.0.0", hadoop_version = "2.6")
+
+```
+
+Now, we can start spark:
+
+```{R}
+Sys.setenv( SPARK_HOME = "~/.cache/spark/spark-2.0.0-bin-hadoop2.6/")
+sc <- spark_connect(master = "yarn", version = "2.0.0" )
+```
+
+Now spark operations can be performed as the `master` would be "local", but the computational effort will be spread across multiple computers in the cluster.
+
+## Tools
+
+This tools are useful to read messages of Spark engine:
+
+```{r}
+spark_web(sc)
+spark_log(sc)
+```
+
+This is to store a different Spark configuration in a file:
+
+```{r}
+spark_config(file = "config.yml", use_default = TRUE)
+```
+
+## Useful links
+
+R and spark:
+
+1. sparklyr homepage: http://spark.rstudio.com/index.html
+
+2. spark documentatin: http://spark.apache.org/docs/latest/
+
+Bash:
+
+1. Bash Beginner Guide: http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html
+
+2. Bash Reference Manual: http://www.gnu.org/software/bash/manual/bash.html
+
+3. Advanced Bash-Scripting Guide: http://www.tldp.org/LDP/abs/html/index.html
+
+4. Reference card: http://www.tldp.org/LDP/abs/html/refcards.html
