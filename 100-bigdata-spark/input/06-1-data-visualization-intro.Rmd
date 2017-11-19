@@ -10,5 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ![](images/flow-dtvisual.png)
 
 
+In this chapter of the book you will be walked through the main data visualisation tools available in `R`. Namely, `ggplot2`, `Shiny` and reporting tools such as `markdown`. As the main interest is on Big Data Infrastructure, you will learn how to efficiently use these tools in the `Spark` framework. 
+
 
 
