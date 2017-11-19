@@ -316,6 +316,7 @@ $(document).ready(function () {
   <li class="nav-header">Sparklyr</li>
   <li><a href="03-1-sparklyr.html">Connect work disconnect pattern</a></li>
   <li><a href="03-2-sparklyr-yarn.html">Spark on Yarn</a></li>
+  <li><a href="03-3-sparklyr-appendix.html">Sparklyr Appendix</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="05-1-intro-tidyverse.html">Introduction to tidyverse</a></li>
   <li><a href="05-2-intro-dplyr.html">Introduction to dplyr</a></li>
@@ -369,14 +370,7 @@ $(document).ready(function () {
 <li><a href="#sql">SQL</a><ul>
 <li><a href="#spark_write_csv">spark_write_csv</a></li>
 </ul></li>
-<li><a href="#appendix">Appendix</a><ul>
-<li><a href="#locate-and-use-a-binary-spark-installation">Locate and use a binary Spark installation</a></li>
-<li><a href="#connect-spark-to-a-yarn-cluster">Connect Spark to a YARN cluster</a></li>
-<li><a href="#useful-links">Useful links</a></li>
 <li><a href="#benchmark">Benchmark</a></li>
-<li><a href="#cache-latency">Cache Latency</a></li>
-<li><a href="#tools">Tools</a></li>
-</ul></li>
 </ul>
 </div>
 
@@ -591,41 +585,8 @@ dim( spark_table )
 dim( collect(spark_table) )</code></pre>
 </div>
 </div>
-<div id="appendix" class="section level1">
-<h1>Appendix</h1>
-<div id="locate-and-use-a-binary-spark-installation" class="section level2">
-<h2>Locate and use a binary Spark installation</h2>
-<p>If you have a binary installation of Spark on your system you have to tell to <code>R</code> where it is. For that set this environment variable and check it correctness.</p>
-<pre class="r"><code>Sys.setenv( SPARK_HOME = &quot;/usr/local/spark&quot;)
-Sys.getenv(&quot;SPARK_HOME&quot;)</code></pre>
-</div>
-<div id="connect-spark-to-a-yarn-cluster" class="section level2">
-<h2>Connect Spark to a YARN cluster</h2>
-<p>Yarn is a cluster manager, Spark can run on top of it with the advantage to split it workloads across multiple machines. This is pretty easy if the <code>R</code> process runs on the master of Hadoop YARN cluster.</p>
-<p>If spark is not installed on the cluster we need to install it specifying the right version of Hadoop running on the cluster.</p>
-<pre class="r"><code>spark_install(version = &quot;2.0.0&quot;, hadoop_version = &quot;2.6&quot;)</code></pre>
-<p>Now, we can start spark:</p>
-<pre class="r"><code>Sys.setenv( SPARK_HOME = &quot;~/.cache/spark/spark-2.0.0-bin-hadoop2.6/&quot;)
-sc &lt;- spark_connect(master = &quot;yarn&quot;, version = &quot;2.0.0&quot; )</code></pre>
-<p>Now spark operations can be performed as the <code>master</code> would be “local”, but the computational effort will be spread across multiple computers in the cluster.</p>
-</div>
-<div id="useful-links" class="section level2">
-<h2>Useful links</h2>
-<p>R and spark:</p>
-<ol style="list-style-type: decimal">
-<li><p>sparklyr homepage: <a href="http://spark.rstudio.com/index.html" class="uri">http://spark.rstudio.com/index.html</a></p></li>
-<li><p>spark documentatin: <a href="http://spark.apache.org/docs/latest/" class="uri">http://spark.apache.org/docs/latest/</a></p></li>
-</ol>
-<p>Bash:</p>
-<ol style="list-style-type: decimal">
-<li><p>Bash Beginner Guide: <a href="http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html" class="uri">http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html</a></p></li>
-<li><p>Bash Reference Manual: <a href="http://www.gnu.org/software/bash/manual/bash.html" class="uri">http://www.gnu.org/software/bash/manual/bash.html</a></p></li>
-<li><p>Advanced Bash-Scripting Guide: <a href="http://www.tldp.org/LDP/abs/html/index.html" class="uri">http://www.tldp.org/LDP/abs/html/index.html</a></p></li>
-<li><p>Reference card: <a href="http://www.tldp.org/LDP/abs/html/refcards.html" class="uri">http://www.tldp.org/LDP/abs/html/refcards.html</a></p></li>
-</ol>
-</div>
-<div id="benchmark" class="section level2">
-<h2>Benchmark</h2>
+<div id="benchmark" class="section level1">
+<h1>Benchmark</h1>
 <pre class="r"><code>spark_partial &lt;-    spark_table_detail %&gt;%
         group_by( Year, FlightNum ) %&gt;%
         summarize( avg = mean( ArrDelay ) ) %&gt;%
@@ -668,25 +629,6 @@ identical(tmp_2, tmp_3)
 tmp_3 %&gt;% ungroup() %&gt;% summarise_all(funs(n(), mean, sd))
 tmp_4 %&gt;% ungroup() %&gt;% summarise_all(funs(n(), mean, sd))
 class(tmp_3)</code></pre>
-</div>
-<div id="cache-latency" class="section level2">
-<h2>Cache Latency</h2>
-<p><a href="https://gist.github.com/jboner/2841832" class="uri">https://gist.github.com/jboner/2841832</a></p>
-<p>Latency Comparison Numbers</p>
-<p>L1 cache reference 0.5 ns Branch mispredict 5 ns L2 cache reference 7 ns 14x L1 cache Mutex lock/unlock 25 ns Main memory reference 100 ns 20x L2 cache, 200x L1 cache Compress 1K bytes with Zippy 3,000 ns 3 us Send 1K bytes over 1 Gbps network 10,000 ns 10 us Read 4K randomly from SSD* 150,000 ns 150 us ~1GB/sec SSD Read 1 MB sequentially from memory 250,000 ns 250 us Round trip within same datacenter 500,000 ns 500 us Read 1 MB sequentially from SSD* 1,000,000 ns 1,000 us 1 ms ~1GB/sec SSD, 4X memory Disk seek 10,000,000 ns 10,000 us 10 ms 20x datacenter roundtrip Read 1 MB sequentially from disk 20,000,000 ns 20,000 us 20 ms 80x memory, 20X SSD Send packet CA-&gt;Netherlands-&gt;CA 150,000,000 ns 150,000 us 150 ms</p>
-<p>Notes</p>
-<p>1 ns = 10^-9 seconds 1 us = 10^-6 seconds = 1,000 ns 1 ms = 10^-3 seconds = 1,000 us = 1,000,000 ns</p>
-<p>Credit</p>
-<p>By Jeff Dean: <a href="http://research.google.com/people/jeff/" class="uri">http://research.google.com/people/jeff/</a> Originally by Peter Norvig: <a href="http://norvig.com/21-days.html#answers" class="uri">http://norvig.com/21-days.html#answers</a></p>
-</div>
-<div id="tools" class="section level2">
-<h2>Tools</h2>
-<p>This tools are useful to read messages of Spark engine:</p>
-<pre class="r"><code>spark_web(sc)
-spark_log(sc)</code></pre>
-<p>This is to store a different Spark configuration in a file:</p>
-<pre class="r"><code>spark_config(file = &quot;config.yml&quot;, use_default = TRUE)</code></pre>
-</div>
 </div>
 
 

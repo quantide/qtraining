@@ -8,7 +8,7 @@ RSQLite				| 02-1-RSQLite.Rmd
 Sparklyr
 Connect work disconnect pattern	| 03-1-sparklyr.Rmd
 Spark on Yarn			| 03-2-sparklyr-yarn.Rmd
-
+Sparklyr Appendix		| 03-3-sparklyr-appendix.Rmd
 
 Data Manipulation
 Introduction to tidyverse 	| 05-1-intro-tidyverse.Rmd

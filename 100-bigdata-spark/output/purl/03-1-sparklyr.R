@@ -162,18 +162,6 @@ src_tbls(sc)
 dim( spark_table )
 dim( collect(spark_table) )
 
-## ----set spark-home------------------------------------------------------
-Sys.setenv( SPARK_HOME = "/usr/local/spark")
-Sys.getenv("SPARK_HOME")
-
-## ------------------------------------------------------------------------
-spark_install(version = "2.0.0", hadoop_version = "2.6")
-
-
-## ------------------------------------------------------------------------
-Sys.setenv( SPARK_HOME = "~/.cache/spark/spark-2.0.0-bin-hadoop2.6/")
-sc <- spark_connect(master = "yarn", version = "2.0.0" )
-
 ## ------------------------------------------------------------------------
 spark_partial <- 	spark_table_detail %>%
 		group_by( Year, FlightNum ) %>%
@@ -218,11 +206,4 @@ tmp_3 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
 tmp_4 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
 class(tmp_3)
 
-
-## ------------------------------------------------------------------------
-spark_web(sc)
-spark_log(sc)
-
-## ------------------------------------------------------------------------
-spark_config(file = "config.yml", use_default = TRUE)
 
