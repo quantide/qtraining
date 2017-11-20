@@ -124,7 +124,6 @@ Again, you will notice that the `R` session is busy listening to user's interact
 
 In the global part we open the Spark Context, and read the data. The aggregation of data depends from an UI input, so it has been placed in the Server function, because it is re-calculated each time the input changes.
 
-
 ```{r}
 
 # global --------
