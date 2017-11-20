@@ -7,9 +7,11 @@ require(knitr)
 opts_chunk$set(eval = FALSE, fig.width = 5.5)
 ```
 
-## dplyr 5 verbs
+# Dplyr
 
-Let us consider the `spark_table` as built in the previous sections. We now can use sparklyr and dplyr functions to deal with this dataset. 
+## 5 verbs
+
+We now can use sparklyr and dplyr functions to deal with this dataset. 
 
 ```{r}
 require(dplyr)
@@ -63,4 +65,183 @@ spark_table_1 <-
         DepDelay,
         everything() )
 spark_table_1
+```
+
+## Plot with ggplot2
+
+```{R}
+ ## Collect some data
+delay <-
+    spark_table %>% 
+    group_by(TailNum) %>%
+    summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+    filter(count > 20, dist < 2000, !is.na(delay)) %>%
+    collect()
+
+ ## Plot delays
+library(ggplot2)
+ggplot(delay, aes(dist, delay)) +
+  geom_point(aes(size = count), alpha = 1/2) 
+```
+
+# SQL
+
+```{R}
+library(DBI)
+
+new_spark_table_detail <- dbGetQuery(sc, "SELECT Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum from year2008 LIMIT 5")
+new_spark_table_detail
+sql_render(spark_table_detail)
+
+class(spark_table_detail)
+class(new_spark_table_detail)
+
+```
+
+# Lazy Vs Eager
+
+Dplyr is a tool that provide lazy and eager object and function.
+
+- Lazy: nothing happend. Instructions of the computation are stored in the output object and the computation will take place when it results will be required.
+- Eager: when the computation is immediately run, taking care of run lazy object first.
+
+```{r}
+get_info <- function(tbl) {
+	print(sql_render(tbl))
+	# attr(spark_table$ops$src$con$backend, "conn_id")
+	# attr(tmp$ops$x$src$con$backend, "conn_id")
+}
+```
+
+
+```{r}
+
+get_info(spark_table)
+
+spark_table_detail_2 <-
+    spark_table %>%
+    # select(Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum )
+    select(Year, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum, Distance )
+get_info(spark_table_detail_2)
+
+step1 <-
+	spark_table_detail_2 %>%
+	filter( ! TailNum == "" ) %>%
+	arrange( FlightNum, TailNum  )
+
+get_info(step1)
+
+step2 <- 
+	step1 %>%
+	group_by(TailNum) %>%
+	summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+	filter(count > 20, dist < 2000, !is.na(delay)) 
+
+get_info(step2)
+```
+
+Till here nothing has happend, but different objects brings all the instructions. All dplyr verbs used till here are lazy operators.
+
+Now in order to apply the lazy code, an eager operator is used: `collect`. Consistently with what explained before, it apply the lazy instructions and, finally, collect the data into an R data.frame.
+
+```{r}
+collect(step2)
+```
+
+This takes some time to run.
+
+Now we add a further step starting from `step1` partial result. Then we collect the `step2` and `step3` dataset. 
+
+```{r}
+step3 <- 
+	step1 %>%
+	group_by(TailNum, FlightNum, Year) %>%
+	summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+	filter(count > 10, dist < 8000, !is.na(delay))
+
+collect(step2)
+collect(step3)
+```
+
+Given the dplyr lazy behaviour it is easy to understand that `step1` is performed twice. This could take a lot of precious time. How to fix this?
+
+Unfortunately `step1` is too big to fit in R memory, thus we cannot collect it. It is necessary break the lazyness of dplyr and preserve the partial result in the Spark process. For that we will use the eager operator `compute`, which apply the lazy instructions and create a Spark data.frame (`tbl_spark` object) with the output:
+
+```{r}
+computed_step1 <- compute(step1, "step1_sdf")
+
+get_info(step1)
+get_info(computed_step1)
+
+```
+
+As you can see the new object `computed_step1` has no lazy operations and uses "step1_sdf" as Spark data.frame. Now redefining `step2` and `step3`, two new optimized ojbect have been obtained.
+
+```{r}
+optimized_step2 <- 
+	computed_step1 %>%
+	group_by(TailNum) %>%
+	summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+	filter(count > 20, dist < 2000, !is.na(delay)) 
+
+get_info(optimized_step2)
+
+optimized_step3 <- 
+	computed_step1 %>%
+	group_by(TailNum, FlightNum, Year) %>%
+	summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+	filter(count > 10, dist < 8000, !is.na(delay))
+
+get_info(optimized_step3)
+
+collect(step2)
+collect(step3)
+```
+
+# Benchmark
+
+```{r}
+spark_partial <- 	spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		compute(name = "spark_partial")
+
+tmp <- collect(spark_partial)
+tmp
+library(microbenchmark)
+microbenchmark({
+	tmp_1 <- 
+		spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		compute()
+},{
+	tmp_2 <- 
+		spark_table_detail %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		collect()
+},{
+	tmp_3 <- collect(spark_partial)
+},{
+	tmp_4 <- 
+		R_df %>%
+		group_by( Year, FlightNum ) %>%
+		summarize( avg = mean( ArrDelay ) ) %>%
+		arrange( desc(avg) ) %>%
+		collect()
+}, times = 10)
+
+ ## todo
+tmp_1
+tmp_2
+identical(tmp_2, tmp_3)
+
+tmp_3 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
+tmp_4 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
+class(tmp_3)
+
 ```

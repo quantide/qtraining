@@ -1,0 +1,137 @@
+---
+title: "Data import and export with Spark"
+---
+
+```{r setup, include=FALSE, purl=FALSE, message=FALSE}
+require(knitr)
+opts_chunk$set(eval = FALSE, fig.width = 5.5)
+```
+
+# Data import
+
+## Csv reading
+
+The following code is to read a csv file. We are reading it from our local hard-drive but also distributed filesystem protocols like `hdfs://` and `s3n://` are allowed.
+
+```{r}
+
+csv_file <- "/data/2008.csv"
+
+spark_table <- spark_read_csv(
+	sc = sc,
+	name = "year2008",
+	path = csv_file
+)
+
+spark_table
+```
+
+## Sparklyr compared to R 	
+
+Where does Spark table differ to dplyr `tbl_df` or `data.frame`? Spark, like a database do, move the data out of R, so the management of memory is left to the Spark process. The object spark_table in R is only a handle to an object of Spark.
+
+```{r}
+R_df <- read.table(file = csv_file, header = T, sep = ",", quote = "\"")
+R_df <- tbl_df( R_df )
+R_df
+
+format( object.size(R_df), units = "auto" )
+format( object.size(spark_table), units = "auto" )
+
+```
+
+<!-- todo: There are differences also in getting the structure of the date: -->
+	
+	```{r}
+require(dplyr)
+
+# Examine structure of tibble
+str(R_df)
+
+# Examine structure of data
+glimpse(spark_table)
+
+```
+
+## Copy R data.frame to Spark
+
+If uploading a data.frame on Spark is needed the `dplyr::copy_to` function do this job. In this course this function can be used to upload a small dataframe to perform tests on Spark.  
+
+```{r}
+class(mtcars)
+
+mtcars_spark <- copy_to(sc, df = mtcars, name = "mtcars")
+
+class(mtcars_spark)
+```
+
+As result, a table named "mtcars" has appered in the Spark tab, which content can be recalled with `src_tbls` function:
+	
+	```{r}
+src_tbls(sc)
+```
+
+## Copy Spark data.frame to R 
+
+This operation should be thought with attention. Importing in R a big data.frame can be a long process that could also exceed the local RAM: this will end up with a crash of the R process.
+
+This is usually be done after the dataset is reduced to a smaller one in order to fit the local RAM: this can be obtained by filtering, aggregating, sampling, etc...
+
+In this case a smaller random sample is taken from the original dataset:
+	
+	```{r}
+spark_sample <- sample_n(spark_table, size = 500)
+class(spark_sample)
+
+R_sample <- collect(spark_sample)
+class(R_sample)
+```
+
+As you can see the spark object is a `tbl_spark`, while the collected one is an R `data.frame`. This is because the first is in the Spark process and the second is in the R one. 
+This is also proved by the different dimension of those objects:
+	
+	```{r}
+format( object.size(spark_sample), units = "auto" )
+format( object.size(R_sample), units = "auto" )
+```
+
+
+# Data export
+
+## Csv writing
+
+As usual we have some methods to export manipulated data. For convenience we export only the first 10 rows of the spark table. So first of all we set this mini dataset called `mini_spark_table` and we write it onto disk.
+
+Spark is made to deal with big data, thus is convenient (and default behavior of Spark) to split up this datasets in more files. So the destination of the writing operation will be a directory where put those files.
+
+```{r}
+mini_spark_table <- 
+	head(spark_table, n=10)
+
+out_csv_dir <- "/home/cloudera/data/mini_spark_table"
+
+if (dir.exists(out_csv_dir))
+	unlink(out_csv_dir, recursive = TRUE)
+
+spark_write_csv(x = mini_spark_table, path = out_csv_dir)
+
+if (dir.exists(out_csv_dir))
+	unlink(out_csv_dir, recursive = TRUE)
+
+spark_write_csv(x = spark_table, path = out_csv_dir )
+```
+
+Now we reload this family of csv, in a unique data set. Spark do the job for us simply taking as input the directory path in place of a single filename.
+
+```{r}
+spark_read_tbl <- spark_read_csv(sc = sc, 'read', path = out_csv_dir, header = T )
+
+class(spark_read_tbl)
+```
+
+```{r}
+src_tbls(sc) 
+
+dim( spark_table )
+dim( collect(spark_table) )
+```

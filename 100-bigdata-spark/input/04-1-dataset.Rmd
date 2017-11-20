@@ -1,0 +1,75 @@
+---
+title: "A big dataset"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+# The dataset
+	
+## Introduction
+
+The dataset we will use in this part of the course is again the dataset regarding on-time performance of domestic flights operated by large air carriers. You find data and a short explanation of tables on this page.
+
+	http://stat-computing.org/dataexpo/2009/the-data.html
+	
+
+## First data manipulation
+
+Data is in bzipped csv format. We can download them from the terminal following these instructions:
+
+```{bash}
+cd ~
+mkdir data			# create data dir
+cd data	  			# enter this dir
+wget http://stat-computing.org/dataexpo/2009/2006.csv.bz2
+wget http://stat-computing.org/dataexpo/2009/2007.csv.bz2
+wget http://stat-computing.org/dataexpo/2009/2008.csv.bz2
+bunzip *.csv.bz2
+ls
+```
+
+We thus have 3 csv files in this folder. We can print out the first 5 line of one of this file with the `head` command
+
+```{bash}
+head -n 5 2008.csv
+```
+
+The first line of each file contains the column names, which are equals in the three files. Now we want concatenate these files in a bigger csv. We will follow this steps:
+
+1. Create a new file `ontime.csv` with the column names
+2. Add the content of each file csv starting from the second line (without header)
+
+
+```{bash}
+	
+head -n 1 2008.csv  > ontime.csv   # step 1.
+tail -n +2 2008.csv >> ontime.csv  # step 2. 
+tail -n +2 2007.csv >> ontime.csv  # step 2. 
+tail -n +2 2006.csv >> ontime.csv  # step 2. 
+
+```
+
+## Faliure of R with read.table()
+
+Now the file `~/data/ontime.csv` contains about 2 Gb of data. If you are using a machine with 2 Gb or less of RAM, the reading of this file will fail.
+
+```{R}
+ontime <- read.table(file = "~/data/ontime.csv", header = T, sep = ",", quote = "\"")
+```
+
+If we want to succeeded in reading a csv file on a 2 Gb machine we need to take a sample of these files.
+
+```{bash}
+head -n 30000 2008.csv > mini.csv
+```
+
+Now from RStudio-server
+
+```{R}
+csv_file <- "~/data/mini.csv"
+R_df <- read.table(file = csv_file, header = T, sep = ",", quote = "\"")
+R_df
+```

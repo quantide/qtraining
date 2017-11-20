@@ -1,0 +1,9 @@
+---
+	title: "Cloudera Environment"
+---
+	
+	```{r setup, include=FALSE, purl=FALSE, message=FALSE}
+require(knitr)
+opts_chunk$set(eval = FALSE, fig.width = 5.5)
+```
+
