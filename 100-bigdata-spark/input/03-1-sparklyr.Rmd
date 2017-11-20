@@ -303,44 +303,105 @@ class(new_spark_table_detail)
 
 ```
 
-## spark_write_csv
+# Lazy Vs Eager
 
-As usual we have some methods to export manipulated data. For convenience we export only the first 10 rows of the spark table. So first of all we set this mini dataset called `mini_spark_table` and we write it onto disk.
+Dplyr is a tool that provide lazy and eager object and function.
 
-Spark is made to deal with big data, thus is convenient (and default behavior of Spark) to split up this datasets in more files. So the destination of the writing operation will be a directory where put those files.
-
-```{r}
-mini_spark_table <- 
-  head(spark_table, n=10)
-
-out_csv_dir <- "/home/cloudera/data/mini_spark_table"
-
-if (dir.exists(out_csv_dir))
-  unlink(out_csv_dir, recursive = TRUE)
-
-spark_write_csv(x = mini_spark_table, path = out_csv_dir)
-
-if (dir.exists(out_csv_dir))
-  unlink(out_csv_dir, recursive = TRUE)
-
-spark_write_csv(x = spark_table, path = out_csv_dir )
-```
-
-Now we reload this family of csv, in a unique data set. Spark do the job for us simply taking as input the directory path in place of a single filename.
+- Lazy: nothing happend. Instructions of the computation are stored in the output object and the computation will take place when it results will be required.
+- Eager: when the computation is immediately run, taking care of run lazy object first.
 
 ```{r}
-spark_read_tbl <- spark_read_csv(sc = sc, 'read', path = out_csv_dir, header = T )
-
-class(spark_read_tbl)
+get_info <- function(tbl) {
+	print(sql_render(tbl))
+	# attr(spark_table$ops$src$con$backend, "conn_id")
+	# attr(tmp$ops$x$src$con$backend, "conn_id")
+}
 ```
+
 
 ```{r}
-src_tbls(sc) 
 
-dim( spark_table )
-dim( collect(spark_table) )
+get_info(spark_table)
+
+spark_table_detail_2 <-
+    spark_table %>%
+    # select(Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum )
+    select(Year, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum, Distance )
+get_info(spark_table_detail_2)
+
+step1 <-
+	spark_table_detail_2 %>%
+	filter( ! TailNum == "" ) %>%
+	arrange( FlightNum, TailNum  )
+
+get_info(step1)
+
+step2 <- 
+	step1 %>%
+	group_by(TailNum) %>%
+	summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+	filter(count > 20, dist < 2000, !is.na(delay)) 
+
+get_info(step2)
 ```
 
+Till here nothing has happend, but different objects brings all the instructions. All dplyr verbs used till here are lazy operators.
+
+Now in order to apply the lazy code, an eager operator is used: `collect`. Consistently with what explained before, it apply the lazy instructions and, finally, collect the data into an R data.frame.
+
+```{r}
+collect(step2)
+```
+
+This takes some time to run.
+
+Now we add a further step starting from `step1` partial result. Then we collect the `step2` and `step3` dataset. 
+
+```{r}
+step3 <- 
+	step1 %>%
+	group_by(TailNum, FlightNum, Year) %>%
+	summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+	filter(count > 10, dist < 8000, !is.na(delay))
+
+collect(step2)
+collect(step3)
+```
+
+Given the dplyr lazy behaviour it is easy to understand that `step1` is performed twice. This could take a lot of precious time. How to fix this?
+
+Unfortunately `step1` is too big to fit in R memory, thus we cannot collect it. It is necessary break the lazyness of dplyr and preserve the partial result in the Spark process. For that we will use the eager operator `compute`, which apply the lazy instructions and create a Spark data.frame (`tbl_spark` object) with the output:
+
+```{r}
+computed_step1 <- compute(step1, "step1_sdf")
+
+get_info(step1)
+get_info(computed_step1)
+
+```
+
+As you can see the new object `computed_step1` has no lazy operations and uses "step1_sdf" as Spark data.frame. Now redefining `step2` and `step3`, two new optimized ojbect have been obtained.
+
+```{r}
+optimized_step2 <- 
+	computed_step1 %>%
+	group_by(TailNum) %>%
+	summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+	filter(count > 20, dist < 2000, !is.na(delay)) 
+
+get_info(optimized_step2)
+
+optimized_step3 <- 
+	computed_step1 %>%
+	group_by(TailNum, FlightNum, Year) %>%
+	summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
+	filter(count > 10, dist < 8000, !is.na(delay))
+
+get_info(optimized_step3)
+
+collect(step2)
+collect(step3)
+```
 
 # Benchmark
 
@@ -389,5 +450,45 @@ tmp_4 %>% ungroup() %>% summarise_all(funs(n(), mean, sd))
 class(tmp_3)
 
 ```
+
+# Spark_write_csv
+
+As usual we have some methods to export manipulated data. For convenience we export only the first 10 rows of the spark table. So first of all we set this mini dataset called `mini_spark_table` and we write it onto disk.
+
+Spark is made to deal with big data, thus is convenient (and default behavior of Spark) to split up this datasets in more files. So the destination of the writing operation will be a directory where put those files.
+
+```{r}
+mini_spark_table <- 
+  head(spark_table, n=10)
+
+out_csv_dir <- "/home/cloudera/data/mini_spark_table"
+
+if (dir.exists(out_csv_dir))
+  unlink(out_csv_dir, recursive = TRUE)
+
+spark_write_csv(x = mini_spark_table, path = out_csv_dir)
+
+if (dir.exists(out_csv_dir))
+  unlink(out_csv_dir, recursive = TRUE)
+
+spark_write_csv(x = spark_table, path = out_csv_dir )
+```
+
+Now we reload this family of csv, in a unique data set. Spark do the job for us simply taking as input the directory path in place of a single filename.
+
+```{r}
+spark_read_tbl <- spark_read_csv(sc = sc, 'read', path = out_csv_dir, header = T )
+
+class(spark_read_tbl)
+```
+
+```{r}
+src_tbls(sc) 
+
+dim( spark_table )
+dim( collect(spark_table) )
+```
+
+
 
 
