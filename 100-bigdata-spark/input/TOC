@@ -1,5 +1,6 @@
 Big data infrastructure
-Distributed architectures	| 01-1-big-data-infrastructure.Rmd 
+Distributed architectures	| 01-1-big-data-infrastructure.Rmd
+Cloudera			| 01-2-cloudera.Rmd
 
 Databases
 RSQLite				| 02-1-RSQLite.Rmd
@@ -10,12 +11,18 @@ Connect work disconnect pattern	| 03-1-sparklyr.Rmd
 Spark on Yarn			| 03-2-sparklyr-yarn.Rmd
 Sparklyr Appendix		| 03-3-sparklyr-appendix.Rmd
 
+
+Data import and export
+The dataset			| 04-1-dataset.Rmd
+Data Import Export		| 04-2-data-import-export.Rmd
+
+
 Data Manipulation
 Introduction to tidyverse 	| 05-1-intro-tidyverse.Rmd
 Introduction to dplyr 		| 05-2-intro-dplyr.Rmd
 Dplyr verb functions		| 05-3-dplyr-verbs.Rmd
-Joining tables			| 05-5-join.Rmd
-Group Data & Chain Verbs	| 05-6-group-chain.Rmd
+Joining tables			| 05-4-join.Rmd
+Group Data & Chain Verbs	| 05-5-group-chain.Rmd
 Data Manipulation & Spark	| 05-6-data-man-spark.Rmd
 
 
