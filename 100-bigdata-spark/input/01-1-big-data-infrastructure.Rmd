@@ -2,7 +2,7 @@
 
 Big data are a quantity of data not processable by a single normal computer. The typical scale of big data is Terabytes or petabytes of data. 
 
-The price of a single super computer scales exponentially to its performance. This means that is preferable scale horizontally, using more server as a distributed architecture. In this way, the price will scale more or less lineary with the performance, but there are differencies in the computational model.  
+The price of a single super computer scales exponentially to its performance. This means that is preferable scale horizontally, using more server as a distributed architecture. In this way, the price will scale more or less linearly with the performance, but there are differences in the computational model.  
 
 <!-- ## ODG -->
 
@@ -10,18 +10,18 @@ The price of a single super computer scales exponentially to its performance. Th
 
 ## Kinds of computations
 
-Different types of architectures requires different computation paradigms. Clusers use distributed computing to perform their calculation. 
+Different types of architectures requires different computation paradigms. Clusters use distributed computing to perform their calculation. 
 
-1. In single thread computation one process performs the code istructions each at a time on a sole processor, if more processors are available their will not be used. It is the case of base R.
-2. (In pitctures: (c)) In parallel computing, all processors have random access to a shared memory.
-3. (In pitctures: (a)(b)) In distributed computing, each processor has its own private memory. 
+1. In single thread computation one process performs the code instructions each at a time on a sole processor, if more processors are available their will not be used. It is the case of base R.
+2. (In pictures: (c)) In parallel computing, all processors have random access to a shared memory.
+3. (In pictures: (a)(b)) In distributed computing, each processor has its own private memory. 
 
 
 ![https://en.wikipedia.org/wiki/Distributed_computing](./images/Distributed-parallel.svg.png)
 
 # Apache Hadoop
 
-Hadoop is a software framework for distributed processing of large datesets across large clusters of computers.
+Hadoop is a software framework for distributed processing of large datasets across large clusters of computers.
 
 - Large datasets -> Terabytes or petabytes of data
 - Large clusters -> hundreds or thousands of nodes
@@ -37,7 +37,7 @@ Hadoop Goals:
 Hadoop features:
 
 - Scalability: it is the capability of handling a growing amount of work. This means increasing the numerosity of the cluster running the same code.
-- Flexibility: hadoop can ingest, store and manipulate any kind of data of any size.
+- Flexibility: Hadoop can ingest, store and manipulate any kind of data of any size.
 - Efficient and simple fault tolerant mechanism.
 - Inexpensive hardware: no supercomputer are used, each node is a top of the line of commercial computers. 
 
@@ -49,7 +49,7 @@ What is the cluster abstraction to the end user?
 
 1. One single unit: the cluster is presented as a single unit and the distribution and parallelization of tasks is performed automatically.
 
-2. Fault tolerance and automatic recovery: Hadoop takes care of task and node failiures automatically. Failure is considered the norm rather than exeption.
+2. Fault tolerance and automatic recovery: Hadoop takes care of task and node failures automatically. Failure is considered the norm rather than exception.
 
 3. Simple Programming interface (API): using MapReduce Paradigm. For each step the programmer has to provide a map and a reduce function to operate on data.
 
@@ -67,26 +67,26 @@ Hadoop Distributed File System is a distributed file storage capable to store pe
 
 Features:
 
-1. One single folder: each file is splitted in blocks which are distributed across the cluster. The end user sees only one filesystem with all files inside.
+1. One single folder: each file is split ted in blocks which are distributed across the cluster. The end user sees only one file-system with all files inside.
 
 2. Replication: each file block is replicated many times on different nodes.
 
-3. Data is accessed with the "hdfs" protocol from any application: "hdfs://folder/file.csv"
+3. Data is accessed with the "HDFS" protocol from any application: "hdfs://folder/file.csv"
 
 
-Each file is splitted in blocks, here represented by numbers. Each block is usually around 100 Mb of size. Each block is replicated three times, by default, and on different nodes: this prevents the data loss in case of failure and makes that portion of data available on different nodes for different computations.
+Each file is split ted in blocks, here represented by numbers. Each block is usually around 100 Mb of size. Each block is replicated three times, by default, and on different nodes: this prevents the data loss in case of failure and makes that portion of data available on different nodes for different computations.
 
 ![http://tudorlapusan.ro/hdfs-the-hadoop-distributed-filesystem-part-2/](./images/hdfs-replication.png)
 
 ## Architecture:
 
-Also the HDFS layer follows the one master with serveral slaves model. Here the master is the Datanode and slaves are the namenodes.
+Also the HDFS layer follows the one master with several slaves model. Here the master is the Datanode and slaves are the namenodes.
 
 - Datanode: it stores a portion of the Hadoop File System data.
 - Namenode: it is the centerpiece of an HDFS file system. It keeps track of the directory tree of all files and tracks where across the cluster each file block is kept.
 - Secondary namenode: it is the namenode recovery.
 
-The Datanode is a single server. This fact makes it a single point of failure: if it goes down the entire cluster is compromised. In order to avoid this, the Secondary Namenode constantly backups the Namenode data, and ,in case of failure, it becames the working Namenode.
+The Datanode is a single server. This fact makes it a single point of failure: if it goes down the entire cluster is compromised. In order to avoid this, the Secondary Namenode constantly backups the Namenode data, and ,in case of failure, it becomes the working Namenode.
 
 ![http://bradhedlund.com/2011/09/10/understanding-hadoop-clusters-and-the-network/](images/hdfs_architecure4.png)
 
@@ -98,7 +98,7 @@ Map Reduce is a programming model that allows any kind of data processing on a d
 
 ![https://wikis.nyu.edu/display/NYUHPC/Big+Data+Tutorial+1%3A+MapReduce](images/MappingFunction.png)
 
-2. shuffle step: it happends at the end of the "map step" when the algorithm requires that the data is exchanged by nodes. It is a network operation, which is automatically done, no end user programming is required.
+2. shuffle step: it happens at the end of the "map step" when the algorithm requires that the data is exchanged by nodes. It is a network operation, which is automatically done, no end user programming is required.
 
 3. reduce step: reducing takes as input a list and output a different kind of object. 
 
@@ -119,7 +119,7 @@ Here a join implementation:
 
 Apache Spark is an open-source cluster-computing framework. 
 
-Advantages over hadoop:
+Advantages over Hadoop:
 
 1. Speed: 10~100 times faster than Hadoop thanks to the In-memory computation.
 2. better API (Application Programming interface) abstraction which results a shorter and clearer code for the same operations.
@@ -174,7 +174,7 @@ By Jeff Dean:               http://research.google.com/people/jeff/
 Originally by Peter Norvig: http://norvig.com/21-days.html#answers
 
 
-Observing the order of magnitude it is clear that reading/writing operation are faster on RAM than on disk, which is faster then Network. This way Spark can achive its superiority in performance.
+Observing the order of magnitude it is clear that reading/writing operation are faster on RAM than on disk, which is faster then Network. This way Spark can achieve its superiority in performance.
 
 ## Distributed computation on top of YARN
 
