@@ -7,3 +7,46 @@ require(knitr)
 opts_chunk$set(eval = FALSE, fig.width = 5.5)
 ```
 
+# Hadoop CDH distribution
+
+Hadoop is an ecosystem of open source components. In this course we will use the Hadoop base componets (such as HDFS), Hive, Spark. A good way to install, configure, manage and update this kind of software is through a distribution of software. CDH is one of the most popular Hadoop distribution. 
+
+[CDH](https://www.cloudera.com/products/open-source/apache-hadoop.html)
+
+## Test environment
+
+In order to give you a suitable environment to test the R code, a virtual cluster with one server will be used. Hadoop, Hive and Spark are installed with CDH distribution with the addition of R, RStudio and Sparklyr.
+
+# Connect to the test environment
+
+## Unix and MacOS systems
+     
+From the command line run:     
+
+```{bash}
+ssh -p 2001 rstudio1@2.238.197.167 -L 8887:0.0.0.0:8787 -L 8080:0.0.0.0:80 -L 4040:0.0.0.0:4040 -L 8888:0.0.0.0:8888
+```
+
+## windows systems
+
+Download `putty.exe` from http://www.putty.org/ and install the software.
+
+Following [this guide](https://www.electrictoolbox.com/putty-create-ssh-port-tunnel/) enable the ssh-tunnel:
+
+```
+     LocalForward 8887 0.0.0.0:8787
+     LocalForward 8080 0.0.0.0:80
+     LocalForward 4040 0.0.0.0:4040
+     LocalForward 8888 0.0.0.0:8888
+```
+
+and connect to the host `rstudio1@2.238.197.167` on port `2001`.
+
+## Everyone
+
+now pointing your browser to 
+
+1. http://localhost:8887 you will be connected te RStudio Server
+2. http://localhost:8080 you will be connected to CDH guide
+3. http://localhost:4040 you will be connected te Spark interface
+4. http://localhost:8888 you will be connected te Hue
