@@ -78,7 +78,7 @@ iris %>%
 									color = "red"))
 ```
 
-## Linear Regression in Spark
+### Linear Regression in Spark
 
 ```{r}
 model <- iris_tbl %>%
@@ -95,7 +95,7 @@ iris_tbl %>%
 									color = "red"))
 ```
 
-## Logistic Regression in R
+### Logistic Regression in R
 
 ```{r}
 # Prepare beaver dataset
@@ -128,7 +128,7 @@ ggplot(beaver, aes(x = temp, y = activ)) +
 
 ```
 
-## Logistic Regression in Spark
+### Logistic Regression in Spark
 
 ```{r}
 beaver_tbl <- copy_to(sc, beaver, "beaver", overwrite = TRUE)
@@ -141,7 +141,7 @@ print(model)
 ```
 
 
-## Random Forests with Spark
+### Random Forests with Spark
 
 ```{r}
 mForest <- iris_tbl %>%
@@ -156,27 +156,8 @@ mPredict <- predict(mForest, iris_tbl)
 head(mPredict)
 ```
 
-## Comparing Random Forest Classification
 
-Using the model to predict the same data it was trained on is
-certainly not best practice, but it at least showcases that
-the results produced are concordant between R and Spark.
-
-```{r}
-df <- as.data.frame(table(x = rPredict, y = mPredict), stringsAsFactors = FALSE)
-
-ggplot(df) +
-	geom_raster(aes(x, y, fill = Freq)) +
-	geom_text(aes(x, y, label = Freq), col = "#222222", size = 6, nudge_x = 0.005, nudge_y = -0.005) +
-	geom_text(aes(x, y, label = Freq), col = "white", size = 6) +
-	labs(
-		x = "R-predicted Species",
-		y = "Spark-predicted Species",
-		title = "Random Forest Classification — Comparing R and Spark")
-```
-
-
-## Decision Tree with Spark
+### Decision Tree with Spark
 
 ```{r}
 mDecisionTree <- iris_tbl %>%

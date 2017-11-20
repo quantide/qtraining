@@ -6,8 +6,9 @@ title: "Introduction to `tidyverse` and `dplyr`"
 options(width = 108)
 ```
 
+This chapter is based on the so-called "tidyverse". __Packages in the tidyverse are packages that share a common philosophy of data management and that are designed to work well together.__ (source: www.tidyverse.org) 
 
-This chapter provides an overview of data management in the `tidyverse` through the `dplyr` package, which is part of the `tidyverse` core.
+More specifically, this chapter provides an overview of data management in the `tidyverse` through the `dplyr` package, which is part of the `tidyverse` core.
 
 The `dplyr` package for `R` is very powerful for data management since:
 
@@ -19,7 +20,7 @@ The `dplyr` package for `R` is very powerful for data management since:
 require(tidyverse)
 ```
 
-In the following chapters, we will explore the innovations introduced in the tidyverse to make our lifes easier when dealing with dataframes manipulation tasks.     
+In the following paragraphs, we will explore the innovations introduced in the tidyverse to make our lifes easier when dealing with dataframes manipulation tasks.     
 In particular:
 
 * pipe operator (`%>%`) 

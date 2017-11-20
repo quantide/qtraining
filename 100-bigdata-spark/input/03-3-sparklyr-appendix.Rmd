@@ -1,5 +1,10 @@
 # Appendix
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+
 ## Locate and use a binary Spark installation 
 
 If you have a binary installation of Spark on your system you have to tell to `R` where it is. For that set this environment variable and check it correctness.
