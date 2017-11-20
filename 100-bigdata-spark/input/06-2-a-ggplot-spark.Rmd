@@ -10,7 +10,7 @@ opts_chunk$set(eval = FALSE, fig.width = 5.5)
 # Plotting Big Data
 
 Plotting big data is not possible and it has no sense. Can you imagine a scatterplot with 10^6 points? The graph would show a unique filled block because of too many data points.
-Everytime `ggplot` is used with a lazy dataset it automatically try to collect it. So the dataset object have to be an aggregate or filtered product of the original dataset.
+Every time `ggplot` is used with a lazy dataset it automatically try to collect it. So the dataset object have to be an aggregate or filtered product of the original dataset.
 
 Use again this dataset:
 

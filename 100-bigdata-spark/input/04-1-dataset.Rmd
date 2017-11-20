@@ -52,7 +52,7 @@ tail -n +2 2006.csv >> ontime.csv  # step 2.
 
 ```
 
-## Faliure of R with read.table()
+## Failure of R with read.table()
 
 Now the file `~/data/ontime.csv` contains about 2 Gb of data. If you are using a machine with 2 Gb or less of RAM, the reading of this file will fail.
 

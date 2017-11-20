@@ -9,7 +9,7 @@ opts_chunk$set(eval = FALSE, fig.width = 5.5)
 
 # Hadoop CDH distribution
 
-Hadoop is an ecosystem of open source components. In this course we will use the Hadoop base componets (such as HDFS), Hive, Spark. A good way to install, configure, manage and update this kind of software is through a distribution of software. CDH is one of the most popular Hadoop distribution. 
+Hadoop is an ecosystem of open source components. In this course we will use the Hadoop base components (such as HDFS), Hive, Spark. A good way to install, configure, manage and update this kind of software is through a distribution of software. CDH is one of the most popular Hadoop distribution. 
 
 [CDH](https://www.cloudera.com/products/open-source/apache-hadoop.html)
 
@@ -46,7 +46,7 @@ and connect to the host `rstudio1@2.238.197.167` on port `2001`.
 
 now pointing your browser to 
 
-1. http://localhost:8887 you will be connected te RStudio Server
+1. http://localhost:8887 you will be connected to RStudio Server
 2. http://localhost:8080 you will be connected to CDH guide
-3. http://localhost:4040 you will be connected te Spark interface
-4. http://localhost:8888 you will be connected te Hue
+3. http://localhost:4040 you will be connected to Spark interface
+4. http://localhost:8888 you will be connected to Hue

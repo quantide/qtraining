@@ -43,7 +43,7 @@ If the example app is running, press Escape to close the app, and you are ready 
 The first thing you need to know is that every Shiny app is composed of two parts: 
 
 * a _web page_ that shows the app to the user and that the user interacts with
-* a _computer_ that runs the functions that create the output to be visualised in the webpage 
+* a _computer_ that runs the functions that create the output to be visualized in the webpage 
 
 Notice that in this course "the computer" will be your own laptop, although most likely when you want other users to use your app, it will run on a server somewhere else. 
 
@@ -58,7 +58,7 @@ You need to build both of them separately and they will be run together when you
 
 ## Building the first Shiny app
 
-Following the above structure, let us initialise the first Shiny App. Create a new folder where you will pace your shiny app. It is good practice that the app is contained in its own folder and no code besides that of the app, should go in it. Copy the following code lines into a new file named `app.R` in the folder where you will build your shiny app:
+Following the above structure, let us initialize the first Shiny App. Create a new folder where you will pace your shiny app. It is good practice that the app is contained in its own folder and no code besides that of the app, should go in it. Copy the following code lines into a new file named `app.R` in the folder where you will build your shiny app:
 
 ```{r my-first-shiny-app, eval = FALSE}
 library(shiny)
@@ -69,7 +69,7 @@ server <- function(input, output) {}
 shinyApp(ui = ui, server = server)
 ```
 
-More specifically we initialised an empty web page (ui) and an empty server.
+More specifically we initialized an empty web page (ui) and an empty server.
 
 Notice that once you save the file as `app.R`, the latest RStudio recognizes that you are building a Shiny app, and, at the top right of you code, you should see the Run button change to Run App.
 
@@ -83,7 +83,7 @@ If you click the stop button the app will stop.
 
 Now, let us spend a couple of words on the functions we are using. `fluidPage()` creates a page with fluid layout which consists of rows that include columns. Rows make sure their elements appear on the same line (if the browser has adequate width), while columns define how much horizontal space within a _12-unit wide grid_ elements should occupy. When you build the user interface, all you will be doing is passing comma-separated elements to the `fluidPage()` function.
 
-`server` is initialised as a function taking two arguments: input and output. This structure is always the same, we will come back to it when we will walk you through the creation of the server functions.
+`server` is initialized as a function taking two arguments: input and output. This structure is always the same, we will come back to it when we will walk you through the creation of the server functions.
 
 ### Separate ui and server functions
 
@@ -99,7 +99,7 @@ When RStudio sees these two files in the same folder, it will know you’re writ
 
 First of all, the dashboard is defined as having three parts: a header, a sidebar, and a body. 
 
-To initialise an empty `shinydashboard`, use the following code:
+To initialize an empty `shinydashboard`, use the following code:
 
 ```{r shinydashboard}
 library(shiny)

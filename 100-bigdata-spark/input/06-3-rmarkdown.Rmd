@@ -294,7 +294,7 @@ The highlighted lines ( here `x <- 10`) will be displayed with a bold font. When
 
 # Gererate a report from bigdata
 
-RMarkdown is no more than an RScript. Copy to a rmarkdown buffer and uncomment it to see the resulting html.
+RMarkdown is no more than an RScript. Copy to an RMarkdown buffer and uncomment it to see the resulting html.
 
 
 ```{r}

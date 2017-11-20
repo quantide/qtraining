@@ -17,7 +17,7 @@ As stated before, an Hadoop cluster is seen as a single unit. A good solution is
 
 In order to process data we need to open a browser, address it to the RStudio Server and login.
 
-Now sparklyr needs to use the spark binary and configuration of the cluster. This task is achived setting the `SPARK_HOME` environment variable with the Spark path on the edge file system. Then the master option is `yarn-client` in this case. 
+Now sparklyr needs to use the spark binary and configuration of the cluster. This task is achieved setting the `SPARK_HOME` environment variable with the Spark path on the edge file system. Then the master option is `yarn-client` in this case. 
 
 ```{r}
 require(sparklyr)
@@ -51,9 +51,9 @@ Notice that `csv_file` is now a url with the protocol `<protocol>:///path/to/fil
 
 ## HDFS
 
-Actually it is not that useful reading a file from local, because of using a sigle hard drive is a bottleneck to access big data. So the tipical use case is:
+Actually it is not that useful reading a file from local, because of using a single hard drive is a bottleneck to access big data. So the typical use case is:
 
-1. some one prepeared a big dataset on HDFS
+1. some one prepared a big dataset on HDFS
 2. we want to read that big file and load it in the distributed Spark ram memory.
 
 This bash command allows to be sure that the csv file `sample_07` is present in that path of HDFS.
@@ -80,7 +80,7 @@ spark_table
 
 The Apache Hive ™ data warehouse software facilitates reading, writing, and managing large datasets residing in distributed storage using SQL. Structure can be projected onto data already in storage. A command line tool and JDBC driver are provided to connect users to Hive. (source: https://hive.apache.org/)
 
-Poorly speaking, this piece of sofware perform the following operations:
+Poorly speaking, this piece of software perform the following operations:
 
 1. read csv from HDFS
 2. assign them a schema: each column is registered with its own type (i.e. String or integer, etc..)

@@ -65,7 +65,7 @@ mtcars_spark <- copy_to(sc, df = mtcars, name = "mtcars")
 class(mtcars_spark)
 ```
 
-As result, a table named "mtcars" has appered in the Spark tab, which content can be recalled with `src_tbls` function:
+As result, a table named "mtcars" has appeared in the Spark tab, which content can be recalled with `src_tbls` function:
 	
 	```{r}
 src_tbls(sc)
