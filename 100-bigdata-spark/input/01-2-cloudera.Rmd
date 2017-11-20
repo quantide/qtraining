@@ -1,8 +1,8 @@
 ---
-	title: "Cloudera Environment"
+title: "Cloudera Environment"
 ---
 	
-	```{r setup, include=FALSE, purl=FALSE, message=FALSE}
+```{r setup, include=FALSE, purl=FALSE, message=FALSE}
 require(knitr)
 opts_chunk$set(eval = FALSE, fig.width = 5.5)
 ```
@@ -23,7 +23,7 @@ In order to give you a suitable environment to test the R code, a virtual cluste
      
 From the command line run:     
 
-```{bash}
+```{bash, eval = FALSE}
 ssh -p 2001 rstudio1@2.238.197.167 -L 8887:0.0.0.0:8787 -L 8080:0.0.0.0:80 -L 4040:0.0.0.0:4040 -L 8888:0.0.0.0:8888
 ```
 
