@@ -212,6 +212,46 @@ format( object.size(R_sample), units = "auto" )
 ```
 
 
+# Data export
+
+## Csv writing
+
+As usual we have some methods to export manipulated data. For convenience we export only the first 10 rows of the spark table. So first of all we set this mini dataset called `mini_spark_table` and we write it onto disk.
+
+Spark is made to deal with big data, thus is convenient (and default behavior of Spark) to split up this datasets in more files. So the destination of the writing operation will be a directory where put those files.
+
+```{r}
+mini_spark_table <- 
+  head(spark_table, n=10)
+
+out_csv_dir <- "/home/cloudera/data/mini_spark_table"
+
+if (dir.exists(out_csv_dir))
+  unlink(out_csv_dir, recursive = TRUE)
+
+spark_write_csv(x = mini_spark_table, path = out_csv_dir)
+
+if (dir.exists(out_csv_dir))
+  unlink(out_csv_dir, recursive = TRUE)
+
+spark_write_csv(x = spark_table, path = out_csv_dir )
+```
+
+Now we reload this family of csv, in a unique data set. Spark do the job for us simply taking as input the directory path in place of a single filename.
+
+```{r}
+spark_read_tbl <- spark_read_csv(sc = sc, 'read', path = out_csv_dir, header = T )
+
+class(spark_read_tbl)
+```
+
+```{r}
+src_tbls(sc) 
+
+dim( spark_table )
+dim( collect(spark_table) )
+```
+
 # dplyr
 
 ## 5 verbs
@@ -451,43 +491,6 @@ class(tmp_3)
 
 ```
 
-# Spark_write_csv
-
-As usual we have some methods to export manipulated data. For convenience we export only the first 10 rows of the spark table. So first of all we set this mini dataset called `mini_spark_table` and we write it onto disk.
-
-Spark is made to deal with big data, thus is convenient (and default behavior of Spark) to split up this datasets in more files. So the destination of the writing operation will be a directory where put those files.
-
-```{r}
-mini_spark_table <- 
-  head(spark_table, n=10)
-
-out_csv_dir <- "/home/cloudera/data/mini_spark_table"
-
-if (dir.exists(out_csv_dir))
-  unlink(out_csv_dir, recursive = TRUE)
-
-spark_write_csv(x = mini_spark_table, path = out_csv_dir)
-
-if (dir.exists(out_csv_dir))
-  unlink(out_csv_dir, recursive = TRUE)
-
-spark_write_csv(x = spark_table, path = out_csv_dir )
-```
-
-Now we reload this family of csv, in a unique data set. Spark do the job for us simply taking as input the directory path in place of a single filename.
-
-```{r}
-spark_read_tbl <- spark_read_csv(sc = sc, 'read', path = out_csv_dir, header = T )
-
-class(spark_read_tbl)
-```
-
-```{r}
-src_tbls(sc) 
-
-dim( spark_table )
-dim( collect(spark_table) )
-```
 
 
 
