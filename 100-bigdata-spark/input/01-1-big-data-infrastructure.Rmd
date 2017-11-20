@@ -1,6 +1,10 @@
-<!-- # What is Big Data? -->
+# What is Big Data?
 
-<!-- ## ODG ??? -->
+Big data are a quantity of data not processable by a single normal computer. The typical scale of big data is Terabytes or petabytes of data. 
+
+The price of a single super computer scales exponentially to its performance. This means that is preferable scale horizontally, using more server as a distributed architecture. In this way, the price will scale more or less lineary with the performance, but there are differencies in the computational model.  
+
+<!-- ## ODG -->
 
 # Distributed Architecture
 
@@ -8,7 +12,7 @@
 
 Different types of architectures requires different computation paradigms. Clusers use distributed computing to perform their calculation. 
 
-1. In single thread computation one process performs the code istructions each at a time on a sole processor, if more processors are available their are not used. It is the case of base R.
+1. In single thread computation one process performs the code istructions each at a time on a sole processor, if more processors are available their will not be used. It is the case of base R.
 2. (In pitctures: (c)) In parallel computing, all processors have random access to a shared memory.
 3. (In pitctures: (a)(b)) In distributed computing, each processor has its own private memory. 
 
@@ -24,16 +28,16 @@ Hadoop is a software framework for distributed processing of large datesets acro
 
 Hadoop is an open-source implementation for Google MapReduce and it is based on a simple programming model called MapReduce.
 
-Hadoop Goals
+Hadoop Goals:
 
-- Store big data,
-- Parallelize the computation in order to process big data,
-- Avoid lose of data
+- Store big data
+- Parallelize the computation in order to process big data
+- Avoid the lose of data
 
 Hadoop features:
 
 - Scalability: it is the capability of handling a growing amount of work. This means increasing the numerosity of the cluster running the same code.
-- Flexibility: hadoop can ingest, store and manipulate any kind of data on any size.
+- Flexibility: hadoop can ingest, store and manipulate any kind of data of any size.
 - Efficient and simple fault tolerant mechanism.
 - Inexpensive hardware: no supercomputer are used, each node is a top of the line of commercial computers. 
 
@@ -51,11 +55,15 @@ What is the cluster abstraction to the end user?
 
 ## Layers
 
-1. HDFS: Hadoop distributed filesystem
+Hadoop is composed by 2 layers:
+
+1. HDFS: Hadoop distributed File System
 
 2. Yarn: Yet Another Resource Negotiator
 
 ## HDFS
+
+Hadoop Distributed File System is a distributed file storage capable to store petabytes of data on thousands of nodes. It manages backup and recovery automatically in order to face the permanent and the temporary failures of some nodes. 
 
 Features:
 
@@ -90,7 +98,7 @@ Map Reduce is a programming model that allows any kind of data processing on a d
 
 ![https://wikis.nyu.edu/display/NYUHPC/Big+Data+Tutorial+1%3A+MapReduce](images/MappingFunction.png)
 
-2. shuffle step: it happends at the end of the "map step" when the algorithm requires that the data is exchanged by nodes. It is a netword operation. This operation is automatically done, no user programming is required.
+2. shuffle step: it happends at the end of the "map step" when the algorithm requires that the data is exchanged by nodes. It is a network operation, which is automatically done, no end user programming is required.
 
 3. reduce step: reducing takes as input a list and output a different kind of object. 
 
@@ -113,24 +121,26 @@ Apache Spark is an open-source cluster-computing framework.
 
 Advantages over hadoop:
 
-1. Speed: 10~100 times faster than Hadoop
-2. better API (Application Programming interface)
+1. Speed: 10~100 times faster than Hadoop thanks to the In-memory computation.
+2. better API (Application Programming interface) abstraction which results a shorter and clearer code for the same operations.
 3. Combine SQL, streaming, machine-learning and Graph libraries.
 
 
 ![](images/spark-vs-hadoop.png)
 
-## In memory computation
+## In-memory computation
 
 Hadoop Map Reduce in order to guarantee its recovery capabilities writes everything on disk (input and output on each worker). So when the computation is performed locally (mapping and reducing operations) the bottleneck of the performance is on the speed of the Hard drive. On the contrary in the shuffling operation the bottleneck is the speed of the network.
 
-On the other hand, Spark perform the shuffling over the network, but the map and reducing operations in memory (RAM). 
+On the other hand, Spark perform the shuffling over the network, but the map and reducing operations are performed in RAM. 
 
 Before trying to understand why Spark is quicker than Hadoop Map Reduce, here are some read timing about different kind of memories:
 
 Cache Latency:
 
 https://gist.github.com/jboner/2841832
+
+<!-- Se questo non si visualizza bene usiamo una tabella markdown o del testo semplice in un blocco di codice -->
 
 Latency Comparison Numbers
 
@@ -165,7 +175,10 @@ Observing the order of magnitude it is clear that reading/writing operation are 
 
 ## Distributed computation on top of YARN
 
-[Glossary](https://spark.apache.org/docs/latest/cluster-overview.html#glossary)
+YARN is a Cluster manager which allows any software with the right API to access to the distributed computing of Hadoop. By default Apache Hadoop use its own Map Reduce on top of YARN. In this course, Apache Spark will connect to YARN in order to gain the control of the computational resources of the cluster. 
+
+
+[Glossary:](https://spark.apache.org/docs/latest/cluster-overview.html#glossary)
 
 Driver program
 
