@@ -15,7 +15,7 @@ The dataset we will use in this course is a public dataset collected by U.S. Dep
 
 	http://stat-computing.org/dataexpo/2009/the-data.html
 
-## first data manipulation
+## First data manipulation
 
 Data is in bzipped csv format. We can download them from the terminal following these instructions:
 
@@ -88,7 +88,8 @@ devtools::install_github("rstudio/sparklyr")
 require(sparklyr)
 ```
 
-You can install a version directly from R:
+
+If you want to run Spark locally or you cannot connect to a cluster, you should install a version directly from R. This will install the requested Spark version in the `~/.cache/` folder.
 
 ```{R}
 spark_install(version = "2.0.0")
