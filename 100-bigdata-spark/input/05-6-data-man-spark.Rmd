@@ -67,23 +67,6 @@ spark_table_1 <-
 spark_table_1
 ```
 
-## Plot with ggplot2
-
-```{R}
- ## Collect some data
-delay <-
-    spark_table %>% 
-    group_by(TailNum) %>%
-    summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %>%
-    filter(count > 20, dist < 2000, !is.na(delay)) %>%
-    collect()
-
- ## Plot delays
-library(ggplot2)
-ggplot(delay, aes(dist, delay)) +
-  geom_point(aes(size = count), alpha = 1/2) 
-```
-
 # SQL
 
 ```{R}
@@ -108,8 +91,6 @@ Dplyr is a tool that provide lazy and eager object and function.
 ```{r}
 get_info <- function(tbl) {
 	print(sql_render(tbl))
-	# attr(spark_table$ops$src$con$backend, "conn_id")
-	# attr(tmp$ops$x$src$con$backend, "conn_id")
 }
 ```
 
@@ -120,7 +101,6 @@ get_info(spark_table)
 
 spark_table_detail_2 <-
     spark_table %>%
-    # select(Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum )
     select(Year, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum, Distance )
 get_info(spark_table_detail_2)
 
@@ -207,8 +187,6 @@ spark_partial <- 	spark_table_detail %>%
 		arrange( desc(avg) ) %>%
 		compute(name = "spark_partial")
 
-tmp <- collect(spark_partial)
-tmp
 library(microbenchmark)
 microbenchmark({
 	tmp_1 <- 

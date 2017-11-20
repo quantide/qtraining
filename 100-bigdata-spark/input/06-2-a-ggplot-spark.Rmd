@@ -7,6 +7,28 @@ require(knitr)
 opts_chunk$set(eval = FALSE, fig.width = 5.5)
 ```
 
+# Plotting Big Data
+
+Plotting big data is not possible and it has no sense. Can you imagine a scatterplot with 10^6 points? The graph would show a unique filled block because of too many data points.
+Everytime `ggplot` is used with a lazy dataset it automatically try to collect it. So the dataset object have to be an aggregate or filtered product of the original dataset.
+
+Use again this dataset:
+
+
+```{r}
+
+csv_file <- "/data/2008.csv"
+
+spark_table <- spark_read_csv(
+	sc = sc,
+	name = "year2008",
+	path = csv_file
+)
+
+spark_table
+```
+
+Then create as aggregate data.frame, collect it and plot it:
 
 ```{r ggplot-spark}
  ## Collect some data
@@ -22,3 +44,5 @@ library(ggplot2)
 ggplot(delay, aes(dist, delay)) +
   geom_point(aes(size = count), alpha = 1/2) 
 ```
+
+
