@@ -311,18 +311,22 @@ $(document).ready(function () {
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Big data infrastructure</li>
   <li><a href="01-1-big-data-infrastructure.html">Distributed architectures</a></li>
+  <li><a href="01-2-cloudera.html">Cloudera</a></li>
   <li class="nav-header">Databases</li>
   <li><a href="02-1-RSQLite.html">RSQLite</a></li>
   <li class="nav-header">Sparklyr</li>
   <li><a href="03-1-sparklyr.html">Connect work disconnect pattern</a></li>
   <li><a href="03-2-sparklyr-yarn.html">Spark on Yarn</a></li>
   <li><a href="03-3-sparklyr-appendix.html">Sparklyr Appendix</a></li>
+  <li class="nav-header">Data import and export</li>
+  <li><a href="04-1-dataset.html">The dataset</a></li>
+  <li><a href="04-2-data-import-export.html">Data Import Export</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="05-1-intro-tidyverse.html">Introduction to tidyverse</a></li>
   <li><a href="05-2-intro-dplyr.html">Introduction to dplyr</a></li>
   <li><a href="05-3-dplyr-verbs.html">Dplyr verb functions</a></li>
-  <li><a href="05-5-join.html">Joining tables</a></li>
-  <li><a href="05-6-group-chain.html">Group Data &amp; Chain Verbs</a></li>
+  <li><a href="05-4-join.html">Joining tables</a></li>
+  <li><a href="05-5-group-chain.html">Group Data &amp; Chain Verbs</a></li>
   <li><a href="05-6-data-man-spark.html">Data Manipulation &amp; Spark</a></li>
   <li class="nav-header">Data Visualisation</li>
   <li><a href="06-1-data-visualization-intro.html">Introduction</a></li>
@@ -365,6 +369,7 @@ $(document).ready(function () {
 <li><a href="#visual-appearance">Visual Appearance</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#gererate-a-report-from-bigdata">Gererate a report from bigdata</a></li>
 </ul>
 </div>
 
@@ -716,6 +721,62 @@ y &lt;- x * 2</code></pre>
 </div>
 </div>
 </div>
+</div>
+<div id="gererate-a-report-from-bigdata" class="section level1">
+<h1>Gererate a report from bigdata</h1>
+<p>RMarkdown is no more than an RScript. Copy to an RMarkdown buffer and uncomment it to see the resulting html.</p>
+<pre class="r"><code># ---
+#   title: &quot;Big data report&quot;
+# ---
+#   
+#   ```{r, echo=FALSE, message=FALSE, include=FALSE, purl=FALSE}  
+# options(width = 108)
+# show_chunk &lt;- function(x){
+#   cat(x)
+# }
+# require(knitr)
+# ```  
+# 
+# ```{r init, echo = FALSE}
+# 
+# # global --------
+# library(shiny)
+# library(shinydashboard)
+# library(sparklyr) 
+# library(ggplot2)
+# library(dplyr)
+# 
+# sc &lt;- spark_connect( master = &quot;local&quot;, version = &quot;2.0.0&quot; )
+# 
+# csv_file &lt;- &quot;/data/2008.csv&quot;
+# 
+# ## read data
+# spark_table &lt;- spark_read_csv(
+#   sc = sc,
+#   name = &quot;year2008&quot;,
+#   path = csv_file
+# )
+# 
+# ```
+# 
+# ```{r aggregation}
+# ## Collect some data
+# delay &lt;-
+#   spark_table %&gt;% 
+#   group_by(TailNum) %&gt;%
+#   summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %&gt;%
+#   filter(count &gt; 20, dist &lt; 2000, !is.na(delay)) %&gt;%
+#   collect()
+# 
+# delay
+# ```
+# 
+# ```{r plot}
+# ## Plot delays
+# ggplot(delay, aes(dist, delay)) +
+#   geom_point(aes(size = count), alpha = 1/2) 
+# 
+# ```</code></pre>
 </div>
 
 

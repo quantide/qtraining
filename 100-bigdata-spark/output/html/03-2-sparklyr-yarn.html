@@ -311,18 +311,22 @@ $(document).ready(function () {
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Big data infrastructure</li>
   <li><a href="01-1-big-data-infrastructure.html">Distributed architectures</a></li>
+  <li><a href="01-2-cloudera.html">Cloudera</a></li>
   <li class="nav-header">Databases</li>
   <li><a href="02-1-RSQLite.html">RSQLite</a></li>
   <li class="nav-header">Sparklyr</li>
   <li><a href="03-1-sparklyr.html">Connect work disconnect pattern</a></li>
   <li><a href="03-2-sparklyr-yarn.html">Spark on Yarn</a></li>
   <li><a href="03-3-sparklyr-appendix.html">Sparklyr Appendix</a></li>
+  <li class="nav-header">Data import and export</li>
+  <li><a href="04-1-dataset.html">The dataset</a></li>
+  <li><a href="04-2-data-import-export.html">Data Import Export</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="05-1-intro-tidyverse.html">Introduction to tidyverse</a></li>
   <li><a href="05-2-intro-dplyr.html">Introduction to dplyr</a></li>
   <li><a href="05-3-dplyr-verbs.html">Dplyr verb functions</a></li>
-  <li><a href="05-5-join.html">Joining tables</a></li>
-  <li><a href="05-6-group-chain.html">Group Data &amp; Chain Verbs</a></li>
+  <li><a href="05-4-join.html">Joining tables</a></li>
+  <li><a href="05-5-group-chain.html">Group Data &amp; Chain Verbs</a></li>
   <li><a href="05-6-data-man-spark.html">Data Manipulation &amp; Spark</a></li>
   <li class="nav-header">Data Visualisation</li>
   <li><a href="06-1-data-visualization-intro.html">Introduction</a></li>
@@ -363,7 +367,7 @@ $(document).ready(function () {
 <p>Now is the time to use cluster Hadoop and Spark.</p>
 <p>As stated before, an Hadoop cluster is seen as a single unit. A good solution is to install R on a edge node. An edge node is the gateway between the cluster and the outside network. In this way, it can access all the nodes and it can be accessed by the client. In this case on the edge we have installed R and RStudio Server.</p>
 <p>In order to process data we need to open a browser, address it to the RStudio Server and login.</p>
-<p>Now sparklyr needs to use the spark binary and configuration of the cluster. This task is achived setting the <code>SPARK_HOME</code> environment variable with the Spark path on the edge file system. Then the master option is <code>yarn-client</code> in this case.</p>
+<p>Now sparklyr needs to use the spark binary and configuration of the cluster. This task is achieved setting the <code>SPARK_HOME</code> environment variable with the Spark path on the edge file system. Then the master option is <code>yarn-client</code> in this case.</p>
 <pre class="r"><code>require(sparklyr)
 
 ### Cluster Version
@@ -387,9 +391,9 @@ spark_table</code></pre>
 </div>
 <div id="hdfs" class="section level2">
 <h2>HDFS</h2>
-<p>Actually it is not that useful reading a file from local, because of using a sigle hard drive is a bottleneck to access big data. So the tipical use case is:</p>
+<p>Actually it is not that useful reading a file from local, because of using a single hard drive is a bottleneck to access big data. So the typical use case is:</p>
 <ol style="list-style-type: decimal">
-<li>some one prepeared a big dataset on HDFS</li>
+<li>some one prepared a big dataset on HDFS</li>
 <li>we want to read that big file and load it in the distributed Spark ram memory.</li>
 </ol>
 <p>This bash command allows to be sure that the csv file <code>sample_07</code> is present in that path of HDFS.</p>
@@ -408,7 +412,7 @@ spark_table</code></pre>
 <div id="hive" class="section level2">
 <h2>Hive</h2>
 <p>The Apache Hive ™ data warehouse software facilitates reading, writing, and managing large datasets residing in distributed storage using SQL. Structure can be projected onto data already in storage. A command line tool and JDBC driver are provided to connect users to Hive. (source: <a href="https://hive.apache.org/" class="uri">https://hive.apache.org/</a>)</p>
-<p>Poorly speaking, this piece of sofware perform the following operations:</p>
+<p>Poorly speaking, this piece of software perform the following operations:</p>
 <ol style="list-style-type: decimal">
 <li>read csv from HDFS</li>
 <li>assign them a schema: each column is registered with its own type (i.e. String or integer, etc..)</li>

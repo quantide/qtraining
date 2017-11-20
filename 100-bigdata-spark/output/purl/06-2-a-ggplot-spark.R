@@ -1,3 +1,15 @@
+## ------------------------------------------------------------------------
+
+csv_file <- "/data/2008.csv"
+
+spark_table <- spark_read_csv(
+	sc = sc,
+	name = "year2008",
+	path = csv_file
+)
+
+spark_table
+
 ## ----ggplot-spark--------------------------------------------------------
  ## Collect some data
 delay <-

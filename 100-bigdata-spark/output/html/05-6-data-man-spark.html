@@ -311,18 +311,22 @@ $(document).ready(function () {
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Big data infrastructure</li>
   <li><a href="01-1-big-data-infrastructure.html">Distributed architectures</a></li>
+  <li><a href="01-2-cloudera.html">Cloudera</a></li>
   <li class="nav-header">Databases</li>
   <li><a href="02-1-RSQLite.html">RSQLite</a></li>
   <li class="nav-header">Sparklyr</li>
   <li><a href="03-1-sparklyr.html">Connect work disconnect pattern</a></li>
   <li><a href="03-2-sparklyr-yarn.html">Spark on Yarn</a></li>
   <li><a href="03-3-sparklyr-appendix.html">Sparklyr Appendix</a></li>
+  <li class="nav-header">Data import and export</li>
+  <li><a href="04-1-dataset.html">The dataset</a></li>
+  <li><a href="04-2-data-import-export.html">Data Import Export</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="05-1-intro-tidyverse.html">Introduction to tidyverse</a></li>
   <li><a href="05-2-intro-dplyr.html">Introduction to dplyr</a></li>
   <li><a href="05-3-dplyr-verbs.html">Dplyr verb functions</a></li>
-  <li><a href="05-5-join.html">Joining tables</a></li>
-  <li><a href="05-6-group-chain.html">Group Data &amp; Chain Verbs</a></li>
+  <li><a href="05-4-join.html">Joining tables</a></li>
+  <li><a href="05-5-group-chain.html">Group Data &amp; Chain Verbs</a></li>
   <li><a href="05-6-data-man-spark.html">Data Manipulation &amp; Spark</a></li>
   <li class="nav-header">Data Visualisation</li>
   <li><a href="06-1-data-visualization-intro.html">Introduction</a></li>
@@ -348,14 +352,21 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#dplyr-5-verbs">dplyr 5 verbs</a></li>
+<li><a href="#dplyr">Dplyr</a><ul>
+<li><a href="#verbs">5 verbs</a></li>
 <li><a href="#cast">Cast</a></li>
+</ul></li>
+<li><a href="#sql">SQL</a></li>
+<li><a href="#lazy-vs-eager">Lazy Vs Eager</a></li>
+<li><a href="#benchmark">Benchmark</a></li>
 </ul>
 </div>
 
-<div id="dplyr-5-verbs" class="section level2">
-<h2>dplyr 5 verbs</h2>
-<p>Let us consider the <code>spark_table</code> as built in the previous sections. We now can use sparklyr and dplyr functions to deal with this dataset.</p>
+<div id="dplyr" class="section level1">
+<h1>Dplyr</h1>
+<div id="verbs" class="section level2">
+<h2>5 verbs</h2>
+<p>We now can use sparklyr and dplyr functions to deal with this dataset.</p>
 <pre class="r"><code>require(dplyr)
 
 colnames(spark_table)
@@ -398,6 +409,131 @@ spark_table_detail %&gt;%
         DepDelay,
         everything() )
 spark_table_1</code></pre>
+</div>
+</div>
+<div id="sql" class="section level1">
+<h1>SQL</h1>
+<pre class="r"><code>library(DBI)
+
+new_spark_table_detail &lt;- dbGetQuery(sc, &quot;SELECT Year, Month, DayofMonth, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum from year2008 LIMIT 5&quot;)
+new_spark_table_detail
+sql_render(spark_table_detail)
+
+class(spark_table_detail)
+class(new_spark_table_detail)</code></pre>
+</div>
+<div id="lazy-vs-eager" class="section level1">
+<h1>Lazy Vs Eager</h1>
+<p>Dplyr is a tool that provide lazy and eager object and function.</p>
+<ul>
+<li>Lazy: nothing happend. Instructions of the computation are stored in the output object and the computation will take place when it results will be required.</li>
+<li>Eager: when the computation is immediately run, taking care of run lazy object first.</li>
+</ul>
+<pre class="r"><code>get_info &lt;- function(tbl) {
+    print(sql_render(tbl))
+}</code></pre>
+<pre class="r"><code>get_info(spark_table)
+
+spark_table_detail_2 &lt;-
+    spark_table %&gt;%
+    select(Year, DepTime, ArrTime, DepDelay, ArrDelay, TailNum, FlightNum, Distance )
+get_info(spark_table_detail_2)
+
+step1 &lt;-
+    spark_table_detail_2 %&gt;%
+    filter( ! TailNum == &quot;&quot; ) %&gt;%
+    arrange( FlightNum, TailNum  )
+
+get_info(step1)
+
+step2 &lt;- 
+    step1 %&gt;%
+    group_by(TailNum) %&gt;%
+    summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %&gt;%
+    filter(count &gt; 20, dist &lt; 2000, !is.na(delay)) 
+
+get_info(step2)</code></pre>
+<p>Till here nothing has happend, but different objects brings all the instructions. All dplyr verbs used till here are lazy operators.</p>
+<p>Now in order to apply the lazy code, an eager operator is used: <code>collect</code>. Consistently with what explained before, it apply the lazy instructions and, finally, collect the data into an R data.frame.</p>
+<pre class="r"><code>collect(step2)</code></pre>
+<p>This takes some time to run.</p>
+<p>Now we add a further step starting from <code>step1</code> partial result. Then we collect the <code>step2</code> and <code>step3</code> dataset.</p>
+<pre class="r"><code>step3 &lt;- 
+    step1 %&gt;%
+    group_by(TailNum, FlightNum, Year) %&gt;%
+    summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %&gt;%
+    filter(count &gt; 10, dist &lt; 8000, !is.na(delay))
+
+collect(step2)
+collect(step3)</code></pre>
+<p>Given the dplyr lazy behaviour it is easy to understand that <code>step1</code> is performed twice. This could take a lot of precious time. How to fix this?</p>
+<p>Unfortunately <code>step1</code> is too big to fit in R memory, thus we cannot collect it. It is necessary break the lazyness of dplyr and preserve the partial result in the Spark process. For that we will use the eager operator <code>compute</code>, which apply the lazy instructions and create a Spark data.frame (<code>tbl_spark</code> object) with the output:</p>
+<pre class="r"><code>computed_step1 &lt;- compute(step1, &quot;step1_sdf&quot;)
+
+get_info(step1)
+get_info(computed_step1)</code></pre>
+<p>As you can see the new object <code>computed_step1</code> has no lazy operations and uses “step1_sdf” as Spark data.frame. Now redefining <code>step2</code> and <code>step3</code>, two new optimized ojbect have been obtained.</p>
+<pre class="r"><code>optimized_step2 &lt;- 
+    computed_step1 %&gt;%
+    group_by(TailNum) %&gt;%
+    summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %&gt;%
+    filter(count &gt; 20, dist &lt; 2000, !is.na(delay)) 
+
+get_info(optimized_step2)
+
+optimized_step3 &lt;- 
+    computed_step1 %&gt;%
+    group_by(TailNum, FlightNum, Year) %&gt;%
+    summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %&gt;%
+    filter(count &gt; 10, dist &lt; 8000, !is.na(delay))
+
+get_info(optimized_step3)
+
+collect(step2)
+collect(step3)</code></pre>
+</div>
+<div id="benchmark" class="section level1">
+<h1>Benchmark</h1>
+<pre class="r"><code>spark_partial &lt;-    spark_table_detail %&gt;%
+        group_by( Year, FlightNum ) %&gt;%
+        summarize( avg = mean( ArrDelay ) ) %&gt;%
+        arrange( desc(avg) ) %&gt;%
+        compute(name = &quot;spark_partial&quot;)
+
+library(microbenchmark)
+microbenchmark({
+    tmp_1 &lt;- 
+        spark_table_detail %&gt;%
+        group_by( Year, FlightNum ) %&gt;%
+        summarize( avg = mean( ArrDelay ) ) %&gt;%
+        arrange( desc(avg) ) %&gt;%
+        compute()
+},{
+    tmp_2 &lt;- 
+        spark_table_detail %&gt;%
+        group_by( Year, FlightNum ) %&gt;%
+        summarize( avg = mean( ArrDelay ) ) %&gt;%
+        arrange( desc(avg) ) %&gt;%
+        collect()
+},{
+    tmp_3 &lt;- collect(spark_partial)
+},{
+    tmp_4 &lt;- 
+        R_df %&gt;%
+        group_by( Year, FlightNum ) %&gt;%
+        summarize( avg = mean( ArrDelay ) ) %&gt;%
+        arrange( desc(avg) ) %&gt;%
+        collect()
+}, times = 10)
+
+ ## todo
+tmp_1
+tmp_2
+identical(tmp_2, tmp_3)
+
+tmp_3 %&gt;% ungroup() %&gt;% summarise_all(funs(n(), mean, sd))
+tmp_4 %&gt;% ungroup() %&gt;% summarise_all(funs(n(), mean, sd))
+class(tmp_3)</code></pre>
 </div>
 
 

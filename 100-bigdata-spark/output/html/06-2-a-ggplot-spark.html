@@ -311,18 +311,22 @@ $(document).ready(function () {
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Big data infrastructure</li>
   <li><a href="01-1-big-data-infrastructure.html">Distributed architectures</a></li>
+  <li><a href="01-2-cloudera.html">Cloudera</a></li>
   <li class="nav-header">Databases</li>
   <li><a href="02-1-RSQLite.html">RSQLite</a></li>
   <li class="nav-header">Sparklyr</li>
   <li><a href="03-1-sparklyr.html">Connect work disconnect pattern</a></li>
   <li><a href="03-2-sparklyr-yarn.html">Spark on Yarn</a></li>
   <li><a href="03-3-sparklyr-appendix.html">Sparklyr Appendix</a></li>
+  <li class="nav-header">Data import and export</li>
+  <li><a href="04-1-dataset.html">The dataset</a></li>
+  <li><a href="04-2-data-import-export.html">Data Import Export</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="05-1-intro-tidyverse.html">Introduction to tidyverse</a></li>
   <li><a href="05-2-intro-dplyr.html">Introduction to dplyr</a></li>
   <li><a href="05-3-dplyr-verbs.html">Dplyr verb functions</a></li>
-  <li><a href="05-5-join.html">Joining tables</a></li>
-  <li><a href="05-6-group-chain.html">Group Data &amp; Chain Verbs</a></li>
+  <li><a href="05-4-join.html">Joining tables</a></li>
+  <li><a href="05-5-group-chain.html">Group Data &amp; Chain Verbs</a></li>
   <li><a href="05-6-data-man-spark.html">Data Manipulation &amp; Spark</a></li>
   <li class="nav-header">Data Visualisation</li>
   <li><a href="06-1-data-visualization-intro.html">Introduction</a></li>
@@ -346,7 +350,26 @@ $(document).ready(function () {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#plotting-big-data">Plotting Big Data</a></li>
+</ul>
+</div>
 
+<div id="plotting-big-data" class="section level1">
+<h1>Plotting Big Data</h1>
+<p>Plotting big data is not possible and it has no sense. Can you imagine a scatterplot with 10^6 points? The graph would show a unique filled block because of too many data points. Every time <code>ggplot</code> is used with a lazy dataset it automatically try to collect it. So the dataset object have to be an aggregate or filtered product of the original dataset.</p>
+<p>Use again this dataset:</p>
+<pre class="r"><code>csv_file &lt;- &quot;/data/2008.csv&quot;
+
+spark_table &lt;- spark_read_csv(
+    sc = sc,
+    name = &quot;year2008&quot;,
+    path = csv_file
+)
+
+spark_table</code></pre>
+<p>Then create as aggregate data.frame, collect it and plot it:</p>
 <pre class="r"><code> ## Collect some data
 delay &lt;-
     spark_table %&gt;% 
@@ -359,6 +382,7 @@ delay &lt;-
 library(ggplot2)
 ggplot(delay, aes(dist, delay)) +
   geom_point(aes(size = count), alpha = 1/2) </code></pre>
+</div>
 
 
 </div>  

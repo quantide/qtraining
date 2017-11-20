@@ -311,18 +311,22 @@ $(document).ready(function () {
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Big data infrastructure</li>
   <li><a href="01-1-big-data-infrastructure.html">Distributed architectures</a></li>
+  <li><a href="01-2-cloudera.html">Cloudera</a></li>
   <li class="nav-header">Databases</li>
   <li><a href="02-1-RSQLite.html">RSQLite</a></li>
   <li class="nav-header">Sparklyr</li>
   <li><a href="03-1-sparklyr.html">Connect work disconnect pattern</a></li>
   <li><a href="03-2-sparklyr-yarn.html">Spark on Yarn</a></li>
   <li><a href="03-3-sparklyr-appendix.html">Sparklyr Appendix</a></li>
+  <li class="nav-header">Data import and export</li>
+  <li><a href="04-1-dataset.html">The dataset</a></li>
+  <li><a href="04-2-data-import-export.html">Data Import Export</a></li>
   <li class="nav-header">Data Manipulation</li>
   <li><a href="05-1-intro-tidyverse.html">Introduction to tidyverse</a></li>
   <li><a href="05-2-intro-dplyr.html">Introduction to dplyr</a></li>
   <li><a href="05-3-dplyr-verbs.html">Dplyr verb functions</a></li>
-  <li><a href="05-5-join.html">Joining tables</a></li>
-  <li><a href="05-6-group-chain.html">Group Data &amp; Chain Verbs</a></li>
+  <li><a href="05-4-join.html">Joining tables</a></li>
+  <li><a href="05-5-group-chain.html">Group Data &amp; Chain Verbs</a></li>
   <li><a href="05-6-data-man-spark.html">Data Manipulation &amp; Spark</a></li>
   <li class="nav-header">Data Visualisation</li>
   <li><a href="06-1-data-visualization-intro.html">Introduction</a></li>
@@ -379,7 +383,7 @@ runExample(&quot;01_hello&quot;)</code></pre>
 <p>The first thing you need to know is that every Shiny app is composed of two parts:</p>
 <ul>
 <li>a <em>web page</em> that shows the app to the user and that the user interacts with</li>
-<li>a <em>computer</em> that runs the functions that create the output to be visualised in the webpage</li>
+<li>a <em>computer</em> that runs the functions that create the output to be visualized in the webpage</li>
 </ul>
 <p>Notice that in this course “the computer” will be your own laptop, although most likely when you want other users to use your app, it will run on a server somewhere else.</p>
 <p>In <code>Shiny</code> terminology, the two parts are called <em>user interface (ui)</em> and <em>server</em>:</p>
@@ -391,21 +395,21 @@ runExample(&quot;01_hello&quot;)</code></pre>
 </div>
 <div id="building-the-first-shiny-app" class="section level2">
 <h2>Building the first Shiny app</h2>
-<p>Following the above structure, let us initialise the first Shiny App. Create a new folder where you will pace your shiny app. It is good practice that the app is contained in its own folder and no code besides that of the app, should go in it. Copy the following code lines into a new file named <code>app.R</code> in the folder where you will build your shiny app:</p>
+<p>Following the above structure, let us initialize the first Shiny App. Create a new folder where you will pace your shiny app. It is good practice that the app is contained in its own folder and no code besides that of the app, should go in it. Copy the following code lines into a new file named <code>app.R</code> in the folder where you will build your shiny app:</p>
 <pre class="r"><code>library(shiny)
 
 ui &lt;- fluidPage()
 server &lt;- function(input, output) {}
 
 shinyApp(ui = ui, server = server)</code></pre>
-<p>More specifically we initialised an empty web page (ui) and an empty server.</p>
+<p>More specifically we initialized an empty web page (ui) and an empty server.</p>
 <p>Notice that once you save the file as <code>app.R</code>, the latest RStudio recognizes that you are building a Shiny app, and, at the top right of you code, you should see the Run button change to Run App.</p>
 <p>If you click the Run App button, your app should run. As we are just building an empty app, all you see is a new window appearing and the console with a text similar to this:</p>
 <p><code>Listening on http://127.0.0.1:7118</code></p>
 <p>This means that R is currently busy as it is powering a Shiny app and is waiting (listening) for user interaction. In this case, of course, no user interaction will happen as the ui contains a blank page and we have not programmed any interactive parts. In fact, our <code>ui</code> function is empty and so is the <code>server</code>.</p>
 <p>If you click the stop button the app will stop.</p>
 <p>Now, let us spend a couple of words on the functions we are using. <code>fluidPage()</code> creates a page with fluid layout which consists of rows that include columns. Rows make sure their elements appear on the same line (if the browser has adequate width), while columns define how much horizontal space within a <em>12-unit wide grid</em> elements should occupy. When you build the user interface, all you will be doing is passing comma-separated elements to the <code>fluidPage()</code> function.</p>
-<p><code>server</code> is initialised as a function taking two arguments: input and output. This structure is always the same, we will come back to it when we will walk you through the creation of the server functions.</p>
+<p><code>server</code> is initialized as a function taking two arguments: input and output. This structure is always the same, we will come back to it when we will walk you through the creation of the server functions.</p>
 <div id="separate-ui-and-server-functions" class="section level3">
 <h3>Separate ui and server functions</h3>
 <p>When the app gets more complicated, it is a good practice to work on separate files so that you have the <code>ui.R</code> file containing all the code that is assigned to the ui variable, and the <code>server.R</code> file containing all the code assigned to the server function.</p>
@@ -415,7 +419,7 @@ shinyApp(ui = ui, server = server)</code></pre>
 <h3>Building the first shinydashboard</h3>
 <p><code>shinydashboard</code> is a package that provides a theme on top of ‘Shiny’. The structure is the same as the one seen so far: you have a <em>ui</em> and a <em>server</em> function, but it allows for a better graphical layout.</p>
 <p>First of all, the dashboard is defined as having three parts: a header, a sidebar, and a body.</p>
-<p>To initialise an empty <code>shinydashboard</code>, use the following code:</p>
+<p>To initialize an empty <code>shinydashboard</code>, use the following code:</p>
 <pre class="r"><code>library(shiny)
 library(shinydashboard)
  
@@ -433,10 +437,56 @@ shinyApp(ui, server)</code></pre>
 </div>
 <div id="shiny-and-spark" class="section level2">
 <h2>Shiny and Spark</h2>
-<!--
-Inserire esempio di utilizzo Spark e Shiny 
-Nell'esempio fare una piccola app che plotta un istogramma
--->
+<p>In the global part we open the Spark Context, and read the data. The aggregation of data depends from an UI input, so it has been placed in the Server function, because it is re-calculated each time the input changes.</p>
+<pre class="r"><code># global --------
+library(shiny)
+library(shinydashboard)
+library(sparklyr) 
+library(ggplot2)
+library(dplyr)
+
+sc &lt;- spark_connect( master = &quot;local&quot;, version = &quot;2.0.0&quot; )
+
+csv_file &lt;- &quot;/data/2008.csv&quot;
+
+ ## read data
+spark_table &lt;- spark_read_csv(
+    sc = sc,
+    name = &quot;year2008&quot;,
+    path = csv_file
+)
+
+
+# ui --------
+ui &lt;- dashboardPage(
+    dashboardHeader(),
+    dashboardSidebar(
+        numericInput('minCount', label = &quot;Minimun count&quot;, step = 5, value = 20)
+    ),
+    dashboardBody(
+        plotOutput('plot')
+    )
+)
+
+# server -------
+server &lt;- function(input, output) { 
+    
+    output$plot &lt;- renderPlot({
+        ## Collect some data
+        delay &lt;-
+            spark_table %&gt;% 
+            group_by(TailNum) %&gt;%
+            summarise(count = n(), dist = mean(Distance), delay = mean(ArrDelay)) %&gt;%
+            filter(count &gt; input$minCount, dist &lt; 2000, !is.na(delay)) %&gt;%
+            collect()
+        ## Plot delays
+        ggplot(delay, aes(dist, delay)) +
+            geom_point(aes(size = count), alpha = 1/2) 
+    })
+}
+
+# run --------
+shinyApp(ui, server)</code></pre>
 </div>
 
 
