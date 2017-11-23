@@ -164,7 +164,7 @@ prime_numbers(c(10,1))
 So the error is that our function is designed for only working with vectors of length 1. We may try to correct the error, for example by printing a message that says that the input cannot be a vector of length > 1.
 
 
-```{r traceback1}
+```{r fix error}
 
 prime_numbers <- function(n){
   if (n >= 2) {
@@ -193,3 +193,7 @@ Rifare esempio di traceback
 
 This can also be done with the RStudio environment as many of these functions are embedded into the RStudio IDE.
 
+
+<!--
+Aggiungere debugging da RStudio
+-->
