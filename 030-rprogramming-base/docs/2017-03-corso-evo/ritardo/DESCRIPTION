@@ -1,0 +1,11 @@
+Package: ritardo
+Type: Package
+Title: How late is Giuseppe?
+Version: 0.1.0
+Author: furfaro.emanuela@gmail.com
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: A group of functions to calculate how late Giuseppe arrives at work.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
