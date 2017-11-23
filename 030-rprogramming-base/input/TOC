@@ -14,6 +14,10 @@ Introduction to purrr                           | 08-purrr.Rmd
 Parallel computation
 The parallel package                            | 09-parallel.Rmd
 
+Profiling and Debugging
+Profiling					| profiling.Rmd
+Debugging					| debugging.Rmd
+
 Documenting and sharing code
 Rmarkdown					| 10-rmarkdown.Rmd
 Git and Github					| 12-git.Rmd
