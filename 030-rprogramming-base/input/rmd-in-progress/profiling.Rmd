@@ -4,6 +4,7 @@ title: "Profiling in R and RStudio"
 
 
 ```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
@@ -61,7 +62,7 @@ Now, we know that `for` cycles are not as fast as functionals. So let us see if 
 cross_validation2 <- function(data, formula) {
   n <- nrow(data)
   cv <- lapply(1:n, .cross_validation, data = data, formula)
-  return(cv)
+  return(unlist(cv))
 }
 
 ```
@@ -73,14 +74,67 @@ and finally, you may want to compare the two functions:
 data(mtcars)
 
 microbenchmark(
-  cross_validation1(data = mtcars, formula = mtcars$mpg ~ mtcars$hp),
-  cross_validation2(data = mtcars, formula = mtcars$mpg ~ mtcars$hp), 1
+#  cross_validation1(data = istat, formula = Height ~ Weight),
+  cross_validation2(data = istat, formula = Height ~ Weight), times = 10
 )
 ```
 
 
-Focus on the median time, and use the upper and lower quartiles to gauge the variability of the measurement.
+Focus on the median time, and use the upper and lower quartiles to gauge the variability of the measurement. We note that there is not actually much difference from the two functions.
 
 
 ## Profiling tools in R and RStudio
 
+Microbenchmarking code is very useful because it tells which function is faster. However, sometimes it may be interesting to look deeper into the performance of a function, bacause, for example, you do not have other functions to benchmark with. 
+
+For example suppose you are working on your function that contains a loop, and after a long time working you manage to make the loop run 5 times faster. That sounds like a huge improvement, but if the loop only takes 2% of the total time? You may not even notice the final overall time improvement. Hence, to make slow code faster, we need accurate information about what is making our code slow.
+
+In this situation the profiler comes in handy. The profiler provides an interactive graphical interface for visualizing where your code is slow.
+
+Let us continue with the exmple on `cross_validation1` function.
+
+### The profiler
+
+Using the library `profvis`, you may open the profiler as follows:
+
+
+```{r}
+
+library(profvis)
+profvis({
+  cross_validation1(data = istat, formula = Height ~ Weight)
+})
+
+```
+
+
+The profiler is composed by two main tabs:
+
+* Flame graph
+* Data
+
+
+#### Flame Graph
+
+Click the `flame graph` tab. The flame graph tab is an interactive tab. As you move your mouse over the flame graph, information about each block will show in the info box. Note that white blocks represent code where profvis doesn’t have the source code – for example, in base R and in R packages, while if you move the mouse over a yellow block, the corresponding line of code will be highlighted. 
+
+Each block in the flame graph represents a call to a function, or possibly multiple calls to the same function. The width of the block is proportional to the amount of time spent in that function. When a function calls another function, another block is added on top of it in the flame graph. 
+
+For example, if you move your mouse on one of the times the `lm` function is called, the flame graph will show you the total time of that call, as well as the total time of all the times that function was called. Moreover, you can raphically see that this is the function that seems to be the most time consuming. You can graphically see that the `lm` function opens a number of internal additional functions, which take up a lot of time. 
+
+![](./images/profile-flame.png)
+
+
+#### Data
+
+The data view provides a top-down tabular view of the profile, where one can see the time spent for each task. Results are organised into two main columns:
+
+* Memory, that is the memory allocated or deallocated at a given stack
+* Time, time spent for that task
+
+Both fields are aggregated over all the call stacks executed.
+
+In our example, if you expand `.cross_validation`, you see that the `lm` function is basicaly taking up most of the execution time. This means that if you want the function `cross_validation1` to go faster, you would have to find a way to make `lm` faster!
+
+
+![](./images/profile-data.png)
