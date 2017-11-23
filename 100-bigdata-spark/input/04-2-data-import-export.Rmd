@@ -13,7 +13,9 @@ opts_chunk$set(eval = FALSE, fig.width = 5.5)
 
 The following code is to read a csv file. We are reading it from our local hard-drive but also distributed filesystem protocols like `hdfs://` and `s3n://` are allowed.
 
-```{r}
+```{r, echo=FALSE}
+library(sparklyr)
+sc <- spark_connect( master = "local", version = "2.0.0" )
 
 csv_file <- "/data/2008.csv"
 
@@ -23,7 +25,6 @@ spark_table <- spark_read_csv(
 	path = csv_file
 )
 
-spark_table
 ```
 
 ## Sparklyr compared to R 	
@@ -67,7 +68,7 @@ class(mtcars_spark)
 
 As result, a table named "mtcars" has appeared in the Spark tab, which content can be recalled with `src_tbls` function:
 	
-	```{r}
+```{r}
 src_tbls(sc)
 ```
 
@@ -79,7 +80,7 @@ This is usually be done after the dataset is reduced to a smaller one in order t
 
 In this case a smaller random sample is taken from the original dataset:
 	
-	```{r}
+```{r}
 spark_sample <- sample_n(spark_table, size = 500)
 class(spark_sample)
 
