@@ -194,6 +194,85 @@ RoxygenNote: 6.0.1
 
 DESCRIPTION uses a simple file format called DCF, the Debian control format. Each line consists of a field name and a value, separated by a colon. When values span multiple lines, they need to be indented using four spaces.
 
+Another important duty of the DESCRIPTION file is to list the dependencies of your package, namely the external packages that you package needs to run.  
+
+#### DESCRIPTION fields
+
+Here there is a list of the main DESCRIPTION fields, along with their way of usage.
+
+##### Title
+
+Title is a one line description of the package, and is often shown in package listing
+
+
+##### Description
+
+Description is more detailed than the title. You can use multiple sentences but you are limited to one paragraph. If your description spans multiple lines (and it should!), each line must be no more than 80 characters wide. Indent subsequent lines with 4 spaces.
+
+
+##### Authors@R
+
+The author field identifies the author (or authors) name, and his contact info. This field is unusual because it contains executable R code rather than plain text.
+
+```{r, eval = F}
+Authors@R: c(
+    person("Hadley", "Wickham", email = "hadley@rstudio.com", role = "cre"),
+    person("Winston", "Chang", email = "winston@rstudio.com", role = "aut"))
+```
+
+The `person()` function has four arguments:
+
+* The name
+
+* The surname
+
+* The email address.
+
+* The role. There are four important roles:
+
+    + cre: the creator or maintainer, the person you should bother if you have problems.
+
+    + aut: authors, those who have made significant contributions to the package.
+
+    + ctb: contributors, those who have made smaller contributions, like patches.
+
+    + cph: copyright holder. This is used if the copyright is held by someone other than the author, typically a company (i.e. the author’s employer).
+    
+Every package must have at least one author (aut) and one maintainer (cre) (they might be the same person). The creator must have an email address. These fields are used to generate the basic citation for the package.
+
+##### Imports 
+Packages listed here must be present for your package to work. In fact, any time your package is installed, those packages will, if not already present, be installed on your computer. The `imports` field take a comma separated list of package names as value.
+
+```{r, eval = F}
+Imports:
+    dplyr (>= 0.3.0.1),
+    ggplot2
+```
+
+After the package name you can specify, in parentesis, the version (or the minimum version) that youe package requires.
+
+
+##### Suggested 
+Packages listed here can be useful using your package, but are not necessary. You might use suggested packages to run tests, build vignettes, or when there’s only one function that needs the package. Packages listed in Suggests are not automatically installed along with your package. The `suggested` field take a comma separated list of package names as value.
+
+```{r, eval = F}
+Suggested:
+    qdata,
+    ggmap
+```
+
+Also for the suggested packages you can specify a package version.
+
+
+##### Licence
+
+The License field can be either a standard abbreviation for an open source license, like GPL-2 or BSD, or a pointer to a file containing more information, file LICENSE. 
+
+
+##### Version
+
+
+
 
 
 
