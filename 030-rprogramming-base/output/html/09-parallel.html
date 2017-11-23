@@ -323,7 +323,6 @@ $(document).ready(function () {
   <li><a href="09-parallel.html">The parallel package</a></li>
   <li class="nav-header">Documenting and sharing code</li>
   <li><a href="10-rmarkdown.html">Rmarkdown</a></li>
-  <li><a href="11-rpackages.html">R packages</a></li>
   <li><a href="12-git.html">Git and Github</a></li>
 </ul>
     </div>  
@@ -398,7 +397,7 @@ head(grid, n = 3)</code></pre>
 <p>The sequential calculation simply calls function <code>f()</code> for each row of the grid:</p>
 <pre class="r"><code>system.time({z &lt;- apply(grid, 1, f)})</code></pre>
 <pre><code>##    user  system elapsed 
-##   9.760   0.064   9.827</code></pre>
+##  11.124   0.084  12.915</code></pre>
 <p>The calculation needs about <code>20</code> seconds. To assure the correctness of the calculation we plot the function:</p>
 <pre class="r"><code>par(mfrow = c(1,1))
 dim(z) &lt;- c(length(x), length(x))
@@ -410,12 +409,12 @@ persp(x, x, z, theta=30, phi=30, expand=0.5, col='white', border=NA, shade=0.3, 
 <p>Now, <code>apply()</code> from the sequential calculation is executed for each element of the list. A sequential execution is done using <code>lapply()</code>:</p>
 <pre class="r"><code>system.time({z_list &lt;- lapply(grid_list, apply, 1, f)})</code></pre>
 <pre><code>##    user  system elapsed 
-##   9.988   0.000   9.989</code></pre>
+##  10.264   0.000  10.269</code></pre>
 <p>The parallel execution is done using the parallel analogon, <code>mclapply()</code>:</p>
 <pre class="r"><code>library(parallel)
 system.time({z_list &lt;- mclapply(grid_list, apply, 1, f, mc.cores = 2L, mc.preschedule=TRUE)})</code></pre>
 <pre><code>##    user  system elapsed 
-##   4.080   0.168   4.236</code></pre>
+##   4.292   0.156   4.445</code></pre>
 <p>The parallel execution needs about half of the time. In background the <code>mclapply()</code> has forked two child processes and each of the them has calculated the result for one list element. In principle, <code>mclapply()</code> produces the following results:</p>
 <pre class="r"><code>par(mfrow=c(1,2))
 # First half:
@@ -455,7 +454,7 @@ plot(y~x , data = df, pch = 16, cex = .5)</code></pre>
 <p>The previously created <code>cross_val()</code> function can be iterated trough <code>lapply()</code> using a single core:</p>
 <pre class="r"><code>system.time({single &lt;- lapply(1:n, cross_val, fm)})[3]</code></pre>
 <pre><code>## elapsed 
-##  22.921</code></pre>
+##  25.044</code></pre>
 <pre class="r"><code>op &lt;- par(mfrow = c(1, 2))
 plot(y~x , df, pch = 16, col = &quot;red&quot;, cex = .6)
 plot(unlist(single), type = &quot;s&quot;, ylab = &quot;Cross Validation&quot;, col = &quot;darkgreen&quot;)</code></pre>
@@ -466,7 +465,7 @@ plot(unlist(single), type = &quot;s&quot;, ylab = &quot;Cross Validation&quot;, 
   quad &lt;- mclapply(1:n, cross_val, fm,
   mc.cores = 4L, mc.preschedule = TRUE)})[3]</code></pre>
 <pre><code>## elapsed 
-##  11.908</code></pre>
+##  11.056</code></pre>
 <p>Clearly, both methods lead to the same results:</p>
 <pre class="r"><code>identical(single, quad)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -493,7 +492,7 @@ my_summary(df,
   flist = list(mean = mean, stdev = sd, range =  function(x,...){sd(x,...)/mean(x,...)})
 )})</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.876   0.024   0.900</code></pre>
+##   0.916   0.036   0.952</code></pre>
 <p>or write a parallel version of this function with minor modifications to teh original <code>my_summary()</code>:</p>
 <pre class="r"><code>my_mc_summary &lt;- function(x, flist, mc.cores = 1L){
   f &lt;- function(f,...)f(...)
@@ -509,7 +508,7 @@ my_mc_summary(df,
   mc.cores = 2L
 )})</code></pre>
 <pre><code>##    user  system elapsed 
-##  10.688   0.116   0.669</code></pre>
+##  10.008   0.124   0.628</code></pre>
 <p>The reduction in computing time is appreciable at very little coding effort.</p>
 <p>Finally, <code>my_mc_summary(..., mc.cores = 1L)</code> will run the <code>mc</code> function on a single core as <code>my_summary()</code>.</p>
 </div>
@@ -536,7 +535,7 @@ system.time({
     mc.preschedule = FALSE)
 }) </code></pre>
 <pre><code>##    user  system elapsed 
-##  29.216 433.632 253.669</code></pre>
+##  29.628 418.220 237.071</code></pre>
 <p>Explicit parallelism has the programmer responsible for dividing the problem to be solved into independent chunks, to be run in parallel, and also responsible for aggregating the results from each chunk.</p>
 </div>
 <div id="cluster-parallelism" class="section level3">
@@ -613,7 +612,7 @@ system.time({
 }) </code></pre>
 <pre><code>## 95th quantile =  81620326</code></pre>
 <pre><code>##    user  system elapsed 
-##  11.748   0.028  11.780</code></pre>
+##  11.964   0.032  11.995</code></pre>
 <p>We just need to replace the <code>sapply</code> function with the corresponding <code>parSapply</code> to make use of <code>R</code> parallel capabilities.</p>
 <pre class="r"><code>nc &lt;- detectCores()
 cluster  &lt;- makeCluster(nc)
@@ -628,9 +627,9 @@ system.time({
     np = np, meanlog = 9,  sdlog = 2)
   cat (&quot;95th quantile = &quot; , quantile(out , .95), &quot;\n&quot;)
 }) </code></pre>
-<pre><code>## 95th quantile =  81455430</code></pre>
+<pre><code>## 95th quantile =  81721488</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.076   0.008   4.641</code></pre>
+##   0.096   0.012   4.806</code></pre>
 <pre class="r"><code>stopCluster(cluster)</code></pre>
 </div>
 <div id="setting-up-a-cluster" class="section level3">
@@ -695,9 +694,9 @@ system.time({
     out &lt;- parSapply(cl = biCluster, X = 1:n, FUN = f, np = np, meanlog = 9, sdlog = 2)
     cat(&quot;95th quantile = &quot;, quantile(out, 0.95), &quot;\n&quot;)
 })</code></pre>
-<pre><code>## 95th quantile =  81470326</code></pre>
+<pre><code>## 95th quantile =  81437980</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.740   0.060  45.533</code></pre>
+##   0.756   0.040  45.059</code></pre>
 <pre class="r"><code>stopCluster(biCluster)</code></pre>
 <p>Finally, working across public networks, especially with little bandwidth, may easily kill the extra benefits of having multiple cores available</p>
 </div>
