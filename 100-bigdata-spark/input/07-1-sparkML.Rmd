@@ -1,8 +1,13 @@
-# Spark ML
+---
+title: "Spark ML"
+output: html_document
+---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(eval = FALSE)
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 6, fig.height = 4)
+options(width = 108)
 ```
+
 
 ## Introduction
 
@@ -43,7 +48,7 @@ Moreover there is a set of `ml_*` functions for interacting with Spark ML model 
 
 In this section, we see a list of examples based on the usual `flights` dataset. Before we start anything, we need to load the needed libraries: 
 
-```{r packages, results="hide"}
+```{r setup, results="hide"}
 library(tidyverse)
 library(sparklyr)
 ```
@@ -54,8 +59,8 @@ and initialize Spark:
 ```{r, eval = FALSE}
 sc <- spark_connect("yarn", version = "2.0.0")
 spark_disconnect(sc)
-sc <- spark_connect("local", version = "2.0.0")
-csv_file <- '~/data/*.csv'
+sc <- spark_connect("local", version = "1.6.2")
+csv_file <- '~/data/2006.csv'
 ontime_tbl <- spark_read_csv(sc = sc, 
                              'ontime_tbl' , 
                              path = csv_file,
@@ -63,57 +68,64 @@ ontime_tbl <- spark_read_csv(sc = sc,
 
 ```
 
+### Linear Regression
 
-### Linear Regression in R
+#### Linear Regression in R
 
-```{r}
-model <- lm(Petal.Length ~ Petal.Width, data = iris)
+Let us see how to perform a linear regression in R
 
-iris %>%
-	select(Petal.Width, Petal.Length) %>%
-	ggplot(aes(Petal.Length, Petal.Width)) +
-	geom_point(data = iris, aes(Petal.Width, Petal.Length), size = 2, alpha = 0.5) +
-	geom_abline(aes(slope = coef(model)[["Petal.Width"]],
-									intercept = coef(model)[["(Intercept)"]],
-									color = "red"))
+```{r, eval = FALSE}
+model <- lm(ArrDelay ~ DepDelay, data = ontime_tbl)
 ```
 
-### Linear Regression in Spark
+<!---
+Se vogliamo rappresentare graficamente retta e dati, bisogna selezionare un sottoinsieme dei dati
+-->
+
+#### Linear Regression in Spark
 
 ```{r}
-iris_tbl <- copy_to(sc, iris, "iris_tbl" )
-
-model <- iris_tbl %>%
-	select(Petal_Width, Petal_Length) %>%
-	ml_linear_regression(response = "Petal_Length", features = c("Petal_Width"))
-
-summary(model)
-coef(model)
-
-iris_tbl %>%
-	select(Petal_Width, Petal_Length) %>%
-	collect %>%
-	ggplot(aes(Petal_Length, Petal_Width)) +
-	geom_point(aes(Petal_Width, Petal_Length), size = 2, alpha = 0.5) +
-	geom_abline(aes(slope = coef(model)[["Petal_Width"]],
-									intercept = coef(model)[["(Intercept)"]],
-									color = "red"))
+model <- ontime_tbl %>%
+	select(ArrDelay, DepDelay) %>%
+	ml_linear_regression(response = "ArrDelay", features = c("DepDelay"))
+print(model)
 ```
 
-### Logistic Regression in R
+<!---
+Cosa si vuole far vedere con questo esempio? Più veloce? Più lento? Che differenza c'è?
+-->
+
+### Logistic Regression
+
+Suppose that we want to model whether a flight will be late or on time where late means that the arrival delay is higher than 15 minutes and on time means it arrived with a maximum of 15 minutes delay.
+
+In this case, we would be modelling a variable taking value 1 if the flight is over 15 minutes late and 0 otherwise. The logistic regression is a regression model where the dependent variable is a binary variable, hence in this situation we would need to use a logistic model. 
+
+First of all let us manipulate the `flights` dataset so that the outcome variable is a binary variable taking value 1 if the flight is late and 0 otherwise:
+
 
 ```{r}
-# Prepare beaver dataset
-beaver <- beaver2
-beaver$activ <- factor(beaver$activ, labels = c("Non-Active", "Active"))
+# Manipulate dataset
 
+ontime_tbl_binary <- ontime_tbl %>%
+  mutate(Delay = ifelse(ArrDelay >= 15, 1, 0))
+
+ontime_tbl_binary$Delay <- factor(ontime_tbl_binary$Delay, labels = c("Ontime", "Late"))
+
+```
+
+#### Logistic Regression in R
+
+Now let us run the regression model in `R`:
+
+```{r}
 # Fit model
-model <- glm(activ ~ temp, data = beaver, family = binomial(link = "logit"))
-summary(model)
+model <- glm(Delay ~ DepDelay, data = ontime_tbl_binary, family = binomial(link = "logit"))
+print(model)
 
 # Plot prediction curve
 newdata <- data.frame(
-	temp = seq(min(beaver$temp), max(beaver$temp), length.out = 128)
+	temp = seq(min(ontime_tbl_binary$DepDelay), max(ontime_tbl_binary$DepDelay), length.out = 128)
 )
 
 df <- data.frame(
@@ -121,61 +133,84 @@ df <- data.frame(
 	y = predict(model, newdata = newdata, type = "response") + 1
 )
 
-ggplot(beaver, aes(x = temp, y = activ)) +
-	geom_point() +
-	geom_line(data = df, aes(x, y), col = "red") +
-	labs(
-		x = "Body Temperature (ºC)",
-		y = "Activity",
-		title = "Beaver Activity vs. Body Temperature",
-		subtitle = "From R's built-in 'beaver2' dataset"
-	)
-
 ```
 
-### Logistic Regression in Spark
+#### Logistic Regression in Spark
+
+And now let us use `Spark`
 
 ```{r}
-beaver_tbl <- copy_to(sc, beaver, "beaver", overwrite = TRUE)
+ontime_tbl_binary <- copy_to(sc, ontime_tbl_binary, "ontime_tbl_binary", overwrite = TRUE)
 
-model <- beaver_tbl %>%
-	mutate(response = as.numeric(activ == "Active")) %>%
-	ml_logistic_regression(response = "response", features = "temp")
+model <- ontime_tbl_binary %>%
+	ml_logistic_regression(response = "Delay", features = "DepDelay")
 
 print(model)
 ```
 
 
-### Random Forests with Spark
+### Decision Tree with Spark
+
+Decision trees are popular methods for machine learning tasks of classification and regression. They are widely used since they are easy to interpret, they handle both categorical and continous features and are able to capture non-linearities and feature interactions. 
+
+Here we see an example with the modified `ontime_tbl_binary` dataset so that we model the probability of a flight being late given a set of covariates
 
 ```{r}
-mForest <- iris_tbl %>%
+mDecisionTree <- ontime_tbl_binary %>%
+	ml_decision_tree(
+		response = "Delay",
+		features = c("ArrDelay", "Origin", "Distance"),
+		max.bins = 32L,
+		max.depth = 5L
+	)
+mPredict <- predict(mDecisionTree, ontime_tbl_binary)
+head(mPredict)
+```
+
+
+### Random Forests with Spark
+
+Random forests are combinations of decision or regression trees (according to the class of the output variable) aimed at reducing the risk of overfitting. The `spark.ml` implementation supports random forests for binary and multiclass classification and for regression.
+
+Here we consider the case in which the outcome variable is a binary variable hence indicating whether a flight will be late or not:
+
+
+```{r}
+mForest <- ontime_tbl_binary %>%
 	ml_random_forest(
-		response = "Species",
-		features = c("Petal_Length", "Petal_Width"),
+		response = "Delay",
+		features = c("ArrDelay", "Origin", "Distance"),
 		max.bins = 32L,
 		max.depth = 5L,
 		num.trees = 20L
 	)
-mPredict <- predict(mForest, iris_tbl)
+mPredict <- predict(mForest, ontime_tbl_binary)
 head(mPredict)
 ```
 
 
-### Decision Tree with Spark
+<!---
+#### Comparing Random Forest Classification
+
+
+Using the model to predict the same data it was trained on is
+certainly not best practice, but it at least showcases that
+the results produced are concordant between R and Spark.
 
 ```{r}
-mDecisionTree <- iris_tbl %>%
-	ml_decision_tree(
-		response = "Species",
-		features = c("Petal_Length", "Petal_Width"),
-		max.bins = 32L,
-		max.depth = 5L
-	)
-mPredict <- predict(mDecisionTree, iris_tbl)
-head(mPredict)
+df <- as.data.frame(table(x = rPredict, y = mPredict), stringsAsFactors = FALSE)
+
+ggplot(df) +
+	geom_raster(aes(x, y, fill = Freq)) +
+	geom_text(aes(x, y, label = Freq), col = "#222222", size = 6, nudge_x = 0.005, nudge_y = -0.005) +
+	geom_text(aes(x, y, label = Freq), col = "white", size = 6) +
+	labs(
+		x = "R-predicted Species",
+		y = "Spark-predicted Species",
+		title = "Random Forest Classification — Comparing R and Spark")
 ```
 
+-->
 
 ```{r}
 spark_disconnect(sc)
