@@ -1,0 +1,246 @@
+---
+title: "Profiling in R and RStudio"
+---
+
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+## Introduction
+
+Testing your code means to ensure that your code works as expected. This may seem obvious, but suppose that after a long time you add something to a function so that your function has an additional functionality. Are you sure that your code is still making what it was supposed to at the beginning plus the new task? Are you sure the change you make do not impact the well functioning of your functions?
+
+This is especially usefull when writing an `R` package, so after presenting the main functions in `assert_that` package and `testthat` package, you will be walked through the integration of tests into the `R` package development.
+
+Check out [this document by Hadley Wickham]https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf  to convince yourself about the importance of testing your code!
+
+
+
+## `assertthat` package
+
+`assertthat` makes it easy to check the pre- and post-conditions of a function while producing useful error messages.
+
+In addition to being a good programming technique, using  ``assertthat may be useful as source-code documentation: you can see exactly what your function expects when you come back to it after a while.
+
+`assertthat` can be installed from CRAN:
+
+```{r}
+install.packages('assertthat')
+require(assertthat)
+```
+
+### Main functions
+
+There are three main functions in `assertthat`:
+
+* `assert_that()` signal an error
+* see_if() returns a logical value, with the error message as an attribute.
+* validate_that() returns TRUE on success, otherwise returns the error as a string.
+
+`assert_that()` is a drop-in replacement for `stopifnot` but is designed to give informative error messages. Assertion functions should return a single TRUE or FALSE, any other result is an error.
+
+```{r, eval = FALSE}
+x <- 1
+assert_that(is.character(x))
+```
+
+`Error: x is not a character vector`
+
+Note that this function is similar to the the `R` base. `stopifnot()` but it gives a more informative error message:
+
+```{r, eval = FALSE}
+x <- 1
+stopifnot(is.character(x))
+```
+
+`Error: is.character(x) is not TRUE`
+
+The error given by `assert_that` is actually more explicit than that given by `stopifnot()`.
+
+`see_if()` prints, not only the error message, but also the value of the test:
+
+```{r}
+see_if(is.character(x))
+```
+
+
+`validate_that()` is an alternative to the `assert_that` function. It returns a character vector, which makes them easier to use within S4 "validate" methods.
+
+```{r}
+x <- 1
+validate_that(is.numeric(x))
+```
+
+So basically, `assert_that` function, just as `stopifnot()`, generates errors, hence it may be useful in a function, while if you just want to use such a function in "validate" mehotds, you may use `validate_that()` or `see_if()`.
+
+Moreover, `assertthat` provides some new functions compared to the usual base `R`. Briefly, among others, we highlight the following:
+
+* `has_attr(x, attr)`: does x have attribute attr?
+* `are_equal(x, y)`: are x and y equal?
+* `noNA(x)`: is x free from missing values?
+* `is.writeable(path)/is.readable(path)`: is path writeable/readable?
+
+
+### Writing your own assertions
+
+<!---
+If you're writing your own assertions, you can provide custom error messages using the on_failure() helper:
+
+is_odd <- function(x) {
+  assert_that(is.numeric(x), length(x) == 1)
+  x %% 2 == 1
+}
+assert_that(is_odd(2))
+# Error: is_odd(x = 2) is not TRUE
+
+on_failure(is_odd) <- function(call, env) {
+  paste0(deparse(call$x), " is even")
+}
+assert_that(is_odd(2))
+# Error: 2 is even
+
+The on_failure callback is called with two arguments, the unevaluated function call (which has already been standardised with match.call()), and env, and the environment in which the assertion was executed. This allows you to choose between displaying values or names in your error messages. Read the advanced R book to learn more about working with calls.
+
+Also note the use of assert_that() in our new function: assertions flow through function calls ensuring that you get a useful error message at the top level:
+
+assert_that(is_odd("b"))
+# Error: x is not a numeric or integer vector
+assert_that(is_odd(1:2))
+-->
+
+<!--
+Rivedere questa parte di esempio perché è copiata pari pari da rstudio!
+-->
+
+
+## `testthat` package
+
+`testthat` was developed by Hadley Wickham and is the most popular unit testing package for R and is used by thousands of CRAN packages.
+
+Suppose that you are not working into a package structure yet. All you want to do is then to have a separate file, you import with `source` and in there you have the tests on a group of functions you developed. So at the moment you just have a test file, that does not yet need to live into a specific test directory.
+
+You can think of tests as organised hierarchically: __expectations__, are the atmos of a test, they are the smallest units, and they are grouped into __tests__ which are grouped into __files__.  
+
+
+### Expectations
+
+Expectations describe the expected result of a computation, they are assertions about whether or not a function call does what you expect. Expectations start with `expect_` and they have two arguments: the first is the actual result, i.e. the function calls, and the second is what you expect. If the actual and expected result don’t agree, the function returns an error.
+
+There are many ways to commnite your espectation to `R`, among others, the most commonly used are the following:
+
+* testing that the function returns something equals to your espectation: `expect_equal()`, that is built on top of `all.equal()`, checks for equality within a numerical tolerance:
+
+```{r}
+expect_equal(10, 10)
+expect_equal(10, 10 + 1e-7)
+```
+
+
+* If you want to test for exact equivalence, or need to compare "non-standard" objects, like an environment, you may use `expect_identical()`.
+
+*  `expect_match()`, built on top of `grepl()`, it matches a character vector against a regular expression:
+
+```{r}
+x <- "This is a string"
+expect_match(x, "This") 
+
+# Additional arguments:
+
+expect_match(x, "this", ignore.case = TRUE)
+expect_match(x, "this is a string", ignore.case = TRUE, all = TRUE)
+```
+    
+* there are some variations of `expect_match()` that let you check for other types of result, such as messages and errors for example: `expect_message()`, `expect_warning()` 
+
+
+* another useful function for dealing with "exotic" objects is `expect_is()` that checks wather an object inherits from a specified class:
+
+```{r}
+gg <- ggplot2::ggplot(data = mtcars, aes(mpg,wt))
+expect_is(gg, "ggplot")
+```
+
+
+#### What if you don't exactly know how to express your assertion?
+
+Above we showed some of the most used functions but also some of the easiest functions. What to do if you don’t know exactly what the result should be? Or when the output you would like to assert an expection for, is too complicated? One solution may be to check that the result is the same as last time. 
+
+`expect_equal_to_reference()` caches the result the first time its run, and then compares it to subsequent runs. If for some reason the result does change, just delete the cache (*) file and re-test.
+
+
+### Tests
+
+Each test is run in its own environment and is self-contained. Tests start with `test_that` and are basically a list of expectations on the output of a specific function.
+
+For example, you may take a look at some of the test functions of the package `stringr`:
+
+```{r, eval = FALSE}
+library(stringr)
+context("String length")
+
+test_that("str_length is number of characters", {
+  expect_equal(str_length("a"), 1)
+  expect_equal(str_length("ab"), 2)
+  expect_equal(str_length("abc"), 3)
+})
+
+test_that("str_length of factor is length of level", {
+  expect_equal(str_length(factor("a")), 1)
+  expect_equal(str_length(factor("ab")), 2)
+  expect_equal(str_length(factor("abc")), 3)
+})
+
+test_that("str_length of missing is missing", {
+  expect_equal(str_length(NA), NA_integer_)
+  expect_equal(str_length(c(NA, 1)), c(NA, 1))
+  expect_equal(str_length("NA"), 2)
+})
+```
+
+So let us go back to our example ...
+
+
+<!---
+Inserire esempio di test sulle funzioni dell pacchetto
+-->
+
+#### Some tips for writing tests
+
+Tests should make your life as a developer easier. The basic concept is that when a test fails, you should know what’s wrong and where in your code to look for the problem. Hence clarity and informativity are the main inspirational tips for writing tests:
+
+* Each test should have an informative name and cover a single unit of functionality
+
+* The message associated with the test should be informative so that you can quickly narrow down the source of the problem. 
+
+* Avoid putting too many expectations in one test: it is clearer and more informative to have many small tests than few large tests
+
+
+* Last, a citation from Martin Fowler that may serve as an inspiring principle when writing tests: __Whenever you are tempted to type something into a print statement or a debugger expression, write it as a test instead__ 
+
+
+
+## Inserting tests in your package 
+
+Now that you have learnt some more about the principles of testing and about how to write a test, we will guide you through inserting tests into your `R` package.
+
+First yuo need to set up your package to use `testthat`:
+
+```{r}
+devtools::use_testthat()
+```
+
+This will automatically create a `tests/testthat` directory as well as  creating a file `tests/testthat.R` that runs all your tests when `R` `CMD` check runs.
+
+Then you just need to:
+
+1. add your tests 
+2. test your package with Ctrl/Cmd + Shift + T or `devtools::test()`
+3. repeat until all tests pass
+
+Let us see all this with the usual example:
+
+<!---
+aggiungere esempio pacchetto di giuseppe
+-->

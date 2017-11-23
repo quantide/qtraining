@@ -18,6 +18,11 @@ Profiling and Debugging
 Profiling					| profiling.Rmd
 Debugging					| debugging.Rmd
 
+
+Developing R packages
+Testing						| testing.Rmd
+
+
 Documenting and sharing code
 Rmarkdown					| 10-rmarkdown.Rmd
 Git and Github					| 12-git.Rmd
