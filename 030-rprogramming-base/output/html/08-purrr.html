@@ -323,7 +323,6 @@ $(document).ready(function () {
   <li><a href="09-parallel.html">The parallel package</a></li>
   <li class="nav-header">Documenting and sharing code</li>
   <li><a href="10-rmarkdown.html">Rmarkdown</a></li>
-  <li><a href="11-rpackages.html">R packages</a></li>
   <li><a href="12-git.html">Git and Github</a></li>
 </ul>
     </div>  
@@ -598,7 +597,7 @@ invoke_map(f, param, n = 5) </code></pre>
 <pre class="r"><code>banknotes %&gt;%
   slice_rows(&quot;type&quot;) %&gt;% 
   dmap(mean)</code></pre>
-<pre><code>## # A tibble: 2 × 7
+<pre><code>## # tibble [2 x 7]
 ##          type  length    left   right bottom    top diagonal
 ##        &lt;fctr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 counterfeit 214.823 130.300 130.193 10.530 11.133  139.450
@@ -607,7 +606,7 @@ invoke_map(f, param, n = 5) </code></pre>
 <pre class="r"><code>banknotes %&gt;%
     group_by(type) %&gt;% 
     dmap(mean)</code></pre>
-<pre><code>## # A tibble: 2 × 7
+<pre><code>## # tibble [2 x 7]
 ##          type  length    left   right bottom    top diagonal
 ##        &lt;fctr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 counterfeit 214.823 130.300 130.193 10.530 11.133  139.450
@@ -622,54 +621,54 @@ invoke_map(f, param, n = 5) </code></pre>
 </ul>
 <pre class="r"><code>data(&quot;banknotes&quot;)
 banknotes %&gt;% keep(is.numeric)</code></pre>
-<pre><code>## # A tibble: 200 × 6
+<pre><code>## # A tibble: 200 x 6
 ##    length  left right bottom   top diagonal
 ##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-## 1   214.8 131.0 131.1    9.0   9.7    141.0
-## 2   214.6 129.7 129.7    8.1   9.5    141.7
-## 3   214.8 129.7 129.7    8.7   9.6    142.2
-## 4   214.8 129.7 129.6    7.5  10.4    142.0
-## 5   215.0 129.6 129.7   10.4   7.7    141.8
-## 6   215.7 130.8 130.5    9.0  10.1    141.4
-## 7   215.5 129.5 129.7    7.9   9.6    141.6
-## 8   214.5 129.6 129.2    7.2  10.7    141.7
-## 9   214.9 129.4 129.7    8.2  11.0    141.9
+##  1  214.8 131.0 131.1    9.0   9.7    141.0
+##  2  214.6 129.7 129.7    8.1   9.5    141.7
+##  3  214.8 129.7 129.7    8.7   9.6    142.2
+##  4  214.8 129.7 129.6    7.5  10.4    142.0
+##  5  215.0 129.6 129.7   10.4   7.7    141.8
+##  6  215.7 130.8 130.5    9.0  10.1    141.4
+##  7  215.5 129.5 129.7    7.9   9.6    141.6
+##  8  214.5 129.6 129.2    7.2  10.7    141.7
+##  9  214.9 129.4 129.7    8.2  11.0    141.9
 ## 10  215.2 130.4 130.3    9.2  10.0    140.7
 ## # ... with 190 more rows</code></pre>
 <ul>
 <li><code>discard()</code>: discard all elements for which a predicate is satisfied</li>
 </ul>
 <pre class="r"><code>banknotes %&gt;% discard(is.numeric)</code></pre>
-<pre><code>## # A tibble: 200 × 1
+<pre><code>## # A tibble: 200 x 1
 ##       type
 ##     &lt;fctr&gt;
-## 1  genuine
-## 2  genuine
-## 3  genuine
-## 4  genuine
-## 5  genuine
-## 6  genuine
-## 7  genuine
-## 8  genuine
-## 9  genuine
+##  1 genuine
+##  2 genuine
+##  3 genuine
+##  4 genuine
+##  5 genuine
+##  6 genuine
+##  7 genuine
+##  8 genuine
+##  9 genuine
 ## 10 genuine
 ## # ... with 190 more rows</code></pre>
 <ul>
 <li><code>every()</code>: returns TRUE if all elements satisfy a predicate</li>
 </ul>
 <pre class="r"><code>banknotes %&gt;% keep(is.numeric)</code></pre>
-<pre><code>## # A tibble: 200 × 6
+<pre><code>## # A tibble: 200 x 6
 ##    length  left right bottom   top diagonal
 ##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-## 1   214.8 131.0 131.1    9.0   9.7    141.0
-## 2   214.6 129.7 129.7    8.1   9.5    141.7
-## 3   214.8 129.7 129.7    8.7   9.6    142.2
-## 4   214.8 129.7 129.6    7.5  10.4    142.0
-## 5   215.0 129.6 129.7   10.4   7.7    141.8
-## 6   215.7 130.8 130.5    9.0  10.1    141.4
-## 7   215.5 129.5 129.7    7.9   9.6    141.6
-## 8   214.5 129.6 129.2    7.2  10.7    141.7
-## 9   214.9 129.4 129.7    8.2  11.0    141.9
+##  1  214.8 131.0 131.1    9.0   9.7    141.0
+##  2  214.6 129.7 129.7    8.1   9.5    141.7
+##  3  214.8 129.7 129.7    8.7   9.6    142.2
+##  4  214.8 129.7 129.6    7.5  10.4    142.0
+##  5  215.0 129.6 129.7   10.4   7.7    141.8
+##  6  215.7 130.8 130.5    9.0  10.1    141.4
+##  7  215.5 129.5 129.7    7.9   9.6    141.6
+##  8  214.5 129.6 129.2    7.2  10.7    141.7
+##  9  214.9 129.4 129.7    8.2  11.0    141.9
 ## 10  215.2 130.4 130.3    9.2  10.0    140.7
 ## # ... with 190 more rows</code></pre>
 <ul>

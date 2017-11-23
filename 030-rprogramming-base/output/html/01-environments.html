@@ -323,7 +323,6 @@ $(document).ready(function () {
   <li><a href="09-parallel.html">The parallel package</a></li>
   <li class="nav-header">Documenting and sharing code</li>
   <li><a href="10-rmarkdown.html">Rmarkdown</a></li>
-  <li><a href="11-rpackages.html">R packages</a></li>
   <li><a href="12-git.html">Git and Github</a></li>
 </ul>
     </div>  
@@ -618,9 +617,9 @@ parent.env(env0)</code></pre>
 y &lt;- 0 </code></pre>
 <p>they have different memory address:</p>
 <pre class="r"><code>mem_add(x)</code></pre>
-<pre><code>## [1] &quot;4eeade8 14 REALS&quot;</code></pre>
+<pre><code>## [1] &quot;3a4f4e8 14 REALS&quot;</code></pre>
 <pre class="r"><code>mem_add(y)</code></pre>
-<pre><code>## [1] &quot;4eeae48 14 REALS&quot;</code></pre>
+<pre><code>## [1] &quot;3a4f548 14 REALS&quot;</code></pre>
 <p>and that, given:</p>
 <pre class="r"><code>x &lt;- 0</code></pre>
 <p>if we assign</p>
@@ -634,12 +633,12 @@ y &lt;- 0 </code></pre>
 <pre class="r"><code>x &lt;- 1:5</code></pre>
 <p>with its address</p>
 <pre class="r"><code>mem_add(x)</code></pre>
-<pre><code>## [1] &quot;4c659e8 13 INTSX&quot;</code></pre>
+<pre><code>## [1] &quot;4db1d80 13 INTSX&quot;</code></pre>
 <p>if we modify it</p>
 <pre class="r"><code>x[3] &lt;- 0L</code></pre>
 <p><code>R</code> modify its address too</p>
 <pre class="r"><code>mem_add(x)</code></pre>
-<pre><code>## [1] &quot;441bd78 13 INTSX&quot;</code></pre>
+<pre><code>## [1] &quot;51053d8 13 INTSX&quot;</code></pre>
 <p>If we apply the same concept to lists, given a list</p>
 <pre class="r"><code>list0 &lt;- list(x = 0)</code></pre>
 <p>and its copy</p>
@@ -662,16 +661,16 @@ list1 &lt;- list0</code></pre>
 <p>We can now observe that the memory address is modified only for the second element of the list while <code>list0</code> and <code>list1</code> keep sharing the same address for the first vector: <code>x</code></p>
 <pre class="r"><code>lapply(list0, mem_add)</code></pre>
 <pre><code>## $x
-## [1] &quot;4b23460 13 INTSX&quot;
+## [1] &quot;35b6eb0 13 INTSX&quot;
 ## 
 ## $y
-## [1] &quot;5584640 13 INTSX&quot;</code></pre>
+## [1] &quot;3b8c0f0 13 INTSX&quot;</code></pre>
 <pre class="r"><code>lapply(list1, mem_add)</code></pre>
 <pre><code>## $x
-## [1] &quot;4b23460 13 INTSX&quot;
+## [1] &quot;35b6eb0 13 INTSX&quot;
 ## 
 ## $y
-## [1] &quot;55662a0 13 INTSX&quot;</code></pre>
+## [1] &quot;3603ef0 13 INTSX&quot;</code></pre>
 <p>In conclusion, we could say that <code>R</code>, at leat in its newest versions, uses a <em>partial copy on modify</em> semantic.</p>
 <p>The same semantic does not apply to environments, that is <em>environments do not copy on modify</em>:</p>
 <p>As an proof of concept, we can create an environment with some objects in it:</p>

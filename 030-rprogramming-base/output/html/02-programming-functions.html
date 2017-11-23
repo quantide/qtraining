@@ -323,7 +323,6 @@ $(document).ready(function () {
   <li><a href="09-parallel.html">The parallel package</a></li>
   <li class="nav-header">Documenting and sharing code</li>
   <li><a href="10-rmarkdown.html">Rmarkdown</a></li>
-  <li><a href="11-rpackages.html">R packages</a></li>
   <li><a href="12-git.html">Git and Github</a></li>
 </ul>
     </div>  
@@ -511,7 +510,7 @@ environment(mean)
 <pre class="r"><code>env &lt;- new.env()
 environment(f) &lt;- env
 environment(f)</code></pre>
-<pre><code>## &lt;environment: 0x3c89348&gt;</code></pre>
+<pre><code>## &lt;environment: 0x4e88378&gt;</code></pre>
 <p>in case we delete environment <code>env</code></p>
 <pre class="r"><code>rm(env)</code></pre>
 <p><code>f()</code> will keep working</p>
