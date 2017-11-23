@@ -54,7 +54,7 @@ and initialize Spark:
 ```{r, eval = FALSE}
 sc <- spark_connect("yarn", version = "2.0.0")
 spark_disconnect(sc)
-sc <- spark_connect("local", version = "1.6.2")
+sc <- spark_connect("local", version = "2.0.0")
 csv_file <- '~/data/*.csv'
 ontime_tbl <- spark_read_csv(sc = sc, 
                              'ontime_tbl' , 
@@ -81,9 +81,14 @@ iris %>%
 ### Linear Regression in Spark
 
 ```{r}
+iris_tbl <- copy_to(sc, iris, "iris_tbl" )
+
 model <- iris_tbl %>%
 	select(Petal_Width, Petal_Length) %>%
 	ml_linear_regression(response = "Petal_Length", features = c("Petal_Width"))
+
+summary(model)
+coef(model)
 
 iris_tbl %>%
 	select(Petal_Width, Petal_Length) %>%
@@ -104,7 +109,7 @@ beaver$activ <- factor(beaver$activ, labels = c("Non-Active", "Active"))
 
 # Fit model
 model <- glm(activ ~ temp, data = beaver, family = binomial(link = "logit"))
-print(model)
+summary(model)
 
 # Plot prediction curve
 newdata <- data.frame(

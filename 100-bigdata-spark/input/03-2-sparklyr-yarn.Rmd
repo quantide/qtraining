@@ -66,11 +66,16 @@ Now changing the path of the file, we use the same code to read that file.
 
 ```{r}
 csv_file <- "hdfs:///user/hive/warehouse/sample_07/sample_07"
+# or more explicitely
+csv_file <- "hdfs://quickstart.cloudera:8020/user/hive/warehouse/sample_07/sample_07"
+
+
 
 spark_table <- spark_read_csv(
   sc = sc,
-  name = "year2008",
-  path = csv_file, delimiter = "\t"
+  name = "sample_07",
+  path = csv_file, 
+  delimiter = "\t"
 )
 
 spark_table
@@ -105,6 +110,12 @@ class(mtcars_d)
 class(mtcars_d)
 # do the caching
 tbl_cache(sc, "mtcars_d")
+
+# use it
+mtcars_d %>%
+  select(cyl, mpg) %>%
+  filter(cyl >=6)
+
 # delete the cache
 tbl_uncache(sc, "mtcars_d")
 ```
