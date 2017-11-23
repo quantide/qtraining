@@ -4,6 +4,7 @@ title: "Debugging tools in R and RStudio"
 
 
 ```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
 options(width = 108)
 ```
 
@@ -57,12 +58,13 @@ prime_numbers(7)
 The function is not returning an error, but it is returning something that you did not expect. One way to dig into the function you just built is to run the debugger for `prime_numbers`:
 
 ```{r debug2}
-debugonce(prime_numbers())
+debugonce(prime_numbers)
+prime_numbers(7)
 ```
 
-The `debugonce()` allows you to enter the local function environment the first time you run the function and go through the instructions one by one to see how it works.
+The `debugonce()` allows you to enter the local function environment the first time you run the function and go through the instructions one by one to see how it works. If you are using R Studio, bote that the environment is now the environment of the function you are debugging, and a nw script window contains the code of the function you are debugging.
 
-We are enever updating the content of `primes` vector, so let's change it:
+The error is that we are not updating the content of `primes` vector, so let's change it:
 
 ```{r debug3}
 prime_numbers <- function(n){
@@ -88,7 +90,7 @@ prime_numbers(7)
 
 It seems like it's working!
 
-So let us open the function environment but we'll do it in a slightly different way. If you place `browser()` in the code you want to debug, the debugger will open when it encounters it.
+Let us now see a slightly different way to open the function environment. If you place `browser()` in the code you want to debug, the debugger will open when it encounters it. So for example, in the following code, the debugger will open just after the vector `primes` is populating in the for loop:
 
 ```{r debug4}
 
@@ -117,7 +119,7 @@ prime_numbers(7)
 
 ### `debug()`
 
-The function `debug()` allows you to enter the local environment of the function every time you run the function. This means, however, that you need to exit the debugger once you have finished debugging the function.
+`debugonce()` allows you to enter the function once, so that you find the error and fix it. Notice that there exist the function `debug()` as well. It allows you to enter the local environment of the function every time you run the function. This means, however, that you need to exit the debugger once you have finished debugging the function.
 
 
 ## Finding and fixing an error
@@ -145,29 +147,37 @@ prime_numbers <- function(n){
     }
 }
 
-prime_numbers(c(10,1))
+
+prime_numbers(n = c(10,20))
 
 ```
 
-We do get an error. In order to see where exactly the error occured, you may use the `traceback()` function or just click on `Show traceback` if you using RStudio.
+We do get an error. In order to see where exactly the error occured, you may use the `traceback()` function or just click on `Show traceback` if you using RStudio:
+
+```{r traceback}
+
+traceback()
+
+```
 
 This will allow you to see where the function stopped. Now, you may want to go closer into the function, you may want to go and see inside the function scope. Hence you may run the function `options(error=browser)`. This means that when R finds an error, it will stop right at the moment the error occured and let you look inside the function environment.
 
 ```{r options error}
 
-options(error = browser)
+options(error = browser())
 
-prime_numbers(c(10,1))
+prime_numbers(c(10,20))
 
 ```
 
-So the error is that our function is designed for only working with vectors of length 1. We may try to correct the error, for example by printing a message that says that the input cannot be a vector of length > 1.
+So the error is that our function is designed for only working with vectors of length 1. We may try to correct the error, for example by vectorising the function.
 
 
 ```{r fix error}
 
 prime_numbers <- function(n){
-  if (n >= 2) {
+  .prime_numbers <- function(n) {
+    if (n >= 2) {
       sieve <- seq(2, n)
       primes <- c()
 
@@ -180,20 +190,29 @@ prime_numbers <- function(n){
       return(primes)
     } else {
       stop("n should be at least 2.")
-      }
+    }
+  }
+  .prime_numbers_vec <- Vectorize(.prime_numbers, "n")
+  .prime_numbers_vec(n)
 }
 
-prime_numbers(c(10,1))
+prime_numbers(c(10,20))
 
 ```
 
 <!--
-Rifare esempio di traceback
+C'è esempio di traceback migliore?
 -->
 
-This can also be done with the RStudio environment as many of these functions are embedded into the RStudio IDE.
+Once you are done, you should turn off the error browser:
+
+```{r options error2}
+
+options(error = NULL)
+
+```
 
 
 <!--
-Aggiungere debugging da RStudio
+Aggiungere debugging da RStudio ?
 -->

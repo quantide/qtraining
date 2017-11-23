@@ -11,6 +11,7 @@ options(width = 108)
 
 ## Introduction
 
+Profiling R code gives you the chance to identify bottlenecks and pieces of code that may be more efficiently implemented. This is what profiling code is. If you use realistic inputs and measure the run-time of each individual operation, you can identify the most important bottlenecks can you attempt to eliminate them. 
 
 ## Measuring code performance
 
