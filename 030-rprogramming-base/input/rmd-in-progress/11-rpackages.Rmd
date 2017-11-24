@@ -410,7 +410,45 @@ You can use the tag `@importFrom` to highlight functions that are imported from 
 
 ### Vignettes (vignettes/)
 
-A vignette is a document that provides a general overview of your package. While the object documentation provides a punctual guide to 
+A vignette is a document that provides a general overview of your package. While the object documentation provides a punctual guide to every function, a vignette is supposed to show why the package is useful and how to coordinate multiple functions to solve problems.
+
+Many existing packages have vignettes. You can see all the installed vignettes with `browseVignettes()`. To see the vignette for a specific package, use the argument, `browseVignettes("packagename")`. Each vignette provides three things: the original source file, a readable HTML page or PDF, and a file of R code. You can read a specific vignette with `vignette(x)`, and see its code with `edit(vignette(x))`.
+
+You can see an example of a vignette [as part of the dplyr documentation](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html) 
+
+To create a vignette for our game package, we will run:
+
+```{r, eval = F}
+devtools::use_vignette("game-vignette")
+```
+
+The `devtools::use_vignette("vignettename")` command has several effects:
+
+1. It creates the vignettes/ folder
+
+2. Inside the vignettes/ folder, it creates a vignettename.Rmd file, already structured for creating a vignette
+
+3. Add the necessary dependencies to the DESCRIPTION file (it adds knitr to the Suggests and VignetteBuilder fields).
+
+The vignette file is a usual .Rmd file with a metadata preamble that looks like this:
+
+```{r, eval = F}
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```
+
+You can modify and create your vignette following the same instructions contained in the Rmarkdown chapter.
+
+Press `Ctrl + Shift + K` (or click the `Knit` button) to knit the vignette and preview the output.
+
 
 ### Testing (tests/)
 
