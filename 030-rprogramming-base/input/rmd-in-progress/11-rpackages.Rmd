@@ -196,6 +196,7 @@ DESCRIPTION uses a simple file format called DCF, the Debian control format. Eac
 
 Another important duty of the DESCRIPTION file is to list the dependencies of your package, namely the external packages that you package needs to run.  
 
+
 #### DESCRIPTION fields
 
 Here there is a list of the main DESCRIPTION fields, along with their way of usage.
@@ -271,8 +272,34 @@ The License field can be either a standard abbreviation for an open source licen
 
 ##### Version
 
+Formally, an R package version is a sequence of at least two integers separated by either . or -. For example, 1.0 and 0.9.1-10 are valid versions
 
 
+##### LazyData
+
+LazyData makes it easier to access data in your package. Because it’s so important, it’s included in the minimal description created by devtools.
+
+
+So, after some editing, our DESCRIPTION file may look like:
+
+```{r DESCRIPTION_edited, eval = F}
+Package: game
+Type: Package
+Title: A toy package with a game tool
+Version: 0.1.0
+Author: Marichiara Fortuna
+Maintainer: Mariachiara Fortuna <mariachiara.fortuna@quantide.com>
+Description: This package contains a basic example that we use to explain how to create
+    a new package. It is a complement of the Professional R Programming course
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+```
+
+After the editing, if we rebuild the package (`crtl+Shift+B`) we can notice that the game package will figure between our available packages:
+
+![](DESCRIPTION_1.png)
 
 
 
@@ -312,16 +339,78 @@ dice <- function(faces = 6, rolls = 1){
 }
 ```
 
+As we can see, it is sufficient to place some special comments before of each function in the .R file: then, if we rebuild the package (`crtl+Shift+B`) roxygen2 will build the help documentation for us.
+
+![Object documentation](documentation.png)
+
+If we check the man/ folder, we can see that it has a new file inside: the _dice.Rd_ file, automatically built by roxigen2 from our comments.
+
 
 #### roxygen comments
 
+Roxygen comments start with #' and come before a function. All the roxygen lines preceding a function are called a block. Each line should be wrapped in the same way as your code, normally at 80 characters.
+
+Blocks are broken up into tags, which look like @tagName details. 
+
+Each block includes some text before the first tag.1 This is called the introduction, and is parsed specially:
+
+The first sentence becomes the title of the documentation. That’s what you see when you look at help(package = mypackage) and is shown at the top of each help file. It should fit on one line, be written in sentence case, and end in a full stop.
+
+The second paragraph is the description: this comes first in the documentation and should briefly describe what the function does.
+
+The third and subsequent paragraphs go into the details: this is a (often long) section that is shown after the argument description and should go into detail about how the function works.
 
 
 
+##### Introduction
+
+The introduction is the text before the first tag: it becomes the title of the documentation and is shown at the top of each help file. It should fit on one line, be written in sentence case, and end in a full stop. In our case the title is:
+
+```{r, eval = F}
+#' Simulate a dice
+#'
+```
+
+You can place before the introduction the tag `@title`. 
+After the title you can optionally add a description of your function, after the tag `@description`.
+
+
+##### @param
+
+`@param name description` describes the function’s inputs or parameters. 
+
+`name` report the parameter name  
+
+The description can contain a summary of the parameter type (e.g., string, numeric vector) and what the parameter does.
+The description should start with a capital letter and end with a full stop. It can span multiple lines if necessary. All parameters must be documented.
+
+You can document multiple arguments in one place by separating the names with commas (no spaces). For example, to document both x and y, you can write @param x,y Numeric vectors..
+
+
+##### @examples
+
+`@examples` provides executable R code showing how to use the function in practice. Example code must work without errors as it is run automatically as part of R CMD check.
+
+
+
+##### @return
+
+`@return` describes the function output. It is not always necessary, but it is useful if your function returns different types of output depending on the input, or if you’re returning an S3, S4 or RC object.
+
+
+##### @importFrom
+
+You can use the tag `@importFrom` to highlight functions that are imported from other packages: for instance, as we will see in the next chapter:
+
+```{r}
+#' @importFrom ggplot2 ggplot xlab ylab geom_histogram
+```
 
 
 
 ### Vignettes (vignettes/)
+
+A vignette is a document that provides a general overview of your package. While the object documentation provides a punctual guide to 
 
 ### Testing (tests/)
 
