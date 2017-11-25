@@ -502,6 +502,46 @@ In the next chapter you will see an example of the `@importFrom` tag usage.
 
 ### Data (data/)
 
+Sometimes we want to make available one or more datasets along with our code. The right location for them is the data/ folder.
+
+The easiest way to add data to our /data folder is to use the `devtools::use_data()` function.
+
+```{r, eval = F}
+sample_data <- sample(1000)
+devtools::use_data(sample_data)
+```
+
+Using `devtools::use_data()` we assure that all the data requirements will be respected: in fact, data in the data/ folder should be a .RData file created by save() containing a single object (with the same name as the file). 
+
+All the objects in the data/ folder are exported, and should be documented.
+
+To document a dataset you should add a roxygen block to your .R file, documenting the name of the dataset. 
+
+Two extra @tagName are available for datasets:
+
+* `@format` describes the dataset format
+
+* `@source` describes the dataset source, often a `\url`
+
+For instance, this is the documentation for the `diamond` dataset, contained in the `gplot2` package:
+
+```{r, eval = F}
+#' Prices of 50,000 round cut diamonds.
+#'
+#' A dataset containing the prices and other attributes of almost 54,000
+#' diamonds.
+#'
+#' @format A data frame with 53940 rows and 10 variables:
+#' \describe{
+#'   \item{price}{price, in US dollars}
+#'   \item{carat}{weight of the diamond, in carats}
+#'   ...
+#' }
+#' @source \url{http://www.diamondse.info/}
+"diamonds"
+```
+
+
 ### Installed files (inst/)
 
 ### Other 
