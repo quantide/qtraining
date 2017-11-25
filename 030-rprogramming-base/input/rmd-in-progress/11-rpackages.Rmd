@@ -542,7 +542,31 @@ For instance, this is the documentation for the `diamond` dataset, contained in 
 ```
 
 
+If you want to use data in your package without making them available to external user, you should save them in `R/sysdata.rda`
+
+You can use `devtools::use_data()` to create this file with the argument `internal = TRUE`
+
+```{r, eval = F}
+sample_data <- sample(1000)
+devtools::use_data(sample_data, internal = TRUE)
+```
+
+
+
 ### Installed files (inst/)
+
+The inst/ folder contains all the extra material that you want to distribute together with your package.
+
+Usually it may contain:
+
+* Plain text files describing authorship, copyright and rules for a citation of a package, if they are particularly complex. Usually they are saved in subdirectory called inst/AUTHOR, inst/COPYRIGHT  and inst/CITATION
+
+* External data for examples and vignettes, usually saved in the subdirectory inst/extdata
+
+* Supplementary scripts in other language. The convention is to put scripts of this nature into a subdirectory of inst/, inst/python, inst/perl, inst/ruby etc. If these scripts are essential to your package, make sure you also add the appropriate programming language to the SystemRequirements field in the DESCRIPTION. (This field is for human reading so don’t worry about exactly how you specify it.)
+
+You are free to put anything you like in inst/ with one caution: because inst/ is copied into the top-level directory, you should never use a subdirectory with the same name as an existing directory. This means that you should avoid inst/build, inst/data, inst/demo, inst/exec, inst/help, inst/html, inst/inst, inst/libs, inst/Meta, inst/man, inst/po, inst/R, inst/src, inst/tests, inst/tools and inst/vignettes.
+
 
 ### Other 
 
