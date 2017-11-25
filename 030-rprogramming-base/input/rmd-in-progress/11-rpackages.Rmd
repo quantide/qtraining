@@ -1,12 +1,14 @@
 ---
 title: "Developing R packages"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ## Introduction
 A wide documentation is available on the internet providing the technical instructions to build `R` packages, starting from the manual [Writing R extensions](http://cran.r-project.org/doc/manuals/r-release/R-exts.html) at the official `R` site.
+
+A very useful text is [R packages book](http://r-pkgs.had.co.nz/) by Hadley Wickham. The book is available online at the web address http://r-pkgs.had.co.nz/, and it is a very wide guide to packages creation. 
  
 This section provides a general overview about R packages. The following sections try to provide some insights on the mechanism used by `R` when dealing with packages.
 
@@ -442,6 +444,101 @@ Press `Ctrl + Shift + K` (or click the `Knit` button) to knit the vignette and p
 
 
 ### Testing (tests/)
+
+The tests/ folder may contain automatic tests for your package. The presence of automated tests can help you during the package development, and assure that every change you make does not affect the rest of your code in an unpredicted way.
+
+A convenient way to develop automated test is through the package `testhat`. 
+You can discover more about its usage in the Testing chapter, so here we will se just a quick example.
+
+To set up our package to use testthat, we can run:
+
+```{r, eval = F}
+devtools::use_testthat()
+```
+
+This will:
+
+1. Create a tests/testthat directory.
+
+2. Adds testthat to the Suggests field in the DESCRIPTION.
+
+3. Creates a file tests/testthat.R that runs all your tests when R CMD check runs.
+
+The procedure to add a new set of test is then:
+
+1. Add a new .R file into the `tests/testthat` directory. The file name should start with the word _test_
+
+2. Write the test 
+
+3. Test our package with `Ctrl/Cmd + Shift + T` or `devtools::test()`.
+
+Let's run an example for our `dice()` function. 
+
+Suppose we want to be sure that the `rolls` argument works properly, determining the length of the output vector.
+
+We can then add a `test_rolls.R` file in the `tests/testthat` directory, and write the test:
+
+```{r, eval = F}
+library(testthat)
+
+context("Dice function output")
+
+test_that("Dice rolls sets up the number of rolls", {
+  expect_equal(length(dice()), 1)
+  expect_equal(length(dice(rolls = 10)), 10)
+  expect_equal(length(dice(rolls = 30)), 30)
+})
+
+```
+
+If we then test the package with `Ctrl/Cmd + Shift + T` or `devtools::test()`, we get as output:
+
+    ==> devtools::test()
+
+    Loading game
+    Loading required package: testthat
+    Testing game
+    Dice function output: ...
+
+    DONE ===========================================================================
+
+
+Great, everything works fine!
+
+If one of the test is not satisfied, we will receive a message error. 
+
+If for instance we modify the second test as follow:
+
+```{r, eval = F}
+library(testthat)
+
+context("Dice function output")
+
+test_that("Dice rolls sets up the number of rolls", {
+  expect_equal(length(dice()), 1)
+  expect_equal(length(dice(rolls = 10)), 60) # <- Error! The expected lenght is 10
+  expect_equal(length(dice(rolls = 30)), 30)
+})
+
+```
+
+and we run the test, then we will get the message:
+
+    ==> devtools::test()
+
+    Loading game
+    Loading required package: testthat
+    Testing game
+    Dice function output: .1.
+
+    Failed -------------------------------------------------------------------------
+    1. Failure: Dice rolls sets up the number of rolls (@test_rolls.R#7) -----------
+    length(dice(rolls = 10)) not equal to 60.
+    1/1 mismatches
+    [1] 10 - 60 == -50
+    
+    DONE ===========================================================================
+
 
 
 
