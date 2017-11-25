@@ -667,6 +667,10 @@ You are free to put anything you like in inst/ with one caution: because inst/ i
 
 ### Other 
 
+A directory that you may find sometimes useful is `src/`. This is the place where you can put compiled code (like C or C++) that can powerfully complement your R code. 
+
+There are other directories that are rarely used: `demo/` for package demos, `exec/` for executable scripts, `po/` for messages translations, `tools/` for auxiliary files needed during configuration, or for sources that need to generate scripts.
+
 
 ## Further deepenings
 
