@@ -398,15 +398,6 @@ You can document multiple arguments in one place by separating the names with co
 `@return` describes the function output. It is not always necessary, but it is useful if your function returns different types of output depending on the input, or if you’re returning an S3, S4 or RC object.
 
 
-##### @importFrom
-
-You can use the tag `@importFrom` to highlight functions that are imported from other packages: for instance, as we will see in the next chapter:
-
-```{r}
-#' @importFrom ggplot2 ggplot xlab ylab geom_histogram
-```
-
-
 
 ### Vignettes (vignettes/)
 
@@ -452,7 +443,62 @@ Press `Ctrl + Shift + K` (or click the `Knit` button) to knit the vignette and p
 
 ### Testing (tests/)
 
+
+
+
 ### Namespaces (NAMESPACE)
+
+The NAMESPACE file makes your packages self-contained handling with the imports and the exports. 
+
+The **imports** defines how a function in one package finds a function in another. 
+
+The **exports** helps you avoid conflicts with other packages by specifying which functions are available outside of your package 
+
+The NAMESPACE file is automatically written by roxygen2, once the .R file is supplied with some special comments. They look exactly as the comments that we used to produce the Object documentation - namely they start with a `#'` symbol, followed by @tagName and a description - but they are specially designed to handle imports and  exports, and they guide the self compilation of the NAMESPACE file.   
+
+
+##### @export
+
+To make a function available outside of your package, you must export it.
+
+If we check the temporary NAMESPACE file within the package, it contains the string:
+
+    exportPattern("^[[:alpha:]]+")
+
+It simply exports all functions whose name begin with a character or a number (and not with a dot).
+
+Some of the functions may not be necessary outside of your package (e.g. functions that produce intermediate results, used by other functions), and avoid to export them may reduce the chance of conflicts with external functions.
+
+To export an object, put @export in its roxygen block.
+
+```{r, eval = F}
+#' Simulate a dice
+#'
+#' @param faces Number of dice faces
+#' @param rolls Number of dice rolls
+#' @return The dice rolls output
+#' @examples
+#' dice()
+#' dice(faces = 10)
+#' dice(faces = 12, rolls = 10)
+#' @export
+dice <- function(faces = 6, rolls = 1){
+  out <- sample(1:faces, rolls, replace = T)
+  out
+}
+```
+
+
+##### @importFrom
+
+You can use the tag `@importFrom` to highlight functions that are imported from other packages.
+
+```{r, eval = F}
+#' @importFrom ggplot2 ggplot xlab ylab geom_histogram
+```
+
+In the next chapter you will see an example of the `@importFrom` tag usage.
+
 
 ### Data (data/)
 
