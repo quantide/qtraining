@@ -21,7 +21,7 @@ Debugging					| debugging.Rmd
 
 Developing R packages
 Testing						| testing.Rmd
-
+R packages					| 11-rpackages.Rmd
 
 Documenting and sharing code
 Rmarkdown					| 10-rmarkdown.Rmd
