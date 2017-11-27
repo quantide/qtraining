@@ -1,5 +1,5 @@
 Base Programming
-Code style					| 00-code-style
+Code style					| 00-code-style.Rmd
 Environments                                    | 01-environments.Rmd
 Functions                                       | 02-programming-functions.Rmd
 Writing Functions                               | 03-function-writing.Rmd
