@@ -1,4 +1,5 @@
 Base Programming
+Code style					| 00-code-style
 Environments                                    | 01-environments.Rmd
 Functions                                       | 02-programming-functions.Rmd
 Writing Functions                               | 03-function-writing.Rmd
@@ -11,19 +12,16 @@ Map and mapply                                  | 07-map-mapply.Rmd
 Introduction to purrr                           | 08-purrr.Rmd
 
 
-Parallel computation
-The parallel package                            | 09-parallel.Rmd
-
-Profiling and Debugging
-Profiling					| profiling.Rmd
-Debugging					| debugging.Rmd
-
+Efficient coding
+Debugging					| 09-debugging.Rmd
+Profiling					| 10-profiling.Rmd
+The parallel package                            | 11-parallel.Rmd
 
 Developing R packages
-Testing						| testing.Rmd
-R packages					| 11-rpackages.Rmd
+Testing						| 12-testing.Rmd
+R packages					| 13-rpackages.Rmd
 
 Documenting and sharing code
-Rmarkdown					| 10-rmarkdown.Rmd
-Git and Github					| 12-git.Rmd
+Rmarkdown					| 14-rmarkdown.Rmd
+Git and Github					| 15-git.Rmd
 

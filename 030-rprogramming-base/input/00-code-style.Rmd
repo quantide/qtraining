@@ -1,0 +1,251 @@
+---
+title: "Code Style"
+---
+
+
+```{r options, include=FALSE, purl=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
+options(width = 108)
+```
+
+
+
+## Introduction
+
+_Good coding style is like using correct punctuation. You can manage without it, but it sure makes things easier to read._ - Hadley Wickham
+
+
+Different styles are possible to choose, however it is important that you stick with the style you choose. In this paragraph we present the style that, you may notice, is used in this manual. It is based on [the tidyverse style guide]( http://style.tidyverse.org/) by Hadley Wickham, most of the examples in this chapter are taken from it.
+
+
+## Notation and naming
+
+### File names
+
+File names should be meaningful and end in .R. 
+
+```{r, eval = FALSE}
+fit_models.R
+utility_functions.R
+
+# Bad
+foo.r
+stuff.r
+```
+
+Pay attention to capitalization: never use filenames that differ only in capitalisation.
+
+### Object names 
+
+Variable and function names should be lowercase. In this manual you often see an underscore `_` to separate words within the same variable/function name. 
+
+Although dots are extensively used in function names (`predict.lm()`, `as.data.frame`), and in class names (data.frame), we reccommend the use of underscore instead of a dot `.`. 
+
+In fact, for example in the basic S3 scheme to define a method for a class, using a generic function, would be to concatenate them with a dot, like this: `generic.class`. This can lead to confusing methods like ` as.data.frame.data.frame()` whereas something like `print.my_class()` is unambiguous.
+
+```{r, eval = FALSE}
+# Good
+day_one
+day_1
+
+# Bad
+first_day_of_the_month
+DayOne
+dayone
+djm1
+```
+
+
+Always avoid using names of existing functions and variables:
+
+```{r, eval = FALSE}
+# Bad
+T <- FALSE
+c <- 10
+mean <- function(x) sum(x)
+```
+
+
+
+#### Difference between functions and variables naming
+
+It is good practive that variable names are nouns and function names are verbs. Strive for names that are concise and meaningful (this is not easy!).
+
+
+## Syntax
+
+### Assignment
+
+Use <-, not =, for assignment.
+
+```{r, eval = TRUE}
+# Good
+x <- c(1, 2)
+
+# Bad
+x = c(1, 2)
+
+```
+
+### Spacing
+
+* Place spaces around all infix operators (=, +, -, <-, etc.)
+* always put a space after a comma, and never before (just like in regular English)
+* do not use spaced before and after `::`
+
+
+```{r, eval = FALSE}
+# Good
+average <- mean(feet / 12 + inches, na.rm = TRUE)
+dplyr::select()
+
+# Bad
+average<-mean(feet/12+inches,na.rm=TRUE)
+dplyr :: select()
+```
+
+
+* Pay attention to alignment, if necessary, you may use more than one space in a row:
+
+```{r, eval = FALSE}
+list(
+  total = a + b + c, 
+  mean  = (a + b + c) / n
+)
+
+```
+
+
+### Parenthesis, square brackets and curly braces
+
+* Parentheses and square brackets: no space should be placed after parenthesis
+
+```{r, eval = FALSE}
+# Good
+if (debug) do(x)
+diamonds[5, ]
+
+# Bad
+if ( debug ) do(x)  # No spaces around debug
+x[1,]   # Needs a space after the comma
+x[1 ,]  # Space goes after comma not before
+```
+
+* Curly braces: An opening curly brace should never go on its own line and should always be followed by a new line. A closing curly brace should always go on its own line, unless it’s followed by else (or a closing parenthesis). Always indent the code inside curly braces. When indenting your code, use two spaces. Never use tabs or mix tabs and spaces and use one line for each statement.
+
+
+```{r, eval = FALSE}
+# Good
+if (y < 0 && debug) {
+  message("y is negative")
+}
+
+if (y == 0) {
+  if (x > 0) {
+    log(x)
+  } else {
+    message("x is negative or zero")
+  }
+} else {
+  y ^ x
+}
+
+# Bad
+if (y < 0 && debug)
+message("Y is negative")
+
+if (y == 0)
+{
+    if (x > 0) {
+⇥       log(x)
+    } else {
+⇥       message("x is negative or zero")
+    }
+} 
+else { y ^ x }
+```
+
+
+### Pipes
+
+A major operator in tidyverse is the `%>%` operator, mostly used in `dplyr` for concatenating verbs. Put each verb on its own line, so that every line ends with a `%>%` and it contains only one. This makes it simpler to read over your code and to rearrange them later, as well as makes it harder for the reader to skip a passage.
+
+```{r, eval = FALSE}
+# Good
+iris %>%
+  group_by(Species) %>%
+  summarize_all(mean) %>%
+  ungroup %>%
+  gather(measure, value, -Species) %>%
+  arrange(value)
+
+iris %>% arrange(Petal.Width)
+
+# Bad
+iris %>% group_by(Species) %>% summarize_all(mean) %>%
+  ungroup %>% gather(measure, value, -Species) %>%
+  arrange(value)
+```
+
+
+### Indentation
+
+If a function definition runs over multiple lines, indent the second line to where the definition starts.
+
+```{r, eval = FALSE}
+# Good
+long_function_name <- function(a = "a long argument", 
+                               b = "another argument",
+                               c = "another long argument") {
+}
+
+# Bad
+long_function_name <- function(a = "a long argument",
+  b = "another argument",
+  c = "another long argument") {
+}
+```
+
+If a function contains many arguments so that the calling is particularly long, put the function name, each argument, and the closing parenthesis on a separate line. By doing so, each like will start with a space and end with a comma, making the code easier to read and to change if needed:
+
+
+```{r, eval = FALSE}
+# Good
+do_something_very_complicated(
+  "that",
+  requires = many,
+  arguments = "some of which may be long"
+)
+
+paste0(
+  "Requirement: ", requires, "\n",
+  "Result: ", result, "\n"
+)
+
+# Bad
+do_something_very_complicated("that", requires, many, arguments,
+                              "some of which may be long"
+                              )
+
+paste0(
+  "Requirement: ", requires,
+  "\n", "Result: ",
+  result, "\n")
+
+```
+
+
+
+## Commenting guidelines
+
+Comments should explain the why, not the what. If you need to write what you are doing, it means that your code is not clear enough. 
+
+Each line of a comment should begin with only on `#` and you may use commented lines of - to break up your file into easily readable chunks:
+
+```{r, eval = FALSE}
+
+# Load data ---------------------------
+
+# Plot data ---------------------------
+
+```
