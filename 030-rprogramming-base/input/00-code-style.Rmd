@@ -15,7 +15,7 @@ options(width = 108)
 _Good coding style is like using correct punctuation. You can manage without it, but it sure makes things easier to read._ - Hadley Wickham
 
 
-Different styles are possible to choose, however it is important that you stick with the style you choose. In this paragraph we present the style that, you may notice, is used in this manual. It is based on [the tidyverse style guide]( http://style.tidyverse.org/) by Hadley Wickham, most of the examples in this chapter are taken from it.
+When you are programming you should choose the style you feel the most comfortable with, however it is important that you stick with it when you write your code. Here we present one of the possible styles one may choose and it is the style this manual is adopting. It is based on [the tidyverse style guide]( http://style.tidyverse.org/) by Hadley Wickham; most of the examples in this chapter are taken from it.
 
 
 ## Notation and naming

@@ -1,5 +1,5 @@
 ---
-title: "Profiling in R and RStudio"
+title: "Testing"
 ---
 
 
@@ -81,11 +81,10 @@ Moreover, `assertthat` provides some new functions compared to the usual base `R
 * `are_equal(x, y)`: are x and y equal?
 * `noNA(x)`: is x free from missing values?
 * `is.writeable(path)/is.readable(path)`: is path writeable/readable?
-
+<!---
 
 ### Writing your own assertions
 
-<!---
 If you're writing your own assertions, you can provide custom error messages using the on_failure() helper:
 
 is_odd <- function(x) {
@@ -174,7 +173,7 @@ Above we showed some of the most used functions but also some of the easiest fun
 
 Each test is run in its own environment and is self-contained. Tests start with `test_that` and are basically a list of expectations on the output of a specific function.
 
-For example, you may take a look at some of the test functions of the package `stringr`:
+Here is an example of the test functions in `stringr` package, taken from Hadley Wickham's book [Advanced R](http://r-pkgs.had.co.nz/tests.html):
 
 ```{r, eval = FALSE}
 library(stringr)
@@ -199,7 +198,6 @@ test_that("str_length of missing is missing", {
 })
 ```
 
-So let us go back to our example ...
 
 
 <!---
@@ -239,8 +237,5 @@ Then you just need to:
 2. test your package with Ctrl/Cmd + Shift + T or `devtools::test()`
 3. repeat until all tests pass
 
-Let us see all this with the usual example:
+In the chapter about how to create R packages, you will be guided through the construction of a test to insert in your package.
 
-<!---
-aggiungere esempio pacchetto di giuseppe
--->
