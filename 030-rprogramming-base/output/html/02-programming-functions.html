@@ -292,7 +292,7 @@ $(document).ready(function () {
 
 <header>
       <div class="inner">
-        <h1>R base programming</h1>
+        <h1>Professional R Programming</h1>
         <h2></h2>
       </div>
     </header>
@@ -310,6 +310,7 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Base Programming</li>
+  <li><a href="00-code-style">Code style</a></li>
   <li><a href="01-environments.html">Environments</a></li>
   <li><a href="02-programming-functions.html">Functions</a></li>
   <li><a href="03-function-writing.html">Writing Functions</a></li>
@@ -319,11 +320,16 @@ $(document).ready(function () {
   <li><a href="06-functionals.html">Functionals</a></li>
   <li><a href="07-map-mapply.html">Map and mapply</a></li>
   <li><a href="08-purrr.html">Introduction to purrr</a></li>
-  <li class="nav-header">Parallel computation</li>
-  <li><a href="09-parallel.html">The parallel package</a></li>
+  <li class="nav-header">Efficient coding</li>
+  <li><a href="09-debugging.html">Debugging</a></li>
+  <li><a href="10-profiling.html">Profiling</a></li>
+  <li><a href="11-parallel.html">The parallel package</a></li>
+  <li class="nav-header">Developing R packages</li>
+  <li><a href="12-testing.html">Testing</a></li>
+  <li><a href="13-rpackages.html">R packages</a></li>
   <li class="nav-header">Documenting and sharing code</li>
-  <li><a href="10-rmarkdown.html">Rmarkdown</a></li>
-  <li><a href="12-git.html">Git and Github</a></li>
+  <li><a href="14-rmarkdown.html">Rmarkdown</a></li>
+  <li><a href="15-git.html">Git and Github</a></li>
 </ul>
     </div>  
   </div>
@@ -510,7 +516,7 @@ environment(mean)
 <pre class="r"><code>env &lt;- new.env()
 environment(f) &lt;- env
 environment(f)</code></pre>
-<pre><code>## &lt;environment: 0x4e88378&gt;</code></pre>
+<pre><code>## &lt;environment: 0x50b4398&gt;</code></pre>
 <p>in case we delete environment <code>env</code></p>
 <pre class="r"><code>rm(env)</code></pre>
 <p><code>f()</code> will keep working</p>

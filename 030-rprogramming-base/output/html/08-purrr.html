@@ -292,7 +292,7 @@ $(document).ready(function () {
 
 <header>
       <div class="inner">
-        <h1>R base programming</h1>
+        <h1>Professional R Programming</h1>
         <h2></h2>
       </div>
     </header>
@@ -310,6 +310,7 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Base Programming</li>
+  <li><a href="00-code-style">Code style</a></li>
   <li><a href="01-environments.html">Environments</a></li>
   <li><a href="02-programming-functions.html">Functions</a></li>
   <li><a href="03-function-writing.html">Writing Functions</a></li>
@@ -319,11 +320,16 @@ $(document).ready(function () {
   <li><a href="06-functionals.html">Functionals</a></li>
   <li><a href="07-map-mapply.html">Map and mapply</a></li>
   <li><a href="08-purrr.html">Introduction to purrr</a></li>
-  <li class="nav-header">Parallel computation</li>
-  <li><a href="09-parallel.html">The parallel package</a></li>
+  <li class="nav-header">Efficient coding</li>
+  <li><a href="09-debugging.html">Debugging</a></li>
+  <li><a href="10-profiling.html">Profiling</a></li>
+  <li><a href="11-parallel.html">The parallel package</a></li>
+  <li class="nav-header">Developing R packages</li>
+  <li><a href="12-testing.html">Testing</a></li>
+  <li><a href="13-rpackages.html">R packages</a></li>
   <li class="nav-header">Documenting and sharing code</li>
-  <li><a href="10-rmarkdown.html">Rmarkdown</a></li>
-  <li><a href="12-git.html">Git and Github</a></li>
+  <li><a href="14-rmarkdown.html">Rmarkdown</a></li>
+  <li><a href="15-git.html">Git and Github</a></li>
 </ul>
     </div>  
   </div>
@@ -355,19 +361,8 @@ $(document).ready(function () {
 <h2>Introduction</h2>
 <p>As you have learned in the previous chapters, doing something to each element of a vactor/matrix and saving the results is very common. Base <code>R</code> provides functions for doing it such as apply, vapply, etc.</p>
 <p>The <code>purrr</code> package provides a complete and consistent set of tools to work in these situations.</p>
-<pre class="r"><code>require(tidyverse)</code></pre>
-<pre><code>## Loading required package: tidyverse</code></pre>
-<pre><code>## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr</code></pre>
-<pre><code>## Conflicts with tidy packages -------------------------------------------------------------------------------</code></pre>
-<pre><code>## filter(): dplyr, stats
-## lag():    dplyr, stats</code></pre>
-<pre class="r"><code>require(qdata)</code></pre>
-<pre><code>## Loading required package: qdata</code></pre>
+<pre class="r"><code>require(tidyverse)
+require(qdata)</code></pre>
 <p>Notice that <code>purrr</code> is part of the <code>tidyverse</code> core, together with <code>ggplot2</code> and <code>dplyr</code>. If you have not learned about tidyverse yet, you can find a brief overview on the <a href="http://tidyverse.org/">dedicated website</a></p>
 <p>For additional material on <code>purrr</code>, please visit the following webpage (<a href="https://cran.r-project.org/web/packages/purrr/index.html" class="uri">https://cran.r-project.org/web/packages/purrr/index.html</a>)</p>
 <p>Recently, some of <code>purrr</code>’s functions were moved to a newly developed package called <code>purrrlyr</code>. <code>purrrlyr</code> contains functions that are a bridge between <code>purrr</code> and <code>dplyr</code>.</p>
@@ -391,101 +386,31 @@ $(document).ready(function () {
 )
 
 # returns a list of 3
-map(df, mean)</code></pre>
-<pre><code>## $savings
-## [1] 9.982043
-## 
-## $salary
-## [1] 20.23369
-## 
-## $spending
-## [1] 9.870858</code></pre>
-<pre class="r"><code># returns a vector of 3
+map(df, mean)
+
+# returns a vector of 3
 map_dbl(df, mean)</code></pre>
-<pre><code>##   savings    salary  spending 
-##  9.982043 20.233691  9.870858</code></pre>
 <p>Notice that, consistently with the tidyverse philosophy, <code>map()</code> functions work with the %&gt;%:</p>
 <pre class="r"><code>df %&gt;% map_dbl(is.numeric)</code></pre>
-<pre><code>##  savings   salary spending 
-##        1        1        1</code></pre>
 <p>As you may be wondering, most functions on <code>purrr</code> do things that are already implemented in base R. In paragraph <strong>Similarities with base functions</strong>_ you will find the main differences and the main reasons why it is worth to get a quick overview of the functions in <code>purrr</code>.</p>
 <div id="similarities-with-base-functions" class="section level4">
 <h4>Similarities with base functions</h4>
 <p>As mentioned there are similarities with the base functions for functional programming.</p>
 <p><code>lapply()</code> does basically the same as <code>map()</code>.</p>
 <pre class="r"><code>all.equal(lapply(df, mean), map(df, mean))</code></pre>
-<pre><code>## [1] TRUE</code></pre>
 <p>However <code>map()</code> has the advantage of being consistent with all the other functions in <code>purrr</code> and it allows you to use shortcuts, for example:</p>
 <pre class="r"><code>mtcars %&gt;% 
   split(.$cyl) %&gt;% 
   map(~lm(mpg ~ wt, data = .))</code></pre>
-<pre><code>## $`4`
-## 
-## Call:
-## lm(formula = mpg ~ wt, data = .)
-## 
-## Coefficients:
-## (Intercept)           wt  
-##      39.571       -5.647  
-## 
-## 
-## $`6`
-## 
-## Call:
-## lm(formula = mpg ~ wt, data = .)
-## 
-## Coefficients:
-## (Intercept)           wt  
-##       28.41        -2.78  
-## 
-## 
-## $`8`
-## 
-## Call:
-## lm(formula = mpg ~ wt, data = .)
-## 
-## Coefficients:
-## (Intercept)           wt  
-##      23.868       -2.192</code></pre>
 <p>instead of</p>
 <pre class="r"><code>mtcars %&gt;% 
   split(.$cyl) %&gt;% 
   map(function(df) lm(mpg ~ wt, data = df))</code></pre>
-<pre><code>## $`4`
-## 
-## Call:
-## lm(formula = mpg ~ wt, data = df)
-## 
-## Coefficients:
-## (Intercept)           wt  
-##      39.571       -5.647  
-## 
-## 
-## $`6`
-## 
-## Call:
-## lm(formula = mpg ~ wt, data = df)
-## 
-## Coefficients:
-## (Intercept)           wt  
-##       28.41        -2.78  
-## 
-## 
-## $`8`
-## 
-## Call:
-## lm(formula = mpg ~ wt, data = df)
-## 
-## Coefficients:
-## (Intercept)           wt  
-##      23.868       -2.192</code></pre>
 <p><code>sapply()</code> is a wrapper around <code>lapply()</code> and it simplifies the output.</p>
 <pre class="r"><code># the output is a numeric (double) vector 
-sapply(df, mean)</code></pre>
-<pre><code>##   savings    salary  spending 
-##  9.982043 20.233691  9.870858</code></pre>
-<pre class="r"><code>all.equal(lapply(df, mean), map(df, mean))</code></pre>
-<pre><code>## [1] TRUE</code></pre>
+sapply(df, mean)
+
+all.equal(lapply(df, mean), map(df, mean))</code></pre>
 <p>However if you are using it in a function you may want to know the type of vector in advance. This is something you can easily do with <code>purrr</code> functions.</p>
 <p><code>vapply()</code> is an alternative to <code>sapply()</code> because you supply an additional argument that defines the type. It does however have a more complex syntax than the <code>purrr</code> functions.</p>
 <p>Thus, in general the functions in the <code>map()</code> family have the following advantages:</p>
@@ -506,28 +431,12 @@ data(banknotes)
 banknotes %&gt;%
     map_if(is.factor, as.character) %&gt;%
     str()</code></pre>
-<pre><code>## List of 7
-##  $ length  : num [1:200] 215 215 215 215 215 ...
-##  $ left    : num [1:200] 131 130 130 130 130 ...
-##  $ right   : num [1:200] 131 130 130 130 130 ...
-##  $ bottom  : num [1:200] 9 8.1 8.7 7.5 10.4 9 7.9 7.2 8.2 9.2 ...
-##  $ top     : num [1:200] 9.7 9.5 9.6 10.4 7.7 10.1 9.6 10.7 11 10 ...
-##  $ diagonal: num [1:200] 141 142 142 142 142 ...
-##  $ type    : chr [1:200] &quot;genuine&quot; &quot;genuine&quot; &quot;genuine&quot; &quot;genuine&quot; ...</code></pre>
 <p>applys the function <code>as.character</code> to only factor variables.</p>
 <p><code>map_at()</code> modifies elements corresponding to a specific vector identified by its name or position.</p>
 <pre class="r"><code># turns factors into character
 banknotes %&gt;%
     map_at(&quot;type&quot;, as.character) %&gt;%
     str()</code></pre>
-<pre><code>## List of 7
-##  $ length  : num [1:200] 215 215 215 215 215 ...
-##  $ left    : num [1:200] 131 130 130 130 130 ...
-##  $ right   : num [1:200] 131 130 130 130 130 ...
-##  $ bottom  : num [1:200] 9 8.1 8.7 7.5 10.4 9 7.9 7.2 8.2 9.2 ...
-##  $ top     : num [1:200] 9.7 9.5 9.6 10.4 7.7 10.1 9.6 10.7 11 10 ...
-##  $ diagonal: num [1:200] 141 142 142 142 142 ...
-##  $ type    : chr [1:200] &quot;genuine&quot; &quot;genuine&quot; &quot;genuine&quot; &quot;genuine&quot; ...</code></pre>
 </div>
 <div id="multiple-arguments" class="section level3">
 <h3>Multiple arguments</h3>
@@ -537,34 +446,14 @@ banknotes %&gt;%
 sigma &lt;- list(1, 5, 10)
 seq_along(mu) %&gt;% 
   map(~rnorm(5, mu[[.]], sigma[[.]])) </code></pre>
-<pre><code>## [[1]]
-## [1] 4.908886 6.757376 4.862070 4.888807 4.309986
-## 
-## [[2]]
-## [1]  8.891029 10.914538 12.086616 15.327012 14.851010
-## 
-## [[3]]
-## [1]  -4.016292  11.032035 -20.767756   3.228674  -8.222834</code></pre>
 <p>Or you can use <code>map2()</code>:</p>
 <pre class="r"><code>map2(mu, sigma, rnorm, n = 5) </code></pre>
-<pre><code>## [[1]]
-## [1] 6.322231 4.636560 6.319066 5.043779 3.121344
-## 
-## [[2]]
-## [1]  7.764689  1.307010 10.894324 19.487329 -1.359627
-## 
-## [[3]]
-## [1]   6.804641 -16.988256  15.248724  10.812987 -11.388519</code></pre>
 <p>However if it gets more complicated and you are using more argumenets, it may be better to use the function <code>pmap()</code> that takes a list of arguments:</p>
 <pre class="r"><code>n_size &lt;- list(5,10,15)
 args &lt;- list(n_size, mu, sigma)
 args %&gt;% 
   pmap(rnorm) %&gt;%
   str()</code></pre>
-<pre><code>## List of 3
-##  $ : num [1:5] 4.74 4.93 4.62 7.58 5.13
-##  $ : num [1:10] 6.43 13.19 11.01 9.65 9.54 ...
-##  $ : num [1:15] -2.873 -13.875 -0.295 7.085 -23.744 ...</code></pre>
 <p>Similarly to <code>map()</code>, there are <code>pmap()</code> functions that allows you to specify the output vector type such as <code>pmap_int()</code> and <code>pmap_lgl</code>.</p>
 </div>
 <div id="more-functions" class="section level3">
@@ -578,39 +467,20 @@ param &lt;- list(
 )
 
 invoke_map(f, param, n = 5) </code></pre>
-<pre><code>## [[1]]
-## [1] -0.4225561  0.4356617  0.8467949  0.3498790 -0.6281200
-## 
-## [[2]]
-## [1] -1.9527201 -6.1830428  4.9354330 -0.7911928  8.9874772
-## 
-## [[3]]
-## [1]  8 10 12 15 12</code></pre>
 <p>Again, as for <code>map()</code>, there are versions of <code>invoke_map()</code> that allow to specify the type of output, such as <code>invoke_map_dbl</code> and <code>invoke_map_lgl</code>.</p>
 </div>
 </div>
 <div id="dmap" class="section level2">
 <h2><code>dmap()</code></h2>
 <p>The function <code>dmap()</code> is now included in the package <code>purrrly</code>. It is just like <code>map()</code> but it always returns a data frame. Moreover it can work on sliced data frames:</p>
-<pre class="r"><code>require(purrrlyr)</code></pre>
-<pre><code>## Loading required package: purrrlyr</code></pre>
-<pre class="r"><code>banknotes %&gt;%
+<pre class="r"><code>require(purrrlyr)
+banknotes %&gt;%
   slice_rows(&quot;type&quot;) %&gt;% 
   dmap(mean)</code></pre>
-<pre><code>## # tibble [2 x 7]
-##          type  length    left   right bottom    top diagonal
-##        &lt;fctr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
-## 1 counterfeit 214.823 130.300 130.193 10.530 11.133  139.450
-## 2     genuine 214.969 129.943 129.720  8.305 10.168  141.517</code></pre>
 <p>or grouped data frames:</p>
 <pre class="r"><code>banknotes %&gt;%
     group_by(type) %&gt;% 
     dmap(mean)</code></pre>
-<pre><code>## # tibble [2 x 7]
-##          type  length    left   right bottom    top diagonal
-##        &lt;fctr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
-## 1 counterfeit 214.823 130.300 130.193 10.530 11.133  139.450
-## 2     genuine 214.969 129.943 129.720  8.305 10.168  141.517</code></pre>
 </div>
 <div id="other-types-of-loops" class="section level2">
 <h2>Other types of loops</h2>
@@ -621,61 +491,18 @@ invoke_map(f, param, n = 5) </code></pre>
 </ul>
 <pre class="r"><code>data(&quot;banknotes&quot;)
 banknotes %&gt;% keep(is.numeric)</code></pre>
-<pre><code>## # A tibble: 200 x 6
-##    length  left right bottom   top diagonal
-##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-##  1  214.8 131.0 131.1    9.0   9.7    141.0
-##  2  214.6 129.7 129.7    8.1   9.5    141.7
-##  3  214.8 129.7 129.7    8.7   9.6    142.2
-##  4  214.8 129.7 129.6    7.5  10.4    142.0
-##  5  215.0 129.6 129.7   10.4   7.7    141.8
-##  6  215.7 130.8 130.5    9.0  10.1    141.4
-##  7  215.5 129.5 129.7    7.9   9.6    141.6
-##  8  214.5 129.6 129.2    7.2  10.7    141.7
-##  9  214.9 129.4 129.7    8.2  11.0    141.9
-## 10  215.2 130.4 130.3    9.2  10.0    140.7
-## # ... with 190 more rows</code></pre>
 <ul>
 <li><code>discard()</code>: discard all elements for which a predicate is satisfied</li>
 </ul>
 <pre class="r"><code>banknotes %&gt;% discard(is.numeric)</code></pre>
-<pre><code>## # A tibble: 200 x 1
-##       type
-##     &lt;fctr&gt;
-##  1 genuine
-##  2 genuine
-##  3 genuine
-##  4 genuine
-##  5 genuine
-##  6 genuine
-##  7 genuine
-##  8 genuine
-##  9 genuine
-## 10 genuine
-## # ... with 190 more rows</code></pre>
 <ul>
 <li><code>every()</code>: returns TRUE if all elements satisfy a predicate</li>
 </ul>
 <pre class="r"><code>banknotes %&gt;% keep(is.numeric)</code></pre>
-<pre><code>## # A tibble: 200 x 6
-##    length  left right bottom   top diagonal
-##     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-##  1  214.8 131.0 131.1    9.0   9.7    141.0
-##  2  214.6 129.7 129.7    8.1   9.5    141.7
-##  3  214.8 129.7 129.7    8.7   9.6    142.2
-##  4  214.8 129.7 129.6    7.5  10.4    142.0
-##  5  215.0 129.6 129.7   10.4   7.7    141.8
-##  6  215.7 130.8 130.5    9.0  10.1    141.4
-##  7  215.5 129.5 129.7    7.9   9.6    141.6
-##  8  214.5 129.6 129.2    7.2  10.7    141.7
-##  9  214.9 129.4 129.7    8.2  11.0    141.9
-## 10  215.2 130.4 130.3    9.2  10.0    140.7
-## # ... with 190 more rows</code></pre>
 <ul>
 <li><code>some()</code>: returns TRUE if some elements satsfy a predicate</li>
 </ul>
 <pre class="r"><code>banknotes %&gt;% some(is.numeric)</code></pre>
-<pre><code>## [1] TRUE</code></pre>
 <ul>
 <li><code>by_row</code> and <code>by_slice</code>: apply a function over all the rows of a data frame or over a specific parts of data frame</li>
 </ul>
@@ -683,14 +510,6 @@ banknotes %&gt;% keep(is.numeric)</code></pre>
   slice_rows(&quot;type&quot;) %&gt;% 
   by_slice(dmap, mean, na.rm = TRUE) %&gt;%
   apply(1, unlist)</code></pre>
-<pre><code>##               [,1]          [,2]     
-## type          &quot;counterfeit&quot; &quot;genuine&quot;
-## .out.length   &quot;214.823&quot;     &quot;214.969&quot;
-## .out.left     &quot;130.3&quot;       &quot;129.943&quot;
-## .out.right    &quot;130.193&quot;     &quot;129.72&quot; 
-## .out.bottom   &quot;10.53&quot;       &quot;8.305&quot;  
-## .out.top      &quot;11.133&quot;      &quot;10.168&quot; 
-## .out.diagonal &quot;139.45&quot;      &quot;141.517&quot;</code></pre>
 </div>
 
 
