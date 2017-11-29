@@ -221,9 +221,7 @@ Tests should make your life as a developer easier. The basic concept is that whe
 
 ## Inserting tests in your package 
 
-Now that you have learnt some more about the principles of testing and about how to write a test, we will guide you through inserting tests into your `R` package.
-
-First yuo need to set up your package to use `testthat`:
+To insert tests into your package, you first need to set up your package to use `testthat`:
 
 ```{r}
 devtools::use_testthat()
@@ -237,5 +235,5 @@ Then you just need to:
 2. test your package with Ctrl/Cmd + Shift + T or `devtools::test()`
 3. repeat until all tests pass
 
-In the chapter about how to create R packages, you will be guided through the construction of a test to insert in your package.
+In the chapter about creating R packages, you will be guided through the construction of a test to insert in your package.
 

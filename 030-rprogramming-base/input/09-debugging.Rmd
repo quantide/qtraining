@@ -41,7 +41,6 @@ prime_numbers <- function(n){
       for (i in seq(2, n)) {
         if (any(sieve == i)) {
           primes <- c(primes)
-#          primes <- c(primes, i)
           sieve <- c(sieve[(sieve %% i) != 0], i)
         }
       }

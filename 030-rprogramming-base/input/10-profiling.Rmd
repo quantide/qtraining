@@ -30,7 +30,6 @@ This must be applied on all rows, meaning that each row at the time must be take
 First you build a function that does actions 1-5:
 
 ```{r}
-# funzione che fa tutta la parte sopra
 require(microbenchmark)
 .cross_validation <- function(data, i, formula) {
   training <- data[-i,]
@@ -45,7 +44,6 @@ require(microbenchmark)
 and then a function that does a cycle over the above function:
 
 ```{r}
-# funzione che fa il ciclo per applicare a tutte le righe
 cross_validation1 <- function(data, formula) {
   n <- nrow(data)
   cv <- numeric(n)
@@ -75,7 +73,7 @@ and finally, you may want to compare the two functions:
 data(mtcars)
 
 microbenchmark(
-#  cross_validation1(data = istat, formula = Height ~ Weight),
+  cross_validation1(data = istat, formula = Height ~ Weight),
   cross_validation2(data = istat, formula = Height ~ Weight), times = 10
 )
 ```

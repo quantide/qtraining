@@ -592,7 +592,6 @@ You can use the tag `@importFrom` to highlight functions that are imported from 
 #' @importFrom ggplot2 ggplot xlab ylab geom_histogram
 ```
 
-In the next chapter you will see an example of the `@importFrom` tag usage.
 
 
 ### Data (data/)
