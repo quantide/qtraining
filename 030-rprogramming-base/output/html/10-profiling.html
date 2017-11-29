@@ -310,7 +310,7 @@ $(document).ready(function () {
 </ul>
 <ul class="nav nav-list well sidebar-nav">
   <li class="nav-header">Base Programming</li>
-  <li><a href="00-code-style">Code style</a></li>
+  <li><a href="00-code-style.html">Code style</a></li>
   <li><a href="01-environments.html">Environments</a></li>
   <li><a href="02-programming-functions.html">Functions</a></li>
   <li><a href="03-function-writing.html">Writing Functions</a></li>
@@ -371,8 +371,7 @@ $(document).ready(function () {
 </ol>
 <p>This must be applied on all rows, meaning that each row at the time must be taken out of the dataframe.</p>
 <p>First you build a function that does actions 1-5:</p>
-<pre class="r"><code># funzione che fa tutta la parte sopra
-require(microbenchmark)
+<pre class="r"><code>require(microbenchmark)
 .cross_validation &lt;- function(data, i, formula) {
   training &lt;- data[-i,]
   test &lt;- data[i,]
@@ -381,8 +380,7 @@ require(microbenchmark)
   return(out)
 }</code></pre>
 <p>and then a function that does a cycle over the above function:</p>
-<pre class="r"><code># funzione che fa il ciclo per applicare a tutte le righe
-cross_validation1 &lt;- function(data, formula) {
+<pre class="r"><code>cross_validation1 &lt;- function(data, formula) {
   n &lt;- nrow(data)
   cv &lt;- numeric(n)
   for (i in 1:n) {
@@ -401,7 +399,7 @@ cross_validation1 &lt;- function(data, formula) {
 <pre class="r"><code>data(mtcars)
 
 microbenchmark(
-#  cross_validation1(data = istat, formula = Height ~ Weight),
+  cross_validation1(data = istat, formula = Height ~ Weight),
   cross_validation2(data = istat, formula = Height ~ Weight), times = 10
 )</code></pre>
 <p>Focus on the median time, and use the upper and lower quartiles to gauge the variability of the measurement. We note that there is not actually much difference from the two functions.</p>

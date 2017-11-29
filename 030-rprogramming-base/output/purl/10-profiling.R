@@ -1,5 +1,4 @@
 ## ------------------------------------------------------------------------
-# funzione che fa tutta la parte sopra
 require(microbenchmark)
 .cross_validation <- function(data, i, formula) {
   training <- data[-i,]
@@ -11,7 +10,6 @@ require(microbenchmark)
 
 
 ## ------------------------------------------------------------------------
-# funzione che fa il ciclo per applicare a tutte le righe
 cross_validation1 <- function(data, formula) {
   n <- nrow(data)
   cv <- numeric(n)
@@ -35,7 +33,7 @@ cross_validation2 <- function(data, formula) {
 data(mtcars)
 
 microbenchmark(
-#  cross_validation1(data = istat, formula = Height ~ Weight),
+  cross_validation1(data = istat, formula = Height ~ Weight),
   cross_validation2(data = istat, formula = Height ~ Weight), times = 10
 )
 

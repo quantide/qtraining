@@ -510,8 +510,7 @@ Inserire esempio di test sulle funzioni dell pacchetto
 </div>
 <div id="inserting-tests-in-your-package" class="section level2">
 <h2>Inserting tests in your package</h2>
-<p>Now that you have learnt some more about the principles of testing and about how to write a test, we will guide you through inserting tests into your <code>R</code> package.</p>
-<p>First yuo need to set up your package to use <code>testthat</code>:</p>
+<p>To insert tests into your package, you first need to set up your package to use <code>testthat</code>:</p>
 <pre class="r"><code>devtools::use_testthat()</code></pre>
 <p>This will automatically create a <code>tests/testthat</code> directory as well as creating a file <code>tests/testthat.R</code> that runs all your tests when <code>R</code> <code>CMD</code> check runs.</p>
 <p>Then you just need to:</p>
@@ -520,7 +519,7 @@ Inserire esempio di test sulle funzioni dell pacchetto
 <li>test your package with Ctrl/Cmd + Shift + T or <code>devtools::test()</code></li>
 <li>repeat until all tests pass</li>
 </ol>
-<p>In the chapter about how to create R packages, you will be guided through the construction of a test to insert in your package.</p>
+<p>In the chapter about creating R packages, you will be guided through the construction of a test to insert in your package.</p>
 </div>
 
 
