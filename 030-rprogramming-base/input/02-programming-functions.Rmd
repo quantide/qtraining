@@ -175,22 +175,22 @@ The body of a function, is usually a collection of statements in braces but it c
 
 The environment of a function is the environment that was active at the time that the function was created. Generally, for user defined function, the Global environment:
 
-    ```{r functions-environment-userdefined}
-    f <- function(x){x+1}
-    environment(f)
-    ```
+```{r functions-environment-userdefined}
+f <- function(x){x+1}
+environment(f)
+```
 
 When a function is defined within a package, the environment associated to that package:
 
-    ```{r functions-environment-package}
-    environment(mean)
-    ```
+```{r functions-environment-package}
+environment(mean)
+```
 
 Morover objects defined within a function, exists in the environment of the function itself.
  
 ```{r functions-environment-global, error=TRUE}
-    f <- function(x){x+1}
-    x
+f <- function(x){x+1}
+x
 ```
 
 The environment of a function is a structural component of the function and belongs to the function itself.
