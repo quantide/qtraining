@@ -229,7 +229,7 @@ rm(env)
 
 `f()` will keep working
 
-``````{r}
+```{r}
 f()
 ```
 
