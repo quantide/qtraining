@@ -1,0 +1,107 @@
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+
+show_solution <- show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+```
+
+# Data Discovery with R
+
+Load `dplyr` package, supposing it is already installed.
+
+```{r require_dplyr, message=FALSE}
+require(dplyr)
+```
+
+## Data
+
+Also these exercises are based on the `nycflights13` data, taken from the `nycflights13` package.  
+Load `nycflights13` package, supposing it is already installed.
+
+```{r require_data2, message=FALSE}
+require(nycflights13)
+```
+
+The `nycflights13` package contains information about all flights that departed from NYC (e.g. EWR, JFK and LGA) in 2013: 336,776 flights in total. For more information see _Data Manipulation with R_ section.
+
+The following exercises refers to `flights` dataset:
+
+```{r data}
+data("flights")
+```
+
+## Descriptive statistics with `summarise()` and `group_by()`
+
+### Exercise 1
+
+Calculate the mean delay at arrival (`arr_delay` variable). Remember to add `na.rm=TRUE` option to all calculations.
+
+```{r ex1-summarise, echo=show_solution, eval=show_solution}
+summarise(flights, mean_delay = mean(arr_delay, na.rm=TRUE))
+# flights %>% summarise(mean_delay = mean(arr_delay, na.rm=TRUE)) 
+```
+
+
+### Exercise 2
+
+Calculate the summary (minimum, first quartile, median, mean, third quartile, maximum and standard deviation) of delay at departure (`dep_delay` variable) for flights.  
+Remember to add `na.rm=TRUE` option to mean calculations.
+
+```{r ex2-summarise, echo=show_solution, eval=show_solution}
+flights %>% 
+  summarise(min=min(dep_delay, na.rm = TRUE),
+          first_q=quantile(dep_delay, prob = 0.25, na.rm = TRUE),
+          median=median(dep_delay, na.rm = TRUE),
+          mean=mean(dep_delay, na.rm =TRUE),
+          third_q=quantile(dep_delay, prob = 0.75, na.rm = TRUE),
+          max=max(dep_delay, na.rm = TRUE),
+          sd=sd(dep_delay, na.rm =TRUE))
+```
+
+
+### Exercise 3
+
+Calculate minimum and maximum delay at departure (`arr_delay` variable) for flights by month.  
+Remember to add `na.rm=TRUE` option to all calculations.
+
+```{r ex1-group_by, echo=show_solution, eval=show_solution}
+flights %>% 
+  group_by(month) %>% 
+  summarise(min_delay = min(dep_delay, na.rm=TRUE), 
+     max_delay = max(dep_delay, na.rm=TRUE))
+```
+
+
+## Multiple operations
+
+### Exercise 1
+
+For each destination (`dest` variable), compute the mean delay at arrival (`arr_delay` variable) and filter the mean delays greater than 30 minutes.  
+Remember to add `na.rm=TRUE` option to mean calculations.
+```{r ex1-chain, echo=show_solution, eval=show_solution}
+flights %>% group_by(dest)  %>%
+  summarise(mean_arr_delay = mean(arr_delay, na.rm=TRUE)) %>%
+  filter(mean_arr_delay > 30)
+```
+
+
+### Exercise 2
+
+Filter the observations recorded on June 13 and count the number of flights (use `n()` function inside `summarise()`) for each destination. Then sort the result in ascending order.
+
+```{r ex2-chain, echo=show_solution, eval=show_solution}
+flights %>% filter(month == 6 & day == 13)  %>%
+  group_by(dest) %>%
+  summarise(n_flight = n()) %>%
+  arrange(n_flight)
+```
+
+
+
+

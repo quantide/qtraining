@@ -1,0 +1,28 @@
+---
+title: "R Base Exercises"
+author:
+- email: andrea.spano\@quantide.com, emanuela.furfaro\@quantide.com
+  name: Quantide
+date: ''
+output:
+  html_document:
+    self_contained: no
+  pdf_document: default
+---
+
+
+Introduction
+===========================================
+
+In this document you will find some exercises about these sections: 
+
+* _Your First R session_ 
+* _Data Objects_
+* _Data Import from external sources_ 
+* _Data Manipulation with R_
+* _Data Discovery with R_
+* _Data Visualization with R_
+* _Statistical Models with R_
+* _Data Mining with R_
+
+

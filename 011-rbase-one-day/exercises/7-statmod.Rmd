@@ -1,0 +1,137 @@
+
+# Statistical models
+
+```{r solution, echo=FALSE}
+show_solution <- show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+```
+
+Before starting the exercises, load the following libraries, supposing they are already installed.
+
+```{r require, message=FALSE}
+require(dplyr)
+require(ggplot2)
+require(qdata)
+```
+
+## Linear Models
+
+### Exercise 1
+
+The number of impurities (lumps) present in the containers of paint depends on the rate of agitation applied to the container. A researcher wants to determine the relation between the rate of agitation and the number of lumps, so he conducts an experiment. He applies different rates of agitation (`Stirrate`) to 12 containers of paint and he counts the number of impurities (lumps) present in the containers of paint (`Impurity`).  
+
+```{r data_import_lm1}
+data(paint)
+head(paint)
+```
+
+a. Let us compute the main descriptive statistics of `Impurity`. 
+
+```{r desc_stats_lm1, echo=show_solution, eval=show_solution}
+# Descriptive Statistics
+summary_stat <- paint %>% summarise(n=n(),
+  min = min(Impurity), 
+  first_qu = quantile(Impurity, 0.25),
+  median = median(Impurity),
+  mean = mean(Impurity),
+  third_qu = quantile(Impurity, 0.75),
+  max = max(Impurity),
+  sd = sd(Impurity))
+
+print(summary_stat)
+```
+
+b. Let us graphically represent the relation between `Impurity` and `Stirrate` variables (add regression line to the scatterplot).
+
+```{r reg_plot_lm1, echo=show_solution, eval=show_solution}
+pl <- ggplot(data = paint, mapping = aes(x = Stirrate, y=Impurity)) +
+  geom_point(color="blue") + 
+  geom_smooth(method = "lm", colour="red", se = FALSE)
+  
+print(pl)  
+# A simple straight linear regression is a good choice to describe the relation
+```
+
+c. Let us compute a simple linear regression between `Impurity` and `Stirrate`. 
+
+```{r fit_lm1, echo=show_solution, eval=show_solution}
+# Fit the linear model
+fm <- lm(formula = Impurity ~ Stirrate, data = paint)
+```
+
+d. Does `Stirrate` influence `Impurity`? How? Let us analyze the model fitted by using `summary()` function.
+
+```{r data_analysis_lm11, echo=show_solution, eval=show_solution}
+summary(fm)
+```
+
+
+e. Let us check (final) models residuals.
+
+```{r data_analysis_lm12, echo=show_solution, eval=show_solution}
+# Residuals analysis
+op <- par(mfrow = c(2,2))
+plot(fm)
+par(op)
+```
+
+### Exercise 2
+
+A pressure switch has a membrane whose thickness (in mm) influences the pressure required to trigger the switch itself. The aim is to determine the thickness of the membrane for which the switch "trig" with a pressure equal to 165 ± 15 KPa. 25 switches with different thickness (`DThickness`) of the membrane was analysed, measuring the pressure at which each switch opens (KPa) (`SetPoint`).
+
+```{r data_import_lm2}
+data(switcht)
+head(switcht)
+```
+
+a. Let us compute the descriptive statistics of `SetPoint` variable.
+
+```{r desc_stats_lm2, echo=show_solution, eval=show_solution}
+# Descriptive Statistics
+summary_stat <- switcht %>% summarise(n=n(),
+  min = min(SetPoint), 
+  first_qu = quantile(SetPoint, 0.25),
+  median = median(SetPoint),
+  mean = mean(SetPoint),
+  third_qu = quantile(SetPoint, 0.75),
+  max = max(SetPoint),
+  sd = sd(SetPoint))
+
+print(summary_stat)
+```
+
+b. Let us graphically represent the relation between `DThickness` and `SetPoint`(add regression line to the graph).
+
+```{r reg_plot_lm2, echo=show_solution, eval=show_solution}
+pl <- ggplot(data = switcht, mapping = aes(x = DThickness, y=SetPoint)) +
+  geom_point(color="blue") + 
+  geom_smooth(method = "lm", colour="red", se = FALSE)
+  
+print(pl)  
+```
+
+c. Let us compute a linear regression between `DThickness` and `SetPoint` and check the residuals of the fitted model. 
+
+```{r fit_lm2, echo=show_solution, eval=show_solution}
+# Fit the linear model
+fm1 <- lm(formula = SetPoint ~ DThickness, data = switcht)
+```
+
+d. Does `DThickness` influences `SetPoint`? Let us analyze the model fitted by using `summary()` function.
+
+```{r data_analysis_lm21, echo=show_solution, eval=show_solution}
+summary(fm1)
+```
+
+e. Let us check (final) models residuals.
+
+```{r data_analysis_lm22, echo=show_solution, eval=show_solution}
+# Residuals analysis
+op <- par(mfrow = c(2,2))
+plot(fm1)
+par(op)
+```
+

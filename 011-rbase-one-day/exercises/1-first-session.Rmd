@@ -1,0 +1,83 @@
+
+```{r setup, echo=FALSE, message=FALSE, results='hide'}
+require(knitr) 
+options(width=80)
+opts_chunk$set(list(dev = 'png', fig.cap='', fig.show='hold', dpi=100, fig.width=7, fig.height=7, fig.pos='H!'))#, fig.path="figures/lm-"))
+show_solution <-  show_solution <- if (exists("show_solution_mk")){
+  show_solution_mk
+} else {
+  FALSE
+}
+
+# ATTENZIONE: leggere nota dentro show-solution.R
+```
+ 
+# Your first R session 
+
+## Aritmetic with R
+
+### Exercise 1
+
+Calculate your body mass index dividing your body mass (kg) by the square of your body height (m) ($kg/m^2$)
+
+```{r ex1a-ar, echo=show_solution, eval=show_solution}
+65/1.7^2
+```
+
+## Assignment
+
+### Exercise 1
+
+a. Assign your age (in number) to `age` variable.
+
+```{r ex1a-ass, echo=show_solution, eval=show_solution}
+age <- 26
+```
+
+c. Print out the value of the variable `age`.
+
+```{r ex1b-ass, echo=show_solution, eval=show_solution}
+age # o print(age)
+```
+
+d. Remove the variable `age` from the workspace, by using `rm()` function.
+
+```{r ex1c-ass, echo=show_solution, eval=show_solution}
+rm(age)
+```
+
+### Exercise 2
+
+Suppose you want to buy 10 roses and 8 sunflowers in a flower shop. The roses cost 3 euros each and the sunflowers 2 euros each.  
+
+a. Assign the total cost of roses to `roses_cost` variable and the total cost of sunflowers to `sunflowers_cost` variable. 
+
+```{r ex2a-ass, echo=show_solution, eval=show_solution}
+roses_cost <- 10 * 3
+sunflowers_cost <- 8 * 2
+```
+
+b. Calculate the total cost of flowers by adding `roses_cost` and `sunflowers_cost` variables and assign it to `flowers_cost` variable.
+
+```{r ex2b-ass, echo=show_solution, eval=show_solution}
+flowers_cost <- roses_cost + sunflowers_cost
+```
+
+c. Print out the value of the variable `flowers_cost`.
+
+```{r ex2c-ass, echo=show_solution, eval=show_solution}
+flowers_cost
+```
+
+d. List the objects in the current R session, by using `ls()` function.
+
+```{r ex2d-ass, echo=show_solution, eval=show_solution}
+ls() # or objects()
+```
+
+
+
+
+
+
+
