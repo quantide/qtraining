@@ -1,0 +1,382 @@
+---
+title: "Appunti corso Professional Programming"
+author: "Emanuela"
+date: "November 29, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+## Da rimettere nel corso!!!
+
+### Object oriented: prendere da ramarro, rimesso!
+
+### Come R cerca gli oggetti in un pacchetto: prendere da ramarro
+
+### Function factory (?)
+
+### Operators, rimesso in functions!
+
+### Lazy evaluation, rimesso in functions!
+
+### do.call, rimesso in functions!
+
+### reinserire tutto ramarro
+
+## Da modificare!!! fatto!
+
+### nella funzione plot_depth di 02-programming-functions, bisogna mettere il - dentro alla funzione, non fuori in un vettore a sè: la funzione quindi deve mettere il meno davanti e poi fare il grafico invece al momento fa solo il grafico. Fatto!
+
+
+## Environments
+
+Capire e gestire environments è fondamentale, insieme a liste , vettori etc c'è anche environment.
+
+Environment è fatto da due parti: un frame e un enclosure. 
+
+
+```{r}
+
+globalenv()
+parent.env(globalenv())
+search()
+```
+
+Il global environment è l'environment in cui sto lavorando. Quindi è dove creo key e value (x <- 0) ho che il key è x il value è 0. Variabili puntano alla memoria attraverso l'environment. Ogni environment ha un parent environment. Per sapere in quale environment sono:
+
+```{r}
+environment()
+```
+
+Posso anche chiedere il nome dell'environment. 
+
+```{r}
+environmentName(tidyverse)
+```
+
+
+Se però creo un environment io, non posso dargli un nome perché il nome viene assegnato in un luogo a cui io non posso accedere.
+
+
+Quando R cerca un oggetto, cerca nell'environment corrente, se non lo trova cerca nell'environment successivo, cioè il parent dell'environment corrente, etc etc. Se volgio partire da un environment diverso parto dal corrente, posso usare funzione get per modificare da dove comincia.
+
+```{r}
+env <- new.env()
+env$pi <- 0
+attach(env, pos = 2)
+rm(list=ls())
+circumference <- function(radius) 2*pi*radius
+circumference(1)
+detach(env)
+```
+
+
+
+Differenza fra lista ed environemt:
+
+* in environment devo sempre avere un key e un value: posso fare lista senza nome degli elementi ma in environment questa cosa non funzionerà mai
+* nella lista c'è un concetto di posizione, nell'environment no, cioè environment ordina in ordine alfabetico e fine
+* environment ha sempre un parent
+
+
+
+## Copy on modify
+
+Apro il system monitor, vedo ram, faccio:
+
+
+```{r}
+rm(list=ls())
+gc()
+
+```
+
+così ho il meno possibile di ram occupata
+
+```{r, eval = FALSE}
+A <- matrix(runif(10^9), ncol = 1000)
+```
+
+Vediamo cosa succede alla ram: se hai 16 giga la usa tutta più usa lo swap, altrimenti ti darà errore. Nel seguente modo:
+
+```{r}
+B <- A
+```
+
+
+cosa succede? Semplicemente ho un altro puntatore allo stesso oggetto. Ma se modifico un elemento, si ricopia tutto
+
+```{r, eval = FALSE}
+B[1,1] <- 0
+```
+
+
+Quando copio quindi non copia veramente, mentre se modifico allora ricopia tutto.
+
+A partire da R 3.0 se modifico un pezzettino di una lista, non ricopio tutto ma si modifica solo quel pezzettino di memoria. Quindi ogni oggetto ha un pezzo di memoria distinta.
+
+Per le liste  vale un partial copy on modify. Infatti se modifico un oggetto dentro la lista, allora ricopierò soltanto quell'elemento della lista
+
+```{r}
+mem_add <- function(x) substring(capture.output(.Internal(inspect(x))), 2, 17) 
+x <- 0
+y <- 0 
+
+mem_add(x)
+mem_add(y)
+
+x <- 0
+y <- x
+
+identical(mem_add(x), mem_add(y))
+
+```
+
+per gli environment invece non funziona il copy on modify
+
+
+## Funzioni
+
+
+```{r}
+
+f <- function(x, y) x+y
+g <- function(...) f(...)
+# non funziona 
+# g(x=1, y = 2, z =3)
+# invece funziona se faccio
+formals(f)$... <- NA
+# ora invece va
+# g(x=1, y = 2, z =3)
+
+```
+ 
+La funzione ha tre parti:
+
+* formals
+* body
+* environment
+
+Se elimini environment di una fuzione, questo resta finchè non elimini tutta la funzione
+
+
+### Vantaggio di usare do.call
+
+Vedere su ramarro
+
+
+### Debugging
+
+
+```{r}
+
+f <- function(x, y) {
+  z <- x+y
+  sqrt_z <- sqrt(z)
+  log_sqrt_z <- log(sqrt_z)
+  if (is.na(log_sqrt_z)) (log_sqrt_z <- 0)
+    return(log_sqrt_z )
+}
+
+f(3,6)
+
+f(-3, 6)
+
+```
+
+Se metti un `browser` all'inizio della funzione, l'environment della funzione viene intercettato
+
+```{r, eval = FALSE}
+
+f <- function(x, y) {
+  browser()
+  z <- x+y
+  sqrt_z <- sqrt(z)
+  log_sqrt_z <- log(sqrt_z)
+  if (is.na(log_sqrt_z)) (log_sqrt_z <- 0)
+    return(log_sqrt_z )
+}
+
+
+```
+
+Metto il browser dove voglio, cioè dove credo che ci sia il problema.
+
+Se ho due funzioni ad esempio f e g, f si apre dentro a g, allora devo mettere il browser o il debugonce su entrambe le funzioni! Esco dal debug con Q maiuscolo. Posso chiamare il debugonce(f) dentro al debug di g.
+
+
+```{r, eval = FALSE}
+
+f <- function(x) {log(x)}
+g <- function(x) {f(x)}
+h <- function(x) {g(x)}
+
+f("a")
+```
+
+
+ho un errore, provo a fare traceback e così mi fa vedere tutti passaggi a ritroso fermandosi laddove c'è stato l'errore. A questo punto posso mettere in quel punto lì il browser!
+
+
+### match.call()
+
+Serve per fare il match della call, serve per intercettare gli argomenti che passo a una funzione:
+
+```{r, eval = FALSE}
+
+f <- function(x, y, z = 1) {
+  call <- match.call()
+  call
+}
+
+test <- f(2,4)
+class(test)
+str(test)
+as.list(test)
+options(old)
+
+```
+
+è importante questo comando perché mi permette di mettere in lista la call e quindi di avere traccia di tutte le call alle funzioni, gli argomenti delle funzioni e come si chiamano, mi fa vedere solo i parametri che sono stati usati. Una volta che ho la lista dei parametri potrei qindi metterci dentro un do.call
+
+
+## Programmazione a oggetti: classi e metodi in S3
+
+S3 è un paradigma di programmazione che funziona bene con i dataframe. S4 invece ha avuto molto successo in bioconductor, perchè in biologia le strutture dati sono molto più complesse.
+
+Ci sono le classi e i metodi, le classi sono gli oggetti, lo stesso metodo è diverso applicato a classi diverse. Il metodo print è un metodo generico, quando lo applico a un oggetto di una certa classe dice: guarda che classe è l'oggetto e in base all'oggetto stampo/scelgo il metodo giusto
+
+```{r}
+
+fm <- lm(mpg ~ disp, data = mtcars)
+gm <- glm(mpg~disp, data =mtcars, family = gaussian())
+print(fm)
+print(gm)
+
+```
+
+Posso quindi definire tutti gli oggetti che mi pare e dargli i metodi
+
+```{r}
+
+f <- function(x) {
+  out <- x+1
+  class(out) <- "zero" # assegno la classe all'oggetto
+  out
+}
+
+out <- f(4)
+
+class(out)
+
+```
+
+Ora definisco un metodo print per oggetti di classe zero:
+
+
+```{r}
+
+print.zero <- function(x) {
+  cat("this is an object of class", class(x), "\n")
+}
+```
+
+Ora definisco un metodo print per oggetti di classe zero e pari:
+
+```{r}
+g <- function(x) {
+  out <- x+1
+  class(out) <- "zero" # assegno la classe all'oggetto
+  if( out %% 2 == 0) {
+    class(out) <- c("pari", "zero")
+  }
+  out
+}
+
+print.pari <- function(x) {
+  cat("this is an object of class", class(x)[2], "\n")
+  cat("this object is", class(x)[1], "\n")
+  cat("value = ", x)
+  invisible(NULL) # ogni funzione deve ristornare qualcosa, ma dato che non voglio che ritorni nulla, allora gli metto invisibiile(NULL) che vuol dire che deve tornare niente
+}
+
+print.pari(g(3))
+
+```
+
+### Definire nuovi metodi
+
+
+Si possono definire nuovi metodi semplicemete con la seguente funzione:
+
+```{r}
+
+UseMethod(generic, object)
+
+```
+
+
+### S3
+
+Se programmiamo in classi e metodi, conviene usare il paradigma S3.
+
+
+```{r}
+
+setClass("rectangle", representation(x = "numeric", y = "numeric"), prototype(x = 1, y = 1))
+new("rectangle", x = 2, y = 3)
+
+```
+
+La funzione che crea gli oggetti rettangolo, di prassi si chiama rettangolo, serve da dare agli utenti per crere gli oggetti di classe appena definita:
+
+```{r}
+
+rectangle <- function(x, y) {
+  if (!"x" %in% names(match.call()) & !"y" %in% names(match.call())) {
+    rectangle <- new("rectangle")
+    } else if (!"x" %in% names(match.call())) {
+      rectangle <- new("rectangle", y = y)
+      } else if (!"y" %in% names(match.call())) {
+        rectangle <- new("rectangle", x = x)
+        } else rectangle <- new("rectangle", x = x, y = y)
+        rectangle
+}
+
+```
+
+
+Per creare dei metodi invece facciamo
+
+
+```{r}
+
+setMethod(f = "show", signature = "rectangle", definition = function(object) {
+  x <- object@x
+  y <- object@y
+  cat(class(object), "of side x =", x, "and side y =", y, "\n")
+  invisible(NULL)
+})
+
+```
+
+
+
+### Reference classes
+
+
+
+
+
+
+
+### Assegnazione
+
+Differenza <- e =:
+
+* x <- y = 0 è diverso da x = y <- 0
+* assegnano in due environment diversi che però quando usi R come utente coincidono
+
+
