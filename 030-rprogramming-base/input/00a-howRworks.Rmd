@@ -1,0 +1,321 @@
+---
+title: "How R works"
+---
+
+## The _''read parse evaluate''_ loop
+
+The _''read parse evaluate''_ loop is at the core of the  `R` system. Understanding this mechanism and being able to manage and control it is a key point for writing efficient `R` codes.
+
+When we type `R` commands, two things happen:
+
+ * those characters are parsed into an `R` expression 
+ * the expression is then evaluated by the internal evaluator
+ 
+This process, known as the  _''read parse evaluate''_ loop, is internally performed by the `R` system but, the same process is available to the end user by mean of two functions: `parse() ` and `eval()` .
+
+Effectively, when typing any `a <-  1`, what happens is
+
+```{r howRworks-001}
+eval(parse (text = "a <-  1"))
+```
+
+The inner parse section returns an object of class `expression` and afterward the expression is evaluated by the evaluator. 
+
+When we call functions `eval()` and `parse()` directly, we generally pass character strings as arguments to the  `parse()` function  either from quoted text strings or external files
+
+```{r howRworks-002}
+parse(text = "a <- 1")
+```
+
+```{r howRworks-003, eval=FALSE}
+parse(file = './input.R')
+```
+
+Expressions objects are special language objects of class `expression`  which contain parsed but unevaluated R statements. 
+Parsed expressions are stored in an R object that can be explored as standard list objects.
+
+```{r howRworks-004}
+expr <-  parse (text = "a <- 1")
+class(expr)
+str(expr)
+as.list(expr)
+as.list(expr[[1]])
+```
+
+and even manipulated as standard list objects
+
+```{r howRworks-005}
+expr <-  parse (text = "1+2")
+as.list(expr[[1]])
+expr[[1]][[3]] <- 7
+as.list(expr[[1]])
+```
+
+The evaluation part of the `R` program consists of passing the object resulting from parsing the current expression to the `R` evaluator.
+
+The parsed expression  is then evaluated by the function `eval()`.
+
+```{r howRworks-006}
+eval(expr)
+```
+
+and the result is returned.
+
+Because of the way `R` works, evaluating expressions is, except few exceptions, about evaluating functions calls. This is clearly true when we call any a standard function in `R` as:
+
+```{r howRworks-007, eval = FALSE}
+mean(x = 1:10) 
+```
+
+but, this is also true when we write any assignment statement. In fact `R` translates:
+
+```{r howRworks-008, eval = FALSE}
+x <- 0
+```
+
+into a function call:
+
+```
+`<-`(x, 0)
+```
+
+and even a conditional construct such as:
+
+```{r howRworks-009}
+if ( pi > 0) 1 else  0
+```
+
+translates into a call to a function
+
+```
+`if`( pi > 0 , 1 , 0)
+```
+
+The `parse-eval` mechanism has at least three exceptions: constants, names and promises:
+
+Constants in `R` are evaluated into themselves. Any expression as:
+
+```{r howRworks-010}
+1
+```
+
+is the evaluation of a constant while
+
+```{r howRworks-011}
+-1
+```
+
+turns into a call to a function:
+
+```
+`-`(1)
+```
+
+More on how `R` evaluates function in the chapter dedicated to functions
+
+A symbol is a variable name with a value associated to it: `x` is a symbol, or a symbol name:  
+
+```{r howRworks-012}
+x <- 0
+class(quote(x))
+```
+
+Symbols in R may be made of lower or capital letters, numbers and the special characters `"."` and `"_"`. Almost any rule is a valid one when defining a symbol
+
+```
+x <- 0 
+x0 <- 0 
+x_0 <- 0 
+x.0 <- 0
+.x <- 0 
+```
+Standard symbols cannot start with a number or a `"_"`. Any name staring with a `"."` is a hidden name meaning that it is not returned by a call to `ls()` unless argument `all.names` is set to `TRUE`.
+
+```{r howRworks-013, echo=FALSE, results='hide'}
+remove(list = ls())
+```
+
+```{r howRworks-014}
+.x <- 0
+ls()
+ls(all.names = TRUE)
+```
+
+When we ask `R` to evaluate a symbol, `R` looks for the value associated to that symbol, first in the current environment and, in case the symbol is not found within current environment, `R` looks progressively in all the parents environments until the object value is returned or an error occurs as the symbol is not found. This key idea will be fully discussed in the chapter dedicated to environments.
+
+
+## Assignment
+
+When typing `a = 1` at the command prompt, the value `1` in assigned to the symbol `a`. The `=` operator is used to perform the assignment. In fact, `R` provides three operators for assignments: `=`, `<-` and `<<-` the last two being bi-directional.
+
+Operators `=` and `<-` assign into the environment in which they are evaluated. Therefore, at the command prompt `a = 1` is equivalent to `a <- 1`. 
+
+When an assignment is done on formal parameter lists within functions calls, assignment is performed in the environment where the function is evaluated if the `=` operator is used while the same assignment occurs in the local environment in case the of the `<-` operator. As a simple example, we can consider a simple call to any function i.e. `median()`. 
+First we clean up our workspace:
+
+```{r howRworks-015}
+rm(list = ls())
+```
+
+Then we call `median()` using both `=` and `<-` operators for parameters assignement:
+
+```{r howRworks-016}
+median(x = 1:10)
+exists("x")
+median(x <- 1:10)
+exists("x")
+x
+```
+
+
+
+In practice, the way the evaluator understands assignment is:
+
+```{r howRworks-017}
+'='(a, 1)
+a
+'<-'(b, 2)
+b
+```
+
+`R` supports multiple assignments with both operators.
+
+```{r howRworks-018}
+x = xx = 1
+y <- yy <- 0 
+c(x, xx, y, yy)
+```
+
+Attention should be paid as:
+  
+```{r howRworks-019}  
+k = p <- 0  
+c(k, p)
+```
+
+works correctly but: 
+
+```{r howRworks-020, eval=FALSE}
+k <- p = 0  
+```
+
+returns an error. This happens as 
+
+`k = p <- 0`  translates to  `'='(k,'<-'(p, 0))` 
+
+while 
+
+`k <- p = 0` is interpreted as `'='('<-'(k, p), 0)` 
+
+as the `<-` operator takes precedence on the `=` operator.
+
+Finally, operator `<<-` is used to assign into the parent environment. As an example consider:
+  
+```{r howRworks-021}
+env <-new.env()  
+parent.env(env) 
+with(env, x <<- 8)
+```
+
+In this case the assignment `x = 8` is performed within the parent frame of `env`, that is `R_GlobalEnv`. Thus:
+
+```{r howRworks-022}
+ls(env = env)
+```
+
+does not show any  `x` symbol while `x` is still available in `env`:
+
+```{r howRworks-023}
+get("x", env = env)
+```
+
+as, since the evaluator does not find `x` in the local frame, it looks for `x` in the parent frame. In fact:
+
+```{r howRworks-024}
+x
+```
+
+## Removing objects
+
+To remove objects, the function `rm()` can be used. The function `remove()` may be considered as an alias for the `rm()` function.
+
+As seen above, `ls()` returns a vector containing all objects in the current environment. To remove all objects in the current environment, all you need is
+
+```{r howRworks-025}
+rm(list = ls())
+ls()
+```
+
+Of course, the `list` argument can contain any character vector with object names.
+
+```{r howRworks-026}
+x <- 1; y <- 2; z <- 3
+ls()
+rm(list = c("x", "y", "z"))
+ls()
+```
+
+When argument are not already in a vector, they can be passed directly:
+
+```{r howRworks-027}
+x <- 1; y <- 2; z <- 3
+ls()
+rm("x", "y", "z")
+ls()
+```
+
+When arguments are passed directly, and not in the character vector `list`, it is not mandatory to quote them.
+
+```{r howRworks-028}
+x <- 1; y <- 2; z <- 3
+ls()
+rm(x, y, z)
+ls()
+```
+
+
+## Garbage collection
+
+When objects are no longer used, and this clearly happens when objects are deleted. `R` releases immediately the memory they filled in the system. This is done automatically by the garbage collector `gc()`.
+
+We can call `gc()` to see how much memory `R` is using for allocating objects
+
+```{r howRworks-029}
+gc()
+```
+
+and as a proof, we can create `100x10^7` elements matrix
+
+```{r howRworks-030}
+n <- 100*10^7
+big_matrix <-  matrix(1:n, ncol = 100)
+```
+
+and check how much memory `R` is using:
+
+```{r howRworks-031}
+gc()
+```
+
+The increase of memory usage is related to the newly created matrix that takes:
+
+```{r howRworks-032}
+print(object.size(big_matrix), units = "Gb")
+```
+
+When this matrix is removed, the memory is immediately released to the operating system. 
+
+```{r howRworks-033}
+rm(big_matrix)
+gc()
+```
+
+
+<!---
+## References
+Ref: http://obeautifulcode.com/R/How-R-Searches-And-Finds-Stuff/
+Ref: http://yihui.name/knitr/options
+--->
+
+
+
