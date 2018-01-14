@@ -13,9 +13,9 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 ### Object oriented: prendere da ramarro, rimesso!
 
-### Come R cerca gli oggetti in un pacchetto: prendere da ramarro
+### Come R cerca gli oggetti in un pacchetto: prendere da ramarro, rimesso!
 
-### Function factory (?)
+### Function factory (?), rimesso!
 
 ### Operators, rimesso in functions!
 
