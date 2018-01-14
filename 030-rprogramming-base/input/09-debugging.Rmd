@@ -3,215 +3,572 @@ title: "Debugging tools in R and RStudio"
 ---
 
 
-```{r options, include=FALSE, purl=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE, fig.pos = 'H', fig.width = 4, fig.height = 3)
-options(width = 108)
-```
-
 
 ## Introduction
 
-In this chapter you will be introduced to the `R` and the `RStudio` debugging tools that will help you find bugs by figuring out where the code is not behaving the way you expected. `RStudio` integrated the debugging tools in `R` into its IDE exposing them in a user friendly way. 
+Debugging is typically what programmers do about 90% of the time. 
 
-We will show two main ways of detecting your bugs
+This is a sad but not unrealistic fact of life. Given that fact, the creators of R have generously provided useful debugging tools to make programmers' lives a little easier. 
 
-* opening the function scope and look into the function with `debugonce()` to detect anomalies
+The debugging tools should be used as much as necessary to minimize the time spent debugging and to maximize the time spent, as John Chambers wrote, _"turning ideas into software"_.
 
-* finding and fixing an error: `traceback()` shows the sequence of calls that lead to the error
+However, it is all to easy for a programmer to develop an unhealthy relationship with his debugger. This is to be avoided. The debugger should not replace common sense in programming and careful design.
 
 
-## Debugging your code
 
-### `debugonce()`
+## Poor man's debugging
 
-If you know there is a problem in the function you are writing, but you do not exactly know where the errori occurs, you may use  `debugonce()`.
+Poor man's debugging doesn't require the knowledge of debug functions. Poor man's debugging is probably the simplest of the debugging methods, which often makes it the most effective! 
 
-`debugonce` allows you to enter the debugger when you run a specific function. Entering the debugger or the debug mode, means that you can pause the code and see what is happenening. In other words pausing the code when a function is executed, means that you run one line at the time and you can explore the scope of the function.
+It is an extremely easily implemented method which can tell you exactly where something went wrong. 
 
-Let us see an example.
+It is based on `print()` and `cat()` functions. 
+Differences between `print()` and `cat()` are described at the end of this section. 
+This kind of debugging is done by simply printing some text between the lines, including the variables you are currently working with. For this reason, it is also called Debug by Print.
 
-Suppose you built a function to find the first `n` prime numbers. However you made a mistake:
+As a simple example, consider this basic function: 
 
-```{r debug1}
-prime_numbers <- function(n){
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
+```{r quick}
+quick <- function(df) {
+  plot(df$x, df$y, type = "b")
+  summary(df)
+}
+```
 
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes)
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
+This function works when `x` is numeric:
+
+```{r quick1, fig.height=4, fig.width=8}
+df1 <- data.frame(x = 1:100 , y = rnorm(100))
+quick(df1)
+```
+
+The function works as well when `x` is a factor:
+
+```{r quick2, fig.height=4, fig.width=8}
+df2 <- data.frame(x = sample(letters[1:3], 100, rep= T ), y = rnorm(100))
+quick(df2)
+```
+
+The same function stops working when option `stringsAsFactors` is set to `FALSE`.
+
+```{r quick3, fig.keep = "none"}
+options(stringsAsFactors = FALSE)
+df <- data.frame(x = sample(letters[1:3], 100, rep= T ), y = rnorm(100))
+try(quick(df))
+```
+
+As a very simple debugging procedure we could insert a `cat` command within the function body:
+
+```{r quick4, , fig.keep = "none", error = TRUE}
+quick <- function(df){
+ cat (str(df), "\n")
+ plot(df$x, df$y, type = "b")
+ summary(df)
+}
+quick(df)
+```
+
+We could easily observe that `x` is a character vector and, as a consequence, it cannot be used as a plotting variable.
+
+When using iterations, the use of markers may result in a very efficient debugging tool. `rmean()` is a trivial example illustrating the use of markers within a `for` loop.
+
+```{r rmean}
+rmean <- function(n, min, max){
+ x <- numeric(n)
+ for (i in 1:n){
+   s <-  sample(min:max,1)
+   x[i] <- log(s)
+   if(!is.finite(x[i])) {cat ("Loop" , i, ": s = " , s , "\n")}
+ }
+ mean(x)
 }
 
-prime_numbers(7)
-
+rmean(n = 10, min = -1, max = 4)
 ```
 
-The function is not returning an error, but it is returning something that you did not expect. One way to dig into the function you just built is to run the debugger for `prime_numbers`:
+This example fully illustrates how to take advantage of this debugging tecnique. In this instance, a marker `Loop` is used to indicate that the print out is within the loop and that `s` is not finite. This allows to quickly reference which part of the code is being processed.
 
-```{r debug2}
-debugonce(prime_numbers)
-prime_numbers(7)
+The values of the variables that are being worked within the loop inside `rmean()` are returned. Now, if there is a simple flaw in our logic or something wrong was happening, this output makes most problems easy to track down.
+
+In other words, when a function doesn't work may be useful to insert a `print()` or a `cat()` in several points of the function to detect where it fails.
+
+
+### `print` and `cat`
+
+Both `print()` and `cat()` print a string, but several differences exist between these functions:
+
+ - `print()` is a generic method which looks at the class of its first argument and dispatches a different method depending on which class the first argument is. If no method is found, R uses `print.default`. Cat simply returns any object as it is. As an example we can consider any object belonging to a class with a print method related to that class:
+
+```{r xf}
+xf <- factor(c("a", "b", "c"))
+class(xf)
+print(xf)
+print.default(xf)
+cat(xf) 
 ```
 
-The `debugonce()` allows you to enter the local function environment the first time you run the function and go through the instructions one by one to see how it works. If you are using R Studio, bote that the environment is now the environment of the function you are debugging, and a nw script window contains the code of the function you are debugging.
+ - `print()` requires `paste()` to concatenate strings, while `cat()` concatenates strings before outputting any result:
 
-The error is that we are not updating the content of `primes` vector, so let's change it:
+```{r italy}
+myCountry <- "Italy"
+print(paste("I live in", myCountry))
+cat("I live in", myCountry)
+```
 
-```{r debug3}
-prime_numbers <- function(n){
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
+ - `cat()` interprets character strings that it gets.
+  
+```{r debug-009}
+xc <- 'test\\test'
+print(xc)
+cat(xc)
+```
 
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes, i)
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
+
+## `stop()` and `warning()`
+
+Functions `stop()` and `warning()` provide basic tools for exception handling. `stop()` stops execution of the current expression and executes an error action while `warning()` generates a warning message that corresponds to its argument. An extensive use of these functions during code development makes debugging much shorter.
+
+```{r half}
+half <- function(x) {return(x/2)}
+try(half("text"))
+```
+
+```{r stop, error = TRUE}
+half <- function(x){
+  if(!is.numeric(x)) {stop("x must be numeric")}
+  return(x/2)
 }
-
-prime_numbers(7)
-
+half("text")
 ```
 
-It seems like it's working!
-
-Let us now see a slightly different way to open the function environment. If you place `browser()` in the code you want to debug, the debugger will open when it encounters it. So for example, in the following code, the debugger will open just after the vector `primes` is populating in the for loop:
-
-```{r debug4}
-
-prime_numbers <- function(n){
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
-
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes, i)
-          browser()
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
-}
-
-prime_numbers(7)
-
-```
-
-
-### `debug()`
-
-`debugonce()` allows you to enter the function once, so that you find the error and fix it. Notice that there exist the function `debug()` as well. It allows you to enter the local environment of the function every time you run the function. This means, however, that you need to exit the debugger once you have finished debugging the function.
-
-
-## Finding and fixing an error
-
-Suppose again that you are writing the function to find the first `n` prime numbers.
-
-
-```{r traceback1}
-
-prime_numbers <- function(n){
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
-
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes, i)
-          browser()
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
-}
-
-
-prime_numbers(n = c(10,20))
-
-```
-
-We do get an error. In order to see where exactly the error occured, you may use the `traceback()` function or just click on `Show traceback` if you using RStudio:
-
-```{r traceback}
-
-traceback()
-
-```
-
-This will allow you to see where the function stopped. Now, you may want to go closer into the function, you may want to go and see inside the function scope. Hence you may run the function `options(error=browser)`. This means that when R finds an error, it will stop right at the moment the error occured and let you look inside the function environment.
-
-```{r options error}
-
-options(error = browser())
-
-prime_numbers(c(10,20))
-
-```
-
-So the error is that our function is designed for only working with vectors of length 1. We may try to correct the error, for example by vectorising the function.
-
-
-```{r fix error}
-
-prime_numbers <- function(n){
-  .prime_numbers <- function(n) {
-    if (n >= 2) {
-      sieve <- seq(2, n)
-      primes <- c()
-
-      for (i in seq(2, n)) {
-        if (any(sieve == i)) {
-          primes <- c(primes, i)
-          sieve <- c(sieve[(sieve %% i) != 0], i)
-        }
-      }
-      return(primes)
-    } else {
-      stop("n should be at least 2.")
-    }
+```{r warning}
+repText <- function(times, text = NA) {
+  if(is.na(text)) {
+    warning("text not provided. 'test' is used.")
+    text  <- "test"
   }
-  .prime_numbers_vec <- Vectorize(.prime_numbers, "n")
-  .prime_numbers_vec(n)
+  rep(text, times)
+}
+repText(times = 3)
+```
+
+## Trying a function
+
+The function `try()` is a wrapper to run an expression that might fail and allows the user's code to handle error-recovery. It is useful to avoid that an error stops the execution of the whole function, as below. Again, good use of `try()` when developing avoid extensive debugging session.
+
+```{r doit}
+doit <- function(x) {
+  x <- sample(x, replace=TRUE)
+  if(length(unique(x)) == length(x)) {
+    mean(x)
+  } else {
+    stop("too few unique points")
+  }
+  cat("end of function", "\n")
+  invisible(NULL)
+}
+```
+
+```{r doitExecute, error = TRUE}
+x <- 1:10
+thisError  <- doit(x)
+thisTry <- try(doit(x))
+thisError
+thisTry
+```
+
+When function `doit()` is called directly, it returns an error and object `thisError` is not created. When using `try()` as a wrapper on `doit()`, despite the function returns error, object `thisTry` is created. `try()` returns the object returned by the called funcion if the called function does not go in error, otherwise, `try()` returns an object of class "try-error".
+
+## Debugging in R
+
+There are a few basic tools in R that are worth knowing about:
+
+*  `browser()` interrupts the execution of an expression or within an R function. Objects can be viewed and changed during execution. Support exists for setting conditional breakpoints. 
+ *  `debug()` marks a function for debugging, so that `browser()` will be called on entry.
+ *  `trace()` modifies a function to allow debug code to be temporarily inserted.
+
+
+### Browsing
+
+Function `browser()` is usually called from within an other function. When the evaluator encounters this function it opens a browsing session on the evaluated frame so that the active environment can be explored.
+
+All R commands can be used within the evaluated frame. Moreover, the interpreter, sets up special functions to be called uniquely within the `browser()` environment:
+
+ * `n` advances to the next step;
+ * `c` continues to the end of the current section of code (e.g., to the end of a for loop, or the end of the function itself);
+ * `where` prints a stack trace of all active function calls;
+ * `Q` exits the browser and the current evaluation and return to the top-level prompt.
+
+As an example, consider the function below. It ouputs the sum of a given parameter plus two random numbers. In order to see the value of the two random numbers: `rn` and `ru` prior summing them up, the function evaluated frame is inspected by inserting a call to function `browser` within the function body.
+
+```{r mix, error = TRUE}
+mix <- function (x) {
+ rn <- rnorm(1)
+ ru <- runif(1)
+ browser()
+ return(x +rn+ru)
+}
+```
+
+```{r mix-out, eval = FALSE}
+mix(0)
+Called from: mix(0)
+Browse[1]> rn
+[1] 0.9315371
+Browse[1]> ru
+[1] 0.4610282
+Browse[1]> c
+[1] 1.392565
+```
+
+The use of `browser()` finds its best application when called by function `debug()`.
+
+### _Post Mortem_ Debugging
+
+Classical debugging is named _Post Mortem_ as the error function is debugged after the evaluator returns a critical error so that the execution of the function is interrupted. Function `debug()` is the most used debugging tool.
+
+Function `debug()` allows stepping through the execution of a function, line by line. At any step a `browser()` is opened on the evaluation frame. 
+
+As an example, consider this simple function: 
+
+```{r debug-018}
+msg <- function (x) {
+  if (x > 0 ) cat ("Hello")
+  else cat("goodbye")
+  invisible(NULL)
 }
 
-prime_numbers(c(10,20))
+msg(1)
+msg(-1)
+```
+This function simply prints _"Hello"_ or _"Goodbye"_ depending on whether `x` is greater than or less than 0. In principle, this function should never fail; nevertheless:
 
+```{r debug-019, error= TRUE}
+msg(log(-1))
+```
+this function returns an error and the execution is halted. As a first step, a call to `traceback()` is always worth:
+
+```{r debug-020}
+traceback()
 ```
 
-<!--
-C'è esempio di traceback migliore?
--->
 
-Once you are done, you should turn off the error browser:
+In this case, `traceback()` does not help a lot. It simply says that the error occurs within the call to `msg()`. Not a big surprise as, `msg()` was the only function called.
 
-```{r options error2}
+The use of functions `debug()` or `debugonce()` returns interesting results:
 
-options(error = NULL)
+```{r debug-020A, eval= FALSE}
+debugonce(msg)
+```
+```
+msg(log(-1))
+debugging in: msg(log(-1))
+debug at #1: {
+    if (x > 0) 
+        cat("Hello")
+    else cat("goodbye")
+    invisible(NULL)
+}
+Browse[2]> ls()
+[1] "x"
+Browse[2]> x
+[1] NaN
+Warning message:
+In log(-1) : NaNs produced
+Browse[2]> x > 0 
+[1] NA
+Browse[2]> n
+debug at #2: if (x > 0) cat("Hello") else cat("goodbye")
+Browse[2]> n
+Error in if (x > 0) cat("Hello") else cat("goodbye") : 
+  missing value where TRUE/FALSE needed
+```
 
+As it can be observed, `log(-1)` produces a simple warning and returns `NaN` but, passing the resulting value of `x` into `msg()` ended in a fatal error as the comparison between `NaN` and `0` is clearly undefined and returns `NA` that, in tur, returns an error like the following:
+
+```{r debug-021, error = TRUE}
+if(NA) {cat ("this is strange")}
+```
+
+Finally, `debugonce()` is clearly used to debug a function at its next call. When using `debug()`, the function passed as an argument is set into "debug mode" and it is kept in the same mode until `undebug()` is called on the same function. Function `isdebugged()` is used to query the debugging flag on a function.
+
+```{r isdebugged}
+debug(msg)
+isdebugged(msg)
+undebug(msg)
+isdebugged(msg)
+```
+
+In more complex situation, the use of `traceback()` after a call stack may result into a very useful debugging tool. Suppose we define functions `f()`, `g()` and `h()` as:
+
+```{r fgh}
+f <-  function(x) {
+  r <-  x - g(x)
+  r
+}
+
+g <- function(y) {
+  r <- y * h(y)
+  r
+}
+
+h <- function(z) {
+  r <- log(z)
+  if (r < 10)
+      r^2
+  else r^3
+}
+```
+when calling the outer function `f()`:
+
+```{r fneg, error = TRUE}
+f(-1)
+```
+
+The error seems to be generated within function `f()`. And this is partially true as the error is actually generated within function `h()` as  `f()` calls `g()` that calls `h()`. All this mechanism is not always transparent to the end user as the inner mechanism of a function is not necessarily known. A simple call to traceback may quickly put the truth into evidence:
+
+```{r trb, eval = FALSE}
+traceback()
+```
+```
+3: h(y) at #2
+2: g(x) at #2
+1: f(-1)
+```
+
+The output of `traceback()` is to be read bottom-up or by following the output row number. In this case, `traceback()` says that the error occurs within function `h()`. As a result, function `h()` can be put into debug mode and `f(-1)` be called again:
+ 
+```{r dbgonce-h, eval = FALSE}
+debugonce(h)
+f(-1)
+```
+```
+debugging in: h(y)
+debug at #1: {
+    r <- log(z)
+    if (r < 10) 
+        r^2
+    else r^3
+}
+Browse[2]> 
+debug at #2: r <- log(z)
+Browse[2]> ls()
+[1] "z"
+Browse[2]> z
+[1] -1
+Browse[2]> n
+debug at #3: if (r < 10) r^2 else r^3
+Browse[2]> ls()
+[1] "r" "z"
+Warning message:
+In log(z) : NaNs produced
+Browse[2]> z
+[1] -1
+Browse[2]> r
+[1] NaN
+Browse[2]> Q
+```
+
+The error clearly occurs in function `h()` as `NA` within an `if` statement returns error.
+
+In case we simply put `f()` directly into debug mode instead of running `traceback()` first, the result would be useless:
+
+```{r dbgonce-f, eval = FALSE}
+debugonce(f)
+```
+```
+f(-1)
+debugging in: f(-1)
+debug at #1: {
+    r = x - g(x)
+    r
+}
+Browse[2]> 
+debug at #2: r = x - g(x)
+Browse[2]> ls()
+[1] "x"
+Browse[2]> x
+[1] -1
+Browse[2]> n
+Error in if (r < 10) r^2 else r^3 : missing value where TRUE/FALSE needed
+In addition: Warning message:
+In log(z) : NaNs produced
 ```
 
 
-<!--
-Aggiungere debugging da RStudio ?
--->
+### Debugging on error
+When the evaluator encounters an error, it looks for an error action. The error action, a function or an expression to be evaluated, is determined by the `error` argument of the `options`, by default set to `NULL`:
+
+```{r options1}
+options("error")
+```
+
+By setting:
+```{r debug-026}
+options(error = recover)
+```
+
+the evaluator stops whenever an error occurs and calls function `recover()` which, in turn, offers a selection of available frames for browsing. By selecting 0, recovering is exited and the normal prompt is returned.
+
+```{r debug-026A, eval= FALSE}
+f(-1)
+```
+```
+Error in if (r < 10) r^2 else r^3 : missing value where TRUE/FALSE needed
+In addition: Warning message:
+In log(z) : NaNs produced
+
+Enter a frame number, or 0 to exit   
+
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Selection: 1
+Called from: top level 
+Browse[1]> ls()
+[1] "x"
+Browse[1]> x
+[1] -1
+Browse[1]> n
+Enter a frame number, or 0 to exit   
+
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Selection: 2
+Called from: f(-1)
+Browse[2]> ls()
+[1] "y"
+Browse[2]> y
+[1] -1
+Browse[2]> n
+
+Enter a frame number, or 0 to exit   
+
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Selection: 3
+Called from: g(x)
+Browse[3]> ls()
+[1] "r" "z"
+Browse[3]> z
+[1] -1
+Browse[3]> r
+[1] NaN
+
+Browse[3]> h
+function(z) {
+  r <- log(z)
+  if (r < 10)
+      r^2
+  else r^3
+}
+
+Browse[3]> r < 10
+[1] NA
+
+Browse[3]> #OK got it !!
+Browse[3]> n
+
+Enter a frame number, or 0 to exit   
+
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Selection: 0
+```
+
+Debugging on error is clearly a useful techniques when running R in interactive mode. When calling R in BATCH mode, interactive debugging is of no use. In this case a call to `dump.frames()` provides the right solutions as the evaluated frame is dumped into a file, `last.dump` by default, to be lately inspected by function `debugger()`. Again, `dump.frame()` is set as the error argument to function `options()`.
+
+```{r debug-027, error = TRUE}
+options(error = quote(dump.frames("fdump", to.file=TRUE)))
+f(-1)
+```
+
+The error can now be inspected, as in interactive mode. The whole working environment has been dumped to file `fdump` that can be loaded, at any time, by function `debugger()`:
+
+```{r debug-027A, eval = FALSE}
+load("fdump.rda")
+debugger(fdump)
+```
+```
+Message:  Error in if (r < 10) r^2 else r^3 : missing value where TRUE/FALSE needed
+Available environments had calls:
+1: f(-1)
+2: #2: g(x)
+3: #2: h(y)
+
+Enter an environment number, or 0 to exit  
+Selection: 0
+```
+
+Finally, during development, setting `options("error")` as: 
+
+```{r debug-027B, eval = FALSE}
+options(error = Quote(
+ if (interactive()) recover()
+ else dump.frames()
+))
+```
+could help to take advantage of both solutions.
+
+
+<!---
+### Debugging _on the fly_
+
+Function `trace()` is useful for making minor modifications to functions _on the fly_ without having to modify functions and re-sourcing them. It is especially useful if an error or an unwanted result occur in a base function since base functions cannot be edited by the user.
+
+As an example, consider this function:
+
+```{r f4}
+f = function(lambda, n = 10){
+  x = numeric(n)
+  for ( i in 1:n) {
+    r = rpois(1 , lambda)
+    l = sum(rexp(r, 1/r))
+    x[i] = log(r*l)
+  }
+mean(x)
+}
+```
+
+This function returns finite results as long as `lambda` is large but, as `lambda` closes to zero, result could be a non finite number:
+```{r f101}
+f(10)
+f(.1)
+```
+The basic idea consists of on inserting a call to the usual `browser()` without modifying the original function or debugging it step by step.
+
+As we suspect that the problem occurs at `x[i]=log(r*l)`, we want to inspect the working environment just before the function exits:
+
+```{r trace}
+trace("f", exit = quote(browser()), print=F)
+f(1)
+```
+```
+Called from: eval(expr, envir, enclos)
+Browse[1]> ls()
+[1] "i"      "l"      "lambda" "n"      "r"      "x"     
+Browse[1]> x
+ [1]  2.15619791  2.86990919  0.93359990        -Inf
+ [5] -0.07578643  1.10145460  0.59390610        -Inf
+ [9]  0.28873680  0.80491086
+Browse[1]> Q
+```
+
+Problem solved, some `x` were not finite.
+
+Note that, when calling `trace()` the original function is modified as:
+
+```{r body2}
+trace("f", exit = quote(browser()) , print=F)
+body(f)
+```
+
+that is, a call to `browser()` is inserted within the body of an alternative definition of `f()`.
+--->
