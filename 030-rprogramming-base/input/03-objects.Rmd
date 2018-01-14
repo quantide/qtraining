@@ -1,0 +1,214 @@
+## Introduction
+This brief chapter gives an overview of basic `R` objects: vectors, lists, matrices and data frames. More advanced objects: environments and functions will be discuss din the next chapters.
+
+For a more complete discussion about basic `R` objects, please refer to _"Intro to R"_ Quantide manual.
+
+## _Atomic_ Vectors
+
+_Atomic_ vectors in `R` can be thought of as contiguous cells containing data.
+
+The most common method to define a vector is the function `c()`:
+
+```{r objects-001}
+x <- c(2, 4, 1.3)
+y <- c(1, 2, pi)
+z <- c(x,y)
+```
+
+Many other functions exists for the same purpose: `seq()`, `sample()` `rep()` ...
+
+R has six basic `atomic` vector types: 
+
+* logical
+* integer
+* real
+* complex
+* character
+* raw. 
+
+Vectors can have only one type 
+
+The modes and storage modes for the different vector types are listed in the following table.
+
+
+| typeof       |    mode      |storage.mode  |
+| ------------ |------------- |------------- |
+| `logical`	   | `logical`	  | `logical`    |
+| `integer`	   | `numeric`    | `integer`    |
+| `double`     | `numeric`	  | `double`     |
+| `complex`    | `complex`    | `complex`    |
+| `character`  | `character`  | `character`  |
+| `raw`        | `raw`        | `raw`        |
+
+
+
+
+The best way to identify the type of a vector is by function `typeof()`
+
+```{r objects-002}
+i <- 1:3
+typeof(i)
+d <- c(1.34, pi, 0, NA)
+typeof(d)
+l <- letters[1:3]
+typeof(l)
+```
+
+In case we need to make a specific request we may also use specific functions as:
+
+```{r objects-003}
+is.integer(i)
+is.double(d)
+is.character(l)
+```
+
+Clearly, we can coerce from type to type whenever possible:
+
+```{r objects-004}
+as.character(i)
+as.numeric(l)
+```
+
+Function `is.vector()` provides very general results: 
+
+```{r objects-005}
+is.vector(i)
+is.vector(l)
+```
+
+but its use is discouraged in favor of:
+
+```{r objects-006}
+is.atomic(i)
+is.atomic(l)
+```
+
+Vectors can be subset by:
+
+* positions
+* names
+* logicals
+
+```{r objects-007}
+x <- 1:3
+names(x) <- letters[x]
+x[2]
+x["b"]
+x[c(F,T,F)]
+```
+
+## Lists
+
+Lists are `R` vectors capable of storing any type of objects, including lists:
+
+```{r objects-008}
+this_list <- list(number = 1:3, letters = c("A", "B"), 
+                  second_list = list(test = "failed", result = "-2"))
+```
+
+Note that:
+
+```{r objects-009}
+is.vector(this_list)
+is.atomic(this_list)
+```
+
+Lists  can be subset by:
+
+* positions
+* names
+* logicals
+
+```{r objects-010}
+this_list[2]
+this_list[[2]]
+this_list["letters"]
+this_list[c(F,T,F)]
+```
+
+Lists also have the very used `$` operator so that:
+
+```{r objects-011}
+this_list$letters
+```
+
+is just a shortcut to:
+
+```{r objects-012}
+this_list[["letters", drop = F ]]
+```
+
+## Matrices and arrays
+
+Arrays are vectors with a `dim()` attribute. Matrices are two dimensional arrays:
+
+```{r objects-013}
+x <- 1:9
+dim(x) <- c(3, 3)
+x
+```
+We usually create matrices by using dedicated functions such as `matrix()`, `cbind` or `rbind()`, but, as matrices are vectors: 
+
+```{r objects-014}
+m <- matrix(1:4, ncol = 2)
+is.atomic(m)
+typeof(m)
+```
+
+When typing:
+
+```{r objects-015}
+is.matrix(m)
+```
+
+`R` returns an information that is related to the `class` of the object rather than its atomic structure
+
+Matrices can be subset by:
+
+* positions
+* names
+* logicals
+
+```{r objects-016}
+dimnames(m) <- list(c("a", "b"), c("x", "y"))
+m[,2]
+m[,"x"]
+m[c(T,F), ]
+```
+
+## Data frames
+
+Data frames are a lists of vectors, factors, or matrices all having the same length (number of rows in the case of matrices). In addition, a data frame generally has a names attribute labeling the variables and a row.names attribute for labeling the cases.
+
+Data frames are usually created with function `data.frame()`
+
+```{r objects-017}
+df <- data.frame(id = 1:5, x = 5:1)
+```
+As data frames are lists:
+
+```{r objects-018}
+is.list(df)
+```
+
+When needed, data frames elements can also be matrices. 
+
+```{r objects-019}
+amount <- c(1, 2, 4, 8, 16)
+success <-  c(1, 3, 7, 12, 20)
+response <- cbind(dead= success, failure = 20-success)
+dd <- data.frame(response = response, amount = amount)
+dd
+```
+
+Data frames can be subset either as list or matrices
+
+```{r objects-020}
+df[,"x"]
+df[[1,"x"]]
+df$x
+df[1,2]
+df[df$x == 2, 2]
+```
+
+

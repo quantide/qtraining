@@ -1,0 +1,575 @@
+---
+title: "Object Oriented Programming"
+---
+
+
+## Introduction
+
+Object oriented programming is a programming paradigm based on _classes_ and _methods_.
+
+A _class_ is an abstract definition of a concrete real world object. A class is generally made of ordered and named slots.
+
+For instance, a rectangle is defined given the lengths of its sides. Therefore objects of class rectangle can be defined by a class containing two slots of type numeric, named for instance `x` and `y`, corresponding to its sides. The specific rectangle of sides `x = 3` and `y = 6` represents an instance of the class rectangle.
+
+Given a class, any number of dedicated methods can be written for that class. A specific _method_, for a given class, is a function that performs specific actions on an object of that class. Specific methods are defined as particular cases of general methods.
+
+This mechanism is almost everywhere in `R`. For instance:
+
+```{r s4-000, echo = FALSE}
+require(methods)
+```
+
+```{r s4-001}
+head(cars)
+```
+
+When calling `head(cars)`, `R` understand that `cars` is an object of class data.frame, `head` is a generic method and therefore, `R` looks for a specific head method for objects of class `data.frame`. This method exists and is named `head.data.frame` as shown by:
+  
+```{r s4-002}
+methods("head")
+```
+
+As `head.data.frame` is defined as a non-visible function within the namespace of `utils`, its content can be visualized by typing:
+  
+```{r s4-003}
+utils:::head.data.frame
+```
+
+Finally, when calling method `head` on an object of class `function`:
+  
+```{r s4-004}
+head(lm)
+```
+
+According to the same mechanism,  `R` returns the first six row of the `lm()` function by calling `utils:::head.function`.
+
+
+End users are not interested in the class structure itself but do care about methods that are available to access the class. The `R` way of reaching this goal is to use generic functions and method dispatch: the same function performs different computations depending on the types of its arguments.
+
+`R` is both interactive and has a system for object-orientation. The interactive component of `R` is a great tools for data analysis and quick development. Nevertheless, when it comes to software development, especially software development at enterprise level, a serious object oriented programming system is recommended.
+
+`R` tries to achieve a compromise between object orientation and interactive programming and, although compromises are never optimal with respect to all goals they try to reach, they often work surprisingly well in practice.
+
+Being able to understand when interactive programming has to be converted and structured into an object oriented library is a key point to make best use of `R`. 
+
+The `S` language, of which `R` is a dialect, has three object systems, known informally as `S3`, `S4` anf `RC`. Their names originate from the version of `S` they appear first. `S3` objects, classes and methods have been available in `R` from the beginning. `S4` objects, classes and methods have been available in `R` through the `methods` package, attached by default since `R` version 1.7.0.
+
+
+## `S3`
+
+`S3` objects, classes and methods have been available in `R` from the beginning, they are informal, yet ''very interactive''. `S3` was first described in the ''White Book'' (Statistical Models in S). 
+
+`S3` is not a real class system, it mostly is a set of naming conventions. Classes are attached to objects as simple attributes. Method dispatch looks for the class of the first argument and then searches for functions conforming to a naming convention: `do()` methods for objects of class `obj` are called `do.obj()`. If no `do` method is found, `S3` searches for `do.default()`.
+
+This system is simple and powerful at the same time. Objects of widely used classes such as `lm` or `glm` are still implemented as `S3`:
+  
+```{r s4-005}
+showMethods("lm")
+```
+
+Nevertheless, `S3` is far from be structured and validated:
+  
+```{r s4-006}
+f <- function(x) {
+  x <- list(x)
+  class(x) <- "lm"
+  x
+}
+
+f(x ="Mickey Mouse")
+```
+
+The system should not accept that a simple string can be defined as an object of class linear model.
+
+
+## `S4`
+
+`S4` objects, classes and methods are much more formal and rigorous, hence ''less interactive''. `S4` was first described in the ''Green Book'' (Programming with Data). In `R` it is available through the `methods` package, attached by default since version `1.7.0`.
+
+
+### Example: Class rectangle
+
+As a simple example, we can consider a class `rectangle`. As any rectangle can be entirely defined by the dimensions of its sides, a class for objects of type rectangle can be defined as made of two numeric slots: `x` and `y` representing the sides of the rectangle.
+
+```{r s4-007}
+setClass("rectangle", 
+  representation (x= "numeric", y = "numeric"),
+  prototype(x = 1, y = 1) 
+)
+```
+Note the use of argument `prototype` with function `setClass`. This argument allows to create a rectangle of sides `x=1`  and `y=1` whenever its dimensions are not explicitelly given. 
+
+Once the class is defined, an object of class rectangle can be created by:
+  
+```{r s4-008}
+new("rectangle")
+new("rectangle", x = 2, y = 4)
+new("rectangle", x = -3, y = 5)
+```
+
+Generally, objects are not created directly by using function `new()`. We usually define a specific function in order to perform this task:
+  
+```{r s4-009}
+rectangle <- function (x, y) {
+  if (!"x" %in% names(match.call()) & !"y" %in% names(match.call())) {
+  rectangle <- new("rectangle")}
+  else if (!"x" %in% names(match.call())) {rectangle <- new("rectangle", y = y)}
+  else if (!"y" %in% names(match.call())) {rectangle <- new("rectangle", x = x)}
+  else rectangle <- new("rectangle", x = x, y = y)
+  rectangle
+}
+```
+
+The prototype argument of class definition allows great flexibility when passing arguments to function rectangle:
+  
+```{r s4-010}
+rectangle(x = 2, y = 7)
+rectangle(x = 2)
+rectangle(y = 2)
+rectangle()
+rectangle(x = -2, y = 0)
+```
+
+```{r s4-011}
+new("rectangle", x = 3, y = 2)
+```
+
+As seen, class definition performs same validity check by itself. Nevertheless, either zeros or negative numbers should not be accepted as valid input for sides dimensions. For appropriate validity check a specific validity method can be defined by using function `setValidity()`. Note that validity methods are stored together with class definitions.
+
+```{r s4-012}
+setValidity("rectangle", 
+  function(object) {object@x > 0 & object@y > 0}
+)
+```
+
+Testing the class after validity method is defined allows great control on input arguments:
+
+```{r s4-013, error=TRUE}
+new("rectangle", x = -3 , y = 2)
+rectangle(x = -2, y = 1)
+```
+
+```{r s4-014}
+new("rectangle", x = 3, y = 2)
+rectangle(x = 3, y = 2)
+```
+
+After the class is defined, we can define basic methods, generally: `show`, `print`, `summary` and `plot`. Method `show()` is usually the first method we develop as this method is applied when objects are called without a function and allows objects to be displayed in a ordered and clear fashion.
+
+```{r s4-015}
+setMethod(f = "show", signature = "rectangle", 
+  definition <-  function(object) {
+    x <- object@x ; y <- object@y
+    cat(class(object), "of side x =", x , "and side y =",
+      y , "\n")
+   invisible(NULL)
+})
+r42 <- rectangle(4,2)
+show(r42)
+r42
+```
+
+We can define a method `print()`, with identical output to `show()`:
+  
+```{r s4-016}
+setMethod(f = "print", signature = "rectangle", 
+  definition = function(x) {
+    object <- x
+    x <- object@x ; y <- object@y
+    cat(class(object), "of side x =", x , "and side y =",
+      y , "\n")
+    invisible(NULL)
+})
+r27 <- rectangle(2,7)
+print(r27)
+```
+
+We can write a more exhaustive output with method `summary()`:
+
+```{r s4-017}
+setMethod(f = "summary", signature = "rectangle", 
+  definition = function(object) {
+    x <- object@x ; y <- object@y
+    perimeter <- 2*x+2*y
+    area <- x*y
+    print(object)
+    cat("Perimeter =" , perimeter , "\n")
+    cat("Area =" , area, "\n")
+    invisible(list (sides = c(x, y), 
+      perimeter = perimeter, area = area))
+})
+
+r42 <- rectangle(4, 2)
+summary(r42)
+r42_area_perimeter <- summary(r42) 
+r42_area_perimeter 
+```
+
+`area` and `perimeter`, as they have been computed are returned as invisible from method `summary()`.
+
+Method `plot()` closes the list of standard methods usually developed for any class:
+
+```{r s4-018}
+setMethod(f = "plot", signature = "rectangle", 
+  definition =  function(x, y, col = "lightgray" ,
+  border = "black", xlab = "x", ylab = "y", ...) {
+    object <- x
+    x <- object@x ; y <- object@y
+    d <- max(c(x, y))
+    plot(c(0, d, d, 0), c(0, 0, d , d ), 
+      type = "n", asp = 1,
+      xlab = xlab , ylab = ylab, ...)
+    polygon (c(0, x, x, 0), c(0, 0, y, y), 
+     col = col, border = border)
+    grid()
+    invisible(NULL)
+})
+r42 <- rectangle(4, 2)
+plot(r42)
+```
+
+`print()`, `plot()` and `summary()` are existing generic methods. If required, we can define a new generic method. For instance, a `rotate()` method that rotates the rectangle of `90` degree can be defined in two steps:
+
+- Define the generic `rotate()` method as it does not exists by default in `R`.
+- Define a specific `rotate()` method for objects of class rectangle.
+
+```{r s4-019}
+setGeneric("rotate",
+  function(object, ...)  standardGeneric("rotate")
+)
+```
+
+Given the rotate generic method a rotate specific method for class rectangle can be written as:
+  
+```{r s4-020}
+setMethod(f = "rotate", signature = "rectangle", 
+  definition = function(object) {
+    xx <- object@x
+    object@x <- object@y
+    object@y <- xx
+    object
+})
+r12 <- rectangle(1,2)
+r21 <- rotate(r12)
+par(mfrow = c(1,2))
+plot(r12, col = "darkred")
+plot(r21 , col = "darkblue")
+par(mfrow = c(1,1))
+```
+
+### Example: Class parallelepiped
+
+Given class `rectangle`, class `parallelepiped` can be defined as an extension of class rectangle. The whole structure of class `rectangle` is inherited by `parallelepiped`. Therefore, when defining the new class, only additional slots need to be defined. Specifically, only slot `z` representing the third dimension of the parallelepiped needs to be defined. Slots `x` and `y` are implicitly inherited from parent class `rectangle` along with all defined methods. 
+
+```{r s4-021}
+setClass("parallelepiped",
+  representation (z = "numeric"),
+  prototype(z = 1),
+  contains = "rectangle"
+)
+
+new("parallelepiped")
+```
+
+Class `parallelepiped` is explicitly defined as an extension of class rectangle and `R` tracks all of this within the definitions of both `rectangle` and `parallelepiped` classes.
+```{r s4-022}
+getClass("parallelepiped")
+getClass("rectangle")
+```
+  
+Specific methods can be written for class `parallelepiped`. Alternatively, methods of the parent class `rectangle` are used. Note that this may lead to some confusion:
+  
+```{r s4-023}
+prl <- new("parallelepiped")
+print(prl)
+```
+
+Clearly these are not all the information someone would expect about a parallelepiped. A new print method should be written that includes, at least, side `z`:
+
+```{r s4-024}
+setMethod(f = "print", signature = "parallelepiped", 
+  definition = function(x) {
+    object <- x
+    x <- object@x ; y <- object@y ; z <- object@z
+    cat(class(object), "of sides x =", x ," y =",y , " z =" , z, "\n")
+    invisible(NULL)
+})
+print(prl)
+```
+
+### Example: Class square
+The same mechanism can be used the other way round in order to define classes that are specific cases of an existing class. Again, methods are inherit from parent to child:
+  
+```{r s4-025}
+setClass("square",
+  contains = "rectangle"
+)
+
+square <- function(x) {
+  y <- x
+  new("square", x = x, y = y)
+}
+
+s4 <- square(4)
+print(s4)
+summary(s4)
+plot(s4)
+```
+
+Moreover, a class `square` can be defined as a coerced class from class `rectangle` by writing a `definition` for function `setAs()`. As an example, `definition` may impose that any `rectangle(x, y)` is coerced into a `square(x)`.
+
+Definition written within `setAs()` function is then used by `R` when calling function `as()`:
+
+```{r s4-026}
+setAs(from = "rectangle", to = "square", 
+  def = function(from) {
+    square = square(x = from@x)
+    square
+})
+
+r35 <- rectangle(3, 5)
+s33 <- as(r35, "square")
+s33
+```
+
+
+### Example: ``Rolygons'' S4 with closures
+
+The combination of the S4 methods with functional programmimg tecniques permits the development of quite interesting coding techniques.
+
+In this case we want to generate a set of functions each of them returning a regular polygon: square, pentagon, etc with a built in `plot` method. 
+
+Thus, we first define a `rolygon()` function that returns a generic function capable of generating specific regular polygons with plot method inherited from rolygons environment:
+
+```{r s4-027}
+rolygon <- function(n){
+    
+    # Define rolygon class    
+    setClass("rolygon", representation(n = "numeric", s = "numeric"))
+    
+    # Define a plot method for object of class rolygon
+    setMethod(f = "plot", signature = "rolygon", 
+              definition = function(x, y){
+                object <-  x
+                s <-  object@s ; n = object@n
+                pi <- base::pi
+                rho <-  (2*pi)/n
+                h <-  .5*s*tan((pi/2)-(pi/n))
+                r <-  sqrt(h^2+(s/2)^2)
+                sRho <-  ifelse( n %% 2 == 0 , (pi/2- rho/2)  , pi/2)
+                cumRho <-  cumsum(c(sRho, rep(rho, n)))
+                cumRho <-  ifelse(cumRho > 2*pi, cumRho-2*pi, cumRho)
+                x <-  r*cos(cumRho)
+                y <-  r*sin(cumRho)
+                par(pty = "s")
+                plot(x, y, type = "n", xlab = "", ylab = "") 
+                lines(x, y, col = "red", lwd = 2)
+                points(0,0, pch = 16, col = "red")
+                grid()
+                invisible(NULL)      
+              })
+    
+    # Define a function that returns an object of class rolygon
+    f <- function(s){new("rolygon", n = n, s = s)}
+    
+    # Return the newly created function
+    return(f)  
+  }
+```
+
+Note that class `rolygon`, its `plot` method and `f()` function are all defined within the evaluation environment of `rolygon()`. When `rolygon` is evaluated, `f()` is returned and `f()` remembers about class `rolygon` and its plotting method.
+
+As a result, we can define an `heptagon()` function as:
+
+```{r s4-028}
+heptagon <- rolygon(n = 7)
+```
+
+a specific heptagon of side = 1 becomes:
+
+```{r s4-029}
+e1 <- heptagon(1)
+```
+
+as `heptagon()` has a plot method built in, we only need:
+
+```{r s4-030}
+plot(e1)  
+```
+
+Finally, with a bit of imagination: 
+
+```{r s4-031}
+circumference <- rolygon(n = 10^4)
+```
+
+```{r s4-032}
+plot(circumference(s = base::pi/10^4))
+```
+
+### S4 House keeping
+
+Package `methods` dispatches several function for S4 object oriented programming and most of them have already been illustrated in the previous section:
+  
+- define classes: `setClass()`
+- create objects: `new()`
+- define generics: `setGeneric()`
+- define methods: `setMethods()`
+- delete classes: `removeClasses()`
+- delete methods: `removeMethods()`
+- convert objects: `as()`, `setAs()`
+- check object validity: `setValidity()`, `validObject()`
+- access registry: `showClass()`, `showMethods()`, `getMethod()`
+
+When a class or a method is created, `R` saves it in a dedicated registry within the working environment. Each package has its own dedicated registry. Methods and classes are usually accessed by dedicated functions. Functions `showClasses()` and `getClasses()` return the structure, of a class. For instance, in order to gain the structure of class rectangle:
+```{r s4-033}
+showClass("rectangle")
+getClass("rectangle")
+```
+
+The validity function, if defined, of a given class is obtained by function `getValidity()`:
+
+```{r s4-034}
+getValidity(getClass("rectangle"))
+```
+
+The function `showMethods()` checks weather a method exists for given class; to check `show` and `print` methods for class `rectangle`:
+
+```{r s4-035}
+showMethods(f = c("show", "print"), classes = "rectangle")
+```
+
+Note that omitting argument `f`  within `showMethods()` returns all methods for a given class:
+
+```{r s4-036}
+showMethods(classes = "rectangle")
+```
+
+The definition of a given method can be displayed by:
+
+```{r s4-037}
+getMethod("print", "rectangle")
+```
+
+As methods and classes are created they can be deleted respectively with functions `removeClasses()` and `removeMethods()`.
+
+## References
+kindly provided at <a href= "http://stackoverflow.com/questions/4143611/sources-on-s4-objects-methods-and-programming-in-r">: stackoverflow</a>
+### On the web
+
+* <a href="http://stat.ethz.ch/R-manual/R-devel/library/methods/html/Methods.html">The <code>methods</code> help files</a> : help files from the package methods, where much of the necessary information can be found
+* <a href="http://www.stat.auckland.ac.nz/S-Workshop/Gentleman/S4Objects.pdf">S4 classes in 15 pages</a> : Short introduction on the programming with S4 objects.
+* <a href="http://developer.r-project.org/howMethodsWork.pdf">How S4 methods work</a> : more explanation about the underlying mechanisms.
+* <a href="http://cran.r-project.org/doc/contrib/Genolini-S4tutorialV0-5en.pdf">Not so short introduction to S4</a> : with practical examples of how to construct the classes and some useful tips. It contains a handy overview as appendix, but contains errors as well. Care should be taken using this one.
+* <a href="http://www.math.ku.dk/~richard/courses/bioconductor2009/handout/17_08_Monday/OOP-handouts.pdf">OOP in R</a> : handout notes with practical examples on S3 and S4
+* <a href="http://www.soph.uab.edu/Statgenetics/Events/Rshort/060227-8-s4slides.pdf">S4 Objects</a> : presentation by Thomas Lumley about S4 objects
+
+### Books
+
+* Software for Data Analysis-Programming with R (J. Chambers) : A classic, although not reviewed positive everywhere, that contains a large section on S4
+* R programming for Bioinformatics (R. Gentleman) : specifically directed towards working with Bioconductor, which is completely based on S4. But it gives a broad overview and is useful for many other people too.
+
+## RC reference classes
+
+A recent development in R is _Reference classes_ also known as `RC` or `R5`.
+
+`RC` makes `R` object oriented programming paradigm very close to those implemented in `C++` or `Java`.
+
+On the other hand, when approaching reference classes we should also take into account that:
+
+* Documentation on reference classes is still very limited
+* RC require to learn a new form of programming syntax
+* Mutable state does not fit very well the _no side effect_ nature of most `R` functions
+
+
+### Example: `zero_one`, a toy example
+As first basic example consider creating a new class `zero_one` with two self explicative methods associated to it: `$set_to_zero()` and `set_to_one()`
+
+```{r RC_01, tidy = FALSE}
+zero_one  <- setRefClass("zero_one",
+                      fields = list( x = "numeric"),
+                      methods = list(
+                        set_to_zero = function(x){
+                          x <<- 0
+                        },
+                        set_to_one = function(x){
+                          x <<- 1
+                        }
+                      )  
+)
+```
+
+First notice that:
+
+* `RC` does not simply register a class, as `setClass()` in `S4` does, but holds the newly created class in an object. Now, object `zero_one` holds class ``zero_one``.
+* `fields` corresponds to representation in `S4`
+* `methods` defines functions as true methods belonging to the class
+
+The call to `setRefClass()` defines class `zero_one` and returns a ``generator`` object for class `zero_one`. 
+
+By using method `$new()` we create a new object of class `zero_one`
+
+```{r RC_02}
+zero_one_test <- zero_one$new(x = 33)
+zero_one_test
+```
+
+We can now apply methods `$set_to_zero()` and `set_to_one()` to the newly created object:
+
+```{r RC_03}
+zero_one_test$set_to_zero()
+```
+
+and see how `zero_one_test` modifies its fields
+
+```{r RC_04}
+zero_one_test
+```
+
+`R` functions usually do not have any side effects. Objects are modified by assignment and this happens within a _copy on mofy_ criterion.  Reference classes instead allows us to mutate the state of objects without duplicating them.
+
+Reference class methods can use the operator `<<-`. This modifies the value of a field in place by using a combination of `environment` and `makeActiveBinding()`.
+
+### Example: A stack implementation
+
+Within this example we define a `stack` implementation with methods  `$put_in()` and `$get_out()` where the latest come with two flavors: 
+
+* `fifo`: first in first out
+* `lilo`: last in last out
+
+We first define the reference class:
+
+```{r RC_05, tidy=FALSE}
+stack  <- setRefClass("stack",
+                      fields = list( stack = "numeric"),
+                      methods = list(
+                        put_in = function(x){
+                          stack <<- c(stack, x)
+                        },
+                        get_out = function(n = 1 , method = "fifo"){
+                          stopifnot(method %in% c("fifo", "lilo"))
+                          if(method == "fifo"){
+                            first <- 1:n
+                            stack <<- stack[-first]
+                          }
+                          if(method == "lilo"){
+                            N <- length(stack)
+                            last <- c((N-n+1):N)
+                            stack <<- stack[-last]
+                            
+                          }
+                        }  
+                      )
+)
+```
+
+And now we test it:
+
+```{r RC_06}
+stack_test <-stack$new(stack = 0)
+stack_test$put_in(1:10) 
+stack_test$get_out(method = "fifo", n = 2) 
+stack_test
+stack_test$get_out(method = "lilo", n = 2) 
+stack_test
+```
