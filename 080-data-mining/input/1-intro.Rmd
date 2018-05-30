@@ -4,6 +4,7 @@ title: "Machine Learning with R"
 
 ```{r options, include=FALSE, purl=FALSE}
 source("options.R")
+knitr::opts_chunk$set(width=100, out.height = 5)
 ```
 
 ```{r first, include=FALSE, purl=TRUE, message=FALSE}
