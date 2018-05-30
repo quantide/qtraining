@@ -1,9 +1,13 @@
 INPUT_DIR = input
 INPUT_RMD = $(INPUT_DIR)/*.Rmd
+INPUT_PDF_DIR = input
 
 OUTPUT_DIR = output
 OUTPUT_HTML_DIR = $(OUTPUT_DIR)/html
 OUTPUT_PURL_DIR = $(OUTPUT_DIR)/purl
+OUTPUT_PDF_DIR = $(OUTPUT_DIR)/pdf
+
+PDF_OUT = $(OUTPUT_PDF_DIR)/manual.pdf
 
 HTML_FILES = $(patsubst %.Rmd, %.html, $(wildcard $(INPUT_DIR)/*.Rmd)) \
              $(patsubst %.md, %.html, $(wildcard $(INPUT_DIR)/*.md))
@@ -13,6 +17,23 @@ PURL_FILES = $(patsubst %.Rmd, %.R, $(wildcard $(INPUT_DIR)/*.Rmd)) \
              $(patsubst %.md,  %.R, $(wildcard $(INPUT_DIR)/*.md))
 OUTPUT_PURL_FILES = $(patsubst $(INPUT_DIR)/%, $(OUTPUT_PURL_DIR)/%, $(PURL_FILES))
 
+TMP_MD_FILES = tmp_md
+pdf_FILES = $(INPUT_PDF_DIR)
+pdf_MD = $(patsubst %.Rmd, %.md, $(sort $(wildcard $(pdf_FILES)/*.Rmd)))
+
+
+# Pandoc Path (RSTUDIO VERSION)
+PANDOC_PATH = /usr/lib/rstudio/bin/pandoc/pandoc
+
+# Pandoc pdf options
+PANDOC_PDF_OPTIONS = \
+	--latex-engine xelatex  \
+	--template='./../include/tex/manual-with-written-cover.tex' \
+	--variable=geometry:a4paper \
+	--variable=links-as-notes \
+	--chapters \
+	--number-sections \
+	--toc
 
 .PHONY: all
 all: manual 
@@ -50,8 +71,25 @@ $(OUTPUT_HTML_DIR)/%.html: $(INPUT_DIR)/%.md
 	rmarkdown::render('$<',output_dir='$(OUTPUT_HTML_DIR)/')"
 
 	
+.PHONY: pdf
+pdf: $(PDF_OUT) $(PDF_OUT_SOLUTIONS) clean_md
+
+$(PDF_OUT): $(pdf_MD)
+	$(PANDOC_PATH) $(PANDOC_PDF_OPTIONS) $^ --output $@
+
+$(INPUT_PDF_DIR)/%.md: $(INPUT_PDF_DIR)/%.Rmd
+	Rscript -e \
+	"require(knitr); \
+	knit('$<', output= '$@', quiet=FALSE)"
+
+.PHONY: clean_md
+clean_md:
+	rm -rf $(INPUT_PDF_DIR)/*.md $(INPUT_PDF_DIR)/*.solution.md
+	
 .PHONY: clean
 clean:
 	rm -rf $(OUTPUT_HTML_DIR)/*
 	rm -rf $(OUTPUT_PURL_DIR)/*
+	rm -rf $(OUTPUT_PDF_DIR)/*
+
 
